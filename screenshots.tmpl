@@ -1,0 +1,21 @@
+[^header.incl]
+[^linkbox.incl]
+[^logo.incl]
+    <div id="content">
+[^headline.incl]
+      <h2>Screenshots</h2>
+      <p>Here are some Screenshots from the graphical JSON Editor
+      <i>edit_json.rb</i>, that is included in the library package. To run it, a
+      working installation of <a
+      href="http://ruby-gnome2.sourceforge.jp/">Ruby GTK2</a> is necessary.</p>
+      [@screenshots.each_with_index do |s,i|]
+      <div style="text-align: center">
+      <a href="[=s]">
+        <img src="[=s]" width="400" height="300" alt="Screenshot #[=i + 1]" />
+      </a>
+      <br />
+      <span class="caption">Screenshot #[=i + 1] (Click to enlarge)</span>
+      </div>
+      [end]
+    </div>
+[^footer.incl]
