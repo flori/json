@@ -7,6 +7,7 @@
   "project_name":"JSON implementation for Ruby",
   "project_unixname":"json",
   "project_url":"http://rubyforge.org/projects/json",
+  "homepage_url":"http://flori.github.com/json",
   "screenshots":["edit_json.png",
     "diagrams/JSON_array.png",
     "diagrams/JSON_float.png",
