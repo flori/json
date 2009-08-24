@@ -151,7 +151,7 @@ task :benchmark => [ :benchmark_parser, :benchmark_generator ]
 
 desc "Create RDOC documentation"
 task :doc => [ :version, EXT_PARSER_SRC ] do
-  system "rdoc -S -o doc -m main.txt doc-templates/main.txt lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
+  system "rdoc -o doc -m doc-main.txt doc-main.txt lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
 end
 
 if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::ExtensionTask)
@@ -171,8 +171,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
     s.has_rdoc = true
     s.rdoc_options <<
-      '--title' <<  'JSON -- A JSON implemention' <<
-      '--main' << 'JSON' << '--line-numbers'
+      '--title' <<  'JSON -- A JSON implemention' << '--main' << 'doc-main.txt'
     s.test_files.concat Dir['tests/*.rb']
 
     s.author = "Florian Frank"
@@ -206,8 +205,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
     s.has_rdoc = true
     s.rdoc_options <<
-      '--title' <<  'JSON -- A JSON implemention' <<
-      '--main' << 'JSON' << '--line-numbers'
+      '--title' <<  'JSON -- A JSON implemention' << '--main' << 'doc-main.txt'
     s.test_files.concat Dir['tests/*.rb']
 
     s.author = "Florian Frank"
