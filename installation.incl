@@ -1,0 +1,17 @@
+<h2>Installation</h2>
+<p>
+The library can be installed via rubygems:
+</p>
+<pre>
+# gem install [=@project_unixname]
+</pre>
+<p>
+If you have to use the pure variant, you can use:
+</p>
+<pre>
+# gem install [=@project_unixname]_pure
+</pre>
+<p>
+The gem and the source archive can also be <a
+href="[=@download_url]">downloaded</a> directly from rubyforge.org.
+</p>

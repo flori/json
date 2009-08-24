@@ -1,0 +1,93 @@
+body {
+  color: black;
+  background-color: white;
+  font-family: 'Verdana', 'Arial', sans-serif;
+  padding: 15px;
+  margin: 0;
+  font-size: 100.01%;
+}
+img {
+  border: 0;
+}
+pre {
+  margin: 25px;
+  background-color: silver;
+  color: navy;
+  border: 1px dashed black;
+  padding: 5px;
+}
+a {
+  color: #af0000;
+  background-color: white;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+img#logo {
+  float: left;
+}
+p.valid {
+  float: right;
+}
+ul#linkbox {
+  font-size: 12px;
+  float: right;
+  width: 150px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid silver;
+}
+ul#linkbox li {
+  list-style: none;
+  margin: 0;
+  padding: 2px;
+}
+ul#linkbox a {
+  display: block;
+  padding: 5px;
+  text-decoration: none;
+  font-weight: bold;
+}
+ul#linkbox a:link {
+  color: white;
+  text-decoration: none;
+  background-color: #af0000;
+}
+ul#linkbox a:visited {
+  color: white;
+  text-decoration: none;
+  background-color: #af0000;
+}
+ul#linkbox a:hover {
+  color: white;
+  text-decoration: underline;
+  background-color: #af0000;
+}
+ul#linkbox a:active {
+  color: white;
+  text-decoration: underline;
+  background-color: #af0000;
+}
+div#content {
+  margin-right: 150px;
+  padding: 0 10px;
+}
+div#content h1 {
+  color: #af0000;
+  background-color: white;
+  font-size: 20px;
+  padding: 18px 0 18px 0;
+  margin: 0 90px;
+}
+div#content h2 {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+div#content p {
+  font-size: 14px;
+  margin-top: 14px;
+}
+span.caption {
+  font-size:12px;
+}

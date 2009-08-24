@@ -1,0 +1,56 @@
+<h2>Usage</h2>
+<p>
+If you require JSON like this:
+</p>
+<pre>
+require 'json'
+</pre>
+<p>
+JSON first tries to load the extension variant. If this fails, the pure variant
+is loaded and used.
+</p>
+<p>
+To determine, which variant is active you can use the follwing methods:
+</p>
+<ul>
+<li>Ext variant:
+<pre>
+\[ JSON.parser, JSON.generator ] # => \[JSON::Ext::Parser, JSON::Ext::Generator]
+</pre>
+</li>
+<li>Pure variant:
+<pre>
+\[ JSON.parser, JSON.generator ] # => \[JSON::Pure::Parser, JSON::Pure::Generator]
+</pre>
+</li>
+</ul>
+<p>
+If you want to enforce loading of a special variant, use
+</p>
+<pre>
+require 'json/ext'
+</pre>
+<p>
+to load the extension variant. Or use
+</p>
+<pre>
+require 'json/pure'
+</pre>
+<p>
+to use the pure variant.
+</p>
+<p>
+You can choose to load a set of common additions to ruby core's objects if you
+</p>
+<pre>
+  require 'json/add/core'
+</pre>
+<p>
+  To get the best compatibility to rails' JSON implementation, you can
+</p>
+<pre>
+    require 'json/add/rails'
+</pre> 
+<p>
+    Both of the additions attempt to require 'json' (like above) first, if it has not been required yet. 
+</p>

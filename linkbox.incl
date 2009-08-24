@@ -1,0 +1,10 @@
+    <ul id="linkbox">
+      <li><a href="[=@homepage_url]/index.html">Homepage</a></li>
+      <li><a href="[=@github_url]">Github Repository</a></li>
+      <li><a href="[=@project_url]">Rubyforge Project</a></li>
+      <li><a href="[=@download_url]">Download</a></li>
+      <li><a href="[=@documentation_url]">Documentation</a></li>
+      [if defined?(@screenshots) and not @screenshots.empty?]
+      <li><a href="screenshots.html">Screenshots</a></li>
+      [end]
+    </ul>
