@@ -1,1 +1,4 @@
-      <h1>[=@project_unixname] &ndash; [=@project_name]</h1>
+      <h1>
+        <img style="float: left; margin-right: 32px;" id="logo" src="json_logo.png" alt="JSON Logo" title="JSON Logo" />
+        <span style="float: left; margin-top: 16px;">[=@project_name]</span>
+      </h1>
