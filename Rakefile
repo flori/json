@@ -261,4 +261,5 @@ task :release => [ :clean, :version, :cross, :native, :gem ] do
   system "#$0 clean package"
 end
 
+desc "Compile in the the source directory"
 task :default => [ :version, :compile_ext ]
