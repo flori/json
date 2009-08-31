@@ -170,6 +170,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     s.default_executable = "edit_json.rb"
 
     s.has_rdoc = true
+    s.extra_rdoc_files << 'doc-main.txt'
     s.rdoc_options <<
       '--title' <<  'JSON -- A JSON implemention' << '--main' << 'doc-main.txt'
     s.test_files.concat Dir['tests/*.rb']
@@ -204,6 +205,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     s.default_executable = "edit_json.rb"
 
     s.has_rdoc = true
+    s.extra_rdoc_files << 'doc-main.txt'
     s.rdoc_options <<
       '--title' <<  'JSON -- A JSON implemention' << '--main' << 'doc-main.txt'
     s.test_files.concat Dir['tests/*.rb']
