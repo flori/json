@@ -74,7 +74,7 @@ module JSON
   end
   self.create_id = 'json_class'
 
-  NaN           = (-1.0) ** 0.5
+  NaN           = 0.0/0
 
   Infinity      = 1.0/0
 
@@ -270,7 +270,6 @@ module JSON
       proc.call result
     end
   end
-  private :recurse_proc
   module_function :recurse_proc
 
   alias restore load
