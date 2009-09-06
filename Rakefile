@@ -48,7 +48,11 @@ desc "Installing library (extension)"
 task :install_ext => [ :compile_ext, :install_pure, :install_ext_really ]
 
 desc "Installing library (extension)"
-task :install => :install_ext
+if PLATFORM =~ /java/
+  task :install => :install_pure
+else
+  task :install => :install_ext
+end
 
 desc "Compiling extension"
 task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
