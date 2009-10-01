@@ -105,7 +105,7 @@ module JSON
 
   module_function
 
-  # Parse the JSON string _source_ into a Ruby data structure and return it.
+  # Parse the JSON document _source_ into a Ruby data structure and return it.
   #
   # _opts_ can have the following
   # keys:
@@ -122,9 +122,9 @@ module JSON
     JSON.parser.new(source, opts).parse
   end
 
-  # Parse the JSON string _source_ into a Ruby data structure and return it.
+  # Parse the JSON document _source_ into a Ruby data structure and return it.
   # The bang version of the parse method, defaults to the more dangerous values
-  # for the _opts_ hash, so be sure only to parse trusted _source_ strings.
+  # for the _opts_ hash, so be sure only to parse trusted _source_ documents.
   #
   # _opts_ can have the following keys:
   # * *max_nesting*: The maximum depth of nesting allowed in the parsed data
@@ -145,9 +145,8 @@ module JSON
     JSON.parser.new(source, opts).parse
   end
 
-  # Unparse the Ruby data structure _obj_ into a single line JSON string and
-  # return it. _state_ is
-  # * a JSON::State object,
+  # Generate a JSON document from the Ruby data structure _obj_ and return
+  # it. _state_ is * a JSON::State object,
   # * or a Hash like object (responding to to_hash),
   # * an object convertible into a hash by a to_h method,
   # that is used as or to configure a State object.
@@ -180,7 +179,11 @@ module JSON
     else
       state = State.new
     end
-    obj.to_json(state)
+    result = obj.to_json(state)
+    if result !~ /\A\s*(?:\[.*\]|\{.*\})\s*\Z/m
+      raise GeneratorError, "only generation of JSON objects or arrays allowed"
+    end
+    result
   end
 
   # :stopdoc:
@@ -190,14 +193,17 @@ module JSON
   module_function :unparse
   # :startdoc:
 
-  # Unparse the Ruby data structure _obj_ into a single line JSON string and
-  # return it. This method disables the checks for circles in Ruby objects, and
-  # also generates NaN, Infinity, and, -Infinity float values.
+  # Generate a JSON document from the Ruby data structure _obj_ and return it.
+  # This method disables the checks for circles in Ruby objects.
   #
   # *WARNING*: Be careful not to pass any Ruby data structures with circles as
   # _obj_ argument, because this will cause JSON to go into an infinite loop.
   def fast_generate(obj)
-    obj.to_json(nil)
+    result = obj.to_json(nil)
+    if result !~ /\A(?:\[.*\]|\{.*\})\Z/
+      raise GeneratorError, "only generation of JSON objects or arrays allowed"
+    end
+    result
   end
 
   # :stopdoc:
@@ -206,8 +212,9 @@ module JSON
   module_function :fast_unparse
   # :startdoc:
 
-  # Unparse the Ruby data structure _obj_ into a JSON string and return it. The
-  # returned string is a prettier form of the string returned by #unparse.
+  # Generate a JSON document from the Ruby data structure _obj_ and return it.
+  # The returned document is a prettier form of the document returned by
+  # #unparse.
   #
   # The _opts_ argument can be used to configure the generator, see the
   # generate method for a more detailed explanation.
@@ -229,7 +236,11 @@ module JSON
       end
       state.configure(opts)
     end
-    obj.to_json(state)
+    result = obj.to_json(state)
+    if result !~ /\A\s*(?:\[.*\]|\{.*\})\s*\Z/m
+      raise GeneratorError, "only generation of JSON objects or arrays allowed"
+    end
+    result
   end
 
   # :stopdoc:
@@ -270,7 +281,6 @@ module JSON
       proc.call result
     end
   end
-  module_function :recurse_proc
 
   alias restore load
   module_function :restore

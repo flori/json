@@ -222,27 +222,27 @@ EOT
   def test_backslash
     data = [ '\\.(?i:gif|jpe?g|png)$' ]
     json = '["\\\\.(?i:gif|jpe?g|png)$"]'
-    assert_equal json, JSON.unparse(data)
+    assert_equal json, JSON.generate(data)
     assert_equal data, JSON.parse(json)
     #
     data = [ '\\"' ]
     json = '["\\\\\""]'
-    assert_equal json, JSON.unparse(data)
+    assert_equal json, JSON.generate(data)
     assert_equal data, JSON.parse(json)
     #
     json = '["/"]'
     data = JSON.parse(json)
     assert_equal ['/'], data
-    assert_equal json, JSON.unparse(data)
+    assert_equal json, JSON.generate(data)
     #
     json = '["\""]'
     data = JSON.parse(json)
     assert_equal ['"'], data
-    assert_equal json, JSON.unparse(data)
+    assert_equal json, JSON.generate(data)
     json = '["\\\'"]'
     data = JSON.parse(json)
     assert_equal ["'"], data
-    assert_equal '["\'"]', JSON.unparse(data)
+    assert_equal '["\'"]', JSON.generate(data)
   end
 
   def test_wrong_inputs
