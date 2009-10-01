@@ -315,14 +315,14 @@ static VALUE mFloat_to_json(int argc, VALUE *argv, VALUE self)
     rb_scan_args(argc, argv, "01*", &Vstate, &rest);
     if (!NIL_P(Vstate)) Data_Get_Struct(Vstate, JSON_Generator_State, state);
     if (isinf(value)) {
-        if (!state || state->allow_nan) {
+        if (state && state->allow_nan) {
             result = rb_funcall(self, i_to_s, 0);
         } else {
             tmp = rb_funcall(self, i_to_s, 0);
             rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
         }
     } else if (isnan(value)) {
-        if (!state || state->allow_nan) {
+        if (state && state->allow_nan) {
             result = rb_funcall(self, i_to_s, 0);
         } else {
             tmp = rb_funcall(self, i_to_s, 0);

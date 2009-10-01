@@ -1,3 +1,5 @@
+2009-10-01 (1.2.0)
+  * fast_generate now raises an exeception for nan and infinite floats.
 2009-08-23 (1.1.9)
   * Added forgotten main doc file extra_rdoc_files.
 2009-08-23 (1.1.8)

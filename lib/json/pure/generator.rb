@@ -351,13 +351,13 @@ module JSON
           def to_json(state = nil, *)
             case
             when infinite?
-              if !state || state.allow_nan?
+              if state && state.allow_nan?
                 to_s
               else
                 raise GeneratorError, "#{self} not allowed in JSON"
               end
             when nan?
-              if !state || state.allow_nan?
+              if state && state.allow_nan?
                 to_s
               else
                 raise GeneratorError, "#{self} not allowed in JSON"
