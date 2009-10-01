@@ -183,7 +183,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
   Rake::GemPackageTask.new(spec_pure) do |pkg|
       pkg.need_tar = true
-      pkg.package_files += PKG_FILES
+      pkg.package_files = PKG_FILES
   end
 
   spec_ext = Gem::Specification.new do |s|
