@@ -1,4 +1,5 @@
 require 'json/version'
+require 'iconv'
 
 module JSON
   class << self
@@ -315,6 +316,11 @@ module JSON
     end
   rescue JSON::NestingError
     raise ArgumentError, "exceed depth limit"
+  end
+
+  # Shortuct for iconv.
+  def self.iconv(to, from, string)
+    Iconv.iconv(to, from, string).first
   end
 end
 
