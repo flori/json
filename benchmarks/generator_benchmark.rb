@@ -12,6 +12,9 @@ when 'pure'
   require 'json/pure'
 when 'rails'
   require 'active_support'
+when 'yajl'
+  require 'yajl'
+  require 'stringio'
 end
 
 module JSON
@@ -23,7 +26,7 @@ module GeneratorBenchmarkCommon
 
   def setup
     a = [ nil, false, true, "fÖßÄr", [ "n€st€d", true ], { "fooß" => "bär", "quux" => true } ]
-    puts a.to_json
+    puts a.to_json if a.respond_to?(:to_json)
     @big = a * 100
   end
 
@@ -133,6 +136,40 @@ class GeneratorBenchmarkRails < Bullshit::RepeatCase
   alias reset_benchmark_generator generic_reset_method
 end
 
+class GeneratorBenchmarkYajl < Bullshit::RepeatCase
+  include GeneratorBenchmarkCommon
+
+  warmup      yes
+  iterations  1000
+
+  truncate_data do
+    alpha_level 0.05
+    window_size 50
+    slope_angle 0.1
+  end
+
+  autocorrelation do
+    alpha_level 0.05
+    max_lags    50
+    file        yes
+  end
+
+  output_dir File.join(File.dirname(__FILE__), 'data')
+  output_filename benchmark_name + '.log'
+  data_file yes
+  histogram yes
+
+  def benchmark_generator
+    output = StringIO.new
+    Yajl::Encoder.new.encode(@big, output)
+    @result = output.string
+  end
+
+  def reset_benchmark_generator
+    generic_reset_method
+  end
+end
+
 if $0 == __FILE__
   Bullshit::Case.autorun false
 
@@ -143,12 +180,15 @@ if $0 == __FILE__
     GeneratorBenchmarkPure.run
   when 'rails'
     GeneratorBenchmarkRails.run
+  when 'yajl'
+    GeneratorBenchmarkYajl.run
   else
     system "#{RAKE_PATH} clean"
     system "#{RUBY_PATH} #$0 rails"
     system "#{RUBY_PATH} #$0 pure"
     system "#{RAKE_PATH} compile_ext"
     system "#{RUBY_PATH} #$0 ext"
+    system "#{RUBY_PATH} #$0 yajl"
     Bullshit.compare do
       output_filename File.join(File.dirname(__FILE__), 'data', 'GeneratorBenchmarkComparison.log')
 
@@ -159,6 +199,7 @@ if $0 == __FILE__
       benchmark GeneratorBenchmarkPure,   :generator_safe,    :load => yes
       benchmark GeneratorBenchmarkPure,   :generator_pretty,  :load => yes
       benchmark GeneratorBenchmarkRails,  :generator,         :load => yes
+      benchmark GeneratorBenchmarkYajl,   :generator,         :load => yes
     end
   end
 end

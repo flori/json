@@ -16,6 +16,9 @@ when 'yaml'
 when 'rails'
   require 'active_support'
   require 'json/pure'
+when 'yajl'
+  require 'yajl'
+  require 'json/pure'
 else
   require 'json/pure'
 end
@@ -166,6 +169,42 @@ class ParserBenchmarkRails < Bullshit::RepeatCase
   end
 end
 
+class ParserBenchmarkYajl < Bullshit::RepeatCase
+  warmup      yes
+  iterations  1000
+
+  truncate_data do
+    alpha_level 0.05
+    window_size 50
+    slope_angle 0.1
+  end
+
+  autocorrelation do
+    alpha_level 0.05
+    max_lags    50
+    file        yes
+  end
+
+  output_dir File.join(File.dirname(__FILE__), 'data')
+  output_filename benchmark_name + '.log'
+  data_file yes
+  histogram yes
+
+  def setup
+    a = [ nil, false, true, "fÖß\nÄr", [ "n€st€d", true ], { "fooß" => "bär", "qu\r\nux" => true } ]
+    @big = a * 100
+    @json = JSON.generate(@big)
+  end
+
+  def benchmark_parser
+    @result = Yajl::Parser.new.parse(@json)
+  end
+
+  def generic_reset_method
+    @result == @big or raise "not equal"
+  end
+end
+
 if $0 == __FILE__
   Bullshit::Case.autorun false
 
@@ -178,6 +217,8 @@ if $0 == __FILE__
     ParserBenchmarkYAML.run
   when 'rails'
     ParserBenchmarkRails.run
+  when 'yajl'
+    ParserBenchmarkYajl.run
   else
     system "#{RAKE_PATH} clean"
     system "#{RUBY_PATH} #$0 yaml"
@@ -185,6 +226,7 @@ if $0 == __FILE__
     system "#{RUBY_PATH} #$0 pure"
     system "#{RAKE_PATH} compile_ext"
     system "#{RUBY_PATH} #$0 ext"
+    system "#{RUBY_PATH} #$0 yajl"
     Bullshit.compare do
       output_filename File.join(File.dirname(__FILE__), 'data', 'ParserBenchmarkComparison.log')
 
@@ -192,6 +234,7 @@ if $0 == __FILE__
       benchmark ParserBenchmarkPure,  :parser, :load => yes
       benchmark ParserBenchmarkYAML,  :parser, :load => yes
       benchmark ParserBenchmarkRails, :parser, :load => yes
+      benchmark ParserBenchmarkYajl, :parser, :load => yes
     end
   end
 end
