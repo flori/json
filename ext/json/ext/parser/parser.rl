@@ -19,15 +19,19 @@
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
 #define FORCE_UTF8(obj) rb_enc_associate((obj), rb_utf8_encoding())
+static VALUE mEncoding_ASCII_8BIT, mEncoding_UTF_8, mEncoding_UTF_16BE,
+    mEncoding_UTF_16LE, mEncoding_UTF_32BE, mEncoding_UTF_32LE;
+static ID i_encoding, i_encode, i_encode_bang, i_force_encoding;
 #else
 #define FORCE_UTF8(obj)
+static ID i_iconv;
 #endif
 
 static VALUE mJSON, mExt, cParser, eParserError, eNestingError;
 static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
-          i_chr, i_max_nesting, i_allow_nan, i_object_class, i_array_class; 
+          i_chr, i_max_nesting, i_allow_nan, i_object_class, i_array_class;
 
 #define MinusInfinity "-Infinity"
 
@@ -484,6 +488,54 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
  *
  */
 
+inline static VALUE convert_encoding(VALUE source)
+{
+    char *ptr = RSTRING_PTR(source);
+    long len = RSTRING_LEN(source);
+    if (len < 2) {
+        rb_raise(eParserError, "A JSON text must at least contain two octets!");
+    }
+#ifdef HAVE_RUBY_ENCODING_H
+    {
+        VALUE encoding = rb_funcall(source, i_encoding, 0);
+        if (encoding == mEncoding_ASCII_8BIT) {
+            if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
+                source = rb_str_dup(source);
+                rb_funcall(source, i_force_encoding, 1, mEncoding_UTF_32BE);
+                source = rb_funcall(source, i_encode_bang, 1, mEncoding_UTF_8);
+            } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
+                source = rb_str_dup(source);
+                rb_funcall(source, i_force_encoding, 1, mEncoding_UTF_16BE);
+                source = rb_funcall(source, i_encode_bang, 1, mEncoding_UTF_8);
+            } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
+                source = rb_str_dup(source);
+                rb_funcall(source, i_force_encoding, 1, mEncoding_UTF_32LE);
+                source = rb_funcall(source, i_encode_bang, 1, mEncoding_UTF_8);
+            } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
+                source = rb_str_dup(source);
+                rb_funcall(source, i_force_encoding, 1, mEncoding_UTF_16LE);
+                source = rb_funcall(source, i_encode_bang, 1, mEncoding_UTF_8);
+            } else {
+                source = rb_funcall(source, i_force_encoding, 1, mEncoding_UTF_8);
+            }
+        } else {
+            source = rb_funcall(source, i_encode, 1, mEncoding_UTF_8);
+        }
+    }
+#else
+    if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
+      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32be"), source);
+    } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
+      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16be"), source);
+    } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
+      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32le"), source);
+    } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
+      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16le"), source);
+    }
+#endif
+    return source;
+}
+
 /*
  * call-seq: new(source, opts => {})
  *
@@ -514,12 +566,9 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     VALUE source, opts;
     GET_STRUCT;
     rb_scan_args(argc, argv, "11", &source, &opts);
-    source = StringValue(source);
+    source = convert_encoding(StringValue(source));
     ptr = RSTRING_PTR(source);
     len = RSTRING_LEN(source);
-    if (len < 2) {
-        rb_raise(eParserError, "A JSON text must at least contain two octets!");
-    }
     if (!NIL_P(opts)) {
         opts = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
         if (NIL_P(opts)) {
@@ -576,18 +625,6 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->array_class = Qnil;
     }
     json->current_nesting = 0;
-    /*
-       Convert these?
-    if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
-        rb_raise(eParserError, "Only UTF8 octet streams are supported atm!");
-    } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
-        rb_raise(eParserError, "Only UTF8 octet streams are supported atm!");
-    } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
-        rb_raise(eParserError, "Only UTF8 octet streams are supported atm!");
-    } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
-        rb_raise(eParserError, "Only UTF8 octet streams are supported atm!");
-    }
-    */
     json->len = len;
     json->source = ptr;
     json->Vsource = source;
@@ -683,4 +720,18 @@ void Init_parser()
     i_allow_nan = rb_intern("allow_nan");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
+#ifdef HAVE_RUBY_ENCODING_H
+    mEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
+    mEncoding_UTF_16BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16be"));
+    mEncoding_UTF_16LE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16le"));
+    mEncoding_UTF_32BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-32be"));
+    mEncoding_UTF_32LE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-32le"));
+    mEncoding_ASCII_8BIT = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("ascii-8bit"));
+    i_encoding = rb_intern("encoding");
+    i_encode = rb_intern("encode");
+    i_encode_bang = rb_intern("encode!");
+    i_force_encoding = rb_intern("force_encoding");
+#else
+    i_iconv = rb_intern("iconv");
+#endif
 }
