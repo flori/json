@@ -24,6 +24,8 @@
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
 #define FORCE_UTF8(obj) rb_enc_associate((obj), rb_utf8_encoding())
+static VALUE mEncoding_UTF_8;
+static ID i_encoding, i_encode;
 #else
 #define FORCE_UTF8(obj)
 #endif
@@ -357,7 +359,12 @@ static VALUE mString_to_json(int argc, VALUE *argv, VALUE self)
 {
     VALUE result = rb_str_buf_new(RSTRING_LEN(self));
     rb_str_buf_cat2(result, "\"");
-    JSON_convert_UTF8_to_JSON(result, self, strictConversion);
+    if (rb_funcall(self, i_encoding, 0) == mEncoding_UTF_8) {
+        JSON_convert_UTF8_to_JSON(result, self, strictConversion);
+    } else {
+        VALUE string = rb_funcall(self, i_encode, 1, mEncoding_UTF_8);
+        JSON_convert_UTF8_to_JSON(result, string, strictConversion);
+    }
     rb_str_buf_cat2(result, "\"");
     FORCE_UTF8(result);
     return result;
@@ -916,4 +923,9 @@ void Init_generator()
     i_unpack = rb_intern("unpack");
     i_create_id = rb_intern("create_id");
     i_extend = rb_intern("extend");
+#ifdef HAVE_RUBY_ENCODING_H
+    mEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
+    i_encoding = rb_intern("encoding");
+    i_encode = rb_intern("encode");
+#endif
 }

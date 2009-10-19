@@ -38,11 +38,11 @@ module JSON
 
   # Convert a UTF8 encoded Ruby string _string_ to a JSON string, encoded with
   # UTF16 big endian characters as \u????, and return it.
-  if String.method_defined?(:force_encoding)
+  if defined?(::Encoding)
     def utf8_to_json(string) # :nodoc:
       string = string.dup
       string << '' # XXX workaround: avoid buffer sharing
-      string.force_encoding(Encoding::ASCII_8BIT)
+      string.force_encoding(::Encoding::ASCII_8BIT)
       string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
       string.gsub!(/(
                       (?:
@@ -56,7 +56,7 @@ module JSON
                       s = JSON::UTF8toUTF16.iconv(c).unpack('H*')[0]
                       s.gsub!(/.{4}/n, '\\\\u\&')
                     }
-      string.force_encoding(Encoding::UTF_8)
+      string.force_encoding(::Encoding::UTF_8)
       string
     rescue Iconv::Failure => e
       raise GeneratorError, "Caught #{e.class}: #{e}"
@@ -369,11 +369,25 @@ module JSON
         end
 
         module String
-          # This string should be encoded with UTF-8 A call to this method
-          # returns a JSON string encoded with UTF16 big endian characters as
-          # \u????.
-          def to_json(*)
-            '"' << JSON.utf8_to_json(self) << '"'
+          if defined?(::Encoding)
+            # This string should be encoded with UTF-8 A call to this method
+            # returns a JSON string encoded with UTF16 big endian characters as
+            # \u????.
+            def to_json(*)
+              if encoding == ::Encoding::UTF_8
+                '"' << JSON.utf8_to_json(self) << '"'
+              else
+                string = encode(::Encoding::UTF_8)
+                '"' << JSON.utf8_to_json(string) << '"'
+              end
+            end
+          else
+            # This string should be encoded with UTF-8 A call to this method
+            # returns a JSON string encoded with UTF16 big endian characters as
+            # \u????.
+            def to_json(*)
+              '"' << JSON.utf8_to_json(self) << '"'
+            end
           end
 
           # Module that holds the extinding methods if, the String module is
