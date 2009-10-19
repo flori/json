@@ -113,7 +113,7 @@ void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string, ConversionFlags flags
         }
         if (!isLegalUTF8(source, extraBytesToRead+1)) {
             rb_raise(rb_path2class("JSON::GeneratorError"),
-                    "source sequence is illegal/malformed");
+                    "source sequence is illegal/malformed utf-8");
         }
         /*
          * The cases all fall through. See "Note A" below.
@@ -134,7 +134,7 @@ void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string, ConversionFlags flags
                 if (flags == strictConversion) {
                     source -= (extraBytesToRead+1); /* return to the illegal value itself */
                     rb_raise(rb_path2class("JSON::GeneratorError"),
-                        "source sequence is illegal/malformed");
+                        "source sequence is illegal/malformed utf-8");
                 } else {
                     unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
                 }
@@ -166,7 +166,7 @@ void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string, ConversionFlags flags
             if (flags == strictConversion) {
                 source -= (extraBytesToRead+1); /* return to the start */
                 rb_raise(rb_path2class("JSON::GeneratorError"),
-                        "source sequence is illegal/malformed");
+                        "source sequence is illegal/malformed utf8");
             } else {
                 unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
             }

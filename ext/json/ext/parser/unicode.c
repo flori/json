@@ -105,7 +105,7 @@ char *JSON_convert_UTF16_to_UTF8 (
                 } else if (flags == strictConversion) { /* it's an unpaired high surrogate */
                     ruby_xfree(tmp);
                     rb_raise(rb_path2class("JSON::ParserError"),
-                            "source sequence is illegal/malformed near %s", source);
+                            "\\uXXXX is illegal/malformed utf-16 near %s", source);
                 }
             } else { /* We don't have the 16 bits following the high surrogate. */
                 ruby_xfree(tmp);
@@ -118,7 +118,7 @@ char *JSON_convert_UTF16_to_UTF8 (
             if (ch >= UNI_SUR_LOW_START && ch <= UNI_SUR_LOW_END) {
                 ruby_xfree(tmp);
                 rb_raise(rb_path2class("JSON::ParserError"),
-                    "source sequence is illegal/malformed near %s", source);
+                    "\\uXXXX is illegal/malformed utf-16 near %s", source);
             }
         }
         /* Figure out how many bytes the result will require */
