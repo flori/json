@@ -1,8 +1,14 @@
 begin
   require 'rake/gempackagetask'
-  require 'rake/extensiontask'
 rescue LoadError
 end
+
+begin
+  require 'rake/extensiontask'
+rescue LoadError
+  puts "WARNING: rake-compiler is not installed. You will not be able to build the json gem until you install it."
+end
+
 require 'rake/clean'
 CLOBBER.include Dir['benchmarks/data/*.{dat,log}']
 
@@ -105,7 +111,7 @@ task :ragel_dot_ps do
   root = 'diagrams'
   specs = []
   File.new(RAGEL_PATH).grep(/^\s*machine\s*(\S+);\s*$/) { specs << $1 }
-  for s in specs 
+  for s in specs
     if RAGEL_DOTGEN == 'ragel'
       sh "ragel #{RAGEL_PATH} -S#{s} -p -V | dot -Tps -o#{root}/#{s}.ps"
     else
@@ -119,7 +125,7 @@ task :ragel_dot_png do
   root = 'diagrams'
   specs = []
   File.new(RAGEL_PATH).grep(/^\s*machine\s*(\S+);\s*$/) { specs << $1 }
-  for s in specs 
+  for s in specs
     if RAGEL_DOTGEN == 'ragel'
       sh "ragel #{RAGEL_PATH} -S#{s} -p -V | dot -Tpng -o#{root}/#{s}.png"
     else
@@ -243,7 +249,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     ext.ext_dir         = 'ext/json/ext/parser'
     ext.lib_dir         = 'lib/json/ext'
   end
-    
+
   Rake::ExtensionTask.new do |ext|
     ext.name            = 'generator'
     ext.gem_spec        = spec_ext
