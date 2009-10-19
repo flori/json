@@ -141,6 +141,6 @@ EOT
   end
 
   def test_symbol
-    assert_equal '"foo"', JSON(:foo) #  we don't want an object here
+    assert_equal '"foo"', :foo.to_json #  we don't want an object here
   end
 end

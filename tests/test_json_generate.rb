@@ -44,8 +44,8 @@ class TC_JSONGenerate < Test::Unit::TestCase
 EOT
   end
 
-  def test_unparse
-    json = unparse(@hash)
+  def test_generate
+    json = generate(@hash)
     assert_equal(JSON.parse(@json2), JSON.parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
@@ -53,10 +53,11 @@ EOT
     assert_equal('{"1":2}', json)
     parsed_json = parse(json)
     assert_equal({"1"=>2}, parsed_json)
+    assert_raise(GeneratorError) { generate(666) }
   end
 
-  def test_unparse_pretty
-    json = pretty_unparse(@hash)
+  def test_generate_pretty
+    json = pretty_generate(@hash)
     assert_equal(JSON.parse(@json3), JSON.parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
@@ -68,6 +69,19 @@ EOT
 EOT
     parsed_json = parse(json)
     assert_equal({"1"=>2}, parsed_json)
+    assert_raise(GeneratorError) { pretty_generate(666) }
+  end
+
+  def test_fast_generate
+    json = fast_generate(@hash)
+    assert_equal(JSON.parse(@json2), JSON.parse(json))
+    parsed_json = parse(json)
+    assert_equal(@hash, parsed_json)
+    json = fast_generate({1=>2})
+    assert_equal('{"1":2}', json)
+    parsed_json = parse(json)
+    assert_equal({"1"=>2}, parsed_json)
+    assert_raise(GeneratorError) { fast_generate(666) }
   end
 
   def test_states
