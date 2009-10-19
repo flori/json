@@ -64,7 +64,7 @@ desc "Installing library (extension)"
 task :install_ext => [ :compile_ext, :install_pure, :install_ext_really ]
 
 desc "Installing library (extension)"
-if PLATFORM =~ /java/
+if RUBY_PLATFORM =~ /java/
   task :install => :install_pure
 else
   task :install => :install_ext
