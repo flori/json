@@ -14,7 +14,9 @@ class TC_JSONEncoding < Test::Unit::TestCase
 
   def setup
     @utf_8 = '["© ≠ €!"]'
-    @decoded = [ "© ≠ €!" ]
+    @parsed = [ "© ≠ €!" ]
+    @utf_16_data = Iconv.iconv('utf-16be', 'utf-8', @parsed.first)
+    @generated = '["\u00a9 \u2260 \u20ac!"]'
     if defined?(::Encoding)
       @utf_8_ascii_8bit = @utf_8.dup.force_encoding(Encoding::ASCII_8BIT)
       @utf_16be, = Iconv.iconv('utf-16be', 'utf-8', @utf_8)
@@ -38,20 +40,28 @@ class TC_JSONEncoding < Test::Unit::TestCase
     end
   end
 
-  def test_decode
-    assert @decoded, JSON.parse(@utf_8)
-    assert @decoded, JSON.parse(@utf_16be)
-    assert @decoded, JSON.parse(@utf_16le)
-    assert @decoded, JSON.parse(@utf_32be)
-    assert @decoded, JSON.parse(@utf_32le)
+  def test_parse
+    assert_equal @parsed, JSON.parse(@utf_8)
+    assert_equal @parsed, JSON.parse(@utf_16be)
+    assert_equal @parsed, JSON.parse(@utf_16le)
+    assert_equal @parsed, JSON.parse(@utf_32be)
+    assert_equal @parsed, JSON.parse(@utf_32le)
   end
 
-  def test_decode_ascii_8bit
-    assert @decoded, JSON.parse(@utf_8_ascii_8bit)
-    assert @decoded, JSON.parse(@utf_16be_ascii_8bit)
-    assert @decoded, JSON.parse(@utf_16le_ascii_8bit)
-    assert @decoded, JSON.parse(@utf_32be_ascii_8bit)
-    assert @decoded, JSON.parse(@utf_32le_ascii_8bit)
+  def test_parse_ascii_8bit
+    assert_equal @parsed, JSON.parse(@utf_8_ascii_8bit)
+    assert_equal @parsed, JSON.parse(@utf_16be_ascii_8bit)
+    assert_equal @parsed, JSON.parse(@utf_16le_ascii_8bit)
+    assert_equal @parsed, JSON.parse(@utf_32be_ascii_8bit)
+    assert_equal @parsed, JSON.parse(@utf_32le_ascii_8bit)
   end
 
+  def test_generate
+    assert_equal @generated, JSON.generate(@parsed)
+    if defined?(::Encoding)
+      assert_equal @generated, JSON.generate(@utf_16_data)
+    else
+       assert_raises(JSON::GeneratorError) { JSON.generate(@utf_16_data) }
+    end
+  end
 end
