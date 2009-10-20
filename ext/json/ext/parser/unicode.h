@@ -31,16 +31,10 @@ typedef enum {
 	sourceIllegal		/* source sequence is illegal/malformed */
 } ConversionResult;
 
-typedef enum {
-	strictConversion = 0,
-	lenientConversion
-} ConversionFlags;
-
 char *JSON_convert_UTF16_to_UTF8 (
     VALUE buffer,
     char *source,
-    char *sourceEnd,
-		ConversionFlags flags);
+    char *sourceEnd);
 
 #ifndef RARRAY_PTR
 #define RARRAY_PTR(ARRAY) RARRAY(ARRAY)->ptr

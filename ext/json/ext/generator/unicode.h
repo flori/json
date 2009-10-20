@@ -3,17 +3,7 @@
 #ifndef _GENERATOR_UNICODE_H_
 #define _GENERATOR_UNICODE_H_
 
-typedef enum {
-	conversionOK = 0, 	/* conversion successful */
-	sourceExhausted,	/* partial character in source, but hit end */
-	targetExhausted,	/* insuff. room in target for conversion */
-	sourceIllegal		/* source sequence is illegal/malformed */
-} ConversionResult;
-
-typedef enum {
-	strictConversion = 0,
-	lenientConversion
-} ConversionFlags;
+#define UNI_STRICT_CONVERSION 1
 
 typedef unsigned long	UTF32;	/* at least 32 bits */
 typedef unsigned short	UTF16;	/* at least 16 bits */
@@ -35,7 +25,7 @@ static const int halfShift  = 10; /* used for shifting by 10 bits */
 static const UTF32 halfBase = 0x0010000UL;
 static const UTF32 halfMask = 0x3FFUL;
 
-void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string, ConversionFlags flags);
+inline void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string);
 
 #ifndef RARRAY_PTR
 #define RARRAY_PTR(ARRAY) RARRAY(ARRAY)->ptr

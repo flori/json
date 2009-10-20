@@ -24,7 +24,7 @@
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
 #define FORCE_UTF8(obj) rb_enc_associate((obj), rb_utf8_encoding())
-static VALUE mEncoding_UTF_8;
+static VALUE CEncoding_UTF_8;
 static ID i_encoding, i_encode;
 #else
 #define FORCE_UTF8(obj)
@@ -154,7 +154,7 @@ static int hash_to_json_i(VALUE key, VALUE value, VALUE buf)
 /*
  * call-seq: to_json(state = nil, depth = 0)
  *
- * Returns a JSON string containing a JSON object, that is unparsed from
+ * Returns a JSON string containing a JSON object, that is generated from
  * this Hash instance.
  * _state_ is a JSON::State object, that can also be used to configure the
  * produced JSON string output further.
@@ -260,7 +260,7 @@ inline static VALUE mArray_json_transfrom(VALUE self, VALUE Vstate, VALUE Vdepth
 /*
  * call-seq: to_json(state = nil, depth = 0)
  *
- * Returns a JSON string containing a JSON array, that is unparsed from
+ * Returns a JSON string containing a JSON array, that is generated from
  * this Array instance.
  * _state_ is a JSON::State object, that can also be used to configure the
  * produced JSON string output further.
@@ -360,14 +360,14 @@ static VALUE mString_to_json(int argc, VALUE *argv, VALUE self)
     VALUE result = rb_str_buf_new(RSTRING_LEN(self));
     rb_str_buf_cat2(result, "\"");
 #ifdef HAVE_RUBY_ENCODING_H
-    if (rb_funcall(self, i_encoding, 0) == mEncoding_UTF_8) {
-        JSON_convert_UTF8_to_JSON(result, self, strictConversion);
+    if (rb_funcall(self, i_encoding, 0) == CEncoding_UTF_8) {
+        JSON_convert_UTF8_to_JSON(result, self);
     } else {
-        VALUE string = rb_funcall(self, i_encode, 1, mEncoding_UTF_8);
-        JSON_convert_UTF8_to_JSON(result, string, strictConversion);
+        VALUE string = rb_funcall(self, i_encode, 1, CEncoding_UTF_8);
+        JSON_convert_UTF8_to_JSON(result, string);
     }
 #else
-    JSON_convert_UTF8_to_JSON(result, self, strictConversion);
+    JSON_convert_UTF8_to_JSON(result, self);
 #endif
     rb_str_buf_cat2(result, "\"");
     FORCE_UTF8(result);
@@ -378,7 +378,7 @@ static VALUE mString_to_json(int argc, VALUE *argv, VALUE self)
  * call-seq: to_json_raw_object()
  *
  * This method creates a raw object hash, that can be nested into
- * other data structures and will be unparsed as a raw string. This
+ * other data structures and will be generated as a raw string. This
  * method should be used, if you want to convert raw strings to JSON
  * instead of UTF-8 strings, e. g. binary data.
  */
@@ -856,17 +856,19 @@ static VALUE cState_forget(VALUE self, VALUE object)
 void Init_generator()
 {
     rb_require("json/common");
+
     mJSON = rb_define_module("JSON");
     mExt = rb_define_module_under(mJSON, "Ext");
     mGenerator = rb_define_module_under(mExt, "Generator");
+
     eGeneratorError = rb_path2class("JSON::GeneratorError");
     eCircularDatastructure = rb_path2class("JSON::CircularDatastructure");
     eNestingError = rb_path2class("JSON::NestingError");
+
     cState = rb_define_class_under(mGenerator, "State", rb_cObject);
     rb_define_alloc_func(cState, cState_s_allocate);
     rb_define_singleton_method(cState, "from_state", cState_from_state_s, 1);
     rb_define_method(cState, "initialize", cState_initialize, -1);
-
     rb_define_method(cState, "indent", cState_indent, 0);
     rb_define_method(cState, "indent=", cState_indent_set, 1);
     rb_define_method(cState, "space", cState_space, 0);
@@ -928,7 +930,7 @@ void Init_generator()
     i_create_id = rb_intern("create_id");
     i_extend = rb_intern("extend");
 #ifdef HAVE_RUBY_ENCODING_H
-    mEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
+    CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");
     i_encode = rb_intern("encode");
 #endif

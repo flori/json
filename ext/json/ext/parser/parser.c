@@ -1262,7 +1262,6 @@ static VALUE json_string_unescape(char *p, char *pe)
     while (p < pe) {
         if (*p == '\\') {
             p++;
-            if (p >= pe) return Qnil; /* raise an exception later, \ at end */
             switch (*p) {
                 case '"':
                 case '\\':
@@ -1293,7 +1292,7 @@ static VALUE json_string_unescape(char *p, char *pe)
                     if (p > pe - 4) { 
                         return Qnil;
                     } else {
-                        p = JSON_convert_UTF16_to_UTF8(result, p, pe, strictConversion);
+                        p = JSON_convert_UTF16_to_UTF8(result, p, pe);
                     }
                     break;
                 default:
@@ -1312,7 +1311,7 @@ static VALUE json_string_unescape(char *p, char *pe)
 }
 
 
-#line 1316 "parser.c"
+#line 1315 "parser.c"
 static const int JSON_string_start = 1;
 static const int JSON_string_first_final = 8;
 static const int JSON_string_error = 0;
@@ -1320,7 +1319,7 @@ static const int JSON_string_error = 0;
 static const int JSON_string_en_main = 1;
 
 
-#line 433 "parser.rl"
+#line 432 "parser.rl"
 
 
 static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result)
@@ -1329,15 +1328,15 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
 
     *result = rb_str_new("", 0);
     
-#line 1333 "parser.c"
+#line 1332 "parser.c"
 	{
 	cs = JSON_string_start;
 	}
 
-#line 441 "parser.rl"
+#line 440 "parser.rl"
     json->memo = p;
     
-#line 1341 "parser.c"
+#line 1340 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1362,7 +1361,7 @@ case 2:
 		goto st0;
 	goto st2;
 tr2:
-#line 419 "parser.rl"
+#line 418 "parser.rl"
 	{
         *result = json_string_unescape(json->memo + 1, p);
         if (NIL_P(*result)) {
@@ -1373,14 +1372,14 @@ tr2:
 			{p = (( p + 1))-1;}
 		}
 	}
-#line 430 "parser.rl"
+#line 429 "parser.rl"
 	{ p--; {p++; cs = 8; goto _out;} }
 	goto st8;
 st8:
 	if ( ++p == pe )
 		goto _test_eof8;
 case 8:
-#line 1384 "parser.c"
+#line 1383 "parser.c"
 	goto st0;
 st3:
 	if ( ++p == pe )
@@ -1456,7 +1455,7 @@ case 7:
 	_out: {}
 	}
 
-#line 443 "parser.rl"
+#line 442 "parser.rl"
 
     if (cs >= JSON_string_first_final) {
         return p + 1;
@@ -1467,7 +1466,7 @@ case 7:
 
 
 
-#line 1471 "parser.c"
+#line 1470 "parser.c"
 static const int JSON_start = 1;
 static const int JSON_first_final = 10;
 static const int JSON_error = 0;
@@ -1475,7 +1474,7 @@ static const int JSON_error = 0;
 static const int JSON_en_main = 1;
 
 
-#line 477 "parser.rl"
+#line 476 "parser.rl"
 
 
 /* 
@@ -1518,7 +1517,7 @@ inline static VALUE convert_encoding(VALUE source)
                 rb_funcall(source, i_force_encoding, 1, mEncoding_UTF_16LE);
                 source = rb_funcall(source, i_encode_bang, 1, mEncoding_UTF_8);
             } else {
-                source = rb_funcall(source, i_force_encoding, 1, mEncoding_UTF_8);
+                FORCE_UTF8(source);
             }
         } else {
             source = rb_funcall(source, i_encode, 1, mEncoding_UTF_8);
@@ -1647,16 +1646,16 @@ static VALUE cParser_parse(VALUE self)
     GET_STRUCT;
 
     
-#line 1651 "parser.c"
+#line 1650 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 648 "parser.rl"
+#line 647 "parser.rl"
     p = json->source;
     pe = p + json->len;
     
-#line 1660 "parser.c"
+#line 1659 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1712,7 +1711,7 @@ case 5:
 		goto st1;
 	goto st5;
 tr3:
-#line 466 "parser.rl"
+#line 465 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1721,7 +1720,7 @@ tr3:
     }
 	goto st10;
 tr4:
-#line 459 "parser.rl"
+#line 458 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1733,7 +1732,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1737 "parser.c"
+#line 1736 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1790,7 +1789,7 @@ case 9:
 	_out: {}
 	}
 
-#line 651 "parser.rl"
+#line 650 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;

@@ -1,9 +1,5 @@
 #include "unicode.h"
 
-#define unicode_escape(buffer, character)          \
-    snprintf(buf, 7, "\\u%04x", (unsigned int) (character)); \
-         rb_str_buf_cat(buffer, buf, 6);
-
 /*
  * Copyright 2001-2004 Unicode, Inc.
  * 
@@ -53,15 +49,6 @@ static const UTF32 offsetsFromUTF8[6] = { 0x00000000UL, 0x00003080UL, 0x000E2080
 		     0x03C82080UL, 0xFA082080UL, 0x82082080UL };
 
 /*
- * Once the bits are split out into bytes of UTF-8, this is a mask OR-ed
- * into the first byte, depending on how many bytes follow.  There are
- * as many entries in this table as there are UTF-8 sequence types.
- * (I.e., one byte sequence, two byte... etc.). Remember that sequencs
- * for *legal* UTF-8 will be 4 or fewer bytes total.
- */
-static const UTF8 firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
-
-/*
  * Utility routine to tell whether a sequence of bytes is legal UTF-8.
  * This must be called with the length pre-determined by the first byte.
  * If not calling this from ConvertUTF8to*, then the length can be set by:
@@ -98,9 +85,21 @@ inline static unsigned char isLegalUTF8(const UTF8 *source, int length)
     return 1;
 }
 
-void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string, ConversionFlags flags)
+inline static void unicode_escape(VALUE buffer, UTF16 character)
 {
-    char buf[7];
+    const char *digits = "0123456789abcdef";
+    char buf[7] = { '\\', 'u' };
+
+    buf[6] = 0; 
+    buf[2] = digits[character >> 12];
+    buf[3] = digits[(character >> 8) & 0xf];
+    buf[4] = digits[(character >> 4) & 0xf];
+    buf[5] = digits[character & 0xf];
+    rb_str_buf_cat(buffer, buf, 6);
+}
+
+inline void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string)
+{
     const UTF8* source = (UTF8 *) RSTRING_PTR(string);
     const UTF8* sourceEnd = source + RSTRING_LEN(string);
 
@@ -131,45 +130,54 @@ void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string, ConversionFlags flags
         if (ch <= UNI_MAX_BMP) { /* Target is a character <= 0xFFFF */
             /* UTF-16 surrogate values are illegal in UTF-32 */
             if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
-                if (flags == strictConversion) {
-                    source -= (extraBytesToRead+1); /* return to the illegal value itself */
-                    rb_raise(rb_path2class("JSON::GeneratorError"),
+#if UNI_STRICT_CONVERSION
+                source -= (extraBytesToRead+1); /* return to the illegal value itself */
+                rb_raise(rb_path2class("JSON::GeneratorError"),
                         "source sequence is illegal/malformed utf-8");
-                } else {
-                    unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
-                }
+#else
+                unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
+#endif
             } else {
                 /* normal case */
-                if (ch == '"') {
-                    rb_str_buf_cat2(buffer, "\\\"");
-                } else if (ch == '\\') {
-                    rb_str_buf_cat2(buffer, "\\\\");
-                } else if (ch >= 0x20 && ch <= 0x7f) {
-                    rb_str_buf_cat(buffer, (char *) source - 1, 1);
-                } else if (ch == '\n') {
-                    rb_str_buf_cat2(buffer, "\\n");
-                } else if (ch == '\r') {
-                    rb_str_buf_cat2(buffer, "\\r");
-                } else if (ch == '\t') {
-                    rb_str_buf_cat2(buffer, "\\t");
-                } else if (ch == '\f') {
-                    rb_str_buf_cat2(buffer, "\\f");
-                } else if (ch == '\b') {
-                    rb_str_buf_cat2(buffer, "\\b");
-                } else if (ch < 0x20) {
-                    unicode_escape(buffer, (UTF16) ch);
-                } else {
-                    unicode_escape(buffer, (UTF16) ch);
+                switch(ch) {
+                    case '\n':
+                        rb_str_buf_cat2(buffer, "\\n");
+                        break;
+                    case '\r':
+                        rb_str_buf_cat2(buffer, "\\r");
+                        break;
+                    case '\\':
+                        rb_str_buf_cat2(buffer, "\\\\");
+                        break;
+                    case '"':
+                        rb_str_buf_cat2(buffer, "\\\"");
+                        break;
+                    case '\t':
+                        rb_str_buf_cat2(buffer, "\\t");
+                        break;
+                    case '\f':
+                        rb_str_buf_cat2(buffer, "\\f");
+                        break;
+                    case '\b':
+                        rb_str_buf_cat2(buffer, "\\b");
+                        break;
+                    default:
+                        if (ch >= 0x20 && ch <= 0x7f) {
+                            rb_str_buf_cat(buffer, (char *) source - 1, 1);
+                        } else {
+                            unicode_escape(buffer, (UTF16) ch);
+                        }
+                        break;
                 }
             }
         } else if (ch > UNI_MAX_UTF16) {
-            if (flags == strictConversion) {
-                source -= (extraBytesToRead+1); /* return to the start */
-                rb_raise(rb_path2class("JSON::GeneratorError"),
-                        "source sequence is illegal/malformed utf8");
-            } else {
-                unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
-            }
+#if UNI_STRICT_CONVERSION
+            source -= (extraBytesToRead+1); /* return to the start */
+            rb_raise(rb_path2class("JSON::GeneratorError"),
+                    "source sequence is illegal/malformed utf8");
+#else
+            unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
+#endif
         } else {
             /* target is a character in range 0xFFFF - 0x10FFFF. */
             ch -= halfBase;

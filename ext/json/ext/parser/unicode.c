@@ -23,32 +23,6 @@
  */
 
 /*
- * Index into the table below with the first byte of a UTF-8 sequence to
- * get the number of trailing bytes that are supposed to follow it.
- * Note that *legal* UTF-8 values can't have 4 or 5-bytes. The table is
- * left as-is for anyone who may want to do such conversion, which was
- * allowed in earlier algorithms.
- */
-static const char trailingBytesForUTF8[256] = {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5
-};
-
-/*
- * Magic values subtracted from a buffer value during UTF8 conversion.
- * This table contains as many values as there might be trailing bytes
- * in a UTF-8 sequence.
- */
-static const UTF32 offsetsFromUTF8[6] = { 0x00000000UL, 0x00003080UL, 0x000E2080UL, 
-             0x03C82080UL, 0xFA082080UL, 0x82082080UL };
-
-/*
  * Once the bits are split out into bytes of UTF-8, this is a mask OR-ed
  * into the first byte, depending on how many bytes follow.  There are
  * as many entries in this table as there are UTF-8 sequence types.
@@ -57,34 +31,61 @@ static const UTF32 offsetsFromUTF8[6] = { 0x00000000UL, 0x00003080UL, 0x000E2080
  */
 static const UTF8 firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
 
+static const char digit_values[256] = { 
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1,
+    -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1
+};
+
 char *JSON_convert_UTF16_to_UTF8 (
         VALUE buffer,
         char *source,
-        char *sourceEnd,
-        ConversionFlags flags)
+        char *sourceEnd)
 {
     UTF16 *tmp, *tmpPtr, *tmpEnd;
     char buf[5];
-    long n = 0, i;
-    char *p = source - 1;
+    long n = 0;
+    char failed = 1, c, *p = source - 1;
 
     while (p < sourceEnd && p[0] == '\\' && p[1] == 'u') {
         p += 6;
         n++;
     }
     p = source + 1;
-    buf[4] = 0;
     tmpPtr = tmp = ALLOC_N(UTF16, n);
     tmpEnd = tmp + n;
-    for (i = 0; i < n; i++) {
-        buf[0] = *p++;
-        buf[1] = *p++;
-        buf[2] = *p++;
-        buf[3] = *p++;
-        tmpPtr[i] = (UTF16)strtol(buf, NULL, 16);
+    while (tmpPtr < tmpEnd) {
+        c = digit_values[(unsigned char) *p++];
+        failed *= c;
+        *tmpPtr = c << 12;
+        c = digit_values[(unsigned char) *p++];
+        failed *= c;
+        *tmpPtr |= c << 8;
+        c = digit_values[(unsigned char) *p++];
+        failed *= c;
+        *tmpPtr |= c << 4;
+        c = digit_values[(unsigned char) *p++];
+        failed *= c;
+        *tmpPtr++ |= c;
         p += 2;
     }
+    if (failed < 0) {
+        rb_raise(rb_path2class("JSON::ParserError"),
+                "illegal \\uXXXX unicode value near %s", source);
+    }
 
+    tmpPtr = tmp;
     while (tmpPtr < tmpEnd) {
         UTF32 ch;
         unsigned short bytesToWrite = 0;
@@ -102,23 +103,12 @@ char *JSON_convert_UTF16_to_UTF8 (
                     ch = ((ch - UNI_SUR_HIGH_START) << halfShift)
                         + (ch2 - UNI_SUR_LOW_START) + halfBase;
                     ++tmpPtr;
-                } else if (flags == strictConversion) { /* it's an unpaired high surrogate */
-                    ruby_xfree(tmp);
-                    rb_raise(rb_path2class("JSON::ParserError"),
-                            "\\uXXXX is illegal/malformed utf-16 near %s", source);
                 }
             } else { /* We don't have the 16 bits following the high surrogate. */
                 ruby_xfree(tmp);
                 rb_raise(rb_path2class("JSON::ParserError"),
                     "partial character in source, but hit end near %s", source);
                 break;
-            }
-        } else if (flags == strictConversion) {
-            /* UTF-16 surrogate values are illegal in UTF-32 */
-            if (ch >= UNI_SUR_LOW_START && ch <= UNI_SUR_LOW_END) {
-                ruby_xfree(tmp);
-                rb_raise(rb_path2class("JSON::ParserError"),
-                    "\\uXXXX is illegal/malformed utf-16 near %s", source);
             }
         }
         /* Figure out how many bytes the result will require */
@@ -149,6 +139,6 @@ char *JSON_convert_UTF16_to_UTF8 (
         rb_str_buf_cat(buffer, p, bytesToWrite);
     }
     ruby_xfree(tmp);
-    source += 5 + (n - 1) * 6;
+    source += 6 * n - 1;
     return source;
 }
