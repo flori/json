@@ -221,9 +221,9 @@ if $0 == __FILE__
     ParserBenchmarkYajl.run
   else
     system "#{RAKE_PATH} clean"
-    system "#{RUBY_PATH} #$0 yaml"
-    system "#{RUBY_PATH} #$0 rails"
-    system "#{RUBY_PATH} #$0 pure"
+    #system "#{RUBY_PATH} #$0 yaml"
+    #system "#{RUBY_PATH} #$0 rails"
+    #system "#{RUBY_PATH} #$0 pure"
     system "#{RAKE_PATH} compile_ext"
     system "#{RUBY_PATH} #$0 ext"
     system "#{RUBY_PATH} #$0 yajl"
@@ -231,10 +231,10 @@ if $0 == __FILE__
       output_filename File.join(File.dirname(__FILE__), 'data', 'ParserBenchmarkComparison.log')
 
       benchmark ParserBenchmarkExt,   :parser, :load => yes
-      benchmark ParserBenchmarkPure,  :parser, :load => yes
-      benchmark ParserBenchmarkYAML,  :parser, :load => yes
-      benchmark ParserBenchmarkRails, :parser, :load => yes
-      benchmark ParserBenchmarkYajl, :parser, :load => yes
+      #benchmark ParserBenchmarkPure,  :parser, :load => yes
+      #benchmark ParserBenchmarkYAML,  :parser, :load => yes
+      #benchmark ParserBenchmarkRails, :parser, :load => yes
+      benchmark ParserBenchmarkYajl,  :parser, :load => yes
     end
   end
 end

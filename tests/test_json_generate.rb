@@ -91,13 +91,13 @@ EOT
     #assert s.check_circular
     h = { 1=>2 }
     h[3] = h
-    assert_raises(JSON::CircularDatastructure) {  generate(h) }
-    assert_raises(JSON::CircularDatastructure) {  generate(h, s) }
+    assert_raises(JSON::NestingError) {  generate(h) }
+    assert_raises(JSON::NestingError) {  generate(h, s) }
     s = JSON.state.new(:check_circular => true)
     #assert s.check_circular
     a = [ 1, 2 ]
     a << a
-    assert_raises(JSON::CircularDatastructure) {  generate(a, s) }
+    assert_raises(JSON::NestingError) {  generate(a, s) }
   end
 
   def test_allow_nan

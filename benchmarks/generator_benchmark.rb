@@ -186,20 +186,20 @@ if $0 == __FILE__
     system "#{RAKE_PATH} clean"
     system "#{RUBY_PATH} #$0 rails"
     system "#{RUBY_PATH} #$0 pure"
-    system "#{RAKE_PATH} compile_ext"
-    system "#{RUBY_PATH} #$0 ext"
-    system "#{RUBY_PATH} #$0 yajl"
+#    system "#{RAKE_PATH} compile_ext"
+#    system "#{RUBY_PATH} #$0 ext"
+#    system "#{RUBY_PATH} #$0 yajl"
     Bullshit.compare do
       output_filename File.join(File.dirname(__FILE__), 'data', 'GeneratorBenchmarkComparison.log')
 
-      benchmark GeneratorBenchmarkExt,    :generator_fast,    :load => yes
-      benchmark GeneratorBenchmarkExt,    :generator_safe,    :load => yes
-      benchmark GeneratorBenchmarkExt,    :generator_pretty,  :load => yes
+#      benchmark GeneratorBenchmarkExt,    :generator_fast,    :load => yes
+#      benchmark GeneratorBenchmarkExt,    :generator_safe,    :load => yes
+#      benchmark GeneratorBenchmarkExt,    :generator_pretty,  :load => yes
       benchmark GeneratorBenchmarkPure,   :generator_fast,    :load => yes
       benchmark GeneratorBenchmarkPure,   :generator_safe,    :load => yes
       benchmark GeneratorBenchmarkPure,   :generator_pretty,  :load => yes
       benchmark GeneratorBenchmarkRails,  :generator,         :load => yes
-      benchmark GeneratorBenchmarkYajl,   :generator,         :load => yes
+#      benchmark GeneratorBenchmarkYajl,   :generator,         :load => yes
     end
   end
 end

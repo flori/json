@@ -158,12 +158,14 @@ desc "Benchmarking parser"
 task :benchmark_parser do
   ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
   myruby 'benchmarks/parser_benchmark.rb'
+  myruby 'benchmarks/parser2_benchmark.rb'
 end
 
 desc "Benchmarking generator"
 task :benchmark_generator do
   ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
   myruby 'benchmarks/generator_benchmark.rb'
+  myruby 'benchmarks/generator2_benchmark.rb'
 end
 
 desc "Benchmarking library"

@@ -182,22 +182,22 @@ if $0 == __FILE__
     Generator2BenchmarkYajl.run
   else
     system "#{RAKE_PATH} clean"
-#    system "#{RUBY_PATH} #$0 rails"
-#    system "#{RUBY_PATH} #$0 pure"
-    system "#{RAKE_PATH} compile_ext"
-    system "#{RUBY_PATH} #$0 ext"
-    system "#{RUBY_PATH} #$0 yajl"
+    system "#{RUBY_PATH} #$0 rails"
+    system "#{RUBY_PATH} #$0 pure"
+#    system "#{RAKE_PATH} compile_ext"
+#    system "#{RUBY_PATH} #$0 ext"
+#    system "#{RUBY_PATH} #$0 yajl"
     Bullshit.compare do
       output_filename File.join(File.dirname(__FILE__), 'data', 'Generator2BenchmarkComparison.log')
 
-      benchmark Generator2BenchmarkExt,    :generator_fast,    :load => yes
-      benchmark Generator2BenchmarkExt,    :generator_safe,    :load => yes
-      benchmark Generator2BenchmarkExt,    :generator_pretty,  :load => yes
-#      benchmark Generator2BenchmarkPure,   :generator_fast,    :load => yes
-#      benchmark Generator2BenchmarkPure,   :generator_safe,    :load => yes
-#      benchmark Generator2BenchmarkPure,   :generator_pretty,  :load => yes
-#      benchmark Generator2BenchmarkRails,  :generator,         :load => yes
-      benchmark Generator2BenchmarkYajl,   :generator,         :load => yes
+#      benchmark Generator2BenchmarkExt,    :generator_fast,    :load => yes
+#      benchmark Generator2BenchmarkExt,    :generator_safe,    :load => yes
+#      benchmark Generator2BenchmarkExt,    :generator_pretty,  :load => yes
+      benchmark Generator2BenchmarkPure,   :generator_fast,    :load => yes
+      benchmark Generator2BenchmarkPure,   :generator_safe,    :load => yes
+      benchmark Generator2BenchmarkPure,   :generator_pretty,  :load => yes
+      benchmark Generator2BenchmarkRails,  :generator,         :load => yes
+#      benchmark Generator2BenchmarkYajl,   :generator,         :load => yes
     end
   end
 end
