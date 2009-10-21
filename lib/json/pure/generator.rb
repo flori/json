@@ -120,7 +120,6 @@ module JSON
         #   generated, otherwise an exception is thrown, if these values are
         #   encountered. This options defaults to false.
         def initialize(opts = {})
-          @seen = {}
           @indent         = ''
           @space          = ''
           @space_before   = ''
@@ -171,23 +170,6 @@ module JSON
           @allow_nan
         end
 
-        # Returns _true_, if _object_ was already seen during this generating
-        # run. 
-        def seen?(object)
-          @seen.key?(object.__id__)
-        end
-
-        # Remember _object_, to find out if it was already encountered (if a
-        # cyclic data structure is if a cyclic data structure is rendered). 
-        def remember(object)
-          @seen[object.__id__] = true
-        end
-
-        # Forget _object_ for this generating run.
-        def forget(object)
-          @seen.delete object.__id__
-        end
-
         # Configure this State instance with the Hash _opts_, and return
         # itself.
         def configure(opts)
@@ -217,6 +199,15 @@ module JSON
           end
           result
         end
+
+        # XXX
+        def encode(obj)
+          result = obj.to_json(self)
+          if result !~ /\A\s*(?:\[.*\]|\{.*\})\s*\Z/m
+            raise GeneratorError, "only generation of JSON objects or arrays allowed"
+          end
+          result
+        end
       end
 
       module GeneratorMethods
@@ -237,24 +228,11 @@ module JSON
             if state
               state = JSON.state.from_state(state)
               state.check_max_nesting(depth)
-              json_check_circular(state) { json_transform(state, depth) }
-            else
-              json_transform(state, depth)
             end
+            json_transform(state, depth)
           end
 
           private
-
-          def json_check_circular(state)
-            if state and state.check_circular?
-              state.seen?(self) and raise JSON::CircularDatastructure,
-                  "circular data structures not supported!"
-              state.remember self
-            end
-            yield
-          ensure
-            state and state.forget self
-          end
 
           def json_shift(state, depth)
             state and not state.object_nl.empty? or return ''
@@ -267,16 +245,22 @@ module JSON
               delim << state.object_nl
               result = '{'
               result << state.object_nl
-              result << map { |key,value|
-                s = json_shift(state, depth + 1)
-                s << key.to_s.to_json(state, depth + 1)
-                s << state.space_before
-                s << ':'
-                s << state.space
-                s << value.to_json(state, depth + 1)
-              }.join(delim)
+              depth += 1
+              first = true
+              indent = state && !state.object_nl.empty?
+              each { |key,value|
+                result << delim unless first
+                result << state.indent * depth if indent
+                result << key.to_s.to_json(state, depth)
+                result << state.space_before
+                result << ':'
+                result << state.space
+                result << value.to_json(state, depth)
+                first = false
+              }
+              depth -= 1
               result << state.object_nl
-              result << json_shift(state, depth)
+              result << state.indent * depth if indent if indent
               result << '}'
             else
               result = '{'
@@ -299,29 +283,11 @@ module JSON
             if state
               state = JSON.state.from_state(state)
               state.check_max_nesting(depth)
-              json_check_circular(state) { json_transform(state, depth) }
-            else
-              json_transform(state, depth)
             end
+            json_transform(state, depth)
           end
 
           private
-
-          def json_check_circular(state)
-            if state and state.check_circular?
-              state.seen?(self) and raise JSON::CircularDatastructure,
-                "circular data structures not supported!"
-              state.remember self
-            end
-            yield
-          ensure
-            state and state.forget self
-          end
-
-          def json_shift(state, depth)
-            state and not state.array_nl.empty? or return ''
-            state.indent * depth
-          end
 
           def json_transform(state, depth)
             delim = ','
@@ -329,11 +295,18 @@ module JSON
               delim << state.array_nl
               result = '['
               result << state.array_nl
-              result << map { |value|
-                json_shift(state, depth + 1) << value.to_json(state, depth + 1)
-              }.join(delim)
+              depth += 1
+              first = true
+              indent = state && !state.array_nl.empty?
+              each { |value|
+                result << delim unless first
+                result << state.indent * depth if indent
+                result << value.to_json(state, depth)
+                first = false
+              }
+              depth -= 1
               result << state.array_nl
-              result << json_shift(state, depth) 
+              result << state.indent * depth if indent
               result << ']'
             else
               '[' << map { |value| value.to_json }.join(delim) << ']'

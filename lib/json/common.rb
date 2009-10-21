@@ -91,14 +91,14 @@ module JSON
   # deep.
   class NestingError < ParserError; end
 
+  # :stopdoc:
+  class CircularDatastructure < NestingError; end
+  # :startdoc:
+
   # This exception is raised, if a generator or unparser error occurs.
   class GeneratorError < JSONError; end
   # For backwards compatibility
   UnparserError = GeneratorError
-
-  # If a circular data structure is encountered while unparsing
-  # this exception is raised.
-  class CircularDatastructure < GeneratorError; end
 
   # This exception is raised, if the required unicode support is missing on the
   # system. Usually this means, that the iconv library is not installed.
@@ -162,8 +162,6 @@ module JSON
   # * *space_before*: a string that is put before a : pair delimiter (default: ''),
   # * *object_nl*: a string that is put at the end of a JSON object (default: ''), 
   # * *array_nl*: a string that is put at the end of a JSON array (default: ''),
-  # * *check_circular*: true if checking for circular data structures
-  #   should be done (the default), false otherwise.
   # * *allow_nan*: true if NaN, Infinity, and -Infinity should be
   #   generated, otherwise an exception is thrown, if these values are
   #   encountered. This options defaults to false.
@@ -180,11 +178,7 @@ module JSON
     else
       state = State.new
     end
-    result = obj.to_json(state)
-    if result !~ /\A\s*(?:\[.*\]|\{.*\})\s*\Z/m
-      raise GeneratorError, "only generation of JSON objects or arrays allowed"
-    end
-    result
+    state.encode(obj)
   end
 
   # :stopdoc:
@@ -221,11 +215,10 @@ module JSON
   # generate method for a more detailed explanation.
   def pretty_generate(obj, opts = nil)
     state = JSON.state.new(
-      :indent     => '  ',
-      :space      => ' ',
-      :object_nl  => "\n",
-      :array_nl   => "\n",
-      :check_circular => true
+      :indent         => '  ',
+      :space          => ' ',
+      :object_nl      => "\n",
+      :array_nl       => "\n"
     )
     if opts
       if opts.respond_to? :to_hash
@@ -237,11 +230,7 @@ module JSON
       end
       state.configure(opts)
     end
-    result = obj.to_json(state)
-    if result !~ /\A\s*(?:\[.*\]|\{.*\})\s*\Z/m
-      raise GeneratorError, "only generation of JSON objects or arrays allowed"
-    end
-    result
+    state.encode(obj)
   end
 
   # :stopdoc:
