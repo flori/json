@@ -178,7 +178,7 @@ module JSON
     else
       state = State.new
     end
-    state.encode(obj)
+    state.generate(obj)
   end
 
   # :stopdoc:
@@ -230,7 +230,7 @@ module JSON
       end
       state.configure(opts)
     end
-    state.encode(obj)
+    state.generate(obj)
   end
 
   # :stopdoc:

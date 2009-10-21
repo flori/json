@@ -8,6 +8,7 @@
 #endif
 #include "unicode.h"
 #include <math.h>
+#include "re.h"
 
 #ifndef RHASH_TBL
 #define RHASH_TBL(hsh) (RHASH(hsh)->tbl)
@@ -39,7 +40,7 @@ static ID i_encoding, i_encode;
 static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
              mHash, mArray, mInteger, mFloat, mString, mString_Extend,
              mTrueClass, mFalseClass, mNilClass, eGeneratorError,
-             eCircularDatastructure, eNestingError;
+             eNestingError, CRegexp_MULTILINE;
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_check_circular, i_max_nesting,
@@ -178,10 +179,6 @@ static VALUE mHash_to_json(int argc, VALUE *argv, VALUE self)
         check_max_nesting(state, depth);
         if (state->check_circular) {
             VALUE self_id = rb_obj_id(self);
-            if (RTEST(rb_hash_aref(state->seen, self_id))) {
-                rb_raise(eCircularDatastructure,
-                        "circular data structures not supported!");
-            }
             rb_hash_aset(state->seen, self_id, Qtrue);
             result = mHash_json_transfrom(self, Vstate, LONG2FIX(depth));
             rb_hash_delete(state->seen, self_id);
@@ -214,10 +211,6 @@ inline static VALUE mArray_json_transfrom(VALUE self, VALUE Vstate, VALUE Vdepth
         rb_str_buf_append(result, state->array_nl);
         for (i = 0;  i < len; i++) {
             VALUE element = RARRAY_PTR(self)[i];
-            if (RTEST(rb_hash_aref(state->seen, rb_obj_id(element)))) {
-                rb_raise(eCircularDatastructure,
-                        "circular data structures not supported!");
-            }
             OBJ_INFECT(result, element);
             if (i > 0) rb_str_buf_append(result, delim);
             rb_str_buf_append(result, shift);
@@ -586,6 +579,23 @@ static VALUE cState_to_h(VALUE self)
     return result;
 }
 
+/*
+ * call-seq: generate(obj)
+ *
+ * XXX
+ */
+static VALUE cState_generate(VALUE self, VALUE obj)
+{
+    VALUE result = rb_funcall(obj, i_to_json, 1, self);
+    VALUE re, args[2];
+    args[0] = rb_str_new2("\\A\\s*(?:\\[.*\\]|\\{.*\\})\\s*\\Z");
+    args[1] = CRegexp_MULTILINE;
+    re = rb_class_new_instance(2, args, rb_cRegexp);
+    if (NIL_P(rb_reg_match(re, result))) {
+        rb_raise(eGeneratorError, "only generation of JSON objects or arrays allowed");
+    }
+    return result;
+}
 
 /*
  * call-seq: new(opts = {})
@@ -817,40 +827,6 @@ static VALUE cState_allow_nan_p(VALUE self)
 }
 
 /*
- * call-seq: seen?(object)
- *
- * Returns _true_, if _object_ was already seen during this generating run. 
- */
-static VALUE cState_seen_p(VALUE self, VALUE object)
-{
-    GET_STATE(self);
-    return rb_hash_aref(state->seen, rb_obj_id(object));
-}
-
-/*
- * call-seq: remember(object)
- *
- * Remember _object_, to find out if it was already encountered (if a cyclic
- * data structure is rendered). 
- */
-static VALUE cState_remember(VALUE self, VALUE object)
-{
-    GET_STATE(self);
-    return rb_hash_aset(state->seen, rb_obj_id(object), Qtrue);
-}
-
-/*
- * call-seq: forget(object)
- *
- * Forget _object_ for this generating run.
- */
-static VALUE cState_forget(VALUE self, VALUE object)
-{
-    GET_STATE(self);
-    return rb_hash_delete(state->seen, rb_obj_id(object));
-}
-
-/*
  *
  */
 void Init_generator()
@@ -862,7 +838,6 @@ void Init_generator()
     mGenerator = rb_define_module_under(mExt, "Generator");
 
     eGeneratorError = rb_path2class("JSON::GeneratorError");
-    eCircularDatastructure = rb_path2class("JSON::CircularDatastructure");
     eNestingError = rb_path2class("JSON::NestingError");
 
     cState = rb_define_class_under(mGenerator, "State", rb_cObject);
@@ -883,11 +858,9 @@ void Init_generator()
     rb_define_method(cState, "max_nesting", cState_max_nesting, 0);
     rb_define_method(cState, "max_nesting=", cState_max_nesting_set, 1);
     rb_define_method(cState, "allow_nan?", cState_allow_nan_p, 0);
-    rb_define_method(cState, "seen?", cState_seen_p, 1);
-    rb_define_method(cState, "remember", cState_remember, 1);
-    rb_define_method(cState, "forget", cState_forget, 1);
     rb_define_method(cState, "configure", cState_configure, 1);
     rb_define_method(cState, "to_h", cState_to_h, 0);
+    rb_define_method(cState, "generate", cState_generate, 1);
 
     mGeneratorMethods = rb_define_module_under(mGenerator, "GeneratorMethods");
     mObject = rb_define_module_under(mGeneratorMethods, "Object");
@@ -914,6 +887,7 @@ void Init_generator()
     mNilClass = rb_define_module_under(mGeneratorMethods, "NilClass");
     rb_define_method(mNilClass, "to_json", mNilClass_to_json, -1);
 
+    CRegexp_MULTILINE = rb_const_get(rb_cRegexp, rb_intern("MULTILINE"));
     i_to_s = rb_intern("to_s");
     i_to_json = rb_intern("to_json");
     i_new = rb_intern("new");

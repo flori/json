@@ -201,7 +201,7 @@ module JSON
         end
 
         # XXX
-        def encode(obj)
+        def generate(obj)
           result = obj.to_json(self)
           if result !~ /\A\s*(?:\[.*\]|\{.*\})\s*\Z/m
             raise GeneratorError, "only generation of JSON objects or arrays allowed"
