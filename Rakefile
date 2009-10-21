@@ -18,7 +18,7 @@ include Config
 MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
 PKG_VERSION       = File.read('VERSION').chomp
-PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile/).exclude(/\.(so|bundle|o|#{CONFIG['DLEXT']})$/)
+PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\./).exclude(/\.(so|bundle|o|#{CONFIG['DLEXT']})$/)
 EXT_ROOT_DIR      = 'ext/json/ext'
 EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
 EXT_PARSER_DL     = "#{EXT_ROOT_DIR}/parser.#{CONFIG['DLEXT']}"
