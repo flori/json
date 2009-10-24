@@ -8,7 +8,13 @@
 #endif
 #include "unicode.h"
 #include <math.h>
+#if HAVE_RUBY_RE_H
+#include "ruby/re.h"
+#endif
+#if HAVE_RE_H
 #include "re.h"
+#endif
+
 
 #ifndef RHASH_TBL
 #define RHASH_TBL(hsh) (RHASH(hsh)->tbl)
