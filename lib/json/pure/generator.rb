@@ -112,10 +112,9 @@ module JSON
         # * *space_before*: a string that is put before a : pair delimiter (default: ''),
         # * *object_nl*: a string that is put at the end of a JSON object (default: ''), 
         # * *array_nl*: a string that is put at the end of a JSON array (default: ''),
-        # * *check_circular*: true if checking for circular data structures
-        #   should be done (the default), false otherwise.
-        # * *check_circular*: true if checking for circular data structures
-        #   should be done, false (the default) otherwise.
+        # * *check_circular*: is deprecated now, use the :max_nesting option instead,
+        # * *max_nesting*: sets the maximum level of data structure nesting in
+        #   the generated JSON, max_nesting = 0 if no maximum should be checked.
         # * *allow_nan*: true if NaN, Infinity, and -Infinity should be
         #   generated, otherwise an exception is thrown, if these values are
         #   encountered. This options defaults to false.
@@ -125,7 +124,6 @@ module JSON
           @space_before   = ''
           @object_nl      = ''
           @array_nl       = ''
-          @check_circular = true
           @allow_nan      = false
           configure opts
         end
@@ -158,10 +156,10 @@ module JSON
             raise NestingError, "nesting of #{current_nesting} is too deep"
         end
 
-        # Returns true, if circular data structures should be checked,
+        # Returns true, if circular data structures are checked,
         # otherwise returns false.
         def check_circular?
-          @check_circular
+          !!@max_nesting.zero?
         end
 
         # Returns true if NaN, Infinity, and -Infinity should be considered as
@@ -178,7 +176,6 @@ module JSON
           @space_before   = opts[:space_before] if opts.key?(:space_before)
           @object_nl      = opts[:object_nl] if opts.key?(:object_nl)
           @array_nl       = opts[:array_nl] if opts.key?(:array_nl)
-          @check_circular = !!opts[:check_circular] if opts.key?(:check_circular)
           @allow_nan      = !!opts[:allow_nan] if opts.key?(:allow_nan)
           if !opts.key?(:max_nesting) # defaults to 19
             @max_nesting = 19

@@ -1,5 +1,8 @@
+#ifndef _FBUFFER_H_
+#define _FBUFFER_H_
+
 typedef struct FBufferStruct {
-    unsigned char *ptr;
+    char *ptr;
     unsigned int len;
     unsigned int capa;
 } FBuffer;
@@ -10,8 +13,10 @@ typedef struct FBufferStruct {
 
 #define FBUFFER_LEN(fb) (fb->len)
 
-FBuffer *fbuffer_alloc();
-void fbuffer_free(FBuffer *fb);
+inline FBuffer *fbuffer_alloc();
+inline void fbuffer_free(FBuffer *fb);
 inline void fbuffer_inc_capa(FBuffer *fb, unsigned int requested);
-inline void fbuffer_append(FBuffer *fb, const unsigned char *newstr, unsigned int len);
-inline void fbuffer_append_char(FBuffer *fb, const unsigned char newchr);
+inline void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len);
+inline void fbuffer_append_char(FBuffer *fb, const char newchr);
+
+#endif

@@ -1,4 +1,5 @@
 #include "unicode.h"
+#include "fbuffer.h"
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -85,7 +86,7 @@ inline static unsigned char isLegalUTF8(const UTF8 *source, int length)
     return 1;
 }
 
-inline static void unicode_escape(VALUE buffer, UTF16 character)
+inline static void unicode_escape(FBuffer *buffer, UTF16 character)
 {
     const char *digits = "0123456789abcdef";
     char buf[7] = { '\\', 'u' };
@@ -95,10 +96,10 @@ inline static void unicode_escape(VALUE buffer, UTF16 character)
     buf[3] = digits[(character >> 8) & 0xf];
     buf[4] = digits[(character >> 4) & 0xf];
     buf[5] = digits[character & 0xf];
-    rb_str_buf_cat(buffer, buf, 6);
+    fbuffer_append(buffer, buf, 6);
 }
 
-inline void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string)
+inline void JSON_convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
 {
     const UTF8* source = (UTF8 *) RSTRING_PTR(string);
     const UTF8* sourceEnd = source + RSTRING_LEN(string);
@@ -141,29 +142,29 @@ inline void JSON_convert_UTF8_to_JSON(VALUE buffer, VALUE string)
                 /* normal case */
                 switch(ch) {
                     case '\n':
-                        rb_str_buf_cat2(buffer, "\\n");
+                        fbuffer_append(buffer, "\\n", 2);
                         break;
                     case '\r':
-                        rb_str_buf_cat2(buffer, "\\r");
+                        fbuffer_append(buffer, "\\r", 2);
                         break;
                     case '\\':
-                        rb_str_buf_cat2(buffer, "\\\\");
+                        fbuffer_append(buffer, "\\\\", 2);
                         break;
                     case '"':
-                        rb_str_buf_cat2(buffer, "\\\"");
+                        fbuffer_append(buffer, "\\\"", 2);
                         break;
                     case '\t':
-                        rb_str_buf_cat2(buffer, "\\t");
+                        fbuffer_append(buffer, "\\t", 2);
                         break;
                     case '\f':
-                        rb_str_buf_cat2(buffer, "\\f");
+                        fbuffer_append(buffer, "\\f", 2);
                         break;
                     case '\b':
-                        rb_str_buf_cat2(buffer, "\\b");
+                        fbuffer_append(buffer, "\\b", 2);
                         break;
                     default:
                         if (ch >= 0x20 && ch <= 0x7f) {
-                            rb_str_buf_cat(buffer, (char *) source - 1, 1);
+                            fbuffer_append_char(buffer, ch);
                         } else {
                             unicode_escape(buffer, (UTF16) ch);
                         }

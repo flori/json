@@ -193,12 +193,24 @@ module JSON
   #
   # *WARNING*: Be careful not to pass any Ruby data structures with circles as
   # _obj_ argument, because this will cause JSON to go into an infinite loop.
-  def fast_generate(obj)
-    result = obj.to_json(nil)
-    if result !~ /\A(?:\[.*\]|\{.*\})\Z/
-      raise GeneratorError, "only generation of JSON objects or arrays allowed"
+  def fast_generate(obj, opts = nil)
+    state = JSON.state.new(
+      :indent         => '',
+      :space          => '',
+      :object_nl      => "",
+      :array_nl       => ""
+    )
+    if opts
+      if opts.respond_to? :to_hash
+        opts = opts.to_hash
+      elsif opts.respond_to? :to_h
+        opts = opts.to_h
+      else
+        raise TypeError, "can't convert #{opts.class} into Hash"
+      end
+      state.configure(opts)
     end
-    result
+    state.generate(obj)
   end
 
   # :stopdoc:
