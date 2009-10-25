@@ -116,7 +116,7 @@ static int hash_to_json_state_i(VALUE key, VALUE value, VALUE Vstate)
     return ST_CONTINUE;
 }
 
-inline static VALUE mHash_json_transfrom(VALUE self, VALUE Vstate, VALUE Vdepth) {
+inline static VALUE mHash_json_transform(VALUE self, VALUE Vstate, VALUE Vdepth) {
     long depth, len = RHASH_SIZE(self);
     VALUE result;
     GET_STATE(Vstate);
@@ -181,14 +181,14 @@ static VALUE mHash_to_json(int argc, VALUE *argv, VALUE self)
     } else {
         GET_STATE(Vstate);
         check_max_nesting(state, depth);
-        result = mHash_json_transfrom(self, Vstate, LONG2FIX(depth));
+        result = mHash_json_transform(self, Vstate, LONG2FIX(depth));
     }
     OBJ_INFECT(result, self);
     FORCE_UTF8(result);
     return result;
 }
 
-inline static VALUE mArray_json_transfrom(VALUE self, VALUE Vstate, VALUE Vdepth) {
+inline static VALUE mArray_json_transform(VALUE self, VALUE Vstate, VALUE Vdepth) {
     long i, len = RARRAY_LEN(self);
     VALUE shift, result;
     long depth = NIL_P(Vdepth) ? 0 : FIX2LONG(Vdepth);
@@ -248,7 +248,7 @@ static VALUE mArray_to_json(int argc, VALUE *argv, VALUE self) {
         }
         rb_str_buf_cat2(result, "]");
     } else {
-        result = mArray_json_transfrom(self, Vstate, Vdepth);
+        result = mArray_json_transform(self, Vstate, Vdepth);
     }
     OBJ_INFECT(result, self);
     FORCE_UTF8(result);
