@@ -99,7 +99,7 @@ inline static void unicode_escape(FBuffer *buffer, UTF16 character)
     fbuffer_append(buffer, buf, 6);
 }
 
-inline void JSON_convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
+inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
 {
     const UTF8* source = (UTF8 *) RSTRING_PTR(string);
     const UTF8* sourceEnd = source + RSTRING_LEN(string);

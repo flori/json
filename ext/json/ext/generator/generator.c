@@ -53,6 +53,8 @@ typedef struct JSON_Generator_StateStruct {
     VALUE space_before;
     VALUE object_nl;
     VALUE array_nl;
+    FBuffer *delim;
+    FBuffer *delim2;
     long max_nesting;
     int flag;
     int allow_nan;
@@ -274,6 +276,12 @@ static void State_mark(JSON_Generator_State *state)
     rb_gc_mark_maybe(state->array_nl);
 }
 
+static void State_free(JSON_Generator_State *state) {
+    if (state->delim) fbuffer_free(state->delim);
+    if (state->delim2) fbuffer_free(state->delim2);
+    ruby_xfree(state);
+}
+
 static JSON_Generator_State *State_allocate()
 {
     JSON_Generator_State *state = ALLOC(JSON_Generator_State);
@@ -283,7 +291,7 @@ static JSON_Generator_State *State_allocate()
 static VALUE cState_s_allocate(VALUE klass)
 {
     JSON_Generator_State *state = State_allocate();
-    return Data_Wrap_Struct(klass, State_mark, -1, state);
+    return Data_Wrap_Struct(klass, State_mark, State_free, state);
 }
 
 /*
@@ -370,21 +378,34 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
         case T_HASH:
             {
                 int i, j;
-                VALUE delim = rb_str_new2(","), delim2 = rb_str_new2("");
+                FBuffer *delim, *delim2;
+                if (state->delim) {
+                    fbuffer_clear(state->delim);
+                    delim = state->delim;
+                } else {
+                    delim = state->delim = fbuffer_alloc();
+                }
+                if (state->delim2) {
+                    fbuffer_clear(state->delim2);
+                    delim2 = state->delim2;
+                } else {
+                    delim2 = state->delim2 = fbuffer_alloc();
+                }
+                fbuffer_append_char(delim, ',');
                 depth++;
                 if (state->max_nesting != 0 && depth > state->max_nesting) {
                     fbuffer_free(buffer);
                     rb_raise(eNestingError, "nesting of %ld is too deep", depth);
                 }
-                if (state->object_nl) rb_str_append(delim, state->object_nl);
-                if (state->space_before) rb_str_buf_append(delim2, state->space_before);
-                rb_str_buf_cat2(delim2, ":");
-                if (state->space) rb_str_buf_append(delim2, state->space);
+                if (state->object_nl) fbuffer_append(delim, RSTRING_PAIR(state->object_nl));
+                if (state->space_before) fbuffer_append(delim2, RSTRING_PAIR(state->space_before));
+                fbuffer_append_char(delim2, ':');
+                if (state->space) fbuffer_append(delim2, RSTRING_PAIR(state->space));
                 fbuffer_append_char(buffer, '{');
                 VALUE keys = rb_funcall(obj, rb_intern("keys"), 0);
                 VALUE key, key_to_s;
                 for(i = 0; i < RARRAY_LEN(keys); i++) {
-                    if (i > 0) fbuffer_append(buffer, RSTRING_PAIR(delim));
+                    if (i > 0) fbuffer_append(buffer, FBUFFER_PAIR(delim));
                     if (state->object_nl) {
                         fbuffer_append(buffer, RSTRING_PAIR(state->object_nl));
                     }
@@ -397,7 +418,7 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                     key_to_s = rb_funcall(key, i_to_s, 0);
                     Check_Type(key_to_s, T_STRING);
                     generate_json(buffer, Vstate, state, key_to_s, depth);
-                    fbuffer_append(buffer, RSTRING_PAIR(delim2));
+                    fbuffer_append(buffer, FBUFFER_PAIR(delim2));
                     generate_json(buffer, Vstate, state, rb_hash_aref(obj, key), depth);
                 }
                 depth--;
@@ -415,17 +436,24 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
         case T_ARRAY:
             {
                 int i, j;
-                VALUE delim = rb_str_new2(",");
+                FBuffer *delim;
+                if (state->delim) {
+                    fbuffer_clear(state->delim);
+                    delim = state->delim;
+                } else {
+                    delim = state->delim = fbuffer_alloc();
+                }
+                fbuffer_append_char(delim, ',');
                 depth++;
                 if (state->max_nesting != 0 && depth > state->max_nesting) {
                     fbuffer_free(buffer);
                     rb_raise(eNestingError, "nesting of %ld is too deep", depth);
                 }
-                if (state->array_nl) rb_str_append(delim, state->array_nl);
+                if (state->array_nl) fbuffer_append(delim, RSTRING_PAIR(state->array_nl));
                 fbuffer_append_char(buffer, '[');
                 if (state->array_nl) fbuffer_append(buffer, RSTRING_PAIR(state->array_nl));
                 for(i = 0; i < RARRAY_LEN(obj); i++) {
-                    if (i > 0) fbuffer_append(buffer, RSTRING_PAIR(delim));
+                    if (i > 0) fbuffer_append(buffer, FBUFFER_PAIR(delim));
                     if (state->indent) {
                         for (j = 0; j < depth; j++) {
                             fbuffer_append(buffer, RSTRING_PAIR(state->indent));
@@ -449,13 +477,13 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
             fbuffer_append_char(buffer, '"');
 #ifdef HAVE_RUBY_ENCODING_H
             if (rb_funcall(obj, i_encoding, 0) == CEncoding_UTF_8) {
-                JSON_convert_UTF8_to_JSON(buffer, obj);
+                JSON_convert_UTF8_to_JSON_ASCII(buffer, obj);
             } else {
                 VALUE string = rb_funcall(obj, i_encode, 1, CEncoding_UTF_8);
-                JSON_convert_UTF8_to_JSON(buffer, string);
+                JSON_convert_UTF8_to_JSON_ASCII(buffer, string);
             }
 #else
-            JSON_convert_UTF8_to_JSON(buffer, obj);
+            JSON_convert_UTF8_to_JSON_ASCII(buffer, obj);
 #endif
             fbuffer_append_char(buffer, '"');
             break;
@@ -512,7 +540,7 @@ inline static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth)
     FBuffer *buffer = fbuffer_alloc();
     GET_STATE(self);
     generate_json(buffer, self, state, obj, NIL_P(depth) ? 0 : FIX2INT(depth));
-    result = rb_str_new(buffer->ptr, buffer->len);
+    result = rb_str_new(FBUFFER_PAIR(buffer));
     fbuffer_free(buffer);
     FORCE_UTF8(result);
     return result;

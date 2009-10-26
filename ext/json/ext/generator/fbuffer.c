@@ -14,6 +14,11 @@ inline void fbuffer_free(FBuffer *fb)
     ruby_xfree(fb);
 }
 
+inline void fbuffer_clear(FBuffer *fb)
+{
+    fb->len = 0;
+}
+
 inline void fbuffer_inc_capa(FBuffer *fb, unsigned int requested)
 {
     unsigned int required;
