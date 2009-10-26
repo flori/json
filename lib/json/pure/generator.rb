@@ -44,6 +44,15 @@ module JSON
       string << '' # XXX workaround: avoid buffer sharing
       string.force_encoding(::Encoding::ASCII_8BIT)
       string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
+      string.force_encoding(::Encoding::UTF_8)
+      string
+    end
+
+    def utf8_to_json_ascii(string) # :nodoc:
+      string = string.dup
+      string << '' # XXX workaround: avoid buffer sharing
+      string.force_encoding(::Encoding::ASCII_8BIT)
+      string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
       string.gsub!(/(
                       (?:
                         [\xc2-\xdf][\x80-\xbf]    |
@@ -63,6 +72,10 @@ module JSON
     end
   else
     def utf8_to_json(string) # :nodoc:
+      string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
+    end
+
+    def utf8_to_json_ascii(string) # :nodoc:
       string = string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
       string.gsub!(/(
                       (?:
@@ -81,7 +94,7 @@ module JSON
       raise GeneratorError, "Caught #{e.class}: #{e}"
     end
   end
-  module_function :utf8_to_json
+  module_function :utf8_to_json, :utf8_to_json_ascii
 
   module Pure
     module Generator
@@ -125,6 +138,7 @@ module JSON
           @object_nl      = ''
           @array_nl       = ''
           @allow_nan      = false
+          @ascii_only     = false
           configure opts
         end
 
@@ -168,6 +182,10 @@ module JSON
           @allow_nan
         end
 
+        def ascii_only?
+          @ascii_only
+        end
+
         # Configure this State instance with the Hash _opts_, and return
         # itself.
         def configure(opts)
@@ -177,6 +195,7 @@ module JSON
           @object_nl      = opts[:object_nl] if opts.key?(:object_nl)
           @array_nl       = opts[:array_nl] if opts.key?(:array_nl)
           @allow_nan      = !!opts[:allow_nan] if opts.key?(:allow_nan)
+          @ascii_only     = opts[:ascii_only] if opts.key?(:ascii_only)
           if !opts.key?(:max_nesting) # defaults to 19
             @max_nesting = 19
           elsif opts[:max_nesting]
@@ -343,11 +362,17 @@ module JSON
             # This string should be encoded with UTF-8 A call to this method
             # returns a JSON string encoded with UTF16 big endian characters as
             # \u????.
-            def to_json(*)
+            def to_json(*args)
+              state, = *args
+              state ||= JSON.state.from_state(state)
               if encoding == ::Encoding::UTF_8
-                '"' << JSON.utf8_to_json(self) << '"'
+                string = self
               else
                 string = encode(::Encoding::UTF_8)
+              end
+              if state.ascii_only?
+                '"' << JSON.utf8_to_json_ascii(string) << '"'
+              else
                 '"' << JSON.utf8_to_json(string) << '"'
               end
             end
@@ -355,16 +380,23 @@ module JSON
             # This string should be encoded with UTF-8 A call to this method
             # returns a JSON string encoded with UTF16 big endian characters as
             # \u????.
-            def to_json(*)
-              '"' << JSON.utf8_to_json(self) << '"'
+            def to_json(*args)
+              state, = *args
+              state ||= JSON.state.from_state(state)
+              if state.ascii_only?
+                '"' << JSON.utf8_to_json_ascii(self) << '"'
+              else
+                '"' << JSON.utf8_to_json(self) << '"'
+              end
             end
           end
 
           # Module that holds the extinding methods if, the String module is
           # included.
           module Extend
-            # Raw Strings are JSON Objects (the raw bytes are stored in an array for the
-            # key "raw"). The Ruby String can be created by this module method.
+            # Raw Strings are JSON Objects (the raw bytes are stored in an
+            # array for the key "raw"). The Ruby String can be created by this
+            # module method.
             def json_create(o)
               o['raw'].pack('C*')
             end

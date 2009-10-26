@@ -16,6 +16,7 @@
 #endif
 
 inline static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth);
+inline static VALUE cState_from_state_s(VALUE self, VALUE opts);
 
 #ifndef RHASH_TBL
 #define RHASH_TBL(hsh) (RHASH(hsh)->tbl)
@@ -45,7 +46,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting,
-          i_allow_nan, i_pack, i_unpack, i_create_id, i_extend;
+          i_allow_nan, i_ascii_only, i_pack, i_unpack, i_create_id, i_extend;
 
 typedef struct JSON_Generator_StateStruct {
     VALUE indent;
@@ -56,8 +57,8 @@ typedef struct JSON_Generator_StateStruct {
     FBuffer *delim;
     FBuffer *delim2;
     long max_nesting;
-    int flag;
-    int allow_nan;
+    char allow_nan;
+    char ascii_only;
 } JSON_Generator_State;
 
 #define GET_STATE(self)                       \
@@ -92,7 +93,7 @@ static VALUE mHash_to_json(int argc, VALUE *argv, VALUE self)
     VALUE state, depth;
 
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -108,7 +109,7 @@ static VALUE mHash_to_json(int argc, VALUE *argv, VALUE self)
 static VALUE mArray_to_json(int argc, VALUE *argv, VALUE self) {
     VALUE state, depth;
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -121,7 +122,7 @@ static VALUE mInteger_to_json(int argc, VALUE *argv, VALUE self)
 {
     VALUE state, depth;
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -134,7 +135,7 @@ static VALUE mFloat_to_json(int argc, VALUE *argv, VALUE self)
 {
     VALUE state, depth;
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -159,7 +160,7 @@ static VALUE mString_to_json(int argc, VALUE *argv, VALUE self)
 {
     VALUE state, depth;
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -214,7 +215,7 @@ static VALUE mTrueClass_to_json(int argc, VALUE *argv, VALUE self)
 {
     VALUE state, depth;
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -227,7 +228,7 @@ static VALUE mFalseClass_to_json(int argc, VALUE *argv, VALUE self)
 {
     VALUE state, depth;
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -239,7 +240,7 @@ static VALUE mNilClass_to_json(int argc, VALUE *argv, VALUE self)
 {
     VALUE state, depth;
     rb_scan_args(argc, argv, "02", &state, &depth);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, self, depth);
 }
 
@@ -256,7 +257,7 @@ static VALUE mObject_to_json(int argc, VALUE *argv, VALUE self)
     VALUE string = rb_funcall(self, i_to_s, 0);
     rb_scan_args(argc, argv, "02", &state, &depth);
     Check_Type(string, T_STRING);
-    if (NIL_P(state)) state = rb_class_new_instance(0, NULL, cState);
+    state = cState_from_state_s(cState, state);
     return cState_partial_generate(state, string, depth);
 }
 
@@ -348,6 +349,8 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_allow_nan));
     state->allow_nan = RTEST(tmp);
+    tmp = rb_hash_aref(opts, ID2SYM(i_ascii_only));
+    state->ascii_only = RTEST(tmp);
     return self;
 }
 
@@ -367,6 +370,7 @@ static VALUE cState_to_h(VALUE self)
     rb_hash_aset(result, ID2SYM(i_object_nl), state->object_nl);
     rb_hash_aset(result, ID2SYM(i_array_nl), state->array_nl);
     rb_hash_aset(result, ID2SYM(i_allow_nan), state->allow_nan ? Qtrue : Qfalse);
+    rb_hash_aset(result, ID2SYM(i_ascii_only), state->ascii_only ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_max_nesting), LONG2FIX(state->max_nesting));
     return result;
 }
@@ -476,15 +480,13 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
         case T_STRING:
             fbuffer_append_char(buffer, '"');
 #ifdef HAVE_RUBY_ENCODING_H
-            if (rb_funcall(obj, i_encoding, 0) == CEncoding_UTF_8) {
+            obj = rb_funcall(obj, i_encode, 1, CEncoding_UTF_8);
+#endif
+            if (state->ascii_only) {
                 JSON_convert_UTF8_to_JSON_ASCII(buffer, obj);
             } else {
-                VALUE string = rb_funcall(obj, i_encode, 1, CEncoding_UTF_8);
-                JSON_convert_UTF8_to_JSON_ASCII(buffer, string);
+                JSON_convert_UTF8_to_JSON(buffer, obj);
             }
-#else
-            JSON_convert_UTF8_to_JSON_ASCII(buffer, obj);
-#endif
             fbuffer_append_char(buffer, '"');
             break;
         case T_NIL:
@@ -598,7 +600,7 @@ static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
  * new State instance configured by _opts_, something else to create an
  * unconfigured instance. If _opts_ is a State object, it is just returned.
  */
-static VALUE cState_from_state_s(VALUE self, VALUE opts)
+inline static VALUE cState_from_state_s(VALUE self, VALUE opts)
 {
     if (rb_obj_is_kind_of(opts, self)) {
         return opts;
@@ -786,6 +788,18 @@ static VALUE cState_allow_nan_p(VALUE self)
 }
 
 /*
+ * call-seq: ascii_only?
+ *
+ * Returns true, if NaN, Infinity, and -Infinity should be generated, otherwise
+ * returns false.
+ */
+static VALUE cState_ascii_only_p(VALUE self)
+{
+    GET_STATE(self);
+    return state->ascii_only ? Qtrue : Qfalse;
+}
+
+/*
  *
  */
 void Init_generator()
@@ -816,6 +830,7 @@ void Init_generator()
     rb_define_method(cState, "max_nesting", cState_max_nesting, 0);
     rb_define_method(cState, "max_nesting=", cState_max_nesting_set, 1);
     rb_define_method(cState, "allow_nan?", cState_allow_nan_p, 0);
+    rb_define_method(cState, "ascii_only?", cState_ascii_only_p, 0);
     rb_define_method(cState, "configure", cState_configure, 1);
     rb_define_method(cState, "to_h", cState_to_h, 0);
     rb_define_method(cState, "generate", cState_generate, 1);
@@ -857,6 +872,7 @@ void Init_generator()
     i_array_nl = rb_intern("array_nl");
     i_max_nesting = rb_intern("max_nesting");
     i_allow_nan = rb_intern("allow_nan");
+    i_ascii_only = rb_intern("ascii_only");
     i_pack = rb_intern("pack");
     i_unpack = rb_intern("unpack");
     i_create_id = rb_intern("create_id");

@@ -57,11 +57,12 @@ class TC_JSONEncoding < Test::Unit::TestCase
   end
 
   def test_generate
-    assert_equal @generated, JSON.generate(@parsed)
+    assert_equal @generated, JSON.generate(@parsed, :ascii_only => true)
     if defined?(::Encoding)
-      assert_equal @generated, JSON.generate(@utf_16_data)
+      assert_equal @generated, JSON.generate(@utf_16_data, :ascii_only => true)
     else
-       assert_raises(JSON::GeneratorError) { JSON.generate(@utf_16_data) }
+      # XXX checking of correct utf8 data is not as strict (yet?) without :ascii_only
+      assert_raises(JSON::GeneratorError) { JSON.generate(@utf_16_data, :ascii_only => true) }
     end
   end
 end

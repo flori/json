@@ -86,23 +86,29 @@ inline static unsigned char isLegalUTF8(const UTF8 *source, int length)
     return 1;
 }
 
-inline static void unicode_escape(FBuffer *buffer, UTF16 character)
+inline static void unicode_escape(char *buf, UTF16 character)
 {
     const char *digits = "0123456789abcdef";
-    char buf[7] = { '\\', 'u' };
 
-    buf[6] = 0; 
     buf[2] = digits[character >> 12];
     buf[3] = digits[(character >> 8) & 0xf];
     buf[4] = digits[(character >> 4) & 0xf];
     buf[5] = digits[character & 0xf];
+}
+
+
+inline static void unicode_escape_to_buffer(FBuffer *buffer, char buf[7], UTF16 character)
+{
+    unicode_escape(buf, character);
     fbuffer_append(buffer, buf, 6);
 }
 
 inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
 {
-    const UTF8* source = (UTF8 *) RSTRING_PTR(string);
-    const UTF8* sourceEnd = source + RSTRING_LEN(string);
+    const UTF8 *source = (UTF8 *) RSTRING_PTR(string);
+    const UTF8 *sourceEnd = source + RSTRING_LEN(string);
+    char buf[7] = { '\\', 'u' };
+    buf[6] = 0; 
 
     while (source < sourceEnd) {
         UTF32 ch = 0;
@@ -136,11 +142,11 @@ inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
                 rb_raise(rb_path2class("JSON::GeneratorError"),
                         "source sequence is illegal/malformed utf-8");
 #else
-                unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
+                unicode_escape_to_buffer(buffer, buf, UNI_REPLACEMENT_CHAR);
 #endif
             } else {
                 /* normal case */
-                switch(ch) {
+                switch (ch) {
                     case '\n':
                         fbuffer_append(buffer, "\\n", 2);
                         break;
@@ -166,7 +172,7 @@ inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
                         if (ch >= 0x20 && ch <= 0x7f) {
                             fbuffer_append_char(buffer, ch);
                         } else {
-                            unicode_escape(buffer, (UTF16) ch);
+                            unicode_escape_to_buffer(buffer, buf, (UTF16) ch);
                         }
                         break;
                 }
@@ -177,13 +183,72 @@ inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
             rb_raise(rb_path2class("JSON::GeneratorError"),
                     "source sequence is illegal/malformed utf8");
 #else
-            unicode_escape(buffer, UNI_REPLACEMENT_CHAR);
+            unicode_escape_to_buffer(buffer, buf, UNI_REPLACEMENT_CHAR);
 #endif
         } else {
             /* target is a character in range 0xFFFF - 0x10FFFF. */
             ch -= halfBase;
-            unicode_escape(buffer, (UTF16)((ch >> halfShift) + UNI_SUR_HIGH_START));
-            unicode_escape(buffer, (UTF16)((ch & halfMask) + UNI_SUR_LOW_START));
+            unicode_escape_to_buffer(buffer, buf, (UTF16)((ch >> halfShift) + UNI_SUR_HIGH_START));
+            unicode_escape_to_buffer(buffer, buf, (UTF16)((ch & halfMask) + UNI_SUR_LOW_START));
         }
     }
+}
+
+inline void JSON_convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
+{
+    const char *ptr = RSTRING_PTR(string), *p;
+    int len = RSTRING_LEN(string), start = 0, end = 0;
+    const char *escape = NULL;
+    int escape_len;
+    char buf[7] = { '\\', 'u' };
+    buf[6] = 0; 
+
+    for (start = 0, end = 0; end < len;) {
+        p = ptr + end;
+        switch (*p) {
+            case '\n':
+                escape = "\\n";
+                escape_len = 2;
+                break;
+            case '\r':
+                escape = "\\r";
+                escape_len = 2;
+                break;
+            case '\\':
+                escape = "\\\\";
+                escape_len = 2;
+                break;
+            case '"':
+                escape =  "\\\"";
+                escape_len = 2;
+                break;
+            case '\t':
+                escape = "\\t";
+                escape_len = 2;
+                break;
+            case '\f':
+                escape = "\\f";
+                escape_len = 2;
+                break;
+            case '\b':
+                escape = "\\b";
+                escape_len = 2;
+                break;
+            default:
+                if ((unsigned char) *p < 0x20) {
+                    unicode_escape(buf, (UTF16) *p);
+                    escape = buf;
+                    escape_len = 6;
+                } else {
+                    end++;
+                    continue;
+                }
+                break;
+        }
+        fbuffer_append(buffer, ptr + start, end - start);
+        fbuffer_append(buffer, escape, escape_len);
+        start = ++end;
+        escape = NULL;
+    }
+    fbuffer_append(buffer, ptr + start, end - start);
 }

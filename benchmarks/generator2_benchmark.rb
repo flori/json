@@ -53,6 +53,12 @@ module JSONGeneratorCommon
   end
 
   alias reset_benchmark_generator_pretty generic_reset_method
+
+  def benchmark_generator_ascii
+    @result = JSON.generate(@big, :ascii_only => true)
+  end
+
+  alias reset_benchmark_generator_ascii generic_reset_method
 end
 
 class Generator2BenchmarkExt < Bullshit::RepeatCase
@@ -193,9 +199,11 @@ if $0 == __FILE__
       benchmark Generator2BenchmarkExt,    :generator_fast,    :load => yes
       benchmark Generator2BenchmarkExt,    :generator_safe,    :load => yes
       benchmark Generator2BenchmarkExt,    :generator_pretty,  :load => yes
+      benchmark Generator2BenchmarkExt,    :generator_ascii,   :load => yes
       benchmark Generator2BenchmarkPure,   :generator_fast,    :load => yes
       benchmark Generator2BenchmarkPure,   :generator_safe,    :load => yes
       benchmark Generator2BenchmarkPure,   :generator_pretty,  :load => yes
+      benchmark Generator2BenchmarkPure,   :generator_ascii,   :load => yes
       benchmark Generator2BenchmarkRails,  :generator,         :load => yes
       benchmark Generator2BenchmarkYajl,   :generator,         :load => yes
     end

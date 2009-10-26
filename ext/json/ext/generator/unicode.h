@@ -27,6 +27,7 @@ static const UTF32 halfBase = 0x0010000UL;
 static const UTF32 halfMask = 0x3FFUL;
 
 inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string);
+inline void JSON_convert_UTF8_to_JSON(FBuffer *buffer, VALUE string);
 
 #ifndef RARRAY_PTR
 #define RARRAY_PTR(ARRAY) RARRAY(ARRAY)->ptr
