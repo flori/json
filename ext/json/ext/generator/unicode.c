@@ -200,8 +200,7 @@ inline void JSON_convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
     int len = RSTRING_LEN(string), start = 0, end = 0;
     const char *escape = NULL;
     int escape_len;
-    char buf[7] = { '\\', 'u' };
-    buf[6] = 0; 
+    char buf[6] = { '\\', 'u' };
 
     for (start = 0, end = 0; end < len;) {
         p = ptr + end;

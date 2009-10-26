@@ -1255,63 +1255,78 @@ case 16:
     }
 }
 
-static VALUE json_string_unescape(char *p, char *pe)
+inline static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 {
-    VALUE result = rb_str_buf_new(pe - p + 1);
+    char *p = string, *pe = string, *unescape;
+    int unescape_len;
 
-    while (p < pe) {
-        if (*p == '\\') {
-            p++;
-            switch (*p) {
-                case '"':
-                case '\\':
-                    rb_str_buf_cat(result, p, 1);
-                    p++;
-                    break;
-                case 'b':
-                    rb_str_buf_cat2(result, "\b");
-                    p++;
-                    break;
-                case 'f':
-                    rb_str_buf_cat2(result, "\f");
-                    p++;
-                    break;
+    while (pe < stringEnd) {
+        if (*pe == '\\') {
+            unescape = "?";
+            unescape_len = 1;
+            if (pe > p) rb_str_buf_cat(result, p, pe - p);
+            switch (*++pe) {
                 case 'n':
-                    rb_str_buf_cat2(result, "\n");
-                    p++;
+                    unescape = "\n";
                     break;
                 case 'r':
-                    rb_str_buf_cat2(result, "\r");
-                    p++;
+                    unescape = "\r";
                     break;
                 case 't':
-                    rb_str_buf_cat2(result, "\t");
-                    p++;
+                    unescape = "\t";
+                    break;
+                case '"':
+                    unescape = "\"";
+                    break;
+                case '\\':
+                    unescape = "\\";
+                    break;
+                case 'b':
+                    unescape = "\b";
+                    break;
+                case 'f':
+                    unescape = "\f";
                     break;
                 case 'u':
-                    if (p > pe - 4) { 
+                    if (pe > stringEnd - 4) { 
                         return Qnil;
                     } else {
-                        p = JSON_convert_UTF16_to_UTF8(result, p, pe);
+                        char buf[4];
+                        UTF32 ch = unescape_unicode((unsigned char *) ++pe);
+                        pe += 3;
+                        if (UNI_SUR_HIGH_START == (ch & 0xFC00)) {
+                            pe++;
+                            if (pe > stringEnd - 6) return Qnil;
+                            if (pe[0] == '\\' && pe[1] == 'u') {
+                                UTF32 sur = unescape_unicode((unsigned char *) pe + 2);
+                                ch = (((ch & 0x3F) << 10) | ((((ch >> 6) & 0xF) + 1) << 16)
+                                        | (sur & 0x3FF));
+                                pe += 5;
+                            } else {
+                                unescape = "?";
+                                break;
+                            }
+                        }
+                        unescape_len = convert_UTF32_to_UTF8(buf, ch);
+                        unescape = buf;
                     }
                     break;
                 default:
-                    rb_str_buf_cat(result, p, 1);
-                    p++;
-                    break;
+                    p = pe;
+                    continue;
             }
+            rb_str_buf_cat(result, unescape, unescape_len);
+            p = ++pe;
         } else {
-            char *q = p;
-            while (*q != '\\' && q < pe) q++;
-            rb_str_buf_cat(result, p, q - p);
-            p = q;
+            pe++;
         }
     }
+    rb_str_buf_cat(result, p, pe - p);
     return result;
 }
 
 
-#line 1315 "parser.c"
+#line 1330 "parser.c"
 static const int JSON_string_start = 1;
 static const int JSON_string_first_final = 8;
 static const int JSON_string_error = 0;
@@ -1319,24 +1334,24 @@ static const int JSON_string_error = 0;
 static const int JSON_string_en_main = 1;
 
 
-#line 432 "parser.rl"
+#line 447 "parser.rl"
 
 
 static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result)
 {
     int cs = EVIL;
 
-    *result = rb_str_new("", 0);
+    *result = rb_str_buf_new(0);
     
-#line 1332 "parser.c"
+#line 1347 "parser.c"
 	{
 	cs = JSON_string_start;
 	}
 
-#line 440 "parser.rl"
+#line 455 "parser.rl"
     json->memo = p;
     
-#line 1340 "parser.c"
+#line 1355 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1361,9 +1376,9 @@ case 2:
 		goto st0;
 	goto st2;
 tr2:
-#line 418 "parser.rl"
+#line 433 "parser.rl"
 	{
-        *result = json_string_unescape(json->memo + 1, p);
+        *result = json_string_unescape(*result, json->memo + 1, p);
         if (NIL_P(*result)) {
 			p--;
 			{p++; cs = 8; goto _out;}
@@ -1372,14 +1387,14 @@ tr2:
 			{p = (( p + 1))-1;}
 		}
 	}
-#line 429 "parser.rl"
+#line 444 "parser.rl"
 	{ p--; {p++; cs = 8; goto _out;} }
 	goto st8;
 st8:
 	if ( ++p == pe )
 		goto _test_eof8;
 case 8:
-#line 1383 "parser.c"
+#line 1398 "parser.c"
 	goto st0;
 st3:
 	if ( ++p == pe )
@@ -1455,7 +1470,7 @@ case 7:
 	_out: {}
 	}
 
-#line 442 "parser.rl"
+#line 457 "parser.rl"
 
     if (cs >= JSON_string_first_final) {
         return p + 1;
@@ -1466,7 +1481,7 @@ case 7:
 
 
 
-#line 1470 "parser.c"
+#line 1485 "parser.c"
 static const int JSON_start = 1;
 static const int JSON_first_final = 10;
 static const int JSON_error = 0;
@@ -1474,7 +1489,7 @@ static const int JSON_error = 0;
 static const int JSON_en_main = 1;
 
 
-#line 476 "parser.rl"
+#line 491 "parser.rl"
 
 
 /* 
@@ -1646,16 +1661,16 @@ static VALUE cParser_parse(VALUE self)
     GET_STRUCT;
 
     
-#line 1650 "parser.c"
+#line 1665 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 647 "parser.rl"
+#line 662 "parser.rl"
     p = json->source;
     pe = p + json->len;
     
-#line 1659 "parser.c"
+#line 1674 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1711,7 +1726,7 @@ case 5:
 		goto st1;
 	goto st5;
 tr3:
-#line 465 "parser.rl"
+#line 480 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1720,7 +1735,7 @@ tr3:
     }
 	goto st10;
 tr4:
-#line 458 "parser.rl"
+#line 473 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1732,7 +1747,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1736 "parser.c"
+#line 1751 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1789,7 +1804,7 @@ case 9:
 	_out: {}
 	}
 
-#line 650 "parser.rl"
+#line 665 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;

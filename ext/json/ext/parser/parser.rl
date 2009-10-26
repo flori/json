@@ -354,58 +354,73 @@ static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *resul
     }
 }
 
-static VALUE json_string_unescape(char *p, char *pe)
+inline static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 {
-    VALUE result = rb_str_buf_new(pe - p + 1);
+    char *p = string, *pe = string, *unescape;
+    int unescape_len;
 
-    while (p < pe) {
-        if (*p == '\\') {
-            p++;
-            switch (*p) {
-                case '"':
-                case '\\':
-                    rb_str_buf_cat(result, p, 1);
-                    p++;
-                    break;
-                case 'b':
-                    rb_str_buf_cat2(result, "\b");
-                    p++;
-                    break;
-                case 'f':
-                    rb_str_buf_cat2(result, "\f");
-                    p++;
-                    break;
+    while (pe < stringEnd) {
+        if (*pe == '\\') {
+            unescape = "?";
+            unescape_len = 1;
+            if (pe > p) rb_str_buf_cat(result, p, pe - p);
+            switch (*++pe) {
                 case 'n':
-                    rb_str_buf_cat2(result, "\n");
-                    p++;
+                    unescape = "\n";
                     break;
                 case 'r':
-                    rb_str_buf_cat2(result, "\r");
-                    p++;
+                    unescape = "\r";
                     break;
                 case 't':
-                    rb_str_buf_cat2(result, "\t");
-                    p++;
+                    unescape = "\t";
+                    break;
+                case '"':
+                    unescape = "\"";
+                    break;
+                case '\\':
+                    unescape = "\\";
+                    break;
+                case 'b':
+                    unescape = "\b";
+                    break;
+                case 'f':
+                    unescape = "\f";
                     break;
                 case 'u':
-                    if (p > pe - 4) { 
+                    if (pe > stringEnd - 4) { 
                         return Qnil;
                     } else {
-                        p = JSON_convert_UTF16_to_UTF8(result, p, pe);
+                        char buf[4];
+                        UTF32 ch = unescape_unicode((unsigned char *) ++pe);
+                        pe += 3;
+                        if (UNI_SUR_HIGH_START == (ch & 0xFC00)) {
+                            pe++;
+                            if (pe > stringEnd - 6) return Qnil;
+                            if (pe[0] == '\\' && pe[1] == 'u') {
+                                UTF32 sur = unescape_unicode((unsigned char *) pe + 2);
+                                ch = (((ch & 0x3F) << 10) | ((((ch >> 6) & 0xF) + 1) << 16)
+                                        | (sur & 0x3FF));
+                                pe += 5;
+                            } else {
+                                unescape = "?";
+                                break;
+                            }
+                        }
+                        unescape_len = convert_UTF32_to_UTF8(buf, ch);
+                        unescape = buf;
                     }
                     break;
                 default:
-                    rb_str_buf_cat(result, p, 1);
-                    p++;
-                    break;
+                    p = pe;
+                    continue;
             }
+            rb_str_buf_cat(result, unescape, unescape_len);
+            p = ++pe;
         } else {
-            char *q = p;
-            while (*q != '\\' && q < pe) q++;
-            rb_str_buf_cat(result, p, q - p);
-            p = q;
+            pe++;
         }
     }
+    rb_str_buf_cat(result, p, pe - p);
     return result;
 }
 
@@ -416,7 +431,7 @@ static VALUE json_string_unescape(char *p, char *pe)
     write data;
 
     action parse_string {
-        *result = json_string_unescape(json->memo + 1, p);
+        *result = json_string_unescape(*result, json->memo + 1, p);
         if (NIL_P(*result)) {
 			fhold;
 			fbreak;
@@ -435,7 +450,7 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
 {
     int cs = EVIL;
 
-    *result = rb_str_new("", 0);
+    *result = rb_str_buf_new(0);
     %% write init;
     json->memo = p;
     %% write exec;
