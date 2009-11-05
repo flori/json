@@ -374,6 +374,18 @@ static VALUE cState_to_h(VALUE self)
     return result;
 }
 
+inline static VALUE fbuffer2rstring(FBuffer *buffer)
+{
+    NEWOBJ(str, struct RString);
+    OBJSETUP(str, rb_cString, T_STRING);
+
+    str->ptr = FBUFFER_PTR(buffer);
+    str->len = FBUFFER_LEN(buffer);
+    str->aux.capa = FBUFFER_CAPA(buffer);
+
+    return (VALUE) str;
+}
+
 void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth)
 {
     VALUE tmp;
@@ -391,12 +403,12 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                 long max_nesting = state->max_nesting;
                 int i, j;
                 FBuffer *delim, *delim2;
-                if (delim = state->delim) {
+                if ((delim = state->delim)) {
                     fbuffer_clear(delim);
                 } else {
                     delim = state->delim = fbuffer_alloc();
                 }
-                if (delim2 = state->delim2) {
+                if ((delim2 = state->delim2)) {
                     fbuffer_clear(delim2);
                 } else {
                     delim2 = state->delim2 = fbuffer_alloc();
@@ -452,7 +464,7 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                 long max_nesting = state->max_nesting;
                 int i, j;
                 FBuffer *delim;
-                if (delim = state->delim) {
+                if ((delim = state->delim)) {
                     fbuffer_clear(delim);
                 } else {
                     delim = state->delim = fbuffer_alloc();
@@ -554,8 +566,8 @@ inline static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth)
     FBuffer *buffer = fbuffer_alloc();
     GET_STATE(self);
     generate_json(buffer, self, state, obj, NIL_P(depth) ? 0 : FIX2INT(depth));
-    result = rb_str_new(FBUFFER_PAIR(buffer));
-    fbuffer_free(buffer);
+    result = fbuffer2rstring(buffer);
+    fbuffer_free_only_buffer(buffer);
     FORCE_UTF8(result);
     return result;
 }

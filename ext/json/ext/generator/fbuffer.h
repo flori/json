@@ -11,10 +11,12 @@ typedef struct FBufferStruct {
 
 #define FBUFFER_PTR(fb) (fb->ptr)
 #define FBUFFER_LEN(fb) (fb->len)
+#define FBUFFER_CAPA(fb) (fb->capa)
 #define FBUFFER_PAIR(fb) FBUFFER_PTR(fb), FBUFFER_LEN(fb)
 
 inline FBuffer *fbuffer_alloc();
 inline void fbuffer_free(FBuffer *fb);
+inline void fbuffer_free_only_buffer(FBuffer *fb);
 inline void fbuffer_clear(FBuffer *fb);
 inline void fbuffer_inc_capa(FBuffer *fb, unsigned int requested);
 inline void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len);

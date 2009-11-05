@@ -14,6 +14,12 @@ inline void fbuffer_free(FBuffer *fb)
     ruby_xfree(fb);
 }
 
+inline void fbuffer_free_only_buffer(FBuffer *fb)
+{
+    ruby_xfree(fb);
+}
+
+
 inline void fbuffer_clear(FBuffer *fb)
 {
     fb->len = 0;
