@@ -59,8 +59,9 @@ typedef struct JSON_Generator_StateStruct {
     long object_nl_len;
     char *array_nl;
     long array_nl_len;
-    FBuffer *delim;
-    FBuffer *delim2;
+    FBuffer *array_delim;
+    FBuffer *object_delim;
+    FBuffer *object_delim2;
     long max_nesting;
     char allow_nan;
     char ascii_only;
@@ -272,8 +273,9 @@ static void State_free(JSON_Generator_State *state) {
     if (state->space_before) ruby_xfree(state->space_before);
     if (state->object_nl) ruby_xfree(state->object_nl);
     if (state->array_nl) ruby_xfree(state->array_nl);
-    if (state->delim) fbuffer_free(state->delim);
-    if (state->delim2) fbuffer_free(state->delim2);
+    if (state->array_delim) fbuffer_free(state->array_delim);
+    if (state->object_delim) fbuffer_free(state->object_delim);
+    if (state->object_delim2) fbuffer_free(state->object_delim2);
     ruby_xfree(state);
 }
 
@@ -382,40 +384,24 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
             {
                 char *object_nl = state->object_nl;
                 long object_nl_len = state->object_nl_len;
-                char *space = state->space;
-                long space_len = state->space_len;
-                char *space_before = state->space_before;
-                long space_before_len = state->space_before_len;
                 char *indent = state->indent;
                 long indent_len = state->indent_len;
                 long max_nesting = state->max_nesting;
+                char *delim = FBUFFER_PTR(state->object_delim);
+                long delim_len = FBUFFER_LEN(state->object_delim);
+                char *delim2 = FBUFFER_PTR(state->object_delim2);
+                long delim2_len = FBUFFER_LEN(state->object_delim2);
                 int i, j;
-                FBuffer *delim, *delim2;
-                if (delim = state->delim) {
-                    fbuffer_clear(delim);
-                } else {
-                    delim = state->delim = fbuffer_alloc();
-                }
-                if (delim2 = state->delim2) {
-                    fbuffer_clear(delim2);
-                } else {
-                    delim2 = state->delim2 = fbuffer_alloc();
-                }
-                fbuffer_append_char(delim, ',');
                 depth++;
                 if (max_nesting != 0 && depth > max_nesting) {
                     fbuffer_free(buffer);
                     rb_raise(eNestingError, "nesting of %ld is too deep", depth);
                 }
-                if (object_nl) fbuffer_append(delim, object_nl, object_nl_len);
-                if (space_before) fbuffer_append(delim2, space_before, space_before_len);
-                fbuffer_append_char(delim2, ':');
-                if (space) fbuffer_append(delim2, space, space_len);
                 fbuffer_append_char(buffer, '{');
                 VALUE keys = rb_funcall(obj, rb_intern("keys"), 0);
                 VALUE key, key_to_s;
                 for(i = 0; i < RARRAY_LEN(keys); i++) {
-                    if (i > 0) fbuffer_append(buffer, FBUFFER_PAIR(delim));
+                    if (i > 0) fbuffer_append(buffer, delim, delim_len);
                     if (object_nl) {
                         fbuffer_append(buffer, object_nl, object_nl_len);
                     }
@@ -428,7 +414,7 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                     key_to_s = rb_funcall(key, i_to_s, 0);
                     Check_Type(key_to_s, T_STRING);
                     generate_json(buffer, Vstate, state, key_to_s, depth);
-                    fbuffer_append(buffer, FBUFFER_PAIR(delim2));
+                    fbuffer_append(buffer, delim2, delim2_len);
                     generate_json(buffer, Vstate, state, rb_hash_aref(obj, key), depth);
                 }
                 depth--;
@@ -450,24 +436,18 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                 char *indent = state->indent;
                 long indent_len = state->indent_len;
                 long max_nesting = state->max_nesting;
+                char *delim = FBUFFER_PTR(state->array_delim);
+                long delim_len = FBUFFER_LEN(state->array_delim);
                 int i, j;
-                FBuffer *delim;
-                if (delim = state->delim) {
-                    fbuffer_clear(delim);
-                } else {
-                    delim = state->delim = fbuffer_alloc();
-                }
-                fbuffer_append_char(delim, ',');
                 depth++;
                 if (max_nesting != 0 && depth > max_nesting) {
                     fbuffer_free(buffer);
                     rb_raise(eNestingError, "nesting of %ld is too deep", depth);
                 }
-                if (array_nl) fbuffer_append(delim, array_nl, array_nl_len);
                 fbuffer_append_char(buffer, '[');
                 if (array_nl) fbuffer_append(buffer, array_nl, array_nl_len);
                 for(i = 0; i < RARRAY_LEN(obj); i++) {
-                    if (i > 0) fbuffer_append(buffer, FBUFFER_PAIR(delim));
+                    if (i > 0) fbuffer_append(buffer, delim, delim_len);
                     if (indent) {
                         for (j = 0; j < depth; j++) {
                             fbuffer_append(buffer, indent, indent_len);
@@ -553,6 +533,29 @@ inline static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth)
     VALUE result;
     FBuffer *buffer = fbuffer_alloc();
     GET_STATE(self);
+
+    if (state->object_delim) {
+        fbuffer_clear(state->object_delim);
+    } else {
+        state->object_delim = fbuffer_alloc_with_length(16);
+    }
+    fbuffer_append_char(state->object_delim, ',');
+    if (state->object_delim2) {
+        fbuffer_clear(state->object_delim2);
+    } else {
+        state->object_delim2 = fbuffer_alloc_with_length(16);
+    }
+    fbuffer_append_char(state->object_delim2, ':');
+    if (state->space) fbuffer_append(state->object_delim2, state->space, state->space_len);
+
+    if (state->array_delim) {
+        fbuffer_clear(state->array_delim);
+    } else {
+        state->array_delim = fbuffer_alloc_with_length(16);
+    }
+    fbuffer_append_char(state->array_delim, ',');
+    if (state->array_nl) fbuffer_append(state->array_delim, state->array_nl, state->array_nl_len);
+
     generate_json(buffer, self, state, obj, NIL_P(depth) ? 0 : FIX2INT(depth));
     result = rb_str_new(FBUFFER_PAIR(buffer));
     fbuffer_free(buffer);
