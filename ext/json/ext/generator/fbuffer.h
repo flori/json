@@ -23,7 +23,6 @@ inline FBuffer *fbuffer_alloc_with_length(unsigned initial_length);
 inline void fbuffer_free(FBuffer *fb);
 inline void fbuffer_free_only_buffer(FBuffer *fb);
 inline void fbuffer_clear(FBuffer *fb);
-inline void fbuffer_inc_capa(FBuffer *fb, unsigned int requested);
 inline void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len);
 inline void fbuffer_append_char(FBuffer *fb, char newchr);
 

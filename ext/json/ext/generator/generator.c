@@ -510,12 +510,14 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                 char allow_nan = state->allow_nan;
                 double value = RFLOAT_VALUE(obj);
                 tmp = rb_funcall(obj, i_to_s, 0);
-                if (!allow_nan && isinf(value)) {
-                    fbuffer_free(buffer);
-                    rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
-                } else if (!allow_nan && isnan(value)) {
-                    fbuffer_free(buffer);
-                    rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
+                if (!allow_nan) {
+                    if (isinf(value)) {
+                        fbuffer_free(buffer);
+                        rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
+                    } else if (isnan(value)) {
+                        fbuffer_free(buffer);
+                        rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
+                    }
                 }
                 fbuffer_append(buffer, RSTRING_PAIR(tmp));
             }
