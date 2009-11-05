@@ -29,7 +29,7 @@ inline void fbuffer_clear(FBuffer *fb)
     fb->len = 0;
 }
 
-inline void fbuffer_inc_capa(FBuffer *fb, unsigned int requested)
+static inline void fbuffer_inc_capa(FBuffer *fb, unsigned int requested)
 {
     unsigned int required;
 
