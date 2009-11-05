@@ -97,7 +97,7 @@ inline static void unicode_escape(char *buf, UTF16 character)
 }
 
 
-inline static void unicode_escape_to_buffer(FBuffer *buffer, char buf[7], UTF16 character)
+inline static void unicode_escape_to_buffer(FBuffer *buffer, char buf[6], UTF16 character)
 {
     unicode_escape(buf, character);
     fbuffer_append(buffer, buf, 6);
@@ -107,8 +107,7 @@ inline void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
 {
     const UTF8 *source = (UTF8 *) RSTRING_PTR(string);
     const UTF8 *sourceEnd = source + RSTRING_LEN(string);
-    char buf[7] = { '\\', 'u' };
-    buf[6] = 0; 
+    char buf[6] = { '\\', 'u' };
 
     while (source < sourceEnd) {
         UTF32 ch = 0;

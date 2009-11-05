@@ -388,23 +388,22 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                 long space_before_len = state->space_before_len;
                 char *indent = state->indent;
                 long indent_len = state->indent_len;
+                long max_nesting = state->max_nesting;
                 int i, j;
                 FBuffer *delim, *delim2;
-                if (state->delim) {
-                    fbuffer_clear(state->delim);
-                    delim = state->delim;
+                if (delim = state->delim) {
+                    fbuffer_clear(delim);
                 } else {
                     delim = state->delim = fbuffer_alloc();
                 }
-                if (state->delim2) {
-                    fbuffer_clear(state->delim2);
-                    delim2 = state->delim2;
+                if (delim2 = state->delim2) {
+                    fbuffer_clear(delim2);
                 } else {
                     delim2 = state->delim2 = fbuffer_alloc();
                 }
                 fbuffer_append_char(delim, ',');
                 depth++;
-                if (state->max_nesting != 0 && depth > state->max_nesting) {
+                if (max_nesting != 0 && depth > max_nesting) {
                     fbuffer_free(buffer);
                     rb_raise(eNestingError, "nesting of %ld is too deep", depth);
                 }
@@ -450,17 +449,17 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
                 long array_nl_len = state->array_nl_len;
                 char *indent = state->indent;
                 long indent_len = state->indent_len;
+                long max_nesting = state->max_nesting;
                 int i, j;
                 FBuffer *delim;
-                if (state->delim) {
-                    fbuffer_clear(state->delim);
-                    delim = state->delim;
+                if (delim = state->delim) {
+                    fbuffer_clear(delim);
                 } else {
                     delim = state->delim = fbuffer_alloc();
                 }
                 fbuffer_append_char(delim, ',');
                 depth++;
-                if (state->max_nesting != 0 && depth > state->max_nesting) {
+                if (max_nesting != 0 && depth > max_nesting) {
                     fbuffer_free(buffer);
                     rb_raise(eNestingError, "nesting of %ld is too deep", depth);
                 }
@@ -516,12 +515,13 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
             break;
         case T_FLOAT:
             {
+                char allow_nan = state->allow_nan;
                 double value = RFLOAT_VALUE(obj);
                 tmp = rb_funcall(obj, i_to_s, 0);
-                if (isinf(value) && !state->allow_nan) {
+                if (!allow_nan && isinf(value)) {
                     fbuffer_free(buffer);
                     rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
-                } else if (isnan(value) &&  !state->allow_nan) {
+                } else if (!allow_nan && isnan(value)) {
                     fbuffer_free(buffer);
                     rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
                 }
