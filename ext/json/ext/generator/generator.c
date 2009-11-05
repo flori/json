@@ -1,16 +1,21 @@
 #include <string.h>
 #include "ruby.h"
+
 #if HAVE_RUBY_ST_H
 #include "ruby/st.h"
 #endif
+
 #if HAVE_ST_H
 #include "st.h"
 #endif
+
 #include "unicode.h"
 #include <math.h>
+
 #if HAVE_RUBY_RE_H
 #include "ruby/re.h"
 #endif
+
 #if HAVE_RE_H
 #include "re.h"
 #endif
@@ -376,6 +381,39 @@ static VALUE cState_to_h(VALUE self)
     return result;
 }
 
+/*
+ * The fbuffer2rstring breaks encapsulation of Ruby's String datatype to avoid
+ * calling memcpy while creating a RString from a c string. This is rather
+ * hackish code, I am not sure if it's a good idea to keep it.
+ */
+#ifdef RUBY_19
+#define STR_NOEMBED FL_USER1
+
+#define STR_SET_EMBED_LEN(str, n) do { \
+    long tmp_n = (n);\
+    RBASIC(str)->flags &= ~RSTRING_EMBED_LEN_MASK;\
+    RBASIC(str)->flags |= (tmp_n) << RSTRING_EMBED_LEN_SHIFT;\
+} while (0)
+
+#define STR_SET_NOEMBED(str) do {\
+    FL_SET(str, STR_NOEMBED);\
+    STR_SET_EMBED_LEN(str, 0);\
+} while (0)
+
+inline static VALUE fbuffer2rstring(FBuffer *buffer)
+{
+    NEWOBJ(str, struct RString);
+    OBJSETUP(str, rb_cString, T_STRING);
+
+    str->as.heap.ptr = FBUFFER_PTR(buffer);
+    str->as.heap.len = FBUFFER_LEN(buffer);
+    str->as.heap.aux.capa = FBUFFER_CAPA(buffer);
+	STR_SET_NOEMBED(str);
+
+    return (VALUE) str;
+}
+#else
+
 inline static VALUE fbuffer2rstring(FBuffer *buffer)
 {
     NEWOBJ(str, struct RString);
@@ -387,6 +425,7 @@ inline static VALUE fbuffer2rstring(FBuffer *buffer)
 
     return (VALUE) str;
 }
+#endif
 
 void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth)
 {
