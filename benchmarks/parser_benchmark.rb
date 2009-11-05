@@ -44,6 +44,7 @@ class ParserBenchmarkExt < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
@@ -74,6 +75,7 @@ class ParserBenchmarkPure < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
@@ -102,6 +104,7 @@ class ParserBenchmarkYAML < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
@@ -138,6 +141,7 @@ class ParserBenchmarkRails < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
@@ -174,6 +178,7 @@ class ParserBenchmarkYajl < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1

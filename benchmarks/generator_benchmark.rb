@@ -70,6 +70,7 @@ class GeneratorBenchmarkExt < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
@@ -95,6 +96,7 @@ class GeneratorBenchmarkPure < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
@@ -119,6 +121,7 @@ class GeneratorBenchmarkRails < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
@@ -149,6 +152,7 @@ class GeneratorBenchmarkYajl < Bullshit::RepeatCase
   iterations  1000
 
   truncate_data do
+    enabled false
     alpha_level 0.05
     window_size 50
     slope_angle 0.1
