@@ -494,9 +494,9 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
             obj = rb_funcall(obj, i_encode, 1, CEncoding_UTF_8);
 #endif
             if (state->ascii_only) {
-                JSON_convert_UTF8_to_JSON_ASCII(buffer, obj);
+                convert_UTF8_to_JSON_ASCII(buffer, obj);
             } else {
-                JSON_convert_UTF8_to_JSON(buffer, obj);
+                convert_UTF8_to_JSON(buffer, obj);
             }
             fbuffer_append_char(buffer, '"');
             break;
@@ -543,9 +543,10 @@ void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, V
 }
 
 /*
- * call-seq: generate(obj)
+ * call-seq: partial_generate(obj)
  *
- * XXX
+ * Generates a part of a JSON document from object +obj+ and returns the
+ * result.
  */
 inline static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth)
 {
@@ -562,7 +563,9 @@ inline static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth)
 /*
  * call-seq: generate(obj)
  *
- * XXX
+ * Generates a valid JSON document from object +obj+ and returns the
+ * result. If no valid JSON document can be created this method raises a
+ * GeneratorError exception.
  */
 inline static VALUE cState_generate(VALUE self, VALUE obj)
 {

@@ -103,7 +103,7 @@ inline static void unicode_escape_to_buffer(FBuffer *buffer, char buf[7], UTF16 
     fbuffer_append(buffer, buf, 6);
 }
 
-inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
+inline void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
 {
     const UTF8 *source = (UTF8 *) RSTRING_PTR(string);
     const UTF8 *sourceEnd = source + RSTRING_LEN(string);
@@ -194,7 +194,7 @@ inline void JSON_convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
     }
 }
 
-inline void JSON_convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
+inline void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
 {
     const char *ptr = RSTRING_PTR(string), *p;
     int len = RSTRING_LEN(string), start = 0, end = 0;
