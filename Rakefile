@@ -17,6 +17,7 @@ include Config
 
 MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
+PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
 PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\./).exclude(/\.(so|bundle|o|#{CONFIG['DLEXT']})$/)
 EXT_ROOT_DIR      = 'ext/json/ext'
@@ -173,14 +174,14 @@ task :benchmark => [ :benchmark_parser, :benchmark_generator ]
 
 desc "Create RDOC documentation"
 task :doc => [ :version, EXT_PARSER_SRC ] do
-  sh "rdoc -o doc -m README README lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
+  sh "rdoc -o doc -t '#{PKG_TITLE}' -m README README lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
 end
 
 if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::ExtensionTask)
   spec_pure = Gem::Specification.new do |s|
     s.name = 'json_pure'
     s.version = PKG_VERSION
-    s.summary = "A JSON implementation in Ruby"
+    s.summary = PKG_TITLE
     s.description = "This is a JSON implementation in pure Ruby."
 
     s.files = PKG_FILES
@@ -194,7 +195,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     s.has_rdoc = true
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
-      '--title' <<  'JSON -- A JSON implemention' << '--main' << 'README'
+      '--title' <<  'JSON implemention for ruby' << '--main' << 'README'
     s.test_files.concat Dir['tests/*.rb']
 
     s.author = "Florian Frank"
@@ -211,7 +212,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
   spec_ext = Gem::Specification.new do |s|
     s.name = 'json'
     s.version = PKG_VERSION
-    s.summary = "A JSON implementation as a Ruby extension"
+    s.summary = PKG_TITLE
     s.description = "This is a JSON implementation as a Ruby extension in C."
 
     s.files = PKG_FILES
@@ -229,7 +230,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     s.has_rdoc = true
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
-      '--title' <<  'JSON -- A JSON implemention' << '--main' << 'README'
+      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README'
     s.test_files.concat Dir['tests/*.rb']
 
     s.author = "Florian Frank"

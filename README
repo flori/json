@@ -1,6 +1,4 @@
-== json - JSON Implementation for Ruby
-
-=== Description
+== Description
 
 This is a implementation of the JSON specification according to RFC 4627
 (http://www.ietf.org/rfc/rfc4627.txt). Starting from version 1.0.0 on there
@@ -34,7 +32,7 @@ String#encoding set. If a document string has ASCII-8BIT as an encoding the
 parser attempts to figure out which of the UTF encodings from above it is and
 trys to parse it.
 
-=== Installation
+== Installation
 
 It's recommended to use the extension variant of JSON, because it's faster than
 the pure ruby variant. If you cannot build it on your system, you can settle
@@ -65,7 +63,7 @@ with:
 
   # gem install json_pure
 
-=== Compiling the extensions yourself
+== Compiling the extensions yourself
 
 If you want to build the extensions yourself you need rake:
 
@@ -82,7 +80,7 @@ If you want to create the parser.c file from its parser.rl file or draw nice
 graphviz images of the state machines, you need ragel from: http://www.cs.queensu.ca/~thurston/ragel
 
 
-=== Usage
+== Usage
 
 To use JSON you can
   require 'json'
@@ -136,7 +134,7 @@ To get the best compatibility to rails' JSON implementation, you can
 Both of the additions attempt to require 'json' (like above) first, if it has
 not been required yet.
 
-=== More Examples
+== More Examples
 
 To create a JSON document from a ruby data structure, you can call
 JSON.generate like that:
@@ -226,7 +224,7 @@ The script tools/server.rb contains a small example if you want to test, how
 receiving a JSON object from a webrick server in your browser with the
 javasript prototype library (http://www.prototypejs.org) works.
 
-=== Speed Comparisons
+== Speed Comparisons
 
 I have created some benchmark results (see the benchmarks/data-p4-3Ghz
 subdir of the package) for the JSON-parser to estimate the speed up in the C
@@ -339,17 +337,17 @@ Here are the median comparisons for completeness' sake:
             calls/sec (  time) ->    speed  covers
             secs/call
 
-=== Author
+== Author
 
 Florian Frank <mailto:flori@ping.de>
 
-=== License
+== License
 
 Ruby License, see the COPYING file included in the source distribution. The
 Ruby License includes the GNU General Public License (GPL), Version 2, so see
 the file GPL as well.
 
-=== Download
+== Download
 
 The latest version of this library can be downloaded at
 
