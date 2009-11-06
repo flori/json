@@ -1,11 +1,14 @@
 #include "ruby.h"
 #include "unicode.h"
+
 #if HAVE_RE_H
 #include "re.h"
 #endif
+
 #if HAVE_RUBY_ST_H
 #include "ruby/st.h"
 #endif
+
 #if HAVE_ST_H
 #include "st.h"
 #endif
@@ -361,30 +364,30 @@ inline static VALUE json_string_unescape(VALUE result, char *string, char *strin
 
     while (pe < stringEnd) {
         if (*pe == '\\') {
-            unescape = "?";
+            unescape = (char *) "?";
             unescape_len = 1;
             if (pe > p) rb_str_buf_cat(result, p, pe - p);
             switch (*++pe) {
                 case 'n':
-                    unescape = "\n";
+                    unescape = (char *) "\n";
                     break;
                 case 'r':
-                    unescape = "\r";
+                    unescape = (char *) "\r";
                     break;
                 case 't':
-                    unescape = "\t";
+                    unescape = (char *) "\t";
                     break;
                 case '"':
-                    unescape = "\"";
+                    unescape = (char *) "\"";
                     break;
                 case '\\':
-                    unescape = "\\";
+                    unescape = (char *) "\\";
                     break;
                 case 'b':
-                    unescape = "\b";
+                    unescape = (char *) "\b";
                     break;
                 case 'f':
-                    unescape = "\f";
+                    unescape = (char *) "\f";
                     break;
                 case 'u':
                     if (pe > stringEnd - 4) { 
@@ -402,7 +405,7 @@ inline static VALUE json_string_unescape(VALUE result, char *string, char *strin
                                         | (sur & 0x3FF));
                                 pe += 5;
                             } else {
-                                unescape = "?";
+                                unescape = (char *) "?";
                                 break;
                             }
                         }
