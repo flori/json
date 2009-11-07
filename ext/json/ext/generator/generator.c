@@ -158,35 +158,39 @@ static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
 #endif
             } else {
                 /* normal case */
-                switch (ch) {
-                    case '\n':
-                        fbuffer_append(buffer, "\\n", 2);
-                        break;
-                    case '\r':
-                        fbuffer_append(buffer, "\\r", 2);
-                        break;
-                    case '\\':
-                        fbuffer_append(buffer, "\\\\", 2);
-                        break;
-                    case '"':
-                        fbuffer_append(buffer, "\\\"", 2);
-                        break;
-                    case '\t':
-                        fbuffer_append(buffer, "\\t", 2);
-                        break;
-                    case '\f':
-                        fbuffer_append(buffer, "\\f", 2);
-                        break;
-                    case '\b':
-                        fbuffer_append(buffer, "\\b", 2);
-                        break;
-                    default:
-                        if (ch >= 0x20 && ch <= 0x7f) {
+                if (ch >= 0x20 && ch <= 0x7f) {
+                    switch (ch) {
+                        case '\\':
+                            fbuffer_append(buffer, "\\\\", 2);
+                            break;
+                        case '"':
+                            fbuffer_append(buffer, "\\\"", 2);
+                            break;
+                        default:
                             fbuffer_append_char(buffer, ch);
-                        } else {
+                            break;
+                    }
+                } else {
+                    switch (ch) {
+                        case '\n':
+                            fbuffer_append(buffer, "\\n", 2);
+                            break;
+                        case '\r':
+                            fbuffer_append(buffer, "\\r", 2);
+                            break;
+                        case '\t':
+                            fbuffer_append(buffer, "\\t", 2);
+                            break;
+                        case '\f':
+                            fbuffer_append(buffer, "\\f", 2);
+                            break;
+                        case '\b':
+                            fbuffer_append(buffer, "\\b", 2);
+                            break;
+                        default:
                             unicode_escape_to_buffer(buffer, buf, (UTF16) ch);
-                        }
-                        break;
+                            break;
+                    }
                 }
             }
         } else if (ch > UNI_MAX_UTF16) {
