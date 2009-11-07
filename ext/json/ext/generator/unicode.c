@@ -199,49 +199,55 @@ inline void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
     int len = RSTRING_LEN(string), start = 0, end = 0;
     const char *escape = NULL;
     int escape_len;
+    unsigned char c;
     char buf[6] = { '\\', 'u' };
 
     for (start = 0, end = 0; end < len;) {
         p = ptr + end;
-        switch (*p) {
-            case '\n':
-                escape = "\\n";
-                escape_len = 2;
-                break;
-            case '\r':
-                escape = "\\r";
-                escape_len = 2;
-                break;
-            case '\\':
-                escape = "\\\\";
-                escape_len = 2;
-                break;
-            case '"':
-                escape =  "\\\"";
-                escape_len = 2;
-                break;
-            case '\t':
-                escape = "\\t";
-                escape_len = 2;
-                break;
-            case '\f':
-                escape = "\\f";
-                escape_len = 2;
-                break;
-            case '\b':
-                escape = "\\b";
-                escape_len = 2;
-                break;
-            default:
-                if ((unsigned char) *p < 0x20) {
+        c = (unsigned char) *p;
+        if (c < 0x20) {
+            switch (c) {
+                case '\n':
+                    escape = "\\n";
+                    escape_len = 2;
+                    break;
+                case '\r':
+                    escape = "\\r";
+                    escape_len = 2;
+                    break;
+                case '\t':
+                    escape = "\\t";
+                    escape_len = 2;
+                    break;
+                case '\f':
+                    escape = "\\f";
+                    escape_len = 2;
+                    break;
+                case '\b':
+                    escape = "\\b";
+                    escape_len = 2;
+                    break;
+                default:
                     unicode_escape(buf, (UTF16) *p);
                     escape = buf;
                     escape_len = 6;
-                } else {
+                    break;
+            }
+        } else {
+            switch (c) {
+                case '\\':
+                    escape = "\\\\";
+                    escape_len = 2;
+                    break;
+                case '"':
+                    escape =  "\\\"";
+                    escape_len = 2;
+                    break;
+                default:
                     end++;
                     continue;
-                }
-                break;
+                    break;
+            }
         }
         fbuffer_append(buffer, ptr + start, end - start);
         fbuffer_append(buffer, escape, escape_len);
