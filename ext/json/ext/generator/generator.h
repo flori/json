@@ -134,7 +134,7 @@ typedef struct JSON_Generator_StateStruct {
 
 #define GET_STATE(self)                       \
     JSON_Generator_State *state;              \
-    Data_Get_Struct(self, JSON_Generator_State, state);
+    Data_Get_Struct(self, JSON_Generator_State, state)
 
 static VALUE mHash_to_json(int argc, VALUE *argv, VALUE self);
 static VALUE mArray_to_json(int argc, VALUE *argv, VALUE self);

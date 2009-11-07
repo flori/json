@@ -11,8 +11,8 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
              eNestingError, CRegexp_MULTILINE;
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
-          i_object_nl, i_array_nl, i_max_nesting,
-          i_allow_nan, i_ascii_only, i_pack, i_unpack, i_create_id, i_extend;
+          i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
+          i_pack, i_unpack, i_create_id, i_extend;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -72,7 +72,6 @@ static const UTF32 offsetsFromUTF8[6] = { 0x00000000UL, 0x00003080UL, 0x000E2080
  * If presented with a length > 4, this returns 0.  The Unicode
  * definition of UTF-8 goes up to 4-byte sequences.
  */
-
 static unsigned char isLegalUTF8(const UTF8 *source, int length)
 {
     UTF8 a;
@@ -99,6 +98,7 @@ static unsigned char isLegalUTF8(const UTF8 *source, int length)
     return 1;
 }
 
+/* Escapes the UTF16 character and stores the result in the buffer buf. */
 static void unicode_escape(char *buf, UTF16 character)
 {
     const char *digits = "0123456789abcdef";
@@ -109,13 +109,17 @@ static void unicode_escape(char *buf, UTF16 character)
     buf[5] = digits[character & 0xf];
 }
 
-
-static void unicode_escape_to_buffer(FBuffer *buffer, char buf[6], UTF16 character)
+/* Escapes the UTF16 character and stores the result in the buffer buf, then
+ * the buffer buf іs appended to the FBuffer buffer. */
+static void unicode_escape_to_buffer(FBuffer *buffer, char buf[6], UTF16
+        character)
 {
     unicode_escape(buf, character);
     fbuffer_append(buffer, buf, 6);
 }
 
+/* Converts string to a JSON string in FBuffer buffer, where all but the ASCII
+ * and control characters are JSON escaped. */
 static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
 {
     const UTF8 *source = (UTF8 *) RSTRING_PTR(string);
@@ -210,6 +214,10 @@ static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
     }
 }
 
+/* Converts string to a JSON string in FBuffer buffer, where only the
+ * characters required by the JSON standard are JSON escaped. The remaining
+ * characters (should be UTF8) are just passed through and appended to the
+ * result. */
 static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
 {
     const char *ptr = RSTRING_PTR(string), *p;

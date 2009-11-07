@@ -1,32 +1,75 @@
-#include "ruby.h"
-#include "unicode.h"
+#include "parser.h"
 
-#if HAVE_RE_H
-#include "re.h"
-#endif
+/* unicode */
 
-#if HAVE_RUBY_ST_H
-#include "ruby/st.h"
-#endif
+static const char digit_values[256] = { 
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1,
+    -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1
+};
 
-#if HAVE_ST_H
-#include "st.h"
-#endif
+static UTF32 unescape_unicode(const unsigned char *p)
+{
+    char b;
+    UTF32 result = 0;
+    b = digit_values[p[0]];
+    if (b < 0) return UNI_REPLACEMENT_CHAR;
+    result = (result << 4) | b;
+    b = digit_values[p[1]];
+    result = (result << 4) | b;
+    if (b < 0) return UNI_REPLACEMENT_CHAR;
+    b = digit_values[p[2]];
+    result = (result << 4) | b;
+    if (b < 0) return UNI_REPLACEMENT_CHAR;
+    b = digit_values[p[3]];
+    result = (result << 4) | b;
+    if (b < 0) return UNI_REPLACEMENT_CHAR;
+    return result;
+}
 
-#define EVIL 0x666
+static int convert_UTF32_to_UTF8(char *buf, UTF32 ch) 
+{
+    int len = 1;
+    if (ch <= 0x7F) {
+        buf[0] = (char) ch;
+    } else if (ch <= 0x07FF) {
+        buf[0] = (char) ((ch >> 6) | 0xC0);
+        buf[1] = (char) ((ch & 0x3F) | 0x80);
+        len++;
+    } else if (ch <= 0xFFFF) {
+        buf[0] = (char) ((ch >> 12) | 0xE0);
+        buf[1] = (char) (((ch >> 6) & 0x3F) | 0x80);
+        buf[2] = (char) ((ch & 0x3F) | 0x80);
+        len += 2;
+    } else if (ch <= 0x1fffff) {
+        buf[0] =(char) ((ch >> 18) | 0xF0);
+        buf[1] =(char) (((ch >> 12) & 0x3F) | 0x80);
+        buf[2] =(char) (((ch >> 6) & 0x3F) | 0x80);
+        buf[3] =(char) ((ch & 0x3F) | 0x80);
+        len += 3;
+    } else {
+        buf[0] = '?';
+    }
+    return len;
+}
 
-#ifndef RHASH_TBL
-#define RHASH_TBL(hsh) (RHASH(hsh)->tbl)
-#endif
 
 #ifdef HAVE_RUBY_ENCODING_H
-#include "ruby/encoding.h"
-#define FORCE_UTF8(obj) rb_enc_associate((obj), rb_utf8_encoding())
 static VALUE CEncoding_ASCII_8BIT, CEncoding_UTF_8, CEncoding_UTF_16BE,
     CEncoding_UTF_16LE, CEncoding_UTF_32BE, CEncoding_UTF_32LE;
 static ID i_encoding, i_encode, i_encode_bang, i_force_encoding;
 #else
-#define FORCE_UTF8(obj)
 static ID i_iconv;
 #endif
 
@@ -35,32 +78,6 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_object_class, i_array_class;
-
-#define MinusInfinity "-Infinity"
-
-typedef struct JSON_ParserStruct {
-    VALUE Vsource;
-    char *source;
-    long len;
-    char *memo;
-    VALUE create_id;
-    int max_nesting;
-    int current_nesting;
-    int allow_nan;
-    VALUE object_class;
-    VALUE array_class;
-} JSON_Parser;
-
-static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_value(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_integer(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *result);
-
-#define GET_STRUCT                          \
-    JSON_Parser *json;                      \
-    Data_Get_Struct(self, JSON_Parser, json);
 
 %%{
     machine JSON_common;
@@ -357,7 +374,7 @@ static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *resul
     }
 }
 
-inline static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
+static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 {
     char *p = string, *pe = string, *unescape;
     int unescape_len;
@@ -505,7 +522,7 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
  *
  */
 
-inline static VALUE convert_encoding(VALUE source)
+static VALUE convert_encoding(VALUE source)
 {
     char *ptr = RSTRING_PTR(source);
     long len = RSTRING_LEN(source);
@@ -581,7 +598,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     char *ptr;
     long len;
     VALUE source, opts;
-    GET_STRUCT;
+    GET_PARSER;
     rb_scan_args(argc, argv, "11", &source, &opts);
     source = convert_encoding(StringValue(source));
     ptr = RSTRING_PTR(source);
@@ -659,7 +676,7 @@ static VALUE cParser_parse(VALUE self)
     char *p, *pe;
     int cs = EVIL;
     VALUE result = Qnil;
-    GET_STRUCT;
+    GET_PARSER;
 
     %% write init;
     p = json->source;
@@ -673,7 +690,7 @@ static VALUE cParser_parse(VALUE self)
     }
 }
 
-inline static JSON_Parser *JSON_allocate()
+static JSON_Parser *JSON_allocate()
 {
     JSON_Parser *json = ALLOC(JSON_Parser);
     MEMZERO(json, JSON_Parser, 1);
@@ -707,7 +724,7 @@ static VALUE cJSON_parser_s_allocate(VALUE klass)
  */
 static VALUE cParser_source(VALUE self)
 {
-    GET_STRUCT;
+    GET_PARSER;
     return rb_str_dup(json->Vsource);
 }
 
