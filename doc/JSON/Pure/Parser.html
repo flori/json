@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+	<title>Class: JSON::Pure::Parser</title>
+
+	<link rel="stylesheet" href="../../rdoc.css" type="text/css" media="screen" />
+
+	<script src="../../js/jquery.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../js/thickbox-compressed.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../js/quicksearch.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../js/darkfish.js" type="text/javascript"
+		charset="utf-8"></script>
+
+</head>
+<body class="class">
+
+	<div id="metadata">
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li><a href="../../lib/json/pure/parser_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+							class="thickbox" title="lib/json/pure/parser.rb">lib/json/pure/parser.rb</a></li>
+					
+					</ul>
+				</div>
+			</div>
+
+			
+		</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link">StringScanner</p>
+				
+			</div>
+			
+
+			<!-- Namespace Contents -->
+			
+
+			<!-- Method Quickref -->
+			
+			<div id="method-list-section" class="section">
+				<h3 class="section-header">Methods</h3>
+				<ul class="link-list">
+					
+					<li><a href="#M000055">::new</a></li>
+					
+					<li><a href="#M000065">#parse</a></li>
+					
+					<li><a href="#M000070">#parse_array</a></li>
+					
+					<li><a href="#M000071">#parse_object</a></li>
+					
+					<li><a href="#M000068">#parse_string</a></li>
+					
+					<li><a href="#M000069">#parse_value</a></li>
+					
+				</ul>
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+		<div id="project-metadata">
+			
+			
+			<div id="fileindex-section" class="section project-section">
+				<h3 class="section-header">Files</h3>
+				<ul>
+				
+					<li class="file"><a href="../../README.html">README</a></li>
+				
+				</ul>
+			</div>
+			
+
+			<div id="classindex-section" class="section project-section">
+				<h3 class="section-header">Class Index
+					<span class="search-toggle"><img src="../../images/find.png"
+						height="16" width="16" alt="[+]"
+						title="show/hide quicksearch" /></span></h3>
+				<form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+				<fieldset>
+					<legend>Quicksearch</legend>
+					<input type="text" name="quicksearch" value=""
+						class="quicksearch-field" />
+				</fieldset>
+				</form>
+
+				<ul class="link-list">
+				
+					<li><a href="../../JSON.html">JSON</a></li>
+				
+					<li><a href="../../JSON/Editor.html">JSON::Editor</a></li>
+				
+					<li><a href="../../JSON/Editor/EditMenu.html">JSON::Editor::EditMenu</a></li>
+				
+					<li><a href="../../JSON/Editor/FileMenu.html">JSON::Editor::FileMenu</a></li>
+				
+					<li><a href="../../JSON/Editor/Gtk.html">JSON::Editor::Gtk</a></li>
+				
+					<li><a href="../../JSON/Editor/Gtk/TreeIter.html">JSON::Editor::Gtk::TreeIter</a></li>
+				
+					<li><a href="../../JSON/Editor/JSONTreeView.html">JSON::Editor::JSONTreeView</a></li>
+				
+					<li><a href="../../JSON/Editor/MainWindow.html">JSON::Editor::MainWindow</a></li>
+				
+					<li><a href="../../JSON/Editor/MenuExtension.html">JSON::Editor::MenuExtension</a></li>
+				
+					<li><a href="../../JSON/Editor/OptionsMenu.html">JSON::Editor::OptionsMenu</a></li>
+				
+					<li><a href="../../JSON/Editor/PopUpMenu.html">JSON::Editor::PopUpMenu</a></li>
+				
+					<li><a href="../../JSON/Ext.html">JSON::Ext</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator.html">JSON::Ext::Generator</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods.html">JSON::Ext::Generator::GeneratorMethods</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Array.html">JSON::Ext::Generator::GeneratorMethods::Array</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/FalseClass.html">JSON::Ext::Generator::GeneratorMethods::FalseClass</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Float.html">JSON::Ext::Generator::GeneratorMethods::Float</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Hash.html">JSON::Ext::Generator::GeneratorMethods::Hash</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Integer.html">JSON::Ext::Generator::GeneratorMethods::Integer</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/NilClass.html">JSON::Ext::Generator::GeneratorMethods::NilClass</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Object.html">JSON::Ext::Generator::GeneratorMethods::Object</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/String.html">JSON::Ext::Generator::GeneratorMethods::String</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/String/Extend.html">JSON::Ext::Generator::GeneratorMethods::String::Extend</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/TrueClass.html">JSON::Ext::Generator::GeneratorMethods::TrueClass</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/State.html">JSON::Ext::Generator::State</a></li>
+				
+					<li><a href="../../JSON/Ext/Parser.html">JSON::Ext::Parser</a></li>
+				
+					<li><a href="../../JSON/GeneratorError.html">JSON::GeneratorError</a></li>
+				
+					<li><a href="../../JSON/JSONError.html">JSON::JSONError</a></li>
+				
+					<li><a href="../../JSON/MissingUnicodeSupport.html">JSON::MissingUnicodeSupport</a></li>
+				
+					<li><a href="../../JSON/NestingError.html">JSON::NestingError</a></li>
+				
+					<li><a href="../../JSON/ParserError.html">JSON::ParserError</a></li>
+				
+					<li><a href="../../JSON/Pure.html">JSON::Pure</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator.html">JSON::Pure::Generator</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods.html">JSON::Pure::Generator::GeneratorMethods</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Array.html">JSON::Pure::Generator::GeneratorMethods::Array</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/FalseClass.html">JSON::Pure::Generator::GeneratorMethods::FalseClass</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Float.html">JSON::Pure::Generator::GeneratorMethods::Float</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Hash.html">JSON::Pure::Generator::GeneratorMethods::Hash</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Integer.html">JSON::Pure::Generator::GeneratorMethods::Integer</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/NilClass.html">JSON::Pure::Generator::GeneratorMethods::NilClass</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Object.html">JSON::Pure::Generator::GeneratorMethods::Object</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/String.html">JSON::Pure::Generator::GeneratorMethods::String</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/String/Extend.html">JSON::Pure::Generator::GeneratorMethods::String::Extend</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/TrueClass.html">JSON::Pure::Generator::GeneratorMethods::TrueClass</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/State.html">JSON::Pure::Generator::State</a></li>
+				
+					<li><a href="../../JSON/Pure/Parser.html">JSON::Pure::Parser</a></li>
+				
+					<li><a href="../../Class.html">Class</a></li>
+				
+					<li><a href="../../Date.html">Date</a></li>
+				
+					<li><a href="../../DateTime.html">DateTime</a></li>
+				
+					<li><a href="../../Enumerable.html">Enumerable</a></li>
+				
+					<li><a href="../../Exception.html">Exception</a></li>
+				
+					<li><a href="../../Kernel.html">Kernel</a></li>
+				
+					<li><a href="../../Object.html">Object</a></li>
+				
+					<li><a href="../../Range.html">Range</a></li>
+				
+					<li><a href="../../Regexp.html">Regexp</a></li>
+				
+					<li><a href="../../Struct.html">Struct</a></li>
+				
+					<li><a href="../../Symbol.html">Symbol</a></li>
+				
+					<li><a href="../../Time.html">Time</a></li>
+				
+				</ul>
+				<div id="no-class-search-results" style="display: none;">No matching classes.</div>
+			</div>
+
+			
+		</div>
+	</div>
+
+	<div id="documentation">
+		<h1 class="class">JSON::Pure::Parser</h1>
+
+		<div id="description">
+			<p>
+This class implements the <a href="../../JSON.html">JSON</a> parser that is
+used to parse a <a href="../../JSON.html">JSON</a> string into a Ruby data
+structure.
+</p>
+
+		</div>
+
+		<!-- Constants -->
+		
+		<div id="constants-list" class="section">
+			<h3 class="section-header">Constants</h3>
+			<dl>
+			
+				<dt><a name="STRING">STRING</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="INTEGER">INTEGER</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="FLOAT">FLOAT</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="NAN">NAN</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="INFINITY">INFINITY</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="MINUS_INFINITY">MINUS_INFINITY</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="OBJECT_OPEN">OBJECT_OPEN</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="OBJECT_CLOSE">OBJECT_CLOSE</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="ARRAY_OPEN">ARRAY_OPEN</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="ARRAY_CLOSE">ARRAY_CLOSE</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="PAIR_DELIMITER">PAIR_DELIMITER</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="COLLECTION_DELIMITER">COLLECTION_DELIMITER</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="TRUE">TRUE</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="FALSE">FALSE</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="NULL">NULL</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="IGNORE">IGNORE</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="UNPARSED">UNPARSED</a></dt>
+				
+				<dd class="description missing-docs">(Not documented)</dd>
+				
+			
+				<dt><a name="UNESCAPE_MAP">UNESCAPE_MAP</a></dt>
+				
+				<dd class="description"><p>
+Unescape characters in strings.
+</p></dd>
+				
+			
+			</dl>
+		</div>
+		
+
+		<!-- Attributes -->
+		
+
+		<!-- Methods -->
+		
+		<div id="public-class-method-details" class="method-section section">
+			<h3 class="section-header">Public Class Methods</h3>
+
+		
+			<div id="new-method" class="method-detail ">
+				<a name="M000055"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">new</span><span
+						class="method-args">(source, opts = {})</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Creates a new <a href="Parser.html">JSON::Pure::Parser</a> instance for the
+string <em>source</em>.
+</p>
+<p>
+It will be configured by the <em>opts</em> hash. <em>opts</em> can have the
+following keys:
+</p>
+<ul>
+<li><b>max_nesting</b>: The maximum depth of nesting allowed in the parsed data
+structures. Disable depth checking with :max_nesting => false|nil|0, it
+defaults to 19.
+
+</li>
+<li><b>allow_nan</b>: If set to true, allow NaN, Infinity and -Infinity in
+defiance of RFC 4627 to be parsed by the <a href="Parser.html">Parser</a>.
+This option defaults to false.
+
+</li>
+<li><b>create_additions</b>: If set to false, the <a
+href="Parser.html">Parser</a> doesn&#8217;t create additions even if a
+matchin class and create_id was found. This option defaults to true.
+
+</li>
+<li><b>object_class</b>: Defaults to Hash
+
+</li>
+<li><b>array_class</b>: Defaults to Array
+
+</li>
+</ul>
+					
+
+					
+					<div class="method-source-code"
+						id="new-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/parser.rb, line 68</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">source</span>, <span class="ruby-identifier">opts</span> = {})
+          <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">defined?</span>(<span class="ruby-operator">::</span><span class="ruby-constant">Encoding</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">source</span>.<span class="ruby-identifier">encoding</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">ASCII_8BIT</span>
+              <span class="ruby-identifier">b</span> = <span class="ruby-identifier">source</span>[<span class="ruby-value">0</span>, <span class="ruby-value">4</span>].<span class="ruby-identifier">bytes</span>.<span class="ruby-identifier">to_a</span>
+              <span class="ruby-identifier">source</span> = <span class="ruby-keyword kw">case</span>
+                       <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_32BE</span>).<span class="ruby-identifier">encode!</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)
+                       <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_16BE</span>).<span class="ruby-identifier">encode!</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)
+                       <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">3</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_32LE</span>).<span class="ruby-identifier">encode!</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)
+                       <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">3</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_16LE</span>).<span class="ruby-identifier">encode!</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)
+                       <span class="ruby-keyword kw">else</span>
+                         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">dup</span>
+                       <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">source</span> = <span class="ruby-identifier">source</span>.<span class="ruby-identifier">encode</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">source</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">ASCII_8BIT</span>)
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">b</span> = <span class="ruby-identifier">source</span>
+            <span class="ruby-identifier">source</span> = <span class="ruby-keyword kw">case</span>
+                     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                       <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">iconv</span>(<span class="ruby-value str">'utf-8'</span>, <span class="ruby-value str">'utf-32be'</span>, <span class="ruby-identifier">b</span>)
+                     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                       <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">iconv</span>(<span class="ruby-value str">'utf-8'</span>, <span class="ruby-value str">'utf-16be'</span>, <span class="ruby-identifier">b</span>)
+                     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">3</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                       <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">iconv</span>(<span class="ruby-value str">'utf-8'</span>, <span class="ruby-value str">'utf-32le'</span>, <span class="ruby-identifier">b</span>)
+                     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">4</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">b</span>[<span class="ruby-value">3</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                       <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">iconv</span>(<span class="ruby-value str">'utf-8'</span>, <span class="ruby-value str">'utf-16le'</span>, <span class="ruby-identifier">b</span>)
+                     <span class="ruby-keyword kw">else</span>
+                       <span class="ruby-identifier">b</span>
+                     <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">super</span> <span class="ruby-identifier">source</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:max_nesting</span>) <span class="ruby-comment cmt"># defaults to 19</span>
+          <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-value">19</span>
+        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:max_nesting</span>]
+          <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:max_nesting</span>]
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-value">0</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-ivar">@allow_nan</span> = <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:allow_nan</span>]
+        <span class="ruby-identifier">ca</span> = <span class="ruby-keyword kw">true</span>
+        <span class="ruby-identifier">ca</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:create_additions</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:create_additions</span>)
+        <span class="ruby-ivar">@create_id</span> = <span class="ruby-identifier">ca</span> <span class="ruby-value">? </span><span class="ruby-constant">JSON</span>.<span class="ruby-identifier">create_id</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-ivar">@object_class</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:object_class</span>] <span class="ruby-operator">||</span> <span class="ruby-constant">Hash</span>
+        <span class="ruby-ivar">@array_class</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:array_class</span>] <span class="ruby-operator">||</span> <span class="ruby-constant">Array</span>
+      <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="public-instance-method-details" class="method-section section">
+			<h3 class="section-header">Public Instance Methods</h3>
+
+		
+			<div id="parse-method" class="method-detail ">
+				<a name="M000065"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">parse</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Parses the current <a href="../../JSON.html">JSON</a> string
+<em>source</em> and returns the complete data structure as a result.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="parse-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/parser.rb, line 123</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse</span>
+        <span class="ruby-identifier">reset</span>
+        <span class="ruby-identifier">obj</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">eos?</span>
+          <span class="ruby-keyword kw">case</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">OBJECT_OPEN</span>)
+            <span class="ruby-identifier">obj</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;source '#{peek(20)}' not in JSON!&quot;</span>
+            <span class="ruby-ivar">@current_nesting</span> = <span class="ruby-value">1</span>
+            <span class="ruby-identifier">obj</span> = <span class="ruby-identifier">parse_object</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">ARRAY_OPEN</span>)
+            <span class="ruby-identifier">obj</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;source '#{peek(20)}' not in JSON!&quot;</span>
+            <span class="ruby-ivar">@current_nesting</span> = <span class="ruby-value">1</span>
+            <span class="ruby-identifier">obj</span> = <span class="ruby-identifier">parse_array</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">skip</span>(<span class="ruby-constant">IGNORE</span>)
+            ;
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;source '#{peek(20)}' not in JSON!&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">obj</span> <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-value str">&quot;source did not contain any JSON!&quot;</span>
+        <span class="ruby-identifier">obj</span>
+      <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="private-instance-method-details" class="method-section section">
+			<h3 class="section-header">Private Instance Methods</h3>
+
+		
+			<div id="parse-array-method" class="method-detail ">
+				<a name="M000070"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">parse_array</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p class="missing-docs">(Not documented)</p>
+					
+
+					
+					<div class="method-source-code"
+						id="parse-array-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/parser.rb, line 224</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_array</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">NestingError</span>, <span class="ruby-value str">&quot;nesting of #@current_nesting is too deep&quot;</span> <span class="ruby-keyword kw">if</span>
+          <span class="ruby-ivar">@max_nesting</span>.<span class="ruby-identifier">nonzero?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@current_nesting</span> <span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@max_nesting</span>
+        <span class="ruby-identifier">result</span> = <span class="ruby-ivar">@array_class</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-identifier">delim</span> = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">eos?</span>
+          <span class="ruby-keyword kw">case</span>
+          <span class="ruby-keyword kw">when</span> (<span class="ruby-identifier">value</span> = <span class="ruby-identifier">parse_value</span>) <span class="ruby-operator">!=</span> <span class="ruby-constant">UNPARSED</span>
+            <span class="ruby-identifier">delim</span> = <span class="ruby-keyword kw">false</span>
+            <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">value</span>
+            <span class="ruby-identifier">skip</span>(<span class="ruby-constant">IGNORE</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">COLLECTION_DELIMITER</span>)
+              <span class="ruby-identifier">delim</span> = <span class="ruby-keyword kw">true</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">match?</span>(<span class="ruby-constant">ARRAY_CLOSE</span>)
+              ;
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;expected ',' or ']' in array at '#{peek(20)}'!&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">ARRAY_CLOSE</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">delim</span>
+              <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;expected next element in array at '#{peek(20)}'!&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">break</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">skip</span>(<span class="ruby-constant">IGNORE</span>)
+            ;
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;unexpected token in array at '#{peek(20)}'!&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">result</span>
+      <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="parse-object-method" class="method-detail ">
+				<a name="M000071"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">parse_object</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p class="missing-docs">(Not documented)</p>
+					
+
+					
+					<div class="method-source-code"
+						id="parse-object-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/parser.rb, line 256</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_object</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">NestingError</span>, <span class="ruby-value str">&quot;nesting of #@current_nesting is too deep&quot;</span> <span class="ruby-keyword kw">if</span>
+          <span class="ruby-ivar">@max_nesting</span>.<span class="ruby-identifier">nonzero?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@current_nesting</span> <span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@max_nesting</span>
+        <span class="ruby-identifier">result</span> = <span class="ruby-ivar">@object_class</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-identifier">delim</span> = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">eos?</span>
+          <span class="ruby-keyword kw">case</span>
+          <span class="ruby-keyword kw">when</span> (<span class="ruby-identifier">string</span> = <span class="ruby-identifier">parse_string</span>) <span class="ruby-operator">!=</span> <span class="ruby-constant">UNPARSED</span>
+            <span class="ruby-identifier">skip</span>(<span class="ruby-constant">IGNORE</span>)
+            <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">PAIR_DELIMITER</span>)
+              <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;expected ':' in object at '#{peek(20)}'!&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">skip</span>(<span class="ruby-constant">IGNORE</span>)
+            <span class="ruby-keyword kw">unless</span> (<span class="ruby-identifier">value</span> = <span class="ruby-identifier">parse_value</span>).<span class="ruby-identifier">equal?</span> <span class="ruby-constant">UNPARSED</span>
+              <span class="ruby-identifier">result</span>[<span class="ruby-identifier">string</span>] = <span class="ruby-identifier">value</span>
+              <span class="ruby-identifier">delim</span> = <span class="ruby-keyword kw">false</span>
+              <span class="ruby-identifier">skip</span>(<span class="ruby-constant">IGNORE</span>)
+              <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">COLLECTION_DELIMITER</span>)
+                <span class="ruby-identifier">delim</span> = <span class="ruby-keyword kw">true</span>
+              <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">match?</span>(<span class="ruby-constant">OBJECT_CLOSE</span>)
+                ;
+              <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;expected ',' or '}' in object at '#{peek(20)}'!&quot;</span>
+              <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;expected value in object at '#{peek(20)}'!&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">OBJECT_CLOSE</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">delim</span>
+              <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;expected next name, value pair in object at '#{peek(20)}'!&quot;</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@create_id</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">klassname</span> = <span class="ruby-identifier">result</span>[<span class="ruby-ivar">@create_id</span>]
+              <span class="ruby-identifier">klass</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">deep_const_get</span> <span class="ruby-identifier">klassname</span>
+              <span class="ruby-keyword kw">break</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">klass</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">json_creatable?</span>
+              <span class="ruby-identifier">result</span> = <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">json_create</span>(<span class="ruby-identifier">result</span>)
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">break</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">skip</span>(<span class="ruby-constant">IGNORE</span>)
+            ;
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParserError</span>, <span class="ruby-node">&quot;unexpected token in object at '#{peek(20)}'!&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">result</span>
+      <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="parse-string-method" class="method-detail ">
+				<a name="M000068"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">parse_string</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p class="missing-docs">(Not documented)</p>
+					
+
+					
+					<div class="method-source-code"
+						id="parse-string-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/parser.rb, line 162</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_string</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">STRING</span>)
+          <span class="ruby-keyword kw">return</span> <span class="ruby-value str">''</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">empty?</span>
+          <span class="ruby-identifier">string</span> = <span class="ruby-keyword kw">self</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">%r((?:\\[\\bfnrt&quot;/]|(?:\\u(?:[A-Fa-f\d]{4}))+|\\[\x20-\xff]))n</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">u</span> = <span class="ruby-constant">UNESCAPE_MAP</span>[<span class="ruby-identifier">$&amp;</span>[<span class="ruby-value">1</span>]]
+              <span class="ruby-identifier">u</span>
+            <span class="ruby-keyword kw">else</span> <span class="ruby-comment cmt"># \uXXXX</span>
+              <span class="ruby-identifier">bytes</span> = <span class="ruby-value str">''</span>
+              <span class="ruby-identifier">i</span> = <span class="ruby-value">0</span>
+              <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">c</span>[<span class="ruby-value">6</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">i</span>] <span class="ruby-operator">==</span> <span class="ruby-value">?\\</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">c</span>[<span class="ruby-value">6</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value">?u</span>
+                <span class="ruby-identifier">bytes</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">c</span>[<span class="ruby-value">6</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">+</span> <span class="ruby-value">2</span>, <span class="ruby-value">2</span>].<span class="ruby-identifier">to_i</span>(<span class="ruby-value">16</span>) <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">c</span>[<span class="ruby-value">6</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">+</span> <span class="ruby-value">4</span>, <span class="ruby-value">2</span>].<span class="ruby-identifier">to_i</span>(<span class="ruby-value">16</span>)
+                <span class="ruby-identifier">i</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+              <span class="ruby-keyword kw">end</span>
+              <span class="ruby-constant">JSON</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF16toUTF8</span>.<span class="ruby-identifier">iconv</span>(<span class="ruby-identifier">bytes</span>)
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">string</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:force_encoding</span>)
+            <span class="ruby-identifier">string</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">string</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-constant">UNPARSED</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Iconv</span><span class="ruby-operator">::</span><span class="ruby-constant">Failure</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">GeneratorError</span>, <span class="ruby-node">&quot;Caught #{e.class}: #{e}&quot;</span>
+      <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="parse-value-method" class="method-detail ">
+				<a name="M000069"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">parse_value</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p class="missing-docs">(Not documented)</p>
+					
+
+					
+					<div class="method-source-code"
+						id="parse-value-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/parser.rb, line 189</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_value</span>
+        <span class="ruby-keyword kw">case</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">FLOAT</span>)
+          <span class="ruby-constant">Float</span>(<span class="ruby-keyword kw">self</span>[<span class="ruby-value">1</span>])
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">INTEGER</span>)
+          <span class="ruby-constant">Integer</span>(<span class="ruby-keyword kw">self</span>[<span class="ruby-value">1</span>])
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">TRUE</span>)
+          <span class="ruby-keyword kw">true</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">FALSE</span>)
+          <span class="ruby-keyword kw">false</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">NULL</span>)
+          <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-keyword kw">when</span> (<span class="ruby-identifier">string</span> = <span class="ruby-identifier">parse_string</span>) <span class="ruby-operator">!=</span> <span class="ruby-constant">UNPARSED</span>
+          <span class="ruby-identifier">string</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">ARRAY_OPEN</span>)
+          <span class="ruby-ivar">@current_nesting</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+          <span class="ruby-identifier">ary</span> = <span class="ruby-identifier">parse_array</span>
+          <span class="ruby-ivar">@current_nesting</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+          <span class="ruby-identifier">ary</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">OBJECT_OPEN</span>)
+          <span class="ruby-ivar">@current_nesting</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+          <span class="ruby-identifier">obj</span> = <span class="ruby-identifier">parse_object</span>
+          <span class="ruby-ivar">@current_nesting</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+          <span class="ruby-identifier">obj</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-ivar">@allow_nan</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">NAN</span>)
+          <span class="ruby-constant">NaN</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-ivar">@allow_nan</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">INFINITY</span>)
+          <span class="ruby-constant">Infinity</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-ivar">@allow_nan</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">scan</span>(<span class="ruby-constant">MINUS_INFINITY</span>)
+          <span class="ruby-constant">MinusInfinity</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-constant">UNPARSED</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+
+	</div>
+
+
+	<div id="rdoc-debugging-section-dump" class="debugging-section">
+	
+		<p>Disabled; run with --debug to generate this.</p>
+	
+	</div>
+
+	<div id="validator-badges">
+		<p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+		<p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+			Rdoc Generator</a> 1.1.6</small>.</p>
+	</div>
+
+</body>
+</html>
+

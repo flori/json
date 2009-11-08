@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+	<title>Class: JSON::Ext::Parser</title>
+
+	<link rel="stylesheet" href="../../rdoc.css" type="text/css" media="screen" />
+
+	<script src="../../js/jquery.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../js/thickbox-compressed.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../js/quicksearch.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../js/darkfish.js" type="text/javascript"
+		charset="utf-8"></script>
+
+</head>
+<body class="class">
+
+	<div id="metadata">
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li><a href="../../ext/json/ext/parser_c.html?TB_iframe=true&amp;height=550&amp;width=785"
+							class="thickbox" title="ext/json/ext/parser.c">ext/json/ext/parser.c</a></li>
+					
+					</ul>
+				</div>
+			</div>
+
+			
+		</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link"><a href="../../Object.html">Object</a></p>
+				
+			</div>
+			
+
+			<!-- Namespace Contents -->
+			
+
+			<!-- Method Quickref -->
+			
+			<div id="method-list-section" class="section">
+				<h3 class="section-header">Methods</h3>
+				<ul class="link-list">
+					
+					<li><a href="#M000078">::new</a></li>
+					
+					<li><a href="#M000079">#parse</a></li>
+					
+					<li><a href="#M000080">#source</a></li>
+					
+				</ul>
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+		<div id="project-metadata">
+			
+			
+			<div id="fileindex-section" class="section project-section">
+				<h3 class="section-header">Files</h3>
+				<ul>
+				
+					<li class="file"><a href="../../README.html">README</a></li>
+				
+				</ul>
+			</div>
+			
+
+			<div id="classindex-section" class="section project-section">
+				<h3 class="section-header">Class Index
+					<span class="search-toggle"><img src="../../images/find.png"
+						height="16" width="16" alt="[+]"
+						title="show/hide quicksearch" /></span></h3>
+				<form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+				<fieldset>
+					<legend>Quicksearch</legend>
+					<input type="text" name="quicksearch" value=""
+						class="quicksearch-field" />
+				</fieldset>
+				</form>
+
+				<ul class="link-list">
+				
+					<li><a href="../../JSON.html">JSON</a></li>
+				
+					<li><a href="../../JSON/Editor.html">JSON::Editor</a></li>
+				
+					<li><a href="../../JSON/Editor/EditMenu.html">JSON::Editor::EditMenu</a></li>
+				
+					<li><a href="../../JSON/Editor/FileMenu.html">JSON::Editor::FileMenu</a></li>
+				
+					<li><a href="../../JSON/Editor/Gtk.html">JSON::Editor::Gtk</a></li>
+				
+					<li><a href="../../JSON/Editor/Gtk/TreeIter.html">JSON::Editor::Gtk::TreeIter</a></li>
+				
+					<li><a href="../../JSON/Editor/JSONTreeView.html">JSON::Editor::JSONTreeView</a></li>
+				
+					<li><a href="../../JSON/Editor/MainWindow.html">JSON::Editor::MainWindow</a></li>
+				
+					<li><a href="../../JSON/Editor/MenuExtension.html">JSON::Editor::MenuExtension</a></li>
+				
+					<li><a href="../../JSON/Editor/OptionsMenu.html">JSON::Editor::OptionsMenu</a></li>
+				
+					<li><a href="../../JSON/Editor/PopUpMenu.html">JSON::Editor::PopUpMenu</a></li>
+				
+					<li><a href="../../JSON/Ext.html">JSON::Ext</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator.html">JSON::Ext::Generator</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods.html">JSON::Ext::Generator::GeneratorMethods</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Array.html">JSON::Ext::Generator::GeneratorMethods::Array</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/FalseClass.html">JSON::Ext::Generator::GeneratorMethods::FalseClass</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Float.html">JSON::Ext::Generator::GeneratorMethods::Float</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Hash.html">JSON::Ext::Generator::GeneratorMethods::Hash</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Integer.html">JSON::Ext::Generator::GeneratorMethods::Integer</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/NilClass.html">JSON::Ext::Generator::GeneratorMethods::NilClass</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/Object.html">JSON::Ext::Generator::GeneratorMethods::Object</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/String.html">JSON::Ext::Generator::GeneratorMethods::String</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/String/Extend.html">JSON::Ext::Generator::GeneratorMethods::String::Extend</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/GeneratorMethods/TrueClass.html">JSON::Ext::Generator::GeneratorMethods::TrueClass</a></li>
+				
+					<li><a href="../../JSON/Ext/Generator/State.html">JSON::Ext::Generator::State</a></li>
+				
+					<li><a href="../../JSON/Ext/Parser.html">JSON::Ext::Parser</a></li>
+				
+					<li><a href="../../JSON/GeneratorError.html">JSON::GeneratorError</a></li>
+				
+					<li><a href="../../JSON/JSONError.html">JSON::JSONError</a></li>
+				
+					<li><a href="../../JSON/MissingUnicodeSupport.html">JSON::MissingUnicodeSupport</a></li>
+				
+					<li><a href="../../JSON/NestingError.html">JSON::NestingError</a></li>
+				
+					<li><a href="../../JSON/ParserError.html">JSON::ParserError</a></li>
+				
+					<li><a href="../../JSON/Pure.html">JSON::Pure</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator.html">JSON::Pure::Generator</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods.html">JSON::Pure::Generator::GeneratorMethods</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Array.html">JSON::Pure::Generator::GeneratorMethods::Array</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/FalseClass.html">JSON::Pure::Generator::GeneratorMethods::FalseClass</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Float.html">JSON::Pure::Generator::GeneratorMethods::Float</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Hash.html">JSON::Pure::Generator::GeneratorMethods::Hash</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Integer.html">JSON::Pure::Generator::GeneratorMethods::Integer</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/NilClass.html">JSON::Pure::Generator::GeneratorMethods::NilClass</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/Object.html">JSON::Pure::Generator::GeneratorMethods::Object</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/String.html">JSON::Pure::Generator::GeneratorMethods::String</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/String/Extend.html">JSON::Pure::Generator::GeneratorMethods::String::Extend</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/GeneratorMethods/TrueClass.html">JSON::Pure::Generator::GeneratorMethods::TrueClass</a></li>
+				
+					<li><a href="../../JSON/Pure/Generator/State.html">JSON::Pure::Generator::State</a></li>
+				
+					<li><a href="../../JSON/Pure/Parser.html">JSON::Pure::Parser</a></li>
+				
+					<li><a href="../../Class.html">Class</a></li>
+				
+					<li><a href="../../Date.html">Date</a></li>
+				
+					<li><a href="../../DateTime.html">DateTime</a></li>
+				
+					<li><a href="../../Enumerable.html">Enumerable</a></li>
+				
+					<li><a href="../../Exception.html">Exception</a></li>
+				
+					<li><a href="../../Kernel.html">Kernel</a></li>
+				
+					<li><a href="../../Object.html">Object</a></li>
+				
+					<li><a href="../../Range.html">Range</a></li>
+				
+					<li><a href="../../Regexp.html">Regexp</a></li>
+				
+					<li><a href="../../Struct.html">Struct</a></li>
+				
+					<li><a href="../../Symbol.html">Symbol</a></li>
+				
+					<li><a href="../../Time.html">Time</a></li>
+				
+				</ul>
+				<div id="no-class-search-results" style="display: none;">No matching classes.</div>
+			</div>
+
+			
+		</div>
+	</div>
+
+	<div id="documentation">
+		<h1 class="class">JSON::Ext::Parser</h1>
+
+		<div id="description">
+			<p>
+This is the <a href="../../JSON.html">JSON</a> parser implemented as a C
+extension. It can be configured to be used by setting
+</p>
+<pre>
+ JSON.parser = JSON::Ext::Parser
+</pre>
+<p>
+with the method parser= in <a href="../../JSON.html">JSON</a>.
+</p>
+
+		</div>
+
+		<!-- Constants -->
+		
+
+		<!-- Attributes -->
+		
+
+		<!-- Methods -->
+		
+		<div id="public-class-method-details" class="method-section section">
+			<h3 class="section-header">Public Class Methods</h3>
+
+		
+			<div id="new-method" class="method-detail ">
+				<a name="M000078"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-callseq">new(source, opts => {})</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Creates a new <a href="Parser.html">JSON::Ext::Parser</a> instance for the
+string <em>source</em>.
+</p>
+<p>
+Creates a new <a href="Parser.html">JSON::Ext::Parser</a> instance for the
+string <em>source</em>.
+</p>
+<p>
+It will be configured by the <em>opts</em> hash. <em>opts</em> can have the
+following keys:
+</p>
+<p>
+<em>opts</em> can have the following keys:
+</p>
+<ul>
+<li><b>max_nesting</b>: The maximum depth of nesting allowed in the parsed data
+structures. Disable depth checking with :max_nesting => false|nil|0, it
+defaults to 19.
+
+</li>
+<li><b>allow_nan</b>: If set to true, allow NaN, Infinity and -Infinity in
+defiance of RFC 4627 to be parsed by the <a href="Parser.html">Parser</a>.
+This option defaults to false.
+
+</li>
+<li><b>create_additions</b>: If set to false, the <a
+href="Parser.html">Parser</a> doesn&#8217;t create additions even if a
+matchin class and create_id was found. This option defaults to true.
+
+</li>
+<li><b>object_class</b>: Defaults to Hash
+
+</li>
+<li><b>array_class</b>: Defaults to Array
+
+</li>
+</ul>
+					
+
+					
+					<div class="method-source-code"
+						id="new-source">
+<pre>
+static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
+{
+    char *ptr;
+    long len;
+    VALUE source, opts;
+    GET_PARSER;
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;source, &amp;opts);
+    source = convert_encoding(StringValue(source));
+    ptr = RSTRING_PTR(source);
+    len = RSTRING_LEN(source);
+    if (!NIL_P(opts)) {
+        opts = rb_convert_type(opts, T_HASH, &quot;Hash&quot;, &quot;to_hash&quot;);
+        if (NIL_P(opts)) {
+            rb_raise(rb_eArgError, &quot;opts needs to be like a hash&quot;);
+        } else {
+            VALUE tmp = ID2SYM(i_max_nesting);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                VALUE max_nesting = rb_hash_aref(opts, tmp);
+                if (RTEST(max_nesting)) {
+                    Check_Type(max_nesting, T_FIXNUM);
+                    json-&gt;max_nesting = FIX2INT(max_nesting);
+                } else {
+                    json-&gt;max_nesting = 0;
+                }
+            } else {
+                json-&gt;max_nesting = 19;
+            }
+            tmp = ID2SYM(i_allow_nan);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                VALUE allow_nan = rb_hash_aref(opts, tmp);
+                json-&gt;allow_nan = RTEST(allow_nan) ? 1 : 0;
+            } else {
+                json-&gt;allow_nan = 0;
+            }
+            tmp = ID2SYM(i_create_additions);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                VALUE create_additions = rb_hash_aref(opts, tmp);
+                if (RTEST(create_additions)) {
+                    json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+                } else {
+                    json-&gt;create_id = Qnil;
+                }
+            } else {
+                json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+            }
+            tmp = ID2SYM(i_object_class);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                json-&gt;object_class = rb_hash_aref(opts, tmp);
+            } else {
+                json-&gt;object_class = Qnil;
+            }
+            tmp = ID2SYM(i_array_class);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                json-&gt;array_class = rb_hash_aref(opts, tmp);
+            } else {
+                json-&gt;array_class = Qnil;
+            }
+        }
+    } else {
+        json-&gt;max_nesting = 19;
+        json-&gt;allow_nan = 0;
+        json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+        json-&gt;object_class = Qnil;
+        json-&gt;array_class = Qnil;
+    }
+    json-&gt;current_nesting = 0;
+    json-&gt;len = len;
+    json-&gt;source = ptr;
+    json-&gt;Vsource = source;
+    return self;
+}</pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="public-instance-method-details" class="method-section section">
+			<h3 class="section-header">Public Instance Methods</h3>
+
+		
+			<div id="parse-method" class="method-detail ">
+				<a name="M000079"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-callseq">parse()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Parses the current <a href="../../JSON.html">JSON</a> text <em>source</em>
+and returns the complete data structure as a result.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="parse-source">
+<pre>
+static VALUE cParser_parse(VALUE self)
+{
+    char *p, *pe;
+    int cs = EVIL;
+    VALUE result = Qnil;
+    GET_PARSER;
+
+    
+#line 1685 &quot;parser.c&quot;
+        {
+        cs = JSON_start;
+        }
+
+#line 682 &quot;parser.rl&quot;
+    p = json-&gt;source;
+    pe = p + json-&gt;len;
+    
+#line 1694 &quot;parser.c&quot;
+        {
+        if ( p == pe )
+                goto _test_eof;
+        switch ( cs )
+        {
+st1:
+        if ( ++p == pe )
+                goto _test_eof1;
+case 1:
+        switch( (*p) ) {
+                case 13: goto st1;
+                case 32: goto st1;
+                case 47: goto st2;
+                case 91: goto tr3;
+                case 123: goto tr4;
+        }
+        if ( 9 &lt;= (*p) &amp;&amp; (*p) &lt;= 10 )
+                goto st1;
+        goto st0;
+st0:
+cs = 0;
+        goto _out;
+st2:
+        if ( ++p == pe )
+                goto _test_eof2;
+case 2:
+        switch( (*p) ) {
+                case 42: goto st3;
+                case 47: goto st5;
+        }
+        goto st0;
+st3:
+        if ( ++p == pe )
+                goto _test_eof3;
+case 3:
+        if ( (*p) == 42 )
+                goto st4;
+        goto st3;
+st4:
+        if ( ++p == pe )
+                goto _test_eof4;
+case 4:
+        switch( (*p) ) {
+                case 42: goto st4;
+                case 47: goto st1;
+        }
+        goto st3;
+st5:
+        if ( ++p == pe )
+                goto _test_eof5;
+case 5:
+        if ( (*p) == 10 )
+                goto st1;
+        goto st5;
+tr3:
+#line 500 &quot;parser.rl&quot;
+        {
+        char *np;
+        json-&gt;current_nesting = 1;
+        np = JSON_parse_array(json, p, pe, &amp;result);
+        if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
+    }
+        goto st10;
+tr4:
+#line 493 &quot;parser.rl&quot;
+        {
+        char *np;
+        json-&gt;current_nesting = 1;
+        np = JSON_parse_object(json, p, pe, &amp;result);
+        if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
+    }
+        goto st10;
+st10:
+        if ( ++p == pe )
+                goto _test_eof10;
+case 10:
+#line 1771 &quot;parser.c&quot;
+        switch( (*p) ) {
+                case 13: goto st10;
+                case 32: goto st10;
+                case 47: goto st6;
+        }
+        if ( 9 &lt;= (*p) &amp;&amp; (*p) &lt;= 10 )
+                goto st10;
+        goto st0;
+st6:
+        if ( ++p == pe )
+                goto _test_eof6;
+case 6:
+        switch( (*p) ) {
+                case 42: goto st7;
+                case 47: goto st9;
+        }
+        goto st0;
+st7:
+        if ( ++p == pe )
+                goto _test_eof7;
+case 7:
+        if ( (*p) == 42 )
+                goto st8;
+        goto st7;
+st8:
+        if ( ++p == pe )
+                goto _test_eof8;
+case 8:
+        switch( (*p) ) {
+                case 42: goto st8;
+                case 47: goto st10;
+        }
+        goto st7;
+st9:
+        if ( ++p == pe )
+                goto _test_eof9;
+case 9:
+        if ( (*p) == 10 )
+                goto st10;
+        goto st9;
+        }
+        _test_eof1: cs = 1; goto _test_eof; 
+        _test_eof2: cs = 2; goto _test_eof; 
+        _test_eof3: cs = 3; goto _test_eof; 
+        _test_eof4: cs = 4; goto _test_eof; 
+        _test_eof5: cs = 5; goto _test_eof; 
+        _test_eof10: cs = 10; goto _test_eof; 
+        _test_eof6: cs = 6; goto _test_eof; 
+        _test_eof7: cs = 7; goto _test_eof; 
+        _test_eof8: cs = 8; goto _test_eof; 
+        _test_eof9: cs = 9; goto _test_eof; 
+
+        _test_eof: {}
+        _out: {}
+        }
+
+#line 685 &quot;parser.rl&quot;
+
+    if (cs &gt;= JSON_first_final &amp;&amp; p == pe) {
+        return result;
+    } else {
+        rb_raise(eParserError, &quot;%u: unexpected token at '%s'&quot;, __LINE__, p);
+    }
+}</pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="source-method" class="method-detail ">
+				<a name="M000080"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-callseq">source()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Returns a copy of the current <em>source</em> string, that was used to
+construct this <a href="Parser.html">Parser</a>.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="source-source">
+<pre>
+static VALUE cParser_source(VALUE self)
+{
+    GET_PARSER;
+    return rb_str_dup(json-&gt;Vsource);
+}</pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+
+	</div>
+
+
+	<div id="rdoc-debugging-section-dump" class="debugging-section">
+	
+		<p>Disabled; run with --debug to generate this.</p>
+	
+	</div>
+
+	<div id="validator-badges">
+		<p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+		<p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+			Rdoc Generator</a> 1.1.6</small>.</p>
+	</div>
+
+</body>
+</html>
+
