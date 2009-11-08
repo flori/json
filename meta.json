@@ -3,7 +3,7 @@
   "author":"Florian Frank",
   "documentation_url":"doc/index.html",
   "download_url":"http://rubyforge.org/frs/?group_id=953",
-  "github_url": "http:\/\/github.com\/flori\/json\/tree\/master",
+  "github_url": "http://github.com/flori/json/tree/master",
   "project_name":"JSON implementation for Ruby",
   "project_unixname":"json",
   "project_url":"http://rubyforge.org/projects/json",
