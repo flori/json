@@ -197,7 +197,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
-    s.homepage = "http://json.rubyforge.org"
+    s.homepage = "http://flori.github.com/#{PKG_NAME}"
     s.rubyforge_project = "json"
   end
 
@@ -232,7 +232,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
-    s.homepage = "http://json.rubyforge.org"
+    s.homepage = "http://flori.github.com/#{PKG_NAME}"
     s.rubyforge_project = "json"
   end
 
