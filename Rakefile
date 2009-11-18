@@ -245,7 +245,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     ext.name            = 'parser'
     ext.gem_spec        = spec_ext
     ext.cross_compile   = true
-    ext.cross_platform  = %w[i386-mswin32 and i386-mingw32]
+    ext.cross_platform  = %w[i386-mswin32 i386-mingw32]
     ext.ext_dir         = 'ext/json/ext/parser'
     ext.lib_dir         = 'lib/json/ext'
   end
@@ -254,7 +254,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     ext.name            = 'generator'
     ext.gem_spec        = spec_ext
     ext.cross_compile   = true
-    ext.cross_platform  = %w[i386-mswin32 and i386-mingw32]
+    ext.cross_platform  = %w[i386-mswin32 i386-mingw32]
     ext.ext_dir         = 'ext/json/ext/generator'
     ext.lib_dir         = 'lib/json/ext'
   end
