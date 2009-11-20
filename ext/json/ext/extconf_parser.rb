@@ -6,7 +6,9 @@ unless $CFLAGS.gsub!(/ -O[\dsz]?/, ' -O3')
 end
 if CONFIG['CC'] =~ /gcc/
   $CFLAGS << ' -Wall'
-  #$CFLAGS.gsub!(/ -O[\dsz]?/, ' -O0 -ggdb')
+  #unless $CFLAGS.gsub!(/ -O[\dsz]?/, ' -O0 -ggdb')
+  #  $CFLAGS << ' -O0 -ggdb'
+  #end
 end
 if RUBY_VERSION >= '1.9'
   $CFLAGS << ' -DRUBY_19'

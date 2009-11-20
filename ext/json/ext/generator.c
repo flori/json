@@ -358,6 +358,35 @@ static void fbuffer_append_char(FBuffer *fb, char newchr)
     fb->len++;
 }
 
+static void freverse(char *start, char *end)
+{
+	char c;
+
+	while (end > start) {
+		c = *end, *end-- = *start, *start++ = c;
+    }
+}
+
+static int fitoa(int number, char *buf)
+{
+	static char digits[] = "0123456789";
+	int sign = number;
+	char* tmp = buf;
+
+	if (sign < 0) number = -number;
+    do *tmp++ = digits[number % 10]; while (number /= 10);
+	if (sign < 0) *tmp++ = '-';
+	freverse(buf, tmp - 1);
+    return tmp - buf;
+}
+
+static void fbuffer_append_integer(FBuffer *fb, int number)
+{
+    char buf[12];
+    int len = fitoa(number, buf);
+    fbuffer_append(fb, buf, len);
+}
+
 static FBuffer *fbuffer_dup(FBuffer *fb)
 {
     int len = fb->len;
@@ -842,14 +871,16 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
             fbuffer_append(buffer, "true", 4);
             break;
         case T_FIXNUM:
+            fbuffer_append_integer(buffer, FIX2INT(obj));
+            break;
         case T_BIGNUM:
-            tmp = rb_funcall(obj, i_to_s, 0);
+            tmp = rb_big2str0(obj, 10, 1);
             fbuffer_append(buffer, RSTRING_PAIR(tmp));
             break;
         case T_FLOAT:
             {
-                char allow_nan = state->allow_nan;
                 double value = RFLOAT_VALUE(obj);
+                char allow_nan = state->allow_nan;
                 tmp = rb_funcall(obj, i_to_s, 0);
                 if (!allow_nan) {
                     if (isinf(value)) {

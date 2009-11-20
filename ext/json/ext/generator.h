@@ -80,6 +80,7 @@ static void fbuffer_free(FBuffer *fb);
 static void fbuffer_free_only_buffer(FBuffer *fb);
 static void fbuffer_clear(FBuffer *fb);
 static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len);
+static void fbuffer_append_integer(FBuffer *fb, int number);
 static void fbuffer_append_char(FBuffer *fb, char newchr);
 static FBuffer *fbuffer_dup(FBuffer *fb);
 
