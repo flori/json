@@ -282,6 +282,13 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
     fbuffer_append(buffer, ptr + start, end - start);
 }
 
+static char *fstrndup(const char *ptr, int len) {
+  if (len <= 0) return NULL;
+  char *result = ALLOC_N(char, len);
+  memccpy(result, ptr, 0, len);
+  return result;
+}
+
 /* fbuffer implementation */
 
 static FBuffer *fbuffer_alloc()
@@ -592,32 +599,37 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     tmp = rb_hash_aref(opts, ID2SYM(i_indent));
     if (RTEST(tmp)) {
         Check_Type(tmp, T_STRING);
-        state->indent = strdup(RSTRING_PTR(tmp));
-        state->indent_len = strlen(state->indent);
+        int len = RSTRING_LEN(tmp);
+        state->indent = fstrndup(RSTRING_PTR(tmp), len);
+        state->indent_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space));
     if (RTEST(tmp)) {
         Check_Type(tmp, T_STRING);
-        state->space = strdup(RSTRING_PTR(tmp));
-        state->space_len = strlen(state->space);
+        int len = RSTRING_LEN(tmp);
+        state->space = fstrndup(RSTRING_PTR(tmp), len);
+        state->space_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space_before));
     if (RTEST(tmp)) {
         Check_Type(tmp, T_STRING);
-        state->space_before = strdup(RSTRING_PTR(tmp));
-        state->space_before_len = strlen(state->space_before);
+        int len = RSTRING_LEN(tmp);
+        state->space_before = fstrndup(RSTRING_PTR(tmp), len);
+        state->space_before_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_array_nl));
     if (RTEST(tmp)) {
         Check_Type(tmp, T_STRING);
-        state->array_nl = strdup(RSTRING_PTR(tmp));
-        state->array_nl_len = strlen(state->array_nl);
+        int len = RSTRING_LEN(tmp);
+        state->array_nl = fstrndup(RSTRING_PTR(tmp), len);
+        state->array_nl_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_object_nl));
     if (RTEST(tmp)) {
         Check_Type(tmp, T_STRING);
-        state->object_nl = strdup(RSTRING_PTR(tmp));
-        state->object_nl_len = strlen(state->object_nl);
+        int len = RSTRING_LEN(tmp);
+        state->object_nl = fstrndup(RSTRING_PTR(tmp), len);
+        state->object_nl_len = len;
     }
     tmp = ID2SYM(i_max_nesting);
     state->max_nesting = 19;

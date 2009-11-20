@@ -73,6 +73,7 @@ typedef struct FBufferStruct {
 #define FBUFFER_CAPA(fb) (fb->capa)
 #define FBUFFER_PAIR(fb) FBUFFER_PTR(fb), FBUFFER_LEN(fb)
 
+static char *fstrndup(const char *ptr, int len);
 static FBuffer *fbuffer_alloc();
 static FBuffer *fbuffer_alloc_with_length(unsigned initial_length);
 static void fbuffer_free(FBuffer *fb);
