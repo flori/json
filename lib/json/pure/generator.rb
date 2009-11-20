@@ -112,7 +112,7 @@ module JSON
           when Hash
             new(opts)
           else
-            new
+            SAFE_STATE_PROTOTYPE
           end
         end
 
@@ -210,7 +210,7 @@ module JSON
         # passed to the configure method.
         def to_h
           result = {}
-          for iv in %w[indent space space_before object_nl array_nl check_circular allow_nan max_nesting]
+          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting]
             result[iv.intern] = instance_variable_get("@#{iv}")
           end
           result
@@ -244,7 +244,7 @@ module JSON
           # _depth_ is used to find out nesting depth, to indent accordingly.
           def to_json(state = nil, depth = 0, *)
             if state
-              state = JSON.state.from_state(state)
+              state = State.from_state(state)
               state.check_max_nesting(depth)
             end
             json_transform(state, depth)
@@ -299,7 +299,7 @@ module JSON
           # _depth_ is used to find out nesting depth, to indent accordingly.
           def to_json(state = nil, depth = 0, *)
             if state
-              state = JSON.state.from_state(state)
+              state = State.from_state(state)
               state.check_max_nesting(depth)
             end
             json_transform(state, depth)
@@ -366,7 +366,7 @@ module JSON
             # \u????.
             def to_json(*args)
               state, = *args
-              state ||= JSON.state.from_state(state)
+              state ||= State.from_state(state)
               if encoding == ::Encoding::UTF_8
                 string = self
               else
@@ -384,7 +384,7 @@ module JSON
             # \u????.
             def to_json(*args)
               state, = *args
-              state ||= JSON.state.from_state(state)
+              state ||= State.from_state(state)
               if state.ascii_only?
                 '"' << JSON.utf8_to_json_ascii(self) << '"'
               else

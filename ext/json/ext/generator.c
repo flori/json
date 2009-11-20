@@ -8,7 +8,7 @@ static ID i_encoding, i_encode;
 static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
              mHash, mArray, mInteger, mFloat, mString, mString_Extend,
              mTrueClass, mFalseClass, mNilClass, eGeneratorError,
-             eNestingError, CRegexp_MULTILINE;
+             eNestingError, CRegexp_MULTILINE, CJSON_SAFE_STATE_PROTOTYPE;
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
@@ -346,7 +346,7 @@ static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len)
 {
     if (len > 0) {
         fbuffer_inc_capa(fb, len);
-        memcpy(fb->ptr + fb->len, newstr, len);
+        MEMCPY(fb->ptr + fb->len, newstr, char, len);
         fb->len += len;
     }
 }
@@ -356,6 +356,20 @@ static void fbuffer_append_char(FBuffer *fb, char newchr)
     fbuffer_inc_capa(fb, 1);
     *(fb->ptr + fb->len) = newchr;
     fb->len++;
+}
+
+static FBuffer *fbuffer_dup(FBuffer *fb)
+{
+    int len = fb->len;
+    FBuffer *result;
+
+    if (len > 0) {
+        result = fbuffer_alloc_with_length(len);
+        fbuffer_append(result, FBUFFER_PAIR(fb));
+    } else {
+        result = fbuffer_alloc();
+    }
+    return result;
 }
 
 /* 
@@ -659,11 +673,11 @@ static VALUE cState_to_h(VALUE self)
 {
     VALUE result = rb_hash_new();
     GET_STATE(self);
-    rb_hash_aset(result, ID2SYM(i_indent), rb_str_new2(state->indent));
-    rb_hash_aset(result, ID2SYM(i_space), rb_str_new2(state->space));
-    rb_hash_aset(result, ID2SYM(i_space_before), rb_str_new2(state->space_before));
-    rb_hash_aset(result, ID2SYM(i_object_nl), rb_str_new2(state->object_nl));
-    rb_hash_aset(result, ID2SYM(i_array_nl), rb_str_new2(state->array_nl));
+    rb_hash_aset(result, ID2SYM(i_indent), rb_str_new(state->indent, state->indent_len));
+    rb_hash_aset(result, ID2SYM(i_space), rb_str_new(state->space, state->space_len));
+    rb_hash_aset(result, ID2SYM(i_space_before), rb_str_new(state->space_before, state->space_before_len));
+    rb_hash_aset(result, ID2SYM(i_object_nl), rb_str_new(state->object_nl, state->object_nl_len));
+    rb_hash_aset(result, ID2SYM(i_array_nl), rb_str_new(state->array_nl, state->array_nl_len));
     rb_hash_aset(result, ID2SYM(i_allow_nan), state->allow_nan ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_ascii_only), state->ascii_only ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_max_nesting), LONG2FIX(state->max_nesting));
@@ -951,6 +965,28 @@ static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
     return self;
 }
 
+/* XXX
+*/
+static VALUE cState_init_copy(VALUE obj, VALUE orig)
+{
+    JSON_Generator_State *objState, *origState;
+
+    Data_Get_Struct(obj, JSON_Generator_State, objState);
+    Data_Get_Struct(orig, JSON_Generator_State, origState);
+    if (!objState) rb_raise(rb_eArgError, "unallocated JSON::State");
+
+    MEMCPY(objState, origState, JSON_Generator_State, 1);
+    objState->indent = fstrndup(origState->indent, origState->indent_len);
+    objState->space = fstrndup(origState->space, origState->space_len);
+    objState->space_before = fstrndup(origState->space_before, origState->space_before_len);
+    objState->object_nl = fstrndup(origState->object_nl, origState->object_nl_len);
+    objState->array_nl = fstrndup(origState->array_nl, origState->array_nl_len);
+    if (origState->array_delim) objState->array_delim = fbuffer_dup(origState->array_delim);
+    if (origState->object_delim) objState->object_delim = fbuffer_dup(origState->object_delim);
+    if (origState->object_delim2) objState->object_delim2 = fbuffer_dup(origState->object_delim2);
+    return obj;
+}
+
 /*
  * call-seq: from_state(opts)
  *
@@ -965,7 +1001,10 @@ static VALUE cState_from_state_s(VALUE self, VALUE opts)
     } else if (rb_obj_is_kind_of(opts, rb_cHash)) {
         return rb_funcall(self, i_new, 1, opts);
     } else {
-        return rb_funcall(self, i_new, 0);
+        if (NIL_P(CJSON_SAFE_STATE_PROTOTYPE)) {
+            CJSON_SAFE_STATE_PROTOTYPE = rb_const_get(mJSON, rb_intern("SAFE_STATE_PROTOTYPE"));
+        }
+        return CJSON_SAFE_STATE_PROTOTYPE;
     }
 }
 
@@ -1200,6 +1239,7 @@ void Init_generator()
     rb_define_alloc_func(cState, cState_s_allocate);
     rb_define_singleton_method(cState, "from_state", cState_from_state_s, 1);
     rb_define_method(cState, "initialize", cState_initialize, -1);
+    rb_define_method(cState, "initialize_copy", cState_init_copy, 1);
     rb_define_method(cState, "indent", cState_indent, 0);
     rb_define_method(cState, "indent=", cState_indent_set, 1);
     rb_define_method(cState, "space", cState_space, 0);
@@ -1265,4 +1305,5 @@ void Init_generator()
     i_encoding = rb_intern("encoding");
     i_encode = rb_intern("encode");
 #endif
+    CJSON_SAFE_STATE_PROTOTYPE = Qnil;
 }
