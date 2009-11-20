@@ -87,14 +87,12 @@ EOT
   def test_states
     json = generate({1=>2}, nil)
     assert_equal('{"1":2}', json)
-    s = JSON.state.new(:check_circular => true)
-    #assert s.check_circular
+    s = JSON.state.new
     h = { 1=>2 }
     h[3] = h
     assert_raises(JSON::NestingError) {  generate(h) }
     assert_raises(JSON::NestingError) {  generate(h, s) }
-    s = JSON.state.new(:check_circular => true)
-    #assert s.check_circular
+    s = JSON.state.new
     a = [ 1, 2 ]
     a << a
     assert_raises(JSON::NestingError) {  generate(a, s) }
