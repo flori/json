@@ -996,7 +996,11 @@ static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
     return self;
 }
 
-/* XXX
+/*
+ * call-seq: initialize_copy(orig)
+ *
+ * Initializes this object from orig if it to be duplicated/cloned and returns
+ * it.
 */
 static VALUE cState_init_copy(VALUE obj, VALUE orig)
 {
