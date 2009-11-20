@@ -14,6 +14,7 @@ when 'rails'
   require 'active_support'
 when 'yajl'
   require 'yajl'
+  require 'yajl/json_gem'
   require 'stringio'
 end
 
@@ -65,7 +66,7 @@ class Generator2BenchmarkExt < Bullshit::RepeatCase
   include JSONGeneratorCommon
 
   warmup      yes
-  iterations  8000
+  iterations  500
 
   truncate_data do
     enabled false
@@ -91,7 +92,7 @@ class Generator2BenchmarkPure < Bullshit::RepeatCase
   include JSONGeneratorCommon
 
   warmup      yes
-  iterations  500
+  iterations  100
 
   truncate_data do
     enabled false
@@ -116,7 +117,7 @@ class Generator2BenchmarkRails < Bullshit::RepeatCase
   include Generator2BenchmarkCommon
 
   warmup      yes
-  iterations  500
+  iterations  100
 
   truncate_data do
     enabled false
@@ -147,7 +148,7 @@ class Generator2BenchmarkYajl < Bullshit::RepeatCase
   include Generator2BenchmarkCommon
 
   warmup      yes
-  iterations  8000
+  iterations  500
 
   truncate_data do
     enabled false
@@ -171,6 +172,10 @@ class Generator2BenchmarkYajl < Bullshit::RepeatCase
     output = StringIO.new
     Yajl::Encoder.new.encode(@big, output)
     @result = output.string
+  end
+
+  def benchmark_generator_gem_api
+    @result = @big.to_json
   end
 
   def reset_benchmark_generator
@@ -210,6 +215,7 @@ if $0 == __FILE__
       benchmark Generator2BenchmarkPure,   :generator_ascii,   :load => yes
       benchmark Generator2BenchmarkRails,  :generator,         :load => yes
       benchmark Generator2BenchmarkYajl,   :generator,         :load => yes
+      benchmark Generator2BenchmarkYajl,   :generator_gem_api, :load => yes
     end
   end
 end
