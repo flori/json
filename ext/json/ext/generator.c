@@ -308,7 +308,6 @@ static FBuffer *fbuffer_alloc_with_length(unsigned int initial_length)
     return fb;
 }
 
-
 static void fbuffer_free(FBuffer *fb)
 {
     if (fb->ptr) ruby_xfree(fb->ptr);
