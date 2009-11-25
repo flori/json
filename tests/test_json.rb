@@ -302,6 +302,13 @@ EOT
     assert_equal too_deep, ok
   end
 
+  def test_symbolize_names
+    assert_equal({ "foo" => "bar", "baz" => "quux" },
+      JSON.parse('{"foo":"bar", "baz":"quux"}'))
+    assert_equal({ :foo => "bar", :baz => "quux" },
+      JSON.parse('{"foo":"bar", "baz":"quux"}', :symbolize_names => true))
+  end
+
   def test_load_dump
     too_deep = '[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]'
     assert_equal too_deep, JSON.dump(eval(too_deep))

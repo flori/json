@@ -60,6 +60,9 @@ module JSON
       # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
       #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
       #   to false.
+      # * *symbolize_names*: If set to true, returns symbols for the names
+      #   (keys) in a JSON object. Otherwise strings are returned, which is also
+      #   the default.
       # * *create_additions*: If set to false, the Parser doesn't create
       #   additions even if a matchin class and create_id was found. This option
       #   defaults to true.
@@ -109,6 +112,7 @@ module JSON
           @max_nesting = 0
         end
         @allow_nan = !!opts[:allow_nan]
+        @symbolize_names = !!opts[:symbolize_names]
         ca = true
         ca = opts[:create_additions] if opts.key?(:create_additions)
         @create_id = ca ? JSON.create_id : nil
@@ -267,7 +271,7 @@ module JSON
             end
             skip(IGNORE)
             unless (value = parse_value).equal? UNPARSED
-              result[string] = value
+              result[@symbolize_names ? string.to_sym : string] = value
               delim = false
               skip(IGNORE)
               if scan(COLLECTION_DELIMITER)

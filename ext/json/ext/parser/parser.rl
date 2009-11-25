@@ -31,7 +31,8 @@ static VALUE mJSON, mExt, cParser, eParserError, eNestingError;
 static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
-          i_chr, i_max_nesting, i_allow_nan, i_object_class, i_array_class;
+          i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_object_class,
+          i_array_class;
 
 #define MinusInfinity "-Infinity"
 
@@ -44,6 +45,8 @@ typedef struct JSON_ParserStruct {
     int max_nesting;
     int current_nesting;
     int allow_nan;
+    int parsing_name;
+    int symbolize_names;
     VALUE object_class;
     VALUE array_class;
 } JSON_Parser;
@@ -105,7 +108,9 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
     }
 
     action parse_name {
+        json->parsing_name = 1;
         char *np = JSON_parse_string(json, fpc, pe, &last_name);
+        json->parsing_name = 0;
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
@@ -417,15 +422,15 @@ static VALUE json_string_unescape(char *p, char *pe)
     write data;
 
     action parse_string {
-        *result = json_string_unescape(json->memo + 1, p);
-        if (NIL_P(*result)) {
-			fhold;
-			fbreak;
-		} else {
-			FORCE_UTF8(*result);
-			fexec p + 1;
-		}
-	}
+      *result = json_string_unescape(json->memo + 1, p);
+      if (NIL_P(*result)) {
+        fhold;
+        fbreak;
+      } else {
+        FORCE_UTF8(*result);
+        fexec p + 1;
+      }
+    }
 
     action exit { fhold; fbreak; }
 
@@ -441,6 +446,9 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
     json->memo = p;
     %% write exec;
 
+    if (json->symbolize_names && json->parsing_name) {
+      *result = rb_str_intern(*result);
+    }
     if (cs >= JSON_string_first_final) {
         return p + 1;
     } else {
@@ -553,6 +561,9 @@ inline static VALUE convert_encoding(VALUE source)
  * * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
  *   defiance of RFC 4627 to be parsed by the Parser. This option defaults to
  *   false.
+ * * *symbolize_names*: If set to true, returns symbols for the names
+ *   (keys) in a JSON object. Otherwise strings are returned, which is also
+ *   the default.
  * * *create_additions*: If set to false, the Parser doesn't create
  *   additions even if a matchin class and create_id was found. This option
  *   defaults to true.
@@ -592,6 +603,13 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 json->allow_nan = RTEST(allow_nan) ? 1 : 0;
             } else {
                 json->allow_nan = 0;
+            }
+            tmp = ID2SYM(i_symbolize_names);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                VALUE symbolize_names = rb_hash_aref(opts, tmp);
+                json->symbolize_names = RTEST(symbolize_names) ? 1 : 0;
+            } else {
+                json->symbolize_names = 0;
             }
             tmp = ID2SYM(i_create_additions);
             if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
@@ -718,6 +736,7 @@ void Init_parser()
     i_chr = rb_intern("chr");
     i_max_nesting = rb_intern("max_nesting");
     i_allow_nan = rb_intern("allow_nan");
+    i_symbolize_names = rb_intern("symbolize_names");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
 #ifdef HAVE_RUBY_ENCODING_H
