@@ -64,6 +64,12 @@ class Parser2BenchmarkExt < Bullshit::RepeatCase
   end
 
   alias reset_parser generic_reset_method
+
+  def benchmark_parser_symbolic
+    @result = JSON.parse(@json, :symbolize_names => true)
+  end
+
+  alias reset_parser_symbolc generic_reset_method
 end
 
 class Parser2BenchmarkPure < Bullshit::RepeatCase
@@ -95,6 +101,12 @@ class Parser2BenchmarkPure < Bullshit::RepeatCase
   end
 
   alias reset_parser generic_reset_method
+
+  def benchmark_parser_symbolic
+    @result = JSON.parse(@json, :symbolize_names => true)
+  end
+
+  alias reset_parser_symbolc generic_reset_method
 end
 
 class Parser2BenchmarkYAML < Bullshit::RepeatCase
@@ -228,7 +240,9 @@ if $0 == __FILE__
       output_filename File.join(File.dirname(__FILE__), 'data', 'Parser2BenchmarkComparison.log')
 
       benchmark Parser2BenchmarkExt,   :parser, :load => yes
+      benchmark Parser2BenchmarkExt,   :parser_symbolic, :load => yes
       benchmark Parser2BenchmarkPure,  :parser, :load => yes
+      benchmark Parser2BenchmarkPure,  :parser_symbolic, :load => yes
       benchmark Parser2BenchmarkYAML,  :parser, :load => yes
       benchmark Parser2BenchmarkRails, :parser, :load => yes
       benchmark Parser2BenchmarkYajl,  :parser, :load => yes
