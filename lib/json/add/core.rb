@@ -7,6 +7,19 @@ unless Object.const_defined?(:JSON) and ::JSON.const_defined?(:JSON_LOADED) and
 end
 require 'date'
 
+class Symbol
+  def to_json(*a)
+    {
+      JSON.create_id => self.class.name,
+      's' => to_s,
+    }.to_json(*a)
+  end
+
+  def self.json_create(o)
+    o['s'].to_sym
+  end
+end
+
 class Time
   def self.json_create(object)
     if usec = object.delete('u') # used to be tv_usec -> tv_nsec
