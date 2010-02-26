@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (JSON::Ext::Generator::State)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: new(opts = {})
+ *
+ * Instantiates a new State object, configured by _opts_.
+ *
+ * _opts_ can have the following keys:
+ *
+ * * *indent*: a string used to indent levels (default: ''),
+ * * *space*: a string that is put after, a : or , delimiter (default: ''),
+ * * *space_before*: a string that is put before a : pair delimiter (default: ''),
+ * * *object_nl*: a string that is put at the end of a JSON object (default: ''), 
+ * * *array_nl*: a string that is put at the end of a JSON array (default: ''),
+ * * *allow_nan*: true if NaN, Infinity, and -Infinity should be
+ *   generated, otherwise an exception is thrown, if these values are
+ *   encountered. This options defaults to false.
+ */
+static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
+{
+    VALUE opts;
+    GET_STATE(self);
+    MEMZERO(state, JSON_Generator_State, 1);
+    state-&gt;max_nesting = 19;
+    rb_scan_args(argc, argv, &quot;01&quot;, &amp;opts);
+    if (!NIL_P(opts)) cState_configure(self, opts);
+    return self;
+}</pre>
+</body>
+</html>

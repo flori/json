@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>space_before (JSON::Ext::Generator::State)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: space_before()
+ *
+ * This string is used to insert a space before the ':' in JSON objects.
+ */
+static VALUE cState_space_before(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;space_before ? rb_str_new2(state-&gt;space_before) : rb_str_new2(&quot;&quot;);
+}</pre>
+</body>
+</html>

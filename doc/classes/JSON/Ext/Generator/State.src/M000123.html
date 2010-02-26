@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>indent= (JSON::Ext::Generator::State)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: indent=(indent)
+ *
+ * This string is used to indent levels in the JSON text.
+ */
+static VALUE cState_indent_set(VALUE self, VALUE indent)
+{
+    GET_STATE(self);
+    Check_Type(indent, T_STRING);
+    if (RSTRING_LEN(indent) == 0) {
+        if (state-&gt;indent) {
+            ruby_xfree(state-&gt;indent);
+            state-&gt;indent = NULL;
+        }
+    } else {
+        if (state-&gt;indent) ruby_xfree(state-&gt;indent);
+        state-&gt;indent = strdup(RSTRING_PTR(indent));
+    }
+    return Qnil;
+}</pre>
+</body>
+</html>

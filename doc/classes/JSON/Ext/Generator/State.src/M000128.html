@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>object_nl (JSON::Ext::Generator::State)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: object_nl()
+ *
+ * This string is put at the end of a line that holds a JSON object (or
+ * Hash).
+ */
+static VALUE cState_object_nl(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;object_nl ? rb_str_new2(state-&gt;object_nl) : rb_str_new2(&quot;&quot;);
+}</pre>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>generate (JSON::Ext::Generator::State)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: generate(obj)
+ *
+ * Generates a valid JSON document from object +obj+ and returns the
+ * result. If no valid JSON document can be created this method raises a
+ * GeneratorError exception.
+ */
+static VALUE cState_generate(VALUE self, VALUE obj)
+{
+    VALUE result = cState_partial_generate(self, obj, Qnil);
+    VALUE re, args[2];
+    args[0] = rb_str_new2(&quot;\\A\\s*(?:\\[.*\\]|\\{.*\\})\\s*\\Z&quot;);
+    args[1] = CRegexp_MULTILINE;
+    re = rb_class_new_instance(2, args, rb_cRegexp);
+    if (NIL_P(rb_reg_match(re, result))) {
+        rb_raise(eGeneratorError, &quot;only generation of JSON objects or arrays allowed&quot;);
+    }
+    return result;
+}</pre>
+</body>
+</html>

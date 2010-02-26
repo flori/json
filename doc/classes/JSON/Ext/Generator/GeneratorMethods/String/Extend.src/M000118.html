@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>json_create (JSON::Ext::Generator::GeneratorMethods::String::Extend)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: json_create(o)
+ *
+ * Raw Strings are JSON Objects (the raw bytes are stored in an array for the
+ * key &quot;raw&quot;). The Ruby String can be created by this module method.
+ */
+static VALUE mString_Extend_json_create(VALUE self, VALUE o)
+{
+    VALUE ary;
+    Check_Type(o, T_HASH);
+    ary = rb_hash_aref(o, rb_str_new2(&quot;raw&quot;));
+    return rb_funcall(ary, i_pack, 1, rb_str_new2(&quot;C*&quot;));
+}</pre>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>to_json_raw_object (JSON::Ext::Generator::GeneratorMethods::String)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: to_json_raw_object()
+ *
+ * This method creates a raw object hash, that can be nested into
+ * other data structures and will be generated as a raw string. This
+ * method should be used, if you want to convert raw strings to JSON
+ * instead of UTF-8 strings, e. g. binary data.
+ */
+static VALUE mString_to_json_raw_object(VALUE self)
+{
+    VALUE ary;
+    VALUE result = rb_hash_new();
+    rb_hash_aset(result, rb_funcall(mJSON, i_create_id, 0), rb_class_name(rb_obj_class(self)));
+    ary = rb_funcall(self, i_unpack, 1, rb_str_new2(&quot;C*&quot;));
+    rb_hash_aset(result, rb_str_new2(&quot;raw&quot;), ary);
+    return result;
+}</pre>
+</body>
+</html>

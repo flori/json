@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>source (JSON::Ext::Parser)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: source()
+ *
+ * Returns a copy of the current _source_ string, that was used to construct
+ * this Parser.
+ */
+static VALUE cParser_source(VALUE self)
+{
+    GET_PARSER;
+    return rb_str_dup(json-&gt;Vsource);
+}</pre>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>store_file (MainWindow)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 1226</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">store_file</span>(<span class="ruby-identifier">path</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">path</span>
+          <span class="ruby-identifier">data</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-ivar">@treeview</span>.<span class="ruby-identifier">model</span>.<span class="ruby-identifier">iter_first</span>)
+          <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">path</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'.tmp'</span>, <span class="ruby-value str">'wb'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">output</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">data</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">break</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@options_menu</span>.<span class="ruby-identifier">pretty_item</span>.<span class="ruby-identifier">active?</span>
+              <span class="ruby-identifier">output</span>.<span class="ruby-identifier">puts</span> <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">pretty_generate</span>(<span class="ruby-identifier">data</span>, <span class="ruby-identifier">:max_nesting</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">false</span>)
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">output</span>.<span class="ruby-identifier">write</span> <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">generate</span>(<span class="ruby-identifier">data</span>, <span class="ruby-identifier">:max_nesting</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">false</span>)
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-constant">File</span>.<span class="ruby-identifier">rename</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'.tmp'</span>, <span class="ruby-identifier">path</span>
+          <span class="ruby-ivar">@filename</span> = <span class="ruby-identifier">path</span>
+          <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Saved data to '#@filename'.&quot;</span>)
+          <span class="ruby-identifier">unchange</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">SystemCallError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+        <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">error_dialog</span>(<span class="ruby-keyword kw">self</span>, <span class="ruby-node">&quot;Failed to store JSON file: #{e}!&quot;</span>)
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

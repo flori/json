@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>parse (JSON::Ext::Parser)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: parse()
+ *
+ *  Parses the current JSON text _source_ and returns the complete data
+ *  structure as a result.
+ */
+static VALUE cParser_parse(VALUE self)
+{
+    char *p, *pe;
+    int cs = EVIL;
+    VALUE result = Qnil;
+    GET_PARSER;
+
+    
+#line 1685 &quot;parser.c&quot;
+        {
+        cs = JSON_start;
+        }
+
+#line 682 &quot;parser.rl&quot;
+    p = json-&gt;source;
+    pe = p + json-&gt;len;
+    
+#line 1694 &quot;parser.c&quot;
+        {
+        if ( p == pe )
+                goto _test_eof;
+        switch ( cs )
+        {
+st1:
+        if ( ++p == pe )
+                goto _test_eof1;
+case 1:
+        switch( (*p) ) {
+                case 13: goto st1;
+                case 32: goto st1;
+                case 47: goto st2;
+                case 91: goto tr3;
+                case 123: goto tr4;
+        }
+        if ( 9 &lt;= (*p) &amp;&amp; (*p) &lt;= 10 )
+                goto st1;
+        goto st0;
+st0:
+cs = 0;
+        goto _out;
+st2:
+        if ( ++p == pe )
+                goto _test_eof2;
+case 2:
+        switch( (*p) ) {
+                case 42: goto st3;
+                case 47: goto st5;
+        }
+        goto st0;
+st3:
+        if ( ++p == pe )
+                goto _test_eof3;
+case 3:
+        if ( (*p) == 42 )
+                goto st4;
+        goto st3;
+st4:
+        if ( ++p == pe )
+                goto _test_eof4;
+case 4:
+        switch( (*p) ) {
+                case 42: goto st4;
+                case 47: goto st1;
+        }
+        goto st3;
+st5:
+        if ( ++p == pe )
+                goto _test_eof5;
+case 5:
+        if ( (*p) == 10 )
+                goto st1;
+        goto st5;
+tr3:
+#line 500 &quot;parser.rl&quot;
+        {
+        char *np;
+        json-&gt;current_nesting = 1;
+        np = JSON_parse_array(json, p, pe, &amp;result);
+        if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
+    }
+        goto st10;
+tr4:
+#line 493 &quot;parser.rl&quot;
+        {
+        char *np;
+        json-&gt;current_nesting = 1;
+        np = JSON_parse_object(json, p, pe, &amp;result);
+        if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
+    }
+        goto st10;
+st10:
+        if ( ++p == pe )
+                goto _test_eof10;
+case 10:
+#line 1771 &quot;parser.c&quot;
+        switch( (*p) ) {
+                case 13: goto st10;
+                case 32: goto st10;
+                case 47: goto st6;
+        }
+        if ( 9 &lt;= (*p) &amp;&amp; (*p) &lt;= 10 )
+                goto st10;
+        goto st0;
+st6:
+        if ( ++p == pe )
+                goto _test_eof6;
+case 6:
+        switch( (*p) ) {
+                case 42: goto st7;
+                case 47: goto st9;
+        }
+        goto st0;
+st7:
+        if ( ++p == pe )
+                goto _test_eof7;
+case 7:
+        if ( (*p) == 42 )
+                goto st8;
+        goto st7;
+st8:
+        if ( ++p == pe )
+                goto _test_eof8;
+case 8:
+        switch( (*p) ) {
+                case 42: goto st8;
+                case 47: goto st10;
+        }
+        goto st7;
+st9:
+        if ( ++p == pe )
+                goto _test_eof9;
+case 9:
+        if ( (*p) == 10 )
+                goto st10;
+        goto st9;
+        }
+        _test_eof1: cs = 1; goto _test_eof; 
+        _test_eof2: cs = 2; goto _test_eof; 
+        _test_eof3: cs = 3; goto _test_eof; 
+        _test_eof4: cs = 4; goto _test_eof; 
+        _test_eof5: cs = 5; goto _test_eof; 
+        _test_eof10: cs = 10; goto _test_eof; 
+        _test_eof6: cs = 6; goto _test_eof; 
+        _test_eof7: cs = 7; goto _test_eof; 
+        _test_eof8: cs = 8; goto _test_eof; 
+        _test_eof9: cs = 9; goto _test_eof; 
+
+        _test_eof: {}
+        _out: {}
+        }
+
+#line 685 &quot;parser.rl&quot;
+
+    if (cs &gt;= JSON_first_final &amp;&amp; p == pe) {
+        return result;
+    } else {
+        rb_raise(eParserError, &quot;%u: unexpected token at '%s'&quot;, __LINE__, p);
+    }
+}</pre>
+</body>
+</html>

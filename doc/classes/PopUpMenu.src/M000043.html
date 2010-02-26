@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>cut_node (PopUpMenu)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 288</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">cut_node</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'Key'</span>
+            <span class="ruby-ivar">@clipboard_data</span> = {
+              <span class="ruby-identifier">current</span>.<span class="ruby-identifier">content</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>.<span class="ruby-identifier">first_child</span>)
+            }
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-ivar">@clipboard_data</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>)
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">model</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-identifier">current</span>)
+          <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+          <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Cut a node from tree.&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

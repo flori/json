@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (JSON::Ext::Parser)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: new(source, opts =&gt; {})
+ *
+ * Creates a new JSON::Ext::Parser instance for the string _source_.
+ *
+ * Creates a new JSON::Ext::Parser instance for the string _source_.
+ *
+ * It will be configured by the _opts_ hash. _opts_ can have the following
+ * keys:
+ *
+ * _opts_ can have the following keys:
+ * * *max_nesting*: The maximum depth of nesting allowed in the parsed data
+ *   structures. Disable depth checking with :max_nesting =&gt; false|nil|0, it
+ *   defaults to 19.
+ * * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
+ *   defiance of RFC 4627 to be parsed by the Parser. This option defaults to
+ *   false.
+ * * *create_additions*: If set to false, the Parser doesn't create
+ *   additions even if a matchin class and create_id was found. This option
+ *   defaults to true.
+ * * *object_class*: Defaults to Hash
+ * * *array_class*: Defaults to Array
+ */
+static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
+{
+    char *ptr;
+    long len;
+    VALUE source, opts;
+    GET_PARSER;
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;source, &amp;opts);
+    source = convert_encoding(StringValue(source));
+    ptr = RSTRING_PTR(source);
+    len = RSTRING_LEN(source);
+    if (!NIL_P(opts)) {
+        opts = rb_convert_type(opts, T_HASH, &quot;Hash&quot;, &quot;to_hash&quot;);
+        if (NIL_P(opts)) {
+            rb_raise(rb_eArgError, &quot;opts needs to be like a hash&quot;);
+        } else {
+            VALUE tmp = ID2SYM(i_max_nesting);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                VALUE max_nesting = rb_hash_aref(opts, tmp);
+                if (RTEST(max_nesting)) {
+                    Check_Type(max_nesting, T_FIXNUM);
+                    json-&gt;max_nesting = FIX2INT(max_nesting);
+                } else {
+                    json-&gt;max_nesting = 0;
+                }
+            } else {
+                json-&gt;max_nesting = 19;
+            }
+            tmp = ID2SYM(i_allow_nan);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                VALUE allow_nan = rb_hash_aref(opts, tmp);
+                json-&gt;allow_nan = RTEST(allow_nan) ? 1 : 0;
+            } else {
+                json-&gt;allow_nan = 0;
+            }
+            tmp = ID2SYM(i_create_additions);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                VALUE create_additions = rb_hash_aref(opts, tmp);
+                if (RTEST(create_additions)) {
+                    json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+                } else {
+                    json-&gt;create_id = Qnil;
+                }
+            } else {
+                json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+            }
+            tmp = ID2SYM(i_object_class);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                json-&gt;object_class = rb_hash_aref(opts, tmp);
+            } else {
+                json-&gt;object_class = Qnil;
+            }
+            tmp = ID2SYM(i_array_class);
+            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+                json-&gt;array_class = rb_hash_aref(opts, tmp);
+            } else {
+                json-&gt;array_class = Qnil;
+            }
+        }
+    } else {
+        json-&gt;max_nesting = 19;
+        json-&gt;allow_nan = 0;
+        json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+        json-&gt;object_class = Qnil;
+        json-&gt;array_class = Qnil;
+    }
+    json-&gt;current_nesting = 0;
+    json-&gt;len = len;
+    json-&gt;source = ptr;
+    json-&gt;Vsource = source;
+    return self;
+}</pre>
+</body>
+</html>
