@@ -1,5 +1,8 @@
+2010-02-27 (1.2.2)
+  * Made some changes to make the building of the parser/generator compatible
+    to Rubinius.
 2009-11-25 (1.2.1)
-  * added :symbolize_names option to Parser, which returns symbols instead of
+  * Added :symbolize_names option to Parser, which returns symbols instead of
     strings in object names/keys.
 2009-10-01 (1.2.0)
   * fast_generate now raises an exeception for nan and infinite floats.

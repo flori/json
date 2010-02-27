@@ -3,18 +3,10 @@
 #if HAVE_RE_H
 #include "re.h"
 #endif
-#if HAVE_RUBY_ST_H
-#include "ruby/st.h"
-#endif
-#if HAVE_ST_H
-#include "st.h"
-#endif
 
 #define EVIL 0x666
 
-#ifndef RHASH_TBL
-#define RHASH_TBL(hsh) (RHASH(hsh)->tbl)
-#endif
+#define option_given_p(opts, key) RTEST(rb_funcall((opts), i_key_p, 1, (key)))
 
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
@@ -32,7 +24,7 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_object_class,
-          i_array_class;
+          i_array_class, i_key_p;
 
 #define MinusInfinity "-Infinity"
 
@@ -586,7 +578,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "opts needs to be like a hash");
         } else {
             VALUE tmp = ID2SYM(i_max_nesting);
-            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE max_nesting = rb_hash_aref(opts, tmp);
                 if (RTEST(max_nesting)) {
                     Check_Type(max_nesting, T_FIXNUM);
@@ -598,21 +590,21 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 json->max_nesting = 19;
             }
             tmp = ID2SYM(i_allow_nan);
-            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE allow_nan = rb_hash_aref(opts, tmp);
                 json->allow_nan = RTEST(allow_nan) ? 1 : 0;
             } else {
                 json->allow_nan = 0;
             }
             tmp = ID2SYM(i_symbolize_names);
-            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE symbolize_names = rb_hash_aref(opts, tmp);
                 json->symbolize_names = RTEST(symbolize_names) ? 1 : 0;
             } else {
                 json->symbolize_names = 0;
             }
             tmp = ID2SYM(i_create_additions);
-            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE create_additions = rb_hash_aref(opts, tmp);
                 if (RTEST(create_additions)) {
                     json->create_id = rb_funcall(mJSON, i_create_id, 0);
@@ -623,13 +615,13 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 json->create_id = rb_funcall(mJSON, i_create_id, 0);
             }
             tmp = ID2SYM(i_object_class);
-            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+            if (option_given_p(opts, tmp)) {
                 json->object_class = rb_hash_aref(opts, tmp);
             } else {
                 json->object_class = Qnil;
             }
             tmp = ID2SYM(i_array_class);
-            if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+            if (option_given_p(opts, tmp)) {
                 json->array_class = rb_hash_aref(opts, tmp);
             } else {
                 json->array_class = Qnil;
@@ -739,6 +731,7 @@ void Init_parser()
     i_symbolize_names = rb_intern("symbolize_names");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
+    i_key_p = rb_intern("key?");
 #ifdef HAVE_RUBY_ENCODING_H
     mEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     mEncoding_UTF_16BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16be"));
