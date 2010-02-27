@@ -7,14 +7,6 @@
 #include "re.h"
 #endif
 
-#if HAVE_RUBY_ST_H
-#include "ruby/st.h"
-#endif
-
-#if HAVE_ST_H
-#include "st.h"
-#endif
-
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
 #define FORCE_UTF8(obj) rb_enc_associate((obj), rb_utf8_encoding())
@@ -22,9 +14,7 @@
 #define FORCE_UTF8(obj)
 #endif
 
-#ifndef RHASH_TBL
-#define RHASH_TBL(hsh) (RHASH(hsh)->tbl)
-#endif
+#define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
 
 /* unicode */
 

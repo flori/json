@@ -1,3 +1,9 @@
+2010-02-27 (1.2.2)
+  * Made some changes to make the building of the parser/generator compatible
+    to Rubinius.
+2009-11-25 (1.2.1)
+  * Added :symbolize_names option to Parser, which returns symbols instead of
+    strings in object names/keys.
 2009-10-01 (1.2.0)
   * fast_generate now raises an exeception for nan and infinite floats.
   * On Ruby 1.8 json supports parsing of UTF-8, UTF-16BE, UTF-16LE, UTF-32BE,

@@ -12,7 +12,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
-          i_pack, i_unpack, i_create_id, i_extend;
+          i_pack, i_unpack, i_create_id, i_extend, i_key_p;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -675,7 +675,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     }
     tmp = ID2SYM(i_max_nesting);
     state->max_nesting = 19;
-    if (st_lookup(RHASH_TBL(opts), tmp, 0)) {
+    if (option_given_p(opts, tmp)) {
         VALUE max_nesting = rb_hash_aref(opts, tmp);
         if (RTEST(max_nesting)) {
             Check_Type(max_nesting, T_FIXNUM);
@@ -1334,6 +1334,7 @@ void Init_generator()
     i_unpack = rb_intern("unpack");
     i_create_id = rb_intern("create_id");
     i_extend = rb_intern("extend");
+    i_key_p = rb_intern("key?");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");

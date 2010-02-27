@@ -7,14 +7,6 @@
 
 #include "ruby.h"
 
-#if HAVE_RUBY_ST_H
-#include "ruby/st.h"
-#endif
-
-#if HAVE_ST_H
-#include "st.h"
-#endif
-
 #if HAVE_RUBY_RE_H
 #include "ruby/re.h"
 #endif
@@ -30,9 +22,7 @@
 #define FORCE_UTF8(obj)
 #endif
 
-#ifndef RHASH_TBL
-#define RHASH_TBL(hsh) (RHASH(hsh)->tbl)
-#endif
+#define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
 
 #ifndef RHASH_SIZE
 #define RHASH_SIZE(hsh) (RHASH(hsh)->tbl->num_entries)
