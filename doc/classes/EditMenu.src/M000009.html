@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>find_again (EditMenu)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 590</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_again</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-ivar">@search</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+        <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">model</span>.<span class="ruby-identifier">get_iter</span>(<span class="ruby-value str">'0'</span>)
+        <span class="ruby-identifier">iter</span>.<span class="ruby-identifier">recursive_each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@iter</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@iter</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">i</span>
+              <span class="ruby-keyword kw">next</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-ivar">@iter</span> = <span class="ruby-keyword kw">nil</span>
+              <span class="ruby-keyword kw">next</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@search</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">i</span>[<span class="ruby-constant">CONTENT_COL</span>])
+             <span class="ruby-identifier">set_cursor</span>(<span class="ruby-identifier">i</span>.<span class="ruby-identifier">path</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-keyword kw">false</span>)
+             <span class="ruby-ivar">@iter</span> = <span class="ruby-identifier">i</span>
+             <span class="ruby-keyword kw">break</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

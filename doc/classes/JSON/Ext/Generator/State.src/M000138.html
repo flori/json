@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>configure (JSON::Ext::Generator::State)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: configure(opts)
+ *
+ * Configure this State instance with the Hash _opts_, and return
+ * itself.
+ */
+static VALUE cState_configure(VALUE self, VALUE opts)
+{
+    VALUE tmp;
+    GET_STATE(self);
+    tmp = rb_convert_type(opts, T_HASH, &quot;Hash&quot;, &quot;to_hash&quot;);
+    if (NIL_P(tmp)) tmp = rb_convert_type(opts, T_HASH, &quot;Hash&quot;, &quot;to_h&quot;);
+    if (NIL_P(tmp)) {
+        rb_raise(rb_eArgError, &quot;opts has to be hash like or convertable into a hash&quot;);
+    }
+    opts = tmp;
+    tmp = rb_hash_aref(opts, ID2SYM(i_indent));
+    if (RTEST(tmp)) {
+        Check_Type(tmp, T_STRING);
+        state-&gt;indent = tmp;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_space));
+    if (RTEST(tmp)) {
+        Check_Type(tmp, T_STRING);
+        state-&gt;space = tmp;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_space_before));
+    if (RTEST(tmp)) {
+        Check_Type(tmp, T_STRING);
+        state-&gt;space_before = tmp;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_array_nl));
+    if (RTEST(tmp)) {
+        Check_Type(tmp, T_STRING);
+        state-&gt;array_nl = tmp;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_object_nl));
+    if (RTEST(tmp)) {
+        Check_Type(tmp, T_STRING);
+        state-&gt;object_nl = tmp;
+    }
+    tmp = ID2SYM(i_check_circular);
+    if (option_given_p(opts, tmp)) {
+        tmp = rb_hash_aref(opts, ID2SYM(i_check_circular));
+        state-&gt;check_circular = RTEST(tmp);
+    } else {
+        state-&gt;check_circular = 1;
+    }
+    tmp = ID2SYM(i_max_nesting);
+    state-&gt;max_nesting = 19;
+    if (option_given_p(opts, tmp)) {
+        VALUE max_nesting = rb_hash_aref(opts, tmp);
+        if (RTEST(max_nesting)) {
+            Check_Type(max_nesting, T_FIXNUM);
+            state-&gt;max_nesting = FIX2LONG(max_nesting);
+        } else {
+            state-&gt;max_nesting = 0;
+        }
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_allow_nan));
+    state-&gt;allow_nan = RTEST(tmp);
+    return self;
+}</pre>
+</body>
+</html>

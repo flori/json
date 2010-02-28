@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (JSON::Ext::Generator::State)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * call-seq: new(opts = {})
+ *
+ * Instantiates a new State object, configured by _opts_.
+ *
+ * _opts_ can have the following keys:
+ *
+ * * *indent*: a string used to indent levels (default: ''),
+ * * *space*: a string that is put after, a : or , delimiter (default: ''),
+ * * *space_before*: a string that is put before a : pair delimiter (default: ''),
+ * * *object_nl*: a string that is put at the end of a JSON object (default: ''), 
+ * * *array_nl*: a string that is put at the end of a JSON array (default: ''),
+ * * *check_circular*: true if checking for circular data structures
+ *   should be done, false (the default) otherwise.
+ * * *allow_nan*: true if NaN, Infinity, and -Infinity should be
+ *   generated, otherwise an exception is thrown, if these values are
+ *   encountered. This options defaults to false.
+ */
+static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
+{
+    VALUE opts;
+    GET_STATE(self);
+
+    rb_scan_args(argc, argv, &quot;01&quot;, &amp;opts);
+    state-&gt;indent = rb_str_new2(&quot;&quot;);
+    state-&gt;space = rb_str_new2(&quot;&quot;);
+    state-&gt;space_before = rb_str_new2(&quot;&quot;);
+    state-&gt;array_nl = rb_str_new2(&quot;&quot;);
+    state-&gt;object_nl = rb_str_new2(&quot;&quot;);
+    if (NIL_P(opts)) {
+        state-&gt;check_circular = 1;
+        state-&gt;allow_nan = 0;
+        state-&gt;max_nesting = 19;
+    } else {
+        cState_configure(self, opts);
+    }
+    state-&gt;seen = rb_hash_new();
+    state-&gt;memo = Qnil;
+    state-&gt;depth = INT2FIX(0);
+    return self;
+}</pre>
+</body>
+</html>
