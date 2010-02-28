@@ -12,7 +12,7 @@ task :doc do
     sh 'git rm -r doc'
   end
   sh 'git commit -m "deleted documentation" doc'
-  sh 'git checkout master'
+  sh 'git checkout v1.2'
   rm_rf 'doc'
   sh 'rake doc'
   sh 'git checkout gh-pages'
