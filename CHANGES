@@ -1,3 +1,6 @@
+2010-03-11 (1.2.3)
+  * Added a State#[] method which returns an attribute's value in order to
+    increase duck type compatibility to Hash.
 2010-02-27 (1.2.2)
   * Made some changes to make the building of the parser/generator compatible
     to Rubinius.

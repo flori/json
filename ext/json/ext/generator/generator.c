@@ -41,7 +41,8 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_check_circular, i_max_nesting,
-          i_allow_nan, i_pack, i_unpack, i_create_id, i_extend, i_key_p;
+          i_allow_nan, i_pack, i_unpack, i_create_id, i_extend, i_key_p,
+          i_aref, i_send, i_respond_to_p;
 
 typedef struct JSON_Generator_StateStruct {
     VALUE indent;
@@ -584,6 +585,20 @@ static VALUE cState_to_h(VALUE self)
     return result;
 }
 
+/*
+ * call-seq: [](name)
+ *
+ * Return the value returned by method +name+.
+ */
+static VALUE cState_aref(VALUE self, VALUE name)
+{
+    GET_STATE(self);
+    if (RTEST(rb_funcall(self, i_respond_to_p, 1, name))) {
+        return rb_funcall(self, i_send, 1, name);
+    } else {
+        return Qnil;
+    }
+}
 
 /*
  * call-seq: new(opts = {})
@@ -884,6 +899,7 @@ void Init_generator()
     rb_define_method(cState, "forget", cState_forget, 1);
     rb_define_method(cState, "configure", cState_configure, 1);
     rb_define_method(cState, "to_h", cState_to_h, 0);
+    rb_define_method(cState, "[]", cState_aref, 1);
 
     mGeneratorMethods = rb_define_module_under(mGenerator, "GeneratorMethods");
     mObject = rb_define_module_under(mGeneratorMethods, "Object");
@@ -926,6 +942,9 @@ void Init_generator()
     i_create_id = rb_intern("create_id");
     i_extend = rb_intern("extend");
     i_key_p = rb_intern("key?");
+    i_aref = rb_intern("[]");
+    i_send = rb_intern("__send__");
+    i_respond_to_p = rb_intern("respond_to?");
 #ifdef HAVE_RUBY_ENCODING_H
     mEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");

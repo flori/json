@@ -217,6 +217,11 @@ module JSON
           end
           result
         end
+
+        # Return the value returned by method +name+.
+        def [](name)
+          __send__ name
+        end
       end
 
       module GeneratorMethods
