@@ -1,0 +1,844 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+	<title>Class: JSON::Pure::Generator::State</title>
+
+	<link rel="stylesheet" href="../../../rdoc.css" type="text/css" media="screen" />
+
+	<script src="../../../js/jquery.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../../js/thickbox-compressed.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../../js/quicksearch.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../../../js/darkfish.js" type="text/javascript"
+		charset="utf-8"></script>
+
+</head>
+<body class="class">
+
+	<div id="metadata">
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li><a href="../../../lib/json/pure/generator_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+							class="thickbox" title="lib/json/pure/generator.rb">lib/json/pure/generator.rb</a></li>
+					
+					</ul>
+				</div>
+			</div>
+
+			
+		</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link"><a href="../../../Object.html">Object</a></p>
+				
+			</div>
+			
+
+			<!-- Namespace Contents -->
+			
+
+			<!-- Method Quickref -->
+			
+			<div id="method-list-section" class="section">
+				<h3 class="section-header">Methods</h3>
+				<ul class="link-list">
+					
+					<li><a href="#M000039">::from_state</a></li>
+					
+					<li><a href="#M000040">::new</a></li>
+					
+					<li><a href="#M000050">#[]</a></li>
+					
+					<li><a href="#M000044">#allow_nan?</a></li>
+					
+					<li><a href="#M000043">#check_circular?</a></li>
+					
+					<li><a href="#M000048">#configure</a></li>
+					
+					<li><a href="#M000047">#forget</a></li>
+					
+					<li><a href="#M000046">#remember</a></li>
+					
+					<li><a href="#M000045">#seen?</a></li>
+					
+					<li><a href="#M000049">#to_h</a></li>
+					
+				</ul>
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+		<div id="project-metadata">
+			
+			
+			<div id="fileindex-section" class="section project-section">
+				<h3 class="section-header">Files</h3>
+				<ul>
+				
+					<li class="file"><a href="../../../README.html">README</a></li>
+				
+				</ul>
+			</div>
+			
+
+			<div id="classindex-section" class="section project-section">
+				<h3 class="section-header">Class Index
+					<span class="search-toggle"><img src="../../../images/find.png"
+						height="16" width="16" alt="[+]"
+						title="show/hide quicksearch" /></span></h3>
+				<form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+				<fieldset>
+					<legend>Quicksearch</legend>
+					<input type="text" name="quicksearch" value=""
+						class="quicksearch-field" />
+				</fieldset>
+				</form>
+
+				<ul class="link-list">
+				
+					<li><a href="../../../JSON.html">JSON</a></li>
+				
+					<li><a href="../../../JSON/CircularDatastructure.html">JSON::CircularDatastructure</a></li>
+				
+					<li><a href="../../../JSON/Editor.html">JSON::Editor</a></li>
+				
+					<li><a href="../../../JSON/Editor/EditMenu.html">JSON::Editor::EditMenu</a></li>
+				
+					<li><a href="../../../JSON/Editor/FileMenu.html">JSON::Editor::FileMenu</a></li>
+				
+					<li><a href="../../../JSON/Editor/Gtk.html">JSON::Editor::Gtk</a></li>
+				
+					<li><a href="../../../JSON/Editor/Gtk/TreeIter.html">JSON::Editor::Gtk::TreeIter</a></li>
+				
+					<li><a href="../../../JSON/Editor/JSONTreeView.html">JSON::Editor::JSONTreeView</a></li>
+				
+					<li><a href="../../../JSON/Editor/MainWindow.html">JSON::Editor::MainWindow</a></li>
+				
+					<li><a href="../../../JSON/Editor/MenuExtension.html">JSON::Editor::MenuExtension</a></li>
+				
+					<li><a href="../../../JSON/Editor/OptionsMenu.html">JSON::Editor::OptionsMenu</a></li>
+				
+					<li><a href="../../../JSON/Editor/PopUpMenu.html">JSON::Editor::PopUpMenu</a></li>
+				
+					<li><a href="../../../JSON/Ext.html">JSON::Ext</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator.html">JSON::Ext::Generator</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods.html">JSON::Ext::Generator::GeneratorMethods</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/Array.html">JSON::Ext::Generator::GeneratorMethods::Array</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/FalseClass.html">JSON::Ext::Generator::GeneratorMethods::FalseClass</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/Float.html">JSON::Ext::Generator::GeneratorMethods::Float</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/Hash.html">JSON::Ext::Generator::GeneratorMethods::Hash</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/Integer.html">JSON::Ext::Generator::GeneratorMethods::Integer</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/NilClass.html">JSON::Ext::Generator::GeneratorMethods::NilClass</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/Object.html">JSON::Ext::Generator::GeneratorMethods::Object</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/String.html">JSON::Ext::Generator::GeneratorMethods::String</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/String/Extend.html">JSON::Ext::Generator::GeneratorMethods::String::Extend</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/GeneratorMethods/TrueClass.html">JSON::Ext::Generator::GeneratorMethods::TrueClass</a></li>
+				
+					<li><a href="../../../JSON/Ext/Generator/State.html">JSON::Ext::Generator::State</a></li>
+				
+					<li><a href="../../../JSON/Ext/Parser.html">JSON::Ext::Parser</a></li>
+				
+					<li><a href="../../../JSON/GeneratorError.html">JSON::GeneratorError</a></li>
+				
+					<li><a href="../../../JSON/JSONError.html">JSON::JSONError</a></li>
+				
+					<li><a href="../../../JSON/MissingUnicodeSupport.html">JSON::MissingUnicodeSupport</a></li>
+				
+					<li><a href="../../../JSON/NestingError.html">JSON::NestingError</a></li>
+				
+					<li><a href="../../../JSON/ParserError.html">JSON::ParserError</a></li>
+				
+					<li><a href="../../../JSON/Pure.html">JSON::Pure</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator.html">JSON::Pure::Generator</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods.html">JSON::Pure::Generator::GeneratorMethods</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/Array.html">JSON::Pure::Generator::GeneratorMethods::Array</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/FalseClass.html">JSON::Pure::Generator::GeneratorMethods::FalseClass</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/Float.html">JSON::Pure::Generator::GeneratorMethods::Float</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/Hash.html">JSON::Pure::Generator::GeneratorMethods::Hash</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/Integer.html">JSON::Pure::Generator::GeneratorMethods::Integer</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/NilClass.html">JSON::Pure::Generator::GeneratorMethods::NilClass</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/Object.html">JSON::Pure::Generator::GeneratorMethods::Object</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/String.html">JSON::Pure::Generator::GeneratorMethods::String</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/String/Extend.html">JSON::Pure::Generator::GeneratorMethods::String::Extend</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/GeneratorMethods/TrueClass.html">JSON::Pure::Generator::GeneratorMethods::TrueClass</a></li>
+				
+					<li><a href="../../../JSON/Pure/Generator/State.html">JSON::Pure::Generator::State</a></li>
+				
+					<li><a href="../../../JSON/Pure/Parser.html">JSON::Pure::Parser</a></li>
+				
+					<li><a href="../../../Class.html">Class</a></li>
+				
+					<li><a href="../../../Date.html">Date</a></li>
+				
+					<li><a href="../../../DateTime.html">DateTime</a></li>
+				
+					<li><a href="../../../Enumerable.html">Enumerable</a></li>
+				
+					<li><a href="../../../Exception.html">Exception</a></li>
+				
+					<li><a href="../../../Kernel.html">Kernel</a></li>
+				
+					<li><a href="../../../Object.html">Object</a></li>
+				
+					<li><a href="../../../Range.html">Range</a></li>
+				
+					<li><a href="../../../Regexp.html">Regexp</a></li>
+				
+					<li><a href="../../../Struct.html">Struct</a></li>
+				
+					<li><a href="../../../Symbol.html">Symbol</a></li>
+				
+					<li><a href="../../../Time.html">Time</a></li>
+				
+				</ul>
+				<div id="no-class-search-results" style="display: none;">No matching classes.</div>
+			</div>
+
+			
+		</div>
+	</div>
+
+	<div id="documentation">
+		<h1 class="class">JSON::Pure::Generator::State</h1>
+
+		<div id="description">
+			<p>
+This class is used to create <a href="State.html">State</a> instances, that
+are use to hold data while generating a <a
+href="../../../JSON.html">JSON</a> text from a a Ruby data structure.
+</p>
+
+		</div>
+
+		<!-- Constants -->
+		
+
+		<!-- Attributes -->
+		
+		<div id="attribute-method-details" class="method-section section">
+			<h3 class="section-header">Attributes</h3>
+
+			
+			<div id="indent-attribute-method" class="method-detail">
+				<a name="indent"></a>
+				
+				<a name="indent="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">indent</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p>
+This string is used to indent levels in the <a
+href="../../../JSON.html">JSON</a> text.
+</p>
+				
+				</div>
+			</div>
+			
+			<div id="space-attribute-method" class="method-detail">
+				<a name="space"></a>
+				
+				<a name="space="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">space</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p>
+This string is used to insert a space between the tokens in a <a
+href="../../../JSON.html">JSON</a> string.
+</p>
+				
+				</div>
+			</div>
+			
+			<div id="space-before-attribute-method" class="method-detail">
+				<a name="space_before"></a>
+				
+				<a name="space_before="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">space_before</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p>
+This string is used to insert a space before the &#8217;:&#8217; in <a
+href="../../../JSON.html">JSON</a> objects.
+</p>
+				
+				</div>
+			</div>
+			
+			<div id="object-nl-attribute-method" class="method-detail">
+				<a name="object_nl"></a>
+				
+				<a name="object_nl="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">object_nl</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p>
+This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> object (or Hash).
+</p>
+				
+				</div>
+			</div>
+			
+			<div id="array-nl-attribute-method" class="method-detail">
+				<a name="array_nl"></a>
+				
+				<a name="array_nl="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">array_nl</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p>
+This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> array.
+</p>
+				
+				</div>
+			</div>
+			
+			<div id="max-nesting-attribute-method" class="method-detail">
+				<a name="max_nesting"></a>
+				
+				<a name="max_nesting="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">max_nesting</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p>
+This integer returns the maximum level of data structure nesting in the
+generated <a href="../../../JSON.html">JSON</a>, <a
+href="State.html#max_nesting">max_nesting</a> = 0 if no maximum is checked.
+</p>
+				
+				</div>
+			</div>
+			
+		</div>
+		
+
+		<!-- Methods -->
+		
+		<div id="public-class-method-details" class="method-section section">
+			<h3 class="section-header">Public Class Methods</h3>
+
+		
+			<div id="from-state-method" class="method-detail ">
+				<a name="M000039"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">from_state</span><span
+						class="method-args">(opts)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Creates a <a href="State.html">State</a> object from <em>opts</em>, which
+ought to be Hash to create a new <a href="State.html">State</a> instance
+configured by <em>opts</em>, something else to create an unconfigured
+instance. If <em>opts</em> is a <a href="State.html">State</a> object, it
+is just returned.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="from-state-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 95</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">from_state</span>(<span class="ruby-identifier">opts</span>)
+          <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">opts</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-keyword kw">self</span>
+            <span class="ruby-identifier">opts</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-constant">Hash</span>
+            <span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>)
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">new</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="new-method" class="method-detail ">
+				<a name="M000040"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">new</span><span
+						class="method-args">(opts = {})</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Instantiates a new <a href="State.html">State</a> object, configured by
+<em>opts</em>.
+</p>
+<p>
+<em>opts</em> can have the following keys:
+</p>
+<ul>
+<li><b>indent</b>: a string used to indent levels (default: &#8217;&#8217;),
+
+</li>
+<li><b>space</b>: a string that is put after, a : or , delimiter (default:
+&#8217;&#8217;),
+
+</li>
+<li><b><a href="State.html#space_before">space_before</a></b>: a string that is
+put before a : pair delimiter (default: &#8217;&#8217;),
+
+</li>
+<li><b><a href="State.html#object_nl">object_nl</a></b>: a string that is put
+at the end of a <a href="../../../JSON.html">JSON</a> object (default:
+&#8217;&#8217;),
+
+</li>
+<li><b><a href="State.html#array_nl">array_nl</a></b>: a string that is put at
+the end of a <a href="../../../JSON.html">JSON</a> array (default:
+&#8217;&#8217;),
+
+</li>
+<li><b>check_circular</b>: true if checking for circular data structures should
+be done (the default), false otherwise.
+
+</li>
+<li><b>check_circular</b>: true if checking for circular data structures should
+be done, false (the default) otherwise.
+
+</li>
+<li><b>allow_nan</b>: true if NaN, Infinity, and -Infinity should be generated,
+otherwise an exception is thrown, if these values are encountered. This
+options defaults to false.
+
+</li>
+</ul>
+					
+
+					
+					<div class="method-source-code"
+						id="new-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 122</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">opts</span> = {})
+          <span class="ruby-ivar">@seen</span> = {}
+          <span class="ruby-ivar">@indent</span>         = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@space</span>          = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@space_before</span>   = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@object_nl</span>      = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@array_nl</span>       = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@check_circular</span> = <span class="ruby-keyword kw">true</span>
+          <span class="ruby-ivar">@allow_nan</span>      = <span class="ruby-keyword kw">false</span>
+          <span class="ruby-identifier">configure</span> <span class="ruby-identifier">opts</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="public-instance-method-details" class="method-section section">
+			<h3 class="section-header">Public Instance Methods</h3>
+
+		
+			<div id="--method" class="method-detail ">
+				<a name="M000050"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">[]</span><span
+						class="method-args">(name)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Return the value returned by method <tt>name</tt>.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="--source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 222</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-operator">[]</span>(<span class="ruby-identifier">name</span>)
+          <span class="ruby-identifier">__send__</span> <span class="ruby-identifier">name</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="allow-nan--method" class="method-detail ">
+				<a name="M000044"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">allow_nan?</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Returns true if NaN, Infinity, and -Infinity should be considered as valid
+<a href="../../../JSON.html">JSON</a> and output.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="allow-nan--source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 170</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">allow_nan?</span>
+          <span class="ruby-ivar">@allow_nan</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="check-circular--method" class="method-detail ">
+				<a name="M000043"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">check_circular?</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Returns true, if circular data structures should be checked, otherwise
+returns false.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="check-circular--source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 164</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_circular?</span>
+          <span class="ruby-ivar">@check_circular</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="configure-method" class="method-detail ">
+				<a name="M000048"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">configure</span><span
+						class="method-args">(opts)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Configure this <a href="State.html">State</a> instance with the Hash
+<em>opts</em>, and return itself.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="configure-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 193</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">configure</span>(<span class="ruby-identifier">opts</span>)
+          <span class="ruby-ivar">@indent</span>         = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:indent</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:indent</span>)
+          <span class="ruby-ivar">@space</span>          = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:space</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:space</span>)
+          <span class="ruby-ivar">@space_before</span>   = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:space_before</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:space_before</span>)
+          <span class="ruby-ivar">@object_nl</span>      = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:object_nl</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:object_nl</span>)
+          <span class="ruby-ivar">@array_nl</span>       = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:array_nl</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:array_nl</span>)
+          <span class="ruby-ivar">@check_circular</span> = <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:check_circular</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:check_circular</span>)
+          <span class="ruby-ivar">@allow_nan</span>      = <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:allow_nan</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:allow_nan</span>)
+          <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:max_nesting</span>) <span class="ruby-comment cmt"># defaults to 19</span>
+            <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-value">19</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:max_nesting</span>]
+            <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:max_nesting</span>]
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-value">0</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">self</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="forget-method" class="method-detail ">
+				<a name="M000047"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">forget</span><span
+						class="method-args">(object)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Forget <em>object</em> for this generating run.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="forget-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 187</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">forget</span>(<span class="ruby-identifier">object</span>)
+          <span class="ruby-ivar">@seen</span>.<span class="ruby-identifier">delete</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">__id__</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="remember-method" class="method-detail ">
+				<a name="M000046"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">remember</span><span
+						class="method-args">(object)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Remember <em>object</em>, to find out if it was already encountered (if a
+cyclic data structure is if a cyclic data structure is rendered).
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="remember-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 182</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remember</span>(<span class="ruby-identifier">object</span>)
+          <span class="ruby-ivar">@seen</span>[<span class="ruby-identifier">object</span>.<span class="ruby-identifier">__id__</span>] = <span class="ruby-keyword kw">true</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="seen--method" class="method-detail ">
+				<a name="M000045"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">seen?</span><span
+						class="method-args">(object)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Returns <em>true</em>, if <em>object</em> was already seen during this
+generating run.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="seen--source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 176</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">seen?</span>(<span class="ruby-identifier">object</span>)
+          <span class="ruby-ivar">@seen</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">object</span>.<span class="ruby-identifier">__id__</span>)
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="to-h-method" class="method-detail ">
+				<a name="M000049"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">to_h</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Returns the configuration instance variables as a hash, that can be passed
+to the configure method.
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="to-h-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 213</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_h</span>
+          <span class="ruby-identifier">result</span> = {}
+          <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">iv</span> <span class="ruby-keyword kw">in</span> <span class="ruby-node">%w[indent space space_before object_nl array_nl check_circular allow_nan max_nesting]</span>
+            <span class="ruby-identifier">result</span>[<span class="ruby-identifier">iv</span>.<span class="ruby-identifier">intern</span>] = <span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-node">&quot;@#{iv}&quot;</span>)
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">result</span>
+        <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+
+	</div>
+
+
+	<div id="rdoc-debugging-section-dump" class="debugging-section">
+	
+		<p>Disabled; run with --debug to generate this.</p>
+	
+	</div>
+
+	<div id="validator-badges">
+		<p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+		<p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+			Rdoc Generator</a> 1.1.6</small>.</p>
+	</div>
+
+</body>
+</html>
+
