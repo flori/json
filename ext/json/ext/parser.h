@@ -37,6 +37,8 @@ typedef struct JSON_ParserStruct {
     int max_nesting;
     int current_nesting;
     int allow_nan;
+    int parsing_name;
+    int symbolize_names;
     VALUE object_class;
     VALUE array_class;
 } JSON_Parser;

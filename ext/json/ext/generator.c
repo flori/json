@@ -12,7 +12,8 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
-          i_pack, i_unpack, i_create_id, i_extend, i_key_p;
+          i_pack, i_unpack, i_create_id, i_extend, i_key_p, i_aref, i_send,
+          i_respond_to_p;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -713,6 +714,21 @@ static VALUE cState_to_h(VALUE self)
 }
 
 /*
+* call-seq: [](name)
+*
+* Return the value returned by method +name+.
+*/
+static VALUE cState_aref(VALUE self, VALUE name)
+{
+    GET_STATE(self);
+    if (RTEST(rb_funcall(self, i_respond_to_p, 1, name))) {
+        return rb_funcall(self, i_send, 1, name);
+    } else {
+        return Qnil;
+    }
+}
+
+/*
  * The fbuffer2rstring breaks encapsulation of Ruby's String datatype to avoid
  * calling memcpy while creating a RString from a c string. This is rather
  * hackish code, I am not sure if it's a good idea to keep it.
@@ -1206,6 +1222,19 @@ static VALUE cState_array_nl_set(VALUE self, VALUE array_nl)
     return Qnil;
 }
 
+
+/*
+* call-seq: check_circular?
+*
+* Returns true, if circular data structures should be checked,
+* otherwise returns false.
+*/
+static VALUE cState_check_circular_p(VALUE self)
+{
+    GET_STATE(self);
+    return state->max_nesting ? Qtrue : Qfalse;
+}
+
 /*
  * call-seq: max_nesting
  *
@@ -1286,10 +1315,12 @@ void Init_generator()
     rb_define_method(cState, "array_nl=", cState_array_nl_set, 1);
     rb_define_method(cState, "max_nesting", cState_max_nesting, 0);
     rb_define_method(cState, "max_nesting=", cState_max_nesting_set, 1);
+    rb_define_method(cState, "check_circular?", cState_check_circular_p, 0);
     rb_define_method(cState, "allow_nan?", cState_allow_nan_p, 0);
     rb_define_method(cState, "ascii_only?", cState_ascii_only_p, 0);
     rb_define_method(cState, "configure", cState_configure, 1);
     rb_define_method(cState, "to_h", cState_to_h, 0);
+    rb_define_method(cState, "[]", cState_aref, 1);
     rb_define_method(cState, "generate", cState_generate, 1);
     rb_define_method(cState, "partial_generate", cState_partial_generate, 1);
 
@@ -1335,6 +1366,9 @@ void Init_generator()
     i_create_id = rb_intern("create_id");
     i_extend = rb_intern("extend");
     i_key_p = rb_intern("key?");
+    i_aref = rb_intern("[]");
+    i_send = rb_intern("__send__");
+    i_respond_to_p = rb_intern("respond_to?");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");

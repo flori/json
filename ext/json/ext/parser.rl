@@ -64,7 +64,6 @@ static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
     return len;
 }
 
-
 #ifdef HAVE_RUBY_ENCODING_H
 static VALUE CEncoding_ASCII_8BIT, CEncoding_UTF_8, CEncoding_UTF_16BE,
     CEncoding_UTF_16LE, CEncoding_UTF_32BE, CEncoding_UTF_32LE;
@@ -77,7 +76,8 @@ static VALUE mJSON, mExt, cParser, eParserError, eNestingError;
 static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
-          i_chr, i_max_nesting, i_allow_nan, i_object_class, i_array_class, i_key_p;
+          i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_object_class,
+          i_array_class, i_key_p;
 
 %%{
     machine JSON_common;
@@ -125,7 +125,9 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
     }
 
     action parse_name {
+        json->parsing_name = 1;
         char *np = JSON_parse_string(json, fpc, pe, &last_name);
+        json->parsing_name = 0;
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
@@ -475,6 +477,9 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
     json->memo = p;
     %% write exec;
 
+    if (json->symbolize_names && json->parsing_name) {
+      *result = rb_str_intern(*result);
+    }
     if (cs >= JSON_string_first_final) {
         return p + 1;
     } else {
@@ -587,6 +592,9 @@ static VALUE convert_encoding(VALUE source)
  * * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
  *   defiance of RFC 4627 to be parsed by the Parser. This option defaults to
  *   false.
+ * * *symbolize_names*: If set to true, returns symbols for the names
+ *   (keys) in a JSON object. Otherwise strings are returned, which is also
+ *   the default.
  * * *create_additions*: If set to false, the Parser doesn't create
  *   additions even if a matchin class and create_id was found. This option
  *   defaults to true.
@@ -626,6 +634,13 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 json->allow_nan = RTEST(allow_nan) ? 1 : 0;
             } else {
                 json->allow_nan = 0;
+            }
+            tmp = ID2SYM(i_symbolize_names);
+            if (option_given_p(opts, tmp)) {
+                VALUE symbolize_names = rb_hash_aref(opts, tmp);
+                json->symbolize_names = RTEST(symbolize_names) ? 1 : 0;
+            } else {
+                json->symbolize_names = 0;
             }
             tmp = ID2SYM(i_create_additions);
             if (option_given_p(opts, tmp)) {
@@ -752,6 +767,7 @@ void Init_parser()
     i_chr = rb_intern("chr");
     i_max_nesting = rb_intern("max_nesting");
     i_allow_nan = rb_intern("allow_nan");
+    i_symbolize_names = rb_intern("symbolize_names");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
     i_key_p = rb_intern("key?");

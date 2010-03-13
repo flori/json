@@ -173,7 +173,7 @@ module JSON
         # Returns true, if circular data structures are checked,
         # otherwise returns false.
         def check_circular?
-          !!@max_nesting.zero?
+          !@max_nesting.zero?
         end
 
         # Returns true if NaN, Infinity, and -Infinity should be considered as
@@ -225,6 +225,11 @@ module JSON
             raise GeneratorError, "only generation of JSON objects or arrays allowed"
           end
           result
+        end
+
+        # Return the value returned by method +name+.
+        def [](name)
+          __send__ name
         end
       end
 
