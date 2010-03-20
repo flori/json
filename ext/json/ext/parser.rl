@@ -373,6 +373,7 @@ static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *resul
         return p + 1;
     } else {
         rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+        return NULL;
     }
 }
 
@@ -702,6 +703,7 @@ static VALUE cParser_parse(VALUE self)
         return result;
     } else {
         rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+        return Qnil;
     }
 }
 

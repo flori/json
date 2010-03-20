@@ -13,7 +13,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
           i_pack, i_unpack, i_create_id, i_extend, i_key_p, i_aref, i_send,
-          i_respond_to_p;
+          i_respond_to_p, i_match;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -728,6 +728,7 @@ static VALUE cState_aref(VALUE self, VALUE name)
     }
 }
 
+#if 0
 /*
  * The fbuffer2rstring breaks encapsulation of Ruby's String datatype to avoid
  * calling memcpy while creating a RString from a c string. This is rather
@@ -772,6 +773,11 @@ static VALUE fbuffer2rstring(FBuffer *buffer)
     return (VALUE) str;
 }
 #endif
+#endif
+static VALUE fbuffer2rstring(FBuffer *buffer)
+{
+    return rb_str_new(FBUFFER_PAIR(buffer));
+}
 
 static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth)
 {
@@ -889,7 +895,7 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
             fbuffer_append_integer(buffer, FIX2INT(obj));
             break;
         case T_BIGNUM:
-            tmp = rb_big2str0(obj, 10, 1);
+            tmp = rb_funcall(obj, i_to_s, 0);
             fbuffer_append(buffer, RSTRING_PAIR(tmp));
             break;
         case T_FLOAT:
@@ -978,7 +984,7 @@ static VALUE cState_generate(VALUE self, VALUE obj)
     args[0] = rb_str_new2("\\A\\s*(?:\\[.*\\]|\\{.*\\})\\s*\\Z");
     args[1] = CRegexp_MULTILINE;
     re = rb_class_new_instance(2, args, rb_cRegexp);
-    if (NIL_P(rb_reg_match(re, result))) {
+    if (NIL_P(rb_funcall(re, i_match, 1, result))) {
         rb_raise(eGeneratorError, "only generation of JSON objects or arrays allowed");
     }
     return result;
@@ -1369,6 +1375,7 @@ void Init_generator()
     i_aref = rb_intern("[]");
     i_send = rb_intern("__send__");
     i_respond_to_p = rb_intern("respond_to?");
+    i_match = rb_intern("match");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");

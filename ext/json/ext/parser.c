@@ -1274,6 +1274,7 @@ case 16:
         return p + 1;
     } else {
         rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+        return NULL;
     }
 }
 
@@ -1348,7 +1349,7 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 }
 
 
-#line 1352 "parser.c"
+#line 1353 "parser.c"
 static const int JSON_string_start = 1;
 static const int JSON_string_first_final = 8;
 static const int JSON_string_error = 0;
@@ -1356,7 +1357,7 @@ static const int JSON_string_error = 0;
 static const int JSON_string_en_main = 1;
 
 
-#line 469 "parser.rl"
+#line 470 "parser.rl"
 
 
 static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result)
@@ -1365,15 +1366,15 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
 
     *result = rb_str_buf_new(0);
     
-#line 1369 "parser.c"
+#line 1370 "parser.c"
 	{
 	cs = JSON_string_start;
 	}
 
-#line 477 "parser.rl"
+#line 478 "parser.rl"
     json->memo = p;
     
-#line 1377 "parser.c"
+#line 1378 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1398,7 +1399,7 @@ case 2:
 		goto st0;
 	goto st2;
 tr2:
-#line 455 "parser.rl"
+#line 456 "parser.rl"
 	{
         *result = json_string_unescape(*result, json->memo + 1, p);
         if (NIL_P(*result)) {
@@ -1409,14 +1410,14 @@ tr2:
 			{p = (( p + 1))-1;}
 		}
 	}
-#line 466 "parser.rl"
+#line 467 "parser.rl"
 	{ p--; {p++; cs = 8; goto _out;} }
 	goto st8;
 st8:
 	if ( ++p == pe )
 		goto _test_eof8;
 case 8:
-#line 1420 "parser.c"
+#line 1421 "parser.c"
 	goto st0;
 st3:
 	if ( ++p == pe )
@@ -1492,7 +1493,7 @@ case 7:
 	_out: {}
 	}
 
-#line 479 "parser.rl"
+#line 480 "parser.rl"
 
     if (json->symbolize_names && json->parsing_name) {
       *result = rb_str_intern(*result);
@@ -1506,7 +1507,7 @@ case 7:
 
 
 
-#line 1510 "parser.c"
+#line 1511 "parser.c"
 static const int JSON_start = 1;
 static const int JSON_first_final = 10;
 static const int JSON_error = 0;
@@ -1514,7 +1515,7 @@ static const int JSON_error = 0;
 static const int JSON_en_main = 1;
 
 
-#line 516 "parser.rl"
+#line 517 "parser.rl"
 
 
 /* 
@@ -1696,16 +1697,16 @@ static VALUE cParser_parse(VALUE self)
     GET_PARSER;
 
     
-#line 1700 "parser.c"
+#line 1701 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 697 "parser.rl"
+#line 698 "parser.rl"
     p = json->source;
     pe = p + json->len;
     
-#line 1709 "parser.c"
+#line 1710 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1761,7 +1762,7 @@ case 5:
 		goto st1;
 	goto st5;
 tr3:
-#line 505 "parser.rl"
+#line 506 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1770,7 +1771,7 @@ tr3:
     }
 	goto st10;
 tr4:
-#line 498 "parser.rl"
+#line 499 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1782,7 +1783,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1786 "parser.c"
+#line 1787 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1839,12 +1840,13 @@ case 9:
 	_out: {}
 	}
 
-#line 700 "parser.rl"
+#line 701 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;
     } else {
         rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+        return Qnil;
     }
 }
 
