@@ -38,9 +38,9 @@ module JSON
         when c.empty?             then p
         when p.const_defined?(c)  then p.const_get(c)
         else
-          if (c = p.const_missing(c) rescue nil) 
-            c
-          else
+          begin
+            p.const_missing(c)
+          rescue NameError
             raise ArgumentError, "can't find const #{path}"
           end
         end
