@@ -33,12 +33,16 @@ module JSON
     # level (absolute namespace path?). If there doesn't exist a constant at
     # the given path, an ArgumentError is raised.
     def deep_const_get(path) # :nodoc:
-      path = path.to_s
-      path.split(/::/).inject(Object) do |p, c|
+      path.to_s.split(/::/).inject(Object) do |p, c|
         case
         when c.empty?             then p
         when p.const_defined?(c)  then p.const_get(c)
-        else                      raise ArgumentError, "can't find const #{path}"
+        else
+          if (c = p.const_missing(c) rescue nil) 
+            c
+          else
+            raise ArgumentError, "can't find const #{path}"
+          end
         end
       end
     end
