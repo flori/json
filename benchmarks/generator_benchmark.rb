@@ -68,7 +68,7 @@ class GeneratorBenchmarkExt < Bullshit::RepeatCase
   include JSONGeneratorCommon
 
   warmup      yes
-  iterations  500
+  iterations  2000
 
   truncate_data do
     enabled false
@@ -94,7 +94,7 @@ class GeneratorBenchmarkPure < Bullshit::RepeatCase
   include JSONGeneratorCommon
 
   warmup      yes
-  iterations  100
+  iterations  400
 
   truncate_data do
     enabled false
@@ -119,7 +119,7 @@ class GeneratorBenchmarkRails < Bullshit::RepeatCase
   include GeneratorBenchmarkCommon
 
   warmup      yes
-  iterations  100
+  iterations  400
 
   truncate_data do
     enabled false
@@ -150,7 +150,7 @@ class GeneratorBenchmarkYajl < Bullshit::RepeatCase
   include GeneratorBenchmarkCommon
 
   warmup      yes
-  iterations  500
+  iterations  2000
 
   truncate_data do
     enabled false

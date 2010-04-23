@@ -147,7 +147,6 @@ static JSON_Generator_State *State_allocate();
 static VALUE cState_s_allocate(VALUE klass);
 static VALUE cState_configure(VALUE self, VALUE opts);
 static VALUE cState_to_h(VALUE self);
-static VALUE fbuffer2rstring(FBuffer *buffer);
 static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
 static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth);
 static VALUE cState_generate(VALUE self, VALUE obj);

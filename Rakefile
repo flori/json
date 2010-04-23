@@ -13,7 +13,7 @@ require 'rbconfig'
 include Config
 
 require 'rake/clean'
-CLOBBER.include Dir['benchmarks/data/*.{dat,log}']
+CLOBBER.include Dir['benchmarks/data/*.{dat,log}'], FileList['**/*.rbc']
 CLEAN.include FileList['diagrams/*.*'], 'doc', 'coverage', 'tmp',
   FileList["ext/**/{Makefile,mkmf.log}"],
   FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def}"]

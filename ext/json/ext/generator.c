@@ -13,7 +13,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
           i_pack, i_unpack, i_create_id, i_extend, i_key_p, i_aref, i_send,
-          i_respond_to_p;
+          i_respond_to_p, i_match;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -728,51 +728,6 @@ static VALUE cState_aref(VALUE self, VALUE name)
     }
 }
 
-/*
- * The fbuffer2rstring breaks encapsulation of Ruby's String datatype to avoid
- * calling memcpy while creating a RString from a c string. This is rather
- * hackish code, I am not sure if it's a good idea to keep it.
- */
-#ifdef RUBY_19
-#define STR_NOEMBED FL_USER1
-
-#define STR_SET_EMBED_LEN(str, n) do { \
-    long tmp_n = (n);\
-    RBASIC(str)->flags &= ~RSTRING_EMBED_LEN_MASK;\
-    RBASIC(str)->flags |= (tmp_n) << RSTRING_EMBED_LEN_SHIFT;\
-} while (0)
-
-#define STR_SET_NOEMBED(str) do {\
-    FL_SET(str, STR_NOEMBED);\
-    STR_SET_EMBED_LEN(str, 0);\
-} while (0)
-
-static VALUE fbuffer2rstring(FBuffer *buffer)
-{
-    NEWOBJ(str, struct RString);
-    OBJSETUP(str, rb_cString, T_STRING);
-
-    str->as.heap.ptr = FBUFFER_PTR(buffer);
-    str->as.heap.len = FBUFFER_LEN(buffer);
-    str->as.heap.aux.capa = FBUFFER_CAPA(buffer);
-	STR_SET_NOEMBED(str);
-
-    return (VALUE) str;
-}
-#else
-static VALUE fbuffer2rstring(FBuffer *buffer)
-{
-    NEWOBJ(str, struct RString);
-    OBJSETUP(str, rb_cString, T_STRING);
-
-    str->ptr = FBUFFER_PTR(buffer);
-    str->len = FBUFFER_LEN(buffer);
-    str->aux.capa = FBUFFER_CAPA(buffer);
-
-    return (VALUE) str;
-}
-#endif
-
 static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth)
 {
     VALUE tmp;
@@ -889,7 +844,7 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
             fbuffer_append_integer(buffer, FIX2INT(obj));
             break;
         case T_BIGNUM:
-            tmp = rb_big2str0(obj, 10, 1);
+            tmp = rb_funcall(obj, i_to_s, 0);
             fbuffer_append(buffer, RSTRING_PAIR(tmp));
             break;
         case T_FLOAT:
@@ -958,7 +913,7 @@ static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth)
     if (state->array_nl) fbuffer_append(state->array_delim, state->array_nl, state->array_nl_len);
 
     generate_json(buffer, self, state, obj, NIL_P(depth) ? 0 : FIX2INT(depth));
-    result = fbuffer2rstring(buffer);
+    result = rb_str_new(FBUFFER_PAIR(buffer));
     fbuffer_free_only_buffer(buffer);
     FORCE_UTF8(result);
     return result;
@@ -978,7 +933,7 @@ static VALUE cState_generate(VALUE self, VALUE obj)
     args[0] = rb_str_new2("\\A\\s*(?:\\[.*\\]|\\{.*\\})\\s*\\Z");
     args[1] = CRegexp_MULTILINE;
     re = rb_class_new_instance(2, args, rb_cRegexp);
-    if (NIL_P(rb_reg_match(re, result))) {
+    if (NIL_P(rb_funcall(re, i_match, 1, result))) {
         rb_raise(eGeneratorError, "only generation of JSON objects or arrays allowed");
     }
     return result;
@@ -1369,6 +1324,7 @@ void Init_generator()
     i_aref = rb_intern("[]");
     i_send = rb_intern("__send__");
     i_respond_to_p = rb_intern("respond_to?");
+    i_match = rb_intern("match");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");

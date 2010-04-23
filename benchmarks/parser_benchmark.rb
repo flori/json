@@ -41,7 +41,7 @@ class ParserBenchmarkExt < Bullshit::RepeatCase
   include ParserBenchmarkCommon
 
   warmup      yes
-  iterations  500
+  iterations  2000
 
   truncate_data do
     enabled false
@@ -78,7 +78,7 @@ class ParserBenchmarkPure < Bullshit::RepeatCase
   include ParserBenchmarkCommon
 
   warmup      yes
-  iterations  100
+  iterations  400
 
   truncate_data do
     enabled false
@@ -113,7 +113,7 @@ end
 
 class ParserBenchmarkYAML < Bullshit::RepeatCase
   warmup      yes
-  iterations  100
+  iterations  400
 
   truncate_data do
     enabled false
@@ -150,7 +150,7 @@ end
 
 class ParserBenchmarkRails < Bullshit::RepeatCase
   warmup      yes
-  iterations  100
+  iterations  400
 
   truncate_data do
     enabled false
@@ -187,7 +187,7 @@ end
 
 class ParserBenchmarkYajl < Bullshit::RepeatCase
   warmup      yes
-  iterations  500
+  iterations  2000
 
   truncate_data do
     enabled false
