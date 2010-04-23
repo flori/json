@@ -2,7 +2,7 @@
   "author_email":"flori@ping.de",
   "author":"Florian Frank",
   "documentation_url":"doc/index.html",
-  "download_url":"http://rubyforge.org/frs/?group_id=953",
+  "download_url":"http://www.ping.de/~flori",
   "github_url": "http://github.com/flori/json/tree/master",
   "project_name":"JSON implementation for Ruby",
   "project_unixname":"json",
