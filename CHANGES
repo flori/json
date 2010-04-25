@@ -1,3 +1,6 @@
+2010-04-25 (1.4.1)
+  * Fix for a bug reported by Dan DeLeo <dan@kallistec.com>, caused by T_FIXNUM
+    being different on 32bit/64bit architectures.
 2010-04-23 (1.4.0)
   * Major speed improvements and building with simplified
     directory/file-structure.

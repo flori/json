@@ -324,4 +324,17 @@ EOT
     JSON.dump(eval(too_deep), output, 20)
     assert_equal too_deep, output.string
   end
+
+  def test_big_integers
+    json1 = JSON([orig = (1 << 31) - 1])
+    assert_equal orig, JSON[json1][0]
+    json2 = JSON([orig = 1 << 31])
+    assert_equal orig, JSON[json2][0]
+    json3 = JSON([orig = (1 << 62) - 1])
+    assert_equal orig, JSON[json3][0]
+    json4 = JSON([orig = 1 << 62])
+    assert_equal orig, JSON[json4][0]
+    json5 = JSON([orig = 1 << 64])
+    assert_equal orig, JSON[json5][0]
+  end
 end
