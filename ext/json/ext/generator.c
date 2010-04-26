@@ -284,8 +284,9 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
 }
 
 static char *fstrndup(const char *ptr, int len) {
+  char *result;
   if (len <= 0) return NULL;
-  char *result = ALLOC_N(char, len);
+  result = ALLOC_N(char, len);
   memccpy(result, ptr, 0, len);
   return result;
 }
@@ -302,8 +303,9 @@ static FBuffer *fbuffer_alloc()
 
 static FBuffer *fbuffer_alloc_with_length(unsigned int initial_length)
 {
+    FBuffer *fb;
     assert(initial_length > 0);
-    FBuffer *fb = ALLOC(FBuffer);
+    fb = ALLOC(FBuffer);
     memset((void *) fb, 0, sizeof(FBuffer));
     fb->initial_length = initial_length;
     return fb;
@@ -641,36 +643,41 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     opts = tmp;
     tmp = rb_hash_aref(opts, ID2SYM(i_indent));
     if (RTEST(tmp)) {
+        int len;
         Check_Type(tmp, T_STRING);
-        int len = RSTRING_LEN(tmp);
+        len = RSTRING_LEN(tmp);
         state->indent = fstrndup(RSTRING_PTR(tmp), len);
         state->indent_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space));
     if (RTEST(tmp)) {
+        int len;
         Check_Type(tmp, T_STRING);
-        int len = RSTRING_LEN(tmp);
+        len = RSTRING_LEN(tmp);
         state->space = fstrndup(RSTRING_PTR(tmp), len);
         state->space_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space_before));
     if (RTEST(tmp)) {
+        int len;
         Check_Type(tmp, T_STRING);
-        int len = RSTRING_LEN(tmp);
+        len = RSTRING_LEN(tmp);
         state->space_before = fstrndup(RSTRING_PTR(tmp), len);
         state->space_before_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_array_nl));
     if (RTEST(tmp)) {
+        int len;
         Check_Type(tmp, T_STRING);
-        int len = RSTRING_LEN(tmp);
+        len = RSTRING_LEN(tmp);
         state->array_nl = fstrndup(RSTRING_PTR(tmp), len);
         state->array_nl_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_object_nl));
     if (RTEST(tmp)) {
+        int len;
         Check_Type(tmp, T_STRING);
-        int len = RSTRING_LEN(tmp);
+        len = RSTRING_LEN(tmp);
         state->object_nl = fstrndup(RSTRING_PTR(tmp), len);
         state->object_nl_len = len;
     }
@@ -744,14 +751,14 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
                 char *delim2 = FBUFFER_PTR(state->object_delim2);
                 long delim2_len = FBUFFER_LEN(state->object_delim2);
                 int i, j;
+                VALUE key, key_to_s, keys;
                 depth++;
                 if (max_nesting != 0 && depth > max_nesting) {
                     fbuffer_free(buffer);
                     rb_raise(eNestingError, "nesting of %ld is too deep", depth);
                 }
                 fbuffer_append_char(buffer, '{');
-                VALUE keys = rb_funcall(obj, rb_intern("keys"), 0);
-                VALUE key, key_to_s;
+                keys = rb_funcall(obj, rb_intern("keys"), 0);
                 for(i = 0; i < RARRAY_LEN(keys); i++) {
                     if (i > 0) fbuffer_append(buffer, delim, delim_len);
                     if (object_nl) {

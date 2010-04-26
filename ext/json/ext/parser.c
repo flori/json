@@ -147,8 +147,9 @@ case 2:
 tr2:
 #line 127 "parser.rl"
 	{
+        char *np;
         json->parsing_name = 1;
-        char *np = JSON_parse_string(json, p, pe, &last_name);
+        np = JSON_parse_string(json, p, pe, &last_name);
         json->parsing_name = 0;
         if (np == NULL) { p--; {p++; cs = 3; goto _out;} } else {p = (( np))-1;}
     }

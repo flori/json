@@ -125,8 +125,9 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
     }
 
     action parse_name {
+        char *np;
         json->parsing_name = 1;
-        char *np = JSON_parse_string(json, fpc, pe, &last_name);
+        np = JSON_parse_string(json, fpc, pe, &last_name);
         json->parsing_name = 0;
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
