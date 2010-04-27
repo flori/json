@@ -3,6 +3,8 @@
     Microsoft Visual C possible again.
   * Applied patch from devrandom <c1.github@niftybox.net> in order to allow building of
     json_pure if extensiontask is not present.
+  * Thanks to Dustin Schneider <dustin@stocktwits.com>, who reported a memory
+    leak, which is fixed in this release.
 2010-04-25 (1.4.1)
   * Fix for a bug reported by Dan DeLeo <dan@kallistec.com>, caused by T_FIXNUM
     being different on 32bit/64bit architectures.
