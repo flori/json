@@ -24,14 +24,16 @@ PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
 PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\./).exclude(/\.(so|bundle|o|#{CONFIG['DLEXT']})$/)
 EXT_ROOT_DIR      = 'ext/json/ext'
-EXT_PARSER_DL     = "#{EXT_ROOT_DIR}/parser.#{CONFIG['DLEXT']}"
-EXT_PARSER_SRC    = "#{EXT_ROOT_DIR}/parser.c"
+EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
+EXT_PARSER_DL     = "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}"
+EXT_PARSER_SRC    = "#{EXT_PARSER_DIR}/parser.c"
 PKG_FILES << EXT_PARSER_SRC
-EXT_GENERATOR_DL  = "#{EXT_ROOT_DIR}/generator.#{CONFIG['DLEXT']}"
-EXT_GENERATOR_SRC = "#{EXT_ROOT_DIR}/generator.c"
+EXT_GENERATOR_DIR = "#{EXT_ROOT_DIR}/generator"
+EXT_GENERATOR_DL  = "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}"
+EXT_GENERATOR_SRC = "#{EXT_GENERATOR_DIR}/generator.c"
 RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| system(c, '-v') }
 RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| system(c, '-v') }
-RAGEL_PATH        = "#{EXT_ROOT_DIR}/parser.rl"
+RAGEL_PATH        = "#{EXT_PARSER_DIR}/parser.rl"
 
 def myruby(*args, &block)
   @myruby ||= File.join(CONFIG['bindir'], CONFIG['ruby_install_name'])
@@ -73,17 +75,19 @@ desc "Compiling extension"
 task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
 
 file EXT_PARSER_DL => EXT_PARSER_SRC do
-  cd EXT_ROOT_DIR do
-    myruby 'extconf_parser.rb'
+  cd EXT_PARSER_DIR do
+    myruby 'extconf.rb'
     sh MAKE
   end
+  cp "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
 end
 
 file EXT_GENERATOR_DL => EXT_GENERATOR_SRC do
-  cd EXT_ROOT_DIR do
-    myruby 'extconf_generator.rb'
+  cd EXT_GENERATOR_DIR do
+    myruby 'extconf.rb'
     sh MAKE
   end
+  cp "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
 end
 
 desc "Generate parser with ragel"
@@ -94,7 +98,7 @@ task :ragel_clean do
 end
 
 file EXT_PARSER_SRC => RAGEL_PATH do
-  cd EXT_ROOT_DIR do
+  cd EXT_PARSER_DIR do
     if RAGEL_CODEGEN == 'ragel'
       sh "ragel parser.rl -G2 -o parser.c"
     else
@@ -215,7 +219,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
     s.files = PKG_FILES
 
-    s.extensions = FileList['ext/**/extconf_*.rb']
+    s.extensions = FileList['ext/**/extconf.rb']
 
     s.require_path = EXT_ROOT_DIR
     s.require_paths << 'ext'
@@ -244,21 +248,19 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
   Rake::ExtensionTask.new do |ext|
     ext.name            = 'parser'
-    ext.config_script   = 'extconf_parser.rb'
     ext.gem_spec        = spec_ext
     ext.cross_compile   = true
     ext.cross_platform  = %w[i386-mswin32 i386-mingw32]
-    ext.ext_dir         = 'ext/json/ext'
+    ext.ext_dir         = 'ext/json/ext/parser'
     ext.lib_dir         = 'lib/json/ext'
   end
 
   Rake::ExtensionTask.new do |ext|
     ext.name            = 'generator'
-    ext.config_script   = 'extconf_generator.rb'
     ext.gem_spec        = spec_ext
     ext.cross_compile   = true
     ext.cross_platform  = %w[i386-mswin32 i386-mingw32]
-    ext.ext_dir         = 'ext/json/ext'
+    ext.ext_dir         = 'ext/json/ext/generator'
     ext.lib_dir         = 'lib/json/ext'
   end
 end

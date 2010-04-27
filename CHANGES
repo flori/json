@@ -5,6 +5,7 @@
     json_pure if extensiontask is not present.
   * Thanks to Dustin Schneider <dustin@stocktwits.com>, who reported a memory
     leak, which is fixed in this release.
+  * Applied 993f261ccb8f911d2ae57e9db48ec7acd0187283 patch from josh@github.
 2010-04-25 (1.4.1)
   * Fix for a bug reported by Dan DeLeo <dan@kallistec.com>, caused by T_FIXNUM
     being different on 32bit/64bit architectures.

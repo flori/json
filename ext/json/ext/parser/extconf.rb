@@ -12,4 +12,4 @@ if CONFIG['CC'] =~ /gcc/
 end
 
 have_header("re.h")
-create_makefile 'parser'
+create_makefile 'json/ext/parser'

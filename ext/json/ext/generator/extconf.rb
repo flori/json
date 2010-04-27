@@ -13,4 +13,4 @@ end
 
 have_header("ruby/re.h") || have_header("re.h")
 have_header("ruby/encoding.h")
-create_makefile 'generator'
+create_makefile 'json/ext/generator'
