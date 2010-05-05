@@ -173,12 +173,33 @@ class TC_JSON < Test::Unit::TestCase
     assert_equal({'foo'=>'bar'}, parse('    { "foo"  :   "bar"   }   '))
   end
 
-  class SubHash < Hash; end
+  class SubHash < Hash
+    def to_json(*a)
+      {
+        JSON.create_id => self.class.name,
+      }.merge(self).to_json(*a)
+    end
+
+    def self.json_create(o)
+      o.delete JSON.create_id
+      new.merge(o)
+    end
+  end
 
   def test_parse_object_custom_class
     res = parse('{}', :object_class => SubHash)
     assert_equal({}, res)
     assert_equal(SubHash, res.class)
+  end
+
+  def test_generation_of_core_subclasses
+    obj = SubHash.new.merge( "foo" => SubHash.new.merge("bar" => true))
+    obj_json = JSON(obj)
+    obj_again = JSON(obj_json)
+    assert_kind_of SubHash, obj_again
+    assert_kind_of SubHash, obj_again['foo']
+    assert obj_again['foo']['bar']
+    assert_equal obj, obj_again
   end
 
   def test_parser_reset

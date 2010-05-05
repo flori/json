@@ -1,3 +1,7 @@
+2010-05-05 (1.4.3)
+  * Fixed some test assertions, from Ruby r27587 and r27590, patch by nobu.
+  * Fixed issue http://github.com/flori/json/issues/#issue/20 reported by
+    electronicwhisper@github. Thx!
 2010-04-26 (1.4.2)
   * Applied patch from naruse Yui NARUSE <naruse@airemix.com> to make building with
     Microsoft Visual C possible again.
