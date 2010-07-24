@@ -453,7 +453,7 @@ static VALUE mHash_to_json(int argc, VALUE *argv, VALUE self)
             rb_raise(eNestingError, "nesting of %ld is too deep", depth);
         }
         fbuffer_append_char(buffer, '{');
-        keys = rb_funcall(self, rb_intern("keys"), 0);
+        keys = rb_funcall(self, i_keys, 0);
         for(i = 0; i < RARRAY_LEN(keys); i++) {
             if (i > 0) fbuffer_append(buffer, delim, delim_len);
             if (object_nl) {
