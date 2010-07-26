@@ -616,6 +616,7 @@ static void State_free(JSON_Generator_State *state)
 static JSON_Generator_State *State_allocate()
 {
     JSON_Generator_State *state = ALLOC(JSON_Generator_State);
+    MEMZERO(state, JSON_Generator_State, 1);
     return state;
 }
 
