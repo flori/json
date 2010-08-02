@@ -340,7 +340,7 @@ static void fbuffer_inc_capa(FBuffer *fb, unsigned int requested)
     for (required = fb->capa; requested > required - fb->len; required <<= 1);
 
     if (required > fb->capa) {
-        fb->ptr = (char *) REALLOC_N((long*) fb->ptr, char, required);
+        REALLOC_N(fb->ptr, char, required);
         fb->capa = required;
     }
 }
@@ -794,6 +794,7 @@ static void State_free(JSON_Generator_State *state)
 static JSON_Generator_State *State_allocate()
 {
     JSON_Generator_State *state = ALLOC(JSON_Generator_State);
+    MEMZERO(state, JSON_Generator_State, 1);
     return state;
 }
 
