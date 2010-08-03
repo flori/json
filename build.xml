@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSON-JRuby" default="gem" basedir=".">
+    <description>Builds, tests, and runs the project JSON-JRuby.</description>
+    <import file="nbproject/build-impl.xml"/>
+    
+    <target name="ragel" description="Generate parser with Ragel.">
+        <exec executable="ragel" failonerror="true">
+            <arg value="-J"/>
+            <arg value="${src.dir}/json/ext/Parser.rl"/>
+        </exec>
+    </target>
+    
+    <target name="-pre-compile" depends="ragel">
+    </target>
+    
+    <target name="clean-dist">
+        <delete>
+            <file file="${generator.jar}"/>
+            <file file="${parser.jar}"/>
+            <fileset dir="." includes="*.gem"/>
+        </delete>
+    </target>
+    
+    <target name="-post-clean" depends="clean-dist,ragel"/>
+    
+    <target name="-do-jar-without-manifest">
+        <mkdir dir="${lib.dir}/json/ext"/>
+        <delete>
+            <file file="${generator.jar}"/>
+            <file file="${parser.jar}"/>
+        </delete>
+        <jar destfile="${generator.jar}">
+            <fileset dir="${build.classes.dir}">
+                <include name="json/ext/ByteListTranscoder*.class"/>
+                <include name="json/ext/Generator*.class"/>
+                <include name="json/ext/OptionsReader*.class"/>
+                <include name="json/ext/RuntimeInfo*.class"/>
+                <include name="json/ext/StringEncoder*.class"/>
+                <include name="json/ext/Utils*.class"/>
+            </fileset>
+        </jar>
+        <jar destfile="${parser.jar}">
+            <fileset dir="${build.classes.dir}">
+                <include name="json/ext/ByteListTranscoder*.class"/>
+                <include name="json/ext/OptionsReader*.class"/>
+                <include name="json/ext/Parser*.class"/>
+                <include name="json/ext/RuntimeInfo*.class"/>
+                <include name="json/ext/StringDecoder*.class"/>
+                <include name="json/ext/Utils*.class"/>
+            </fileset>
+        </jar>
+    </target>
+    
+    <target name="gem" depends="jar" description="Build a RubyGem.">
+        <exec executable="${jruby.dir}/bin/jruby">
+            <arg value="json-jruby.gemspec"/>
+        </exec>
+    </target>
+    
+    <target name="-post-test" depends="ruby-tests" />
+    
+    <target name="ruby-tests" depends="jar"
+            description="Perform the json ruby library tests.">
+        <exec executable="${jruby.dir}/bin/jruby" failonerror="true">
+            <arg value="-v"/>
+            <arg value="-I"/>
+            <arg value="${lib.dir}"/>
+            <arg value="tests/runner.rb"/>
+        </exec>
+    </target>
+</project>
