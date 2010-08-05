@@ -73,6 +73,7 @@ static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len);
 static void fbuffer_append_long(FBuffer *fb, long number);
 static void fbuffer_append_char(FBuffer *fb, char newchr);
 static FBuffer *fbuffer_dup(FBuffer *fb);
+static VALUE fbuffer_to_s(FBuffer *fb);
 
 /* unicode defintions */
 
@@ -123,12 +124,23 @@ typedef struct JSON_Generator_StateStruct {
     long max_nesting;
     char allow_nan;
     char ascii_only;
-    FBuffer *buffer;
 } JSON_Generator_State;
 
 #define GET_STATE(self)                       \
     JSON_Generator_State *state;              \
     Data_Get_Struct(self, JSON_Generator_State, state)
+
+#define GENERATE_JSON(type)                                                                       \
+    FBuffer *buffer;                                                                            \
+    VALUE Vstate, depth;                                                                        \
+    JSON_Generator_State *state;                                                                \
+                                                                                                \
+    rb_scan_args(argc, argv, "02", &Vstate, &depth);                                            \
+    Vstate = cState_from_state_s(cState, Vstate);                                               \
+    Data_Get_Struct(Vstate, JSON_Generator_State, state);                                       \
+    buffer = cState_prepare_buffer(Vstate);                                                     \
+    generate_json_##type(buffer, Vstate, state, self, NIL_P(depth) ? 0 : FIX2INT(depth));       \
+    return fbuffer_to_s(buffer)
 
 static VALUE mHash_to_json(int argc, VALUE *argv, VALUE self);
 static VALUE mArray_to_json(int argc, VALUE *argv, VALUE self);
@@ -149,8 +161,18 @@ static JSON_Generator_State *State_allocate();
 static VALUE cState_s_allocate(VALUE klass);
 static VALUE cState_configure(VALUE self, VALUE opts);
 static VALUE cState_to_h(VALUE self);
-static int cState_prepare_buffer(VALUE self);
-static VALUE cState_result(VALUE self, int returnResult);
+static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_object(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_array(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_string(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_null(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_false(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_true(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_fixnum(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_bignum(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, long depth);
+static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth);
+static VALUE cState_generate(VALUE self, VALUE obj);
 static VALUE cState_initialize(int argc, VALUE *argv, VALUE self);
 static VALUE cState_from_state_s(VALUE self, VALUE opts);
 static VALUE cState_indent(VALUE self);
@@ -167,6 +189,6 @@ static VALUE cState_max_nesting(VALUE self);
 static VALUE cState_max_nesting_set(VALUE self, VALUE depth);
 static VALUE cState_allow_nan_p(VALUE self);
 static VALUE cState_ascii_only_p(VALUE self);
-static void State_append_ruby_string_to_fbuffer(JSON_Generator_State *state, VALUE string);
+static FBuffer *cState_prepare_buffer(VALUE self);
 
 #endif
