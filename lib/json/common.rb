@@ -11,9 +11,9 @@ module JSON
     # generate and parse for their documentation.
     def [](object, opts = {})
       if object.respond_to? :to_str
-        JSON.parse(object.to_str, opts => {})
+        JSON.parse(object.to_str, opts)
       else
-        JSON.generate(object, opts => {})
+        JSON.generate(object, opts)
       end
     end
 
@@ -377,11 +377,11 @@ module ::Kernel
   #
   # The _opts_ argument is passed through to generate/parse respectively, see
   # generate and parse for their documentation.
-  def JSON(object, opts = {})
+  def JSON(object, *args)
     if object.respond_to? :to_str
-      JSON.parse(object.to_str, opts)
+      JSON.parse(object.to_str, args.first)
     else
-      JSON.generate(object, opts)
+      JSON.generate(object, args.first)
     end
   end
 end
