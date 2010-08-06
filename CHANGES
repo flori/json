@@ -1,3 +1,7 @@
+2010-08-07 (1.4.5)
+  * Manage data structure nesting depth in state object during generation. This
+    should reduce problems with to_json method definіtions that only have one
+    argument.
 2010-08-06 (1.4.4)
   * Fixes build problem for rubinius under OS X, http://github.com/flori/json/issues/closed#issue/25
   * Fixes crashes described in http://github.com/flori/json/issues/closed#issue/21 and
