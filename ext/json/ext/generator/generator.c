@@ -8,12 +8,13 @@ static ID i_encoding, i_encode;
 static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
              mHash, mArray, mFixnum, mBignum, mFloat, mString, mString_Extend,
              mTrueClass, mFalseClass, mNilClass, eGeneratorError,
-             eNestingError, CRegexp_MULTILINE, CJSON_SAFE_STATE_PROTOTYPE;
+             eNestingError, CRegexp_MULTILINE, CJSON_SAFE_STATE_PROTOTYPE,
+             i_SAFE_STATE_PROTOTYPE;
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
           i_pack, i_unpack, i_create_id, i_extend, i_key_p, i_aref, i_send,
-          i_respond_to_p, i_match, i_keys, i_dup;
+          i_respond_to_p, i_match, i_keys;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -740,7 +741,7 @@ static void generate_json_object(FBuffer *buffer, VALUE Vstate, JSON_Generator_S
         rb_raise(eNestingError, "nesting of %ld is too deep", depth);
     }
     fbuffer_append_char(buffer, '{');
-    keys = rb_funcall(obj, rb_intern("keys"), 0);
+    keys = rb_funcall(obj, i_keys, 0);
     for(i = 0; i < RARRAY_LEN(keys); i++) {
         if (i > 0) fbuffer_append(buffer, delim, delim_len);
         if (object_nl) {
@@ -935,12 +936,6 @@ static VALUE fbuffer_to_s(FBuffer *fb)
     return result;
 }
 
-/*
- * call-seq: partial_generate(obj)
- *
- * Generates a part of a JSON document from object +obj+ and returns the
- * result.
- */
 static VALUE cState_partial_generate(VALUE self, VALUE obj, VALUE depth)
 {
     FBuffer *buffer = cState_prepare_buffer(self);
@@ -1036,7 +1031,7 @@ static VALUE cState_from_state_s(VALUE self, VALUE opts)
         return rb_funcall(self, i_new, 1, opts);
     } else {
         if (NIL_P(CJSON_SAFE_STATE_PROTOTYPE)) {
-            CJSON_SAFE_STATE_PROTOTYPE = rb_const_get(mJSON, rb_intern("SAFE_STATE_PROTOTYPE"));
+            CJSON_SAFE_STATE_PROTOTYPE = rb_const_get(mJSON, i_SAFE_STATE_PROTOTYPE);
         }
         return CJSON_SAFE_STATE_PROTOTYPE;
     }
@@ -1306,7 +1301,6 @@ void Init_generator()
     rb_define_method(cState, "to_h", cState_to_h, 0);
     rb_define_method(cState, "[]", cState_aref, 1);
     rb_define_method(cState, "generate", cState_generate, 1);
-    rb_define_method(cState, "partial_generate", cState_partial_generate, 1);
 
     mGeneratorMethods = rb_define_module_under(mGenerator, "GeneratorMethods");
     mObject = rb_define_module_under(mGeneratorMethods, "Object");
@@ -1357,11 +1351,11 @@ void Init_generator()
     i_respond_to_p = rb_intern("respond_to?");
     i_match = rb_intern("match");
     i_keys = rb_intern("keys");
-    i_dup = rb_intern("dup");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");
     i_encode = rb_intern("encode");
 #endif
+    i_SAFE_STATE_PROTOTYPE = rb_intern("SAFE_STATE_PROTOTYPE");
     CJSON_SAFE_STATE_PROTOTYPE = Qnil;
 }
