@@ -1,3 +1,7 @@
+2010-08-06 (1.4.4)
+  * Fixes build problem for rubinius under OS X, http://github.com/flori/json/issues/closed#issue/25
+  * Fixes crashes described in http://github.com/flori/json/issues/closed#issue/21 and
+    http://github.com/flori/json/issues/closed#issue/23
 2010-05-05 (1.4.3)
   * Fixed some test assertions, from Ruby r27587 and r27590, patch by nobu.
   * Fixed issue http://github.com/flori/json/issues/#issue/20 reported by

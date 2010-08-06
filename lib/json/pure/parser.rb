@@ -70,24 +70,25 @@ module JSON
       # * *array_class*: Defaults to Array
       def initialize(source, opts = {})
           if defined?(::Encoding)
-            if source.encoding == Encoding::ASCII_8BIT
+            if source.encoding == ::Encoding::ASCII_8BIT
               b = source[0, 4].bytes.to_a
               source = case
                        when b.size >= 4 && b[0] == 0 && b[1] == 0 && b[2] == 0
-                         source.dup.force_encoding(Encoding::UTF_32BE).encode!(Encoding::UTF_8)
+                         source.dup.force_encoding(::Encoding::UTF_32BE).encode!(::Encoding::UTF_8)
                        when b.size >= 4 && b[0] == 0 && b[2] == 0
-                         source.dup.force_encoding(Encoding::UTF_16BE).encode!(Encoding::UTF_8)
+                         source.dup.force_encoding(::Encoding::UTF_16BE).encode!(::Encoding::UTF_8)
                        when b.size >= 4 && b[1] == 0 && b[2] == 0 && b[3] == 0
-                         source.dup.force_encoding(Encoding::UTF_32LE).encode!(Encoding::UTF_8)
+                         source.dup.force_encoding(::Encoding::UTF_32LE).encode!(::Encoding::UTF_8)
+
                        when b.size >= 4 && b[1] == 0 && b[3] == 0
-                         source.dup.force_encoding(Encoding::UTF_16LE).encode!(Encoding::UTF_8)
+                         source.dup.force_encoding(::Encoding::UTF_16LE).encode!(::Encoding::UTF_8)
                        else
                          source.dup
                        end
             else
-              source = source.encode(Encoding::UTF_8)
+              source = source.encode(::Encoding::UTF_8)
             end
-            source.force_encoding(Encoding::ASCII_8BIT)
+            source.force_encoding(::Encoding::ASCII_8BIT)
           else
             b = source
             source = case
@@ -180,7 +181,7 @@ module JSON
             end
           end
           if string.respond_to?(:force_encoding)
-            string.force_encoding(Encoding::UTF_8)
+            string.force_encoding(::Encoding::UTF_8)
           end
           string
         else
