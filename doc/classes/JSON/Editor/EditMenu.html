@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Editor::EditMenu</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+    <script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            JSON::Editor::EditMenu 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="../../Object.html">Object</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/json/editor_rb.html">lib/json/editor.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <p>
+This class creates the Edit pulldown menu.
+</p>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>C</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-copy">copy</a>,</li>
+                
+                <li><a href="#method-i-create">create</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>F</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-find">find</a>,</li>
+                
+                <li><a href="#method-i-find_again">find_again</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>P</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-paste">paste</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>S</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-sort">sort</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+        
+        <li>
+            
+            <span>MenuExtension</span>
+            
+            START:includes
+        </li>
+        
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="method-i-copy">
+                    
+                    <a name="method-i-copy"></a><b>copy</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Copy data from model into primary clipboard.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-copy_source')" id="l_method-i-copy_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-copy_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 548</span>
+548:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">copy</span>(<span class="ruby-identifier">item</span>)
+549:         <span class="ruby-identifier">data</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">model</span>.<span class="ruby-identifier">iter_first</span>)
+550:         <span class="ruby-identifier">json</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">pretty_generate</span>(<span class="ruby-identifier">data</span>, <span class="ruby-value">:max_nesting</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">false</span>)
+551:         <span class="ruby-identifier">c</span> = <span class="ruby-constant">Gtk</span><span class="ruby-operator">::</span><span class="ruby-constant">Clipboard</span>.<span class="ruby-identifier">get</span>(<span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Selection</span><span class="ruby-operator">::</span><span class="ruby-constant">PRIMARY</span>)
+552:         <span class="ruby-identifier">c</span>.<span class="ruby-identifier">text</span> = <span class="ruby-identifier">json</span>
+553:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-create">
+                    
+                    <a name="method-i-create"></a><b>create</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Create the menu.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-create_source')" id="l_method-i-create_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-create_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 645</span>
+645:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
+646:         <span class="ruby-identifier">title</span> = <span class="ruby-constant">MenuItem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'Edit'</span>)
+647:         <span class="ruby-identifier">title</span>.<span class="ruby-identifier">submenu</span> = <span class="ruby-identifier">menu</span>
+648:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Copy'</span>, <span class="ruby-value">cc</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:copy</span>))
+649:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Paste'</span>, <span class="ruby-value">vv</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:paste</span>))
+650:         <span class="ruby-identifier">add_separator</span>
+651:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Find'</span>, <span class="ruby-value">ff</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:find</span>))
+652:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Find Again'</span>, <span class="ruby-value">gg</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:find_again</span>))
+653:         <span class="ruby-identifier">add_separator</span>
+654:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Sort'</span>, <span class="ruby-value">SS</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:sort</span>))
+655:         <span class="ruby-identifier">title</span>
+656:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-find">
+                    
+                    <a name="method-i-find"></a><b>find</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Find a string in all nodes&#8217; contents and select the found node in the
+treeview.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-find_source')" id="l_method-i-find_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-find_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 570</span>
+570:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find</span>(<span class="ruby-identifier">item</span>)
+571:         <span class="ruby-ivar">@search</span> = <span class="ruby-identifier">ask_for_find_term</span>(<span class="ruby-ivar">@search</span>) <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+572:         <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">model</span>.<span class="ruby-identifier">get_iter</span>(<span class="ruby-value str">'0'</span>) <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+573:         <span class="ruby-identifier">iter</span>.<span class="ruby-identifier">recursive_each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+574:           <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@iter</span>
+575:             <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@iter</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">i</span>
+576:               <span class="ruby-keyword kw">next</span>
+577:             <span class="ruby-keyword kw">else</span>
+578:               <span class="ruby-ivar">@iter</span> = <span class="ruby-keyword kw">nil</span>
+579:               <span class="ruby-keyword kw">next</span>
+580:             <span class="ruby-keyword kw">end</span>
+581:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@search</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">i</span>[<span class="ruby-constant">CONTENT_COL</span>])
+582:              <span class="ruby-identifier">set_cursor</span>(<span class="ruby-identifier">i</span>.<span class="ruby-identifier">path</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-keyword kw">false</span>)
+583:              <span class="ruby-ivar">@iter</span> = <span class="ruby-identifier">i</span>
+584:              <span class="ruby-keyword kw">break</span>
+585:           <span class="ruby-keyword kw">end</span>
+586:         <span class="ruby-keyword kw">end</span>
+587:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-find_again">
+                    
+                    <a name="method-i-find_again"></a><b>find_again</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Repeat the last search given by <a
+href="EditMenu.html#method-i-find">#</a>.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-find_again_source')" id="l_method-i-find_again_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-find_again_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 590</span>
+590:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_again</span>(<span class="ruby-identifier">item</span>)
+591:         <span class="ruby-ivar">@search</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+592:         <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">model</span>.<span class="ruby-identifier">get_iter</span>(<span class="ruby-value str">'0'</span>)
+593:         <span class="ruby-identifier">iter</span>.<span class="ruby-identifier">recursive_each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+594:           <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@iter</span>
+595:             <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@iter</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">i</span>
+596:               <span class="ruby-keyword kw">next</span>
+597:             <span class="ruby-keyword kw">else</span>
+598:               <span class="ruby-ivar">@iter</span> = <span class="ruby-keyword kw">nil</span>
+599:               <span class="ruby-keyword kw">next</span>
+600:             <span class="ruby-keyword kw">end</span>
+601:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@search</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">i</span>[<span class="ruby-constant">CONTENT_COL</span>])
+602:              <span class="ruby-identifier">set_cursor</span>(<span class="ruby-identifier">i</span>.<span class="ruby-identifier">path</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-keyword kw">false</span>)
+603:              <span class="ruby-ivar">@iter</span> = <span class="ruby-identifier">i</span>
+604:              <span class="ruby-keyword kw">break</span>
+605:           <span class="ruby-keyword kw">end</span>
+606:         <span class="ruby-keyword kw">end</span>
+607:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-paste">
+                    
+                    <a name="method-i-paste"></a><b>paste</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Copy json text from primary clipboard into model.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-paste_source')" id="l_method-i-paste_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-paste_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 556</span>
+556:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">paste</span>(<span class="ruby-identifier">item</span>)
+557:         <span class="ruby-identifier">c</span> = <span class="ruby-constant">Gtk</span><span class="ruby-operator">::</span><span class="ruby-constant">Clipboard</span>.<span class="ruby-identifier">get</span>(<span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Selection</span><span class="ruby-operator">::</span><span class="ruby-constant">PRIMARY</span>)
+558:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">json</span> = <span class="ruby-identifier">c</span>.<span class="ruby-identifier">wait_for_text</span>
+559:           <span class="ruby-identifier">window</span>.<span class="ruby-identifier">ask_save</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@changed</span>
+560:           <span class="ruby-keyword kw">begin</span>
+561:             <span class="ruby-identifier">window</span>.<span class="ruby-identifier">edit</span> <span class="ruby-identifier">json</span>
+562:           <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">JSON</span><span class="ruby-operator">::</span><span class="ruby-constant">ParserError</span>
+563:             <span class="ruby-identifier">window</span>.<span class="ruby-identifier">clear</span>
+564:           <span class="ruby-keyword kw">end</span>
+565:         <span class="ruby-keyword kw">end</span>
+566:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-sort">
+                    
+                    <a name="method-i-sort"></a><b>sort</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Sort (Reverse sort) all elements of the selected array by the given
+expression. <em>x</em> is the element in question.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-sort_source')" id="l_method-i-sort_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-sort_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 611</span>
+611:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sort</span>(<span class="ruby-identifier">item</span>)
+612:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+613:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'Array'</span>
+614:             <span class="ruby-identifier">parent</span> = <span class="ruby-identifier">current</span>.<span class="ruby-identifier">parent</span>
+615:             <span class="ruby-identifier">ary</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>)
+616:             <span class="ruby-identifier">order</span>, <span class="ruby-identifier">reverse</span> = <span class="ruby-identifier">ask_for_order</span>
+617:             <span class="ruby-identifier">order</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+618:             <span class="ruby-keyword kw">begin</span>
+619:               <span class="ruby-identifier">block</span> = <span class="ruby-identifier">eval</span> <span class="ruby-node">&quot;lambda { |x| #{order} }&quot;</span>
+620:               <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">reverse</span>
+621:                 <span class="ruby-identifier">ary</span>.<span class="ruby-identifier">sort!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">b</span><span class="ruby-operator">|</span> <span class="ruby-identifier">block</span>[<span class="ruby-identifier">b</span>] <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">block</span>[<span class="ruby-identifier">a</span>] }
+622:               <span class="ruby-keyword kw">else</span>
+623:                 <span class="ruby-identifier">ary</span>.<span class="ruby-identifier">sort!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">b</span><span class="ruby-operator">|</span> <span class="ruby-identifier">block</span>[<span class="ruby-identifier">a</span>] <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">block</span>[<span class="ruby-identifier">b</span>] }
+624:               <span class="ruby-keyword kw">end</span>
+625:             <span class="ruby-keyword kw">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+626:               <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">error_dialog</span>(<span class="ruby-keyword kw">self</span>, <span class="ruby-node">&quot;Failed to sort Array with #{order}: #{e}!&quot;</span>)
+627:             <span class="ruby-keyword kw">else</span>
+628:               <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">data2model</span>(<span class="ruby-identifier">ary</span>, <span class="ruby-identifier">model</span>, <span class="ruby-identifier">parent</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">m</span><span class="ruby-operator">|</span>
+629:                 <span class="ruby-identifier">m</span>.<span class="ruby-identifier">insert_before</span>(<span class="ruby-identifier">parent</span>, <span class="ruby-identifier">current</span>)
+630:               <span class="ruby-keyword kw">end</span>
+631:               <span class="ruby-identifier">model</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-identifier">current</span>)
+632:               <span class="ruby-identifier">expand_collapse</span>(<span class="ruby-identifier">parent</span>)
+633:               <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+634:               <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Array has been sorted.&quot;</span>)
+635:             <span class="ruby-keyword kw">end</span>
+636:           <span class="ruby-keyword kw">else</span>
+637:             <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Only Array nodes can be sorted!&quot;</span>)
+638:           <span class="ruby-keyword kw">end</span>
+639:         <span class="ruby-keyword kw">else</span>
+640:             <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Select an Array to sort first!&quot;</span>)
+641:         <span class="ruby-keyword kw">end</span>
+642:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    

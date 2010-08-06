@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Editor::FileMenu</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+    <script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            JSON::Editor::FileMenu 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="../../Object.html">Object</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/json/editor_rb.html">lib/json/editor.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <p>
+This class creates the File pulldown menu.
+</p>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>C</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-create">create</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>N</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-new">new</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>O</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-open">open</a>,</li>
+                
+                <li><a href="#method-i-open_location">open_location</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>Q</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-quit">quit</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>R</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-revert">revert</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>S</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-save">save</a>,</li>
+                
+                <li><a href="#method-i-save_as">save_as</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+        
+        <li>
+            
+            <span>MenuExtension</span>
+            
+            START:includes
+        </li>
+        
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="method-i-create">
+                    
+                    <a name="method-i-create"></a><b>create</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Create the menu.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-create_source')" id="l_method-i-create_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-create_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 527</span>
+527:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
+528:         <span class="ruby-identifier">title</span> = <span class="ruby-constant">MenuItem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'File'</span>)
+529:         <span class="ruby-identifier">title</span>.<span class="ruby-identifier">submenu</span> = <span class="ruby-identifier">menu</span>
+530:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'New'</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:new</span>))
+531:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Open'</span>, <span class="ruby-value">oo</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:open</span>))
+532:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Open location'</span>, <span class="ruby-value">ll</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:open_location</span>))
+533:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Revert'</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:revert</span>))
+534:         <span class="ruby-identifier">add_separator</span>
+535:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Save'</span>, <span class="ruby-value">ss</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:save</span>))
+536:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Save As'</span>, <span class="ruby-value">SS</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:save_as</span>))
+537:         <span class="ruby-identifier">add_separator</span>
+538:         <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">'Quit'</span>, <span class="ruby-value">qq</span>, &amp;<span class="ruby-identifier">method</span>(<span class="ruby-value">:quit</span>))
+539:         <span class="ruby-identifier">title</span>
+540:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-new">
+                    
+                    <a name="method-i-new"></a><b>new</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Clear the model and filename, but ask to save the <a
+href="../../JSON.html">JSON</a> document, if unsaved changes have occured.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-new_source')" id="l_method-i-new_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-new_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 490</span>
+490:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">new</span>(<span class="ruby-identifier">item</span>)
+491:         <span class="ruby-identifier">window</span>.<span class="ruby-identifier">clear</span>
+492:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-open">
+                    
+                    <a name="method-i-open"></a><b>open</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Open a file and load it into the editor. Ask to save the <a
+href="../../JSON.html">JSON</a> document first, if unsaved changes have
+occured.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-open_source')" id="l_method-i-open_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-open_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 496</span>
+496:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open</span>(<span class="ruby-identifier">item</span>)
+497:         <span class="ruby-identifier">window</span>.<span class="ruby-identifier">file_open</span>
+498:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-open_location">
+                    
+                    <a name="method-i-open_location"></a><b>open_location</b>(item)
+                    
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-open_location_source')" id="l_method-i-open_location_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-open_location_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 500</span>
+500:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open_location</span>(<span class="ruby-identifier">item</span>)
+501:         <span class="ruby-identifier">window</span>.<span class="ruby-identifier">location_open</span>
+502:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-quit">
+                    
+                    <a name="method-i-quit"></a><b>quit</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Quit the editor, after asking to save any unsaved changes first.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-quit_source')" id="l_method-i-quit_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-quit_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 522</span>
+522:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">quit</span>(<span class="ruby-identifier">item</span>)
+523:         <span class="ruby-identifier">window</span>.<span class="ruby-identifier">quit</span>
+524:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-revert">
+                    
+                    <a name="method-i-revert"></a><b>revert</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Revert the current <a href="../../JSON.html">JSON</a> document in the
+editor to the saved version.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-revert_source')" id="l_method-i-revert_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-revert_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 505</span>
+505:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">revert</span>(<span class="ruby-identifier">item</span>)
+506:         <span class="ruby-identifier">window</span>.<span class="ruby-identifier">instance_eval</span> <span class="ruby-keyword kw">do</span>
+507:           <span class="ruby-ivar">@filename</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">file_open</span>(<span class="ruby-ivar">@filename</span>) 
+508:         <span class="ruby-keyword kw">end</span>
+509:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-save">
+                    
+                    <a name="method-i-save"></a><b>save</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Save the current <a href="../../JSON.html">JSON</a> document.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-save_source')" id="l_method-i-save_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-save_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 512</span>
+512:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">save</span>(<span class="ruby-identifier">item</span>)
+513:         <span class="ruby-identifier">window</span>.<span class="ruby-identifier">file_save</span>
+514:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="method-i-save_as">
+                    
+                    <a name="method-i-save_as"></a><b>save_as</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Save the current <a href="../../JSON.html">JSON</a> document under the
+given filename.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-save_as_source')" id="l_method-i-save_as_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-save_as_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/editor.rb, line 517</span>
+517:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">save_as</span>(<span class="ruby-identifier">item</span>)
+518:         <span class="ruby-identifier">window</span>.<span class="ruby-identifier">file_save_as</span>
+519:       <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    

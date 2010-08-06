@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Exception</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+    <script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            Exception 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="Object.html">Object</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/lib/json/add/core_rb.html">lib/json/add/core.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>J</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-c-json_create">json_create</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>T</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#method-i-to_json">to_json</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+            <div class="sectiontitle">Class Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="method-c-json_create">
+                    
+                    <a name="method-c-json_create"></a><b>json_create</b>(object)
+                    
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-c-json_create_source')" id="l_method-c-json_create_source">show</a>
+                        
+                    </p>
+                    <div id="method-c-json_create_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/add/core.rb, line 121</span>
+121:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">json_create</span>(<span class="ruby-identifier">object</span>)
+122:     <span class="ruby-identifier">result</span> = <span class="ruby-identifier">new</span>(<span class="ruby-identifier">object</span>[<span class="ruby-value str">'m'</span>])
+123:     <span class="ruby-identifier">result</span>.<span class="ruby-identifier">set_backtrace</span> <span class="ruby-identifier">object</span>[<span class="ruby-value str">'b'</span>]
+124:     <span class="ruby-identifier">result</span>
+125:   <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="method-i-to_json">
+                    
+                    <a name="method-i-to_json"></a><b>to_json</b>(*args)
+                    
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('method-i-to_json_source')" id="l_method-i-to_json_source">show</a>
+                        
+                    </p>
+                    <div id="method-i-to_json_source" class="dyn-source">
+                        <pre>     <span class="ruby-comment cmt"># File lib/json/add/core.rb, line 127</span>
+127:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_json</span>(*<span class="ruby-identifier">args</span>)
+128:     {
+129:       <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">create_id</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,
+130:       <span class="ruby-value str">'m'</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">message</span>,
+131:       <span class="ruby-value str">'b'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">backtrace</span>,
+132:     }.<span class="ruby-identifier">to_json</span>(*<span class="ruby-identifier">args</span>)
+133:   <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    
