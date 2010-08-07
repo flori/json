@@ -2,3 +2,16 @@
 coverage
 pkg
 .nfs.*
+
+# java build
+/src/json/ext/Parser.java
+/*.gem
+/build
+/lib/json/ext/*.jar
+# java: NetBeans
+/nbproject/private
+# java: Eclipse
+/.classpath
+/.project
+/.settings
+/.externalToolBuilders
