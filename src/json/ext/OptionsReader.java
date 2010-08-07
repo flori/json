@@ -18,14 +18,12 @@ import org.jruby.util.ByteList;
 final class OptionsReader {
     private final ThreadContext context;
     private final Ruby runtime;
-    private final RuntimeInfo info;
     private final RubyHash opts;
+    private RuntimeInfo info;
 
-    private OptionsReader(ThreadContext context, Ruby runtime,
-                          RuntimeInfo info, IRubyObject vOpts) {
+    OptionsReader(ThreadContext context, IRubyObject vOpts) {
         this.context = context;
-        this.runtime = runtime;
-        this.info = info;
+        this.runtime = context.getRuntime();
 
         if (vOpts == null || vOpts.isNil()) {
             opts = null;
@@ -36,14 +34,10 @@ final class OptionsReader {
         }
     }
 
-    OptionsReader(ThreadContext context, IRubyObject vOpts) {
-        this(context, context.getRuntime(), null, vOpts);
-    }
-
-    static OptionsReader withStrings(ThreadContext context, IRubyObject vOpts) {
-        Ruby runtime = context.getRuntime();
-        return new OptionsReader(context, runtime,
-                RuntimeInfo.forRuntime(runtime), vOpts);
+    private RuntimeInfo getRuntimeInfo() {
+        if (info != null) return info;
+        info = RuntimeInfo.forRuntime(runtime);
+        return info;
     }
 
     /**
@@ -84,6 +78,7 @@ final class OptionsReader {
         if (value == null || !value.isTrue()) return null;
 
         RubyString str = value.convertToString();
+        RuntimeInfo info = getRuntimeInfo();
         if (info.encodingsSupported() && str.encoding(context) != info.utf8) {
             str = (RubyString)str.encode(context, info.utf8);
         }

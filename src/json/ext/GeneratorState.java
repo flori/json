@@ -399,7 +399,7 @@ public class GeneratorState extends RubyObject {
      */
     @JRubyMethod
     public IRubyObject configure(ThreadContext context, IRubyObject vOpts) {
-        OptionsReader opts = OptionsReader.withStrings(context, vOpts);
+        OptionsReader opts = new OptionsReader(context, vOpts);
 
         ByteList indent = opts.getString("indent");
         if (indent != null) this.indent = indent;
