@@ -77,6 +77,11 @@ public class GeneratorState extends RubyObject {
     private boolean asciiOnly = DEFAULT_ASCII_ONLY;
     static final boolean DEFAULT_ASCII_ONLY = false;
 
+    /**
+     * The current depth (inside a #to_json call)
+     */
+    private int depth = 0;
+
     static final ObjectAllocator ALLOCATOR = new ObjectAllocator() {
         public IRubyObject allocate(Ruby runtime, RubyClass klazz) {
             return new GeneratorState(runtime, klazz);
@@ -184,7 +189,7 @@ public class GeneratorState extends RubyObject {
      */
     @JRubyMethod
     public IRubyObject generate(ThreadContext context, IRubyObject obj) {
-        RubyString result = Generator.generateJson(context, obj, this, 0);
+        RubyString result = Generator.generateJson(context, obj, this);
         if (!objectOrArrayLiteral(result)) {
             throw Utils.newException(context, Utils.M_GENERATOR_ERROR,
                     "only generation of JSON objects or arrays allowed");
@@ -323,6 +328,13 @@ public class GeneratorState extends RubyObject {
         return context.getRuntime().newBoolean(maxNesting != 0);
     }
 
+    /**
+     * Returns the maximum level of nesting configured for this state.
+     */
+    public int getMaxNesting() {
+        return maxNesting;
+    }
+
     @JRubyMethod(name="max_nesting")
     public RubyInteger max_nesting_get(ThreadContext context) {
         return context.getRuntime().newFixnum(maxNesting);
@@ -350,6 +362,21 @@ public class GeneratorState extends RubyObject {
     @JRubyMethod(name="ascii_only?")
     public RubyBoolean ascii_only_p(ThreadContext context) {
         return context.getRuntime().newBoolean(asciiOnly);
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    @JRubyMethod(name="depth")
+    public RubyInteger depth_get(ThreadContext context) {
+        return context.getRuntime().newFixnum(depth);
+    }
+
+    @JRubyMethod(name="depth=")
+    public IRubyObject depth_set(IRubyObject vDepth) {
+        depth = RubyNumeric.fix2int(vDepth);
+        return vDepth;
     }
 
     private ByteList prepareByteList(ThreadContext context, IRubyObject value) {
@@ -395,6 +422,8 @@ public class GeneratorState extends RubyObject {
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
 
+        depth = opts.getInt("depth", 0);
+
         return this;
     }
 
@@ -418,15 +447,18 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("allow_nan"), allow_nan_p(context));
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
+        result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         return result;
     }
 
-    /**
-     * Returns the maximum level of nesting configured for this state.
-     * @return
-     */
-    public int getMaxNesting() {
-        return maxNesting;
+    public int increaseDepth() {
+        depth++;
+        checkMaxNesting();
+        return depth;
+    }
+
+    public int decreaseDepth() {
+        return --depth;
     }
 
     /**
@@ -434,10 +466,10 @@ public class GeneratorState extends RubyObject {
      * @param context
      * @param depth The corrent depth
      */
-    void checkMaxNesting(ThreadContext context, int depth) {
+    private void checkMaxNesting() {
         if (maxNesting != 0 && depth > maxNesting) {
-            throw Utils.newException(context, Utils.M_NESTING_ERROR,
-                    "nesting of " + depth + " is too deep");
+            throw Utils.newException(getRuntime().getCurrentContext(),
+                    Utils.M_NESTING_ERROR, "nesting of " + depth + " is too deep");
         }
     }
 }

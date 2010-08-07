@@ -33,8 +33,7 @@ public final class Generator {
                          Handler<? super T> handler, IRubyObject[] args) {
         Session session = new Session(context, args.length > 0 ? args[0]
                                                                : null);
-        int depth = args.length > 1 ? RubyNumeric.fix2int(args[1]) : 0;
-        return session.infect(handler.generateNew(session, object, depth));
+        return session.infect(handler.generateNew(session, object));
     }
 
     /**
@@ -53,10 +52,10 @@ public final class Generator {
      */
     public static <T extends IRubyObject> RubyString
             generateJson(ThreadContext context, T object,
-                         GeneratorState config, int depth) {
+                         GeneratorState config) {
         Session session = new Session(context, config);
         Handler<? super T> handler = getHandlerFor(context.getRuntime(), object);
-        return handler.generateNew(session, object, depth);
+        return handler.generateNew(session, object);
     }
 
     /**
@@ -163,18 +162,17 @@ public final class Generator {
          * given object will take. Used for allocating enough buffer space
          * before invoking other methods.
          */
-        int guessSize(Session session, T object, int depth) {
+        int guessSize(Session session, T object) {
             return 4;
         }
 
-        RubyString generateNew(Session session, T object, int depth) {
-            ByteList buffer = new ByteList(guessSize(session, object, depth));
-            generate(session, object, buffer, depth);
+        RubyString generateNew(Session session, T object) {
+            ByteList buffer = new ByteList(guessSize(session, object));
+            generate(session, object, buffer);
             return RubyString.newString(session.getRuntime(), buffer);
         }
 
-        abstract void generate(Session session, T object, ByteList buffer,
-                               int depth);
+        abstract void generate(Session session, T object, ByteList buffer);
     }
 
     /**
@@ -189,17 +187,17 @@ public final class Generator {
         }
 
         @Override
-        int guessSize(Session session, T object, int depth) {
+        int guessSize(Session session, T object) {
             return keyword.length();
         }
 
         @Override
-        RubyString generateNew(Session session, T object, int depth) {
+        RubyString generateNew(Session session, T object) {
             return RubyString.newStringShared(session.getRuntime(), keyword);
         }
 
         @Override
-        void generate(Session session, T object, ByteList buffer, int depth) {
+        void generate(Session session, T object, ByteList buffer) {
             buffer.append(keyword);
         }
     }
@@ -210,8 +208,7 @@ public final class Generator {
     static final Handler<RubyBignum> BIGNUM_HANDLER =
         new Handler<RubyBignum>() {
             @Override
-            void generate(Session session, RubyBignum object, ByteList buffer,
-                          int depth) {
+            void generate(Session session, RubyBignum object, ByteList buffer) {
                 // JRUBY-4751: RubyBignum.to_s() returns generic object
                 // representation (fixed in 1.5, but we maintain backwards
                 // compatibility; call to_s(IRubyObject[]) then
@@ -222,8 +219,7 @@ public final class Generator {
     static final Handler<RubyFixnum> FIXNUM_HANDLER =
         new Handler<RubyFixnum>() {
             @Override
-            void generate(Session session, RubyFixnum object, ByteList buffer,
-                          int depth) {
+            void generate(Session session, RubyFixnum object, ByteList buffer) {
                 buffer.append(object.to_s().getByteList());
             }
         };
@@ -231,8 +227,7 @@ public final class Generator {
     static final Handler<RubyFloat> FLOAT_HANDLER =
         new Handler<RubyFloat>() {
             @Override
-            void generate(Session session, RubyFloat object, ByteList buffer,
-                          int depth) {
+            void generate(Session session, RubyFloat object, ByteList buffer) {
                 double value = RubyFloat.num2dbl(object);
 
                 if (Double.isInfinite(value) || Double.isNaN(value)) {
@@ -249,8 +244,9 @@ public final class Generator {
     static final Handler<RubyArray> ARRAY_HANDLER =
         new Handler<RubyArray>() {
             @Override
-            int guessSize(Session session, RubyArray object, int depth) {
+            int guessSize(Session session, RubyArray object) {
                 GeneratorState state = session.getState();
+                int depth = state.getDepth();
                 int perItem =
                     4                                           // prealloc
                     + (depth + 1) * state.getIndent().length()  // indent
@@ -259,15 +255,14 @@ public final class Generator {
             }
 
             @Override
-            void generate(Session session, RubyArray object, ByteList buffer,
-                          int depth) {
+            void generate(Session session, RubyArray object, ByteList buffer) {
                 ThreadContext context = session.getContext();
                 Ruby runtime = context.getRuntime();
                 GeneratorState state = session.getState();
-                state.checkMaxNesting(context, depth + 1);
+                int depth = state.increaseDepth();
 
                 ByteList indentUnit = state.getIndent();
-                byte[] shift = Utils.repeat(indentUnit, depth + 1);
+                byte[] shift = Utils.repeat(indentUnit, depth);
 
                 ByteList arrayNl = state.getArrayNl();
                 byte[] delim = new byte[1 + arrayNl.length()];
@@ -290,12 +285,13 @@ public final class Generator {
                     }
                     buffer.append(shift);
                     Handler<IRubyObject> handler = getHandlerFor(runtime, element);
-                    handler.generate(session, element, buffer, depth + 1);
+                    handler.generate(session, element, buffer);
                 }
 
+                state.decreaseDepth();
                 if (arrayNl.length() != 0) {
                     buffer.append(arrayNl);
-                    buffer.append(shift, 0, depth * indentUnit.length());
+                    buffer.append(shift, 0, state.getDepth() * indentUnit.length());
                 }
 
                 buffer.append((byte)']');
@@ -305,11 +301,11 @@ public final class Generator {
     static final Handler<RubyHash> HASH_HANDLER =
         new Handler<RubyHash>() {
             @Override
-            int guessSize(Session session, RubyHash object, int depth) {
+            int guessSize(Session session, RubyHash object) {
                 GeneratorState state = session.getState();
                 int perItem =
                     12    // key, colon, comma
-                    + (depth + 1) * state.getIndent().length()
+                    + (state.getDepth() + 1) * state.getIndent().length()
                     + state.getSpaceBefore().length()
                     + state.getSpace().length();
                 return 2 + object.size() * perItem;
@@ -317,14 +313,14 @@ public final class Generator {
 
             @Override
             void generate(final Session session, RubyHash object,
-                          final ByteList buffer, final int depth) {
+                          final ByteList buffer) {
                 ThreadContext context = session.getContext();
                 final Ruby runtime = context.getRuntime();
                 final GeneratorState state = session.getState();
-                state.checkMaxNesting(context, depth + 1);
+                final int depth = state.increaseDepth();
 
                 final ByteList objectNl = state.getObjectNl();
-                final byte[] indent = Utils.repeat(state.getIndent(), depth + 1);
+                final byte[] indent = Utils.repeat(state.getIndent(), depth);
                 final ByteList spaceBefore = state.getSpaceBefore();
                 final ByteList space = state.getSpace();
 
@@ -343,8 +339,7 @@ public final class Generator {
                         }
                         if (objectNl.length() != 0) buffer.append(indent);
 
-                        STRING_HANDLER.generate(session, key.asString(),
-                                                buffer, depth + 1);
+                        STRING_HANDLER.generate(session, key.asString(), buffer);
                         session.infectBy(key);
 
                         buffer.append(spaceBefore);
@@ -352,14 +347,15 @@ public final class Generator {
                         buffer.append(space);
 
                         Handler<IRubyObject> valueHandler = getHandlerFor(runtime, value);
-                        valueHandler.generate(session, value, buffer, depth + 1);
+                        valueHandler.generate(session, value, buffer);
                         session.infectBy(value);
                     }
                 });
+                state.decreaseDepth();
                 if (objectNl.length() != 0) {
                     buffer.append(objectNl);
                     if (indent.length != 0) {
-                        for (int i = 0; i < depth; i++) {
+                        for (int i = 0; i < state.getDepth(); i++) {
                             buffer.append(indent);
                         }
                     }
@@ -371,7 +367,7 @@ public final class Generator {
     static final Handler<RubyString> STRING_HANDLER =
         new Handler<RubyString>() {
             @Override
-            int guessSize(Session session, RubyString object, int depth) {
+            int guessSize(Session session, RubyString object) {
                 // for most applications, most strings will be just a set of
                 // printable ASCII characters without any escaping, so let's
                 // just allocate enough space for that + the quotes
@@ -379,8 +375,7 @@ public final class Generator {
             }
 
             @Override
-            void generate(Session session, RubyString object, ByteList buffer,
-                          int depth) {
+            void generate(Session session, RubyString object, ByteList buffer) {
                 RuntimeInfo info = session.getInfo();
                 RubyString src;
 
@@ -410,42 +405,36 @@ public final class Generator {
     static final Handler<IRubyObject> OBJECT_HANDLER =
         new Handler<IRubyObject>() {
             @Override
-            RubyString generateNew(Session session, IRubyObject object,
-                                   int depth) {
+            RubyString generateNew(Session session, IRubyObject object) {
                 RubyString str = object.asString();
-                return STRING_HANDLER.generateNew(session, str, depth);
+                return STRING_HANDLER.generateNew(session, str);
             }
 
             @Override
-            void generate(Session session, IRubyObject object, ByteList buffer,
-                          int depth) {
+            void generate(Session session, IRubyObject object, ByteList buffer) {
                 RubyString str = object.asString();
-                STRING_HANDLER.generate(session, str, buffer, depth);
+                STRING_HANDLER.generate(session, str, buffer);
             }
         };
 
     /**
-     * A handler that simply calls <code>#to_json(state, depth)</code> on the
+     * A handler that simply calls <code>#to_json(state)</code> on the
      * given object.
      */
     static final Handler<IRubyObject> GENERIC_HANDLER =
         new Handler<IRubyObject>() {
             @Override
-            RubyString generateNew(Session session, IRubyObject object,
-                                   int depth) {
-                RubyNumeric vDepth =
-                    RubyNumeric.int2fix(session.getRuntime(), depth);
+            RubyString generateNew(Session session, IRubyObject object) {
                 IRubyObject result =
                     object.callMethod(session.getContext(), "to_json",
-                          new IRubyObject[] {session.getState(), vDepth});
+                          new IRubyObject[] {session.getState()});
                 if (result instanceof RubyString) return (RubyString)result;
                 throw session.getRuntime().newTypeError("to_json must return a String");
             }
 
             @Override
-            void generate(Session session, IRubyObject object, ByteList buffer,
-                          int depth) {
-                RubyString result = generateNew(session, object, depth);
+            void generate(Session session, IRubyObject object, ByteList buffer) {
+                RubyString result = generateNew(session, object);
                 buffer.append(result.getByteList());
             }
         };
