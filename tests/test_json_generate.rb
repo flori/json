@@ -164,4 +164,12 @@ EOT
     assert_raises(GeneratorError) { pretty_generate([JSON::MinusInfinity]) }
     assert_equal "[\n  -Infinity\n]", pretty_generate([JSON::MinusInfinity], :allow_nan => true)
   end
+
+  def test_depth
+    ary = []; ary << ary
+    s = JSON.state.new
+    assert_equal 0, s.depth
+    assert_raises(JSON::NestingError) { JSON(ary, s) }
+    #assert_equal 20, s.depth
+  end
 end
