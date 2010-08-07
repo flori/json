@@ -181,6 +181,7 @@ public class GeneratorState extends RubyObject {
         this.maxNesting = orig.maxNesting;
         this.allowNaN = orig.allowNaN;
         this.asciiOnly = orig.asciiOnly;
+        this.depth = orig.depth;
         return this;
     }
 
