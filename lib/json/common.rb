@@ -11,9 +11,9 @@ module JSON
     # generate and parse for their documentation.
     def [](object, opts = {})
       if object.respond_to? :to_str
-        JSON.parse(object.to_str, opts => {})
+        JSON.parse(object.to_str, opts)
       else
-        JSON.generate(object, opts => {})
+        JSON.generate(object, opts)
       end
     end
 
@@ -63,20 +63,20 @@ module JSON
       end
       self.state = generator::State
       const_set :State, self.state
-      const_set :SAFE_STATE_PROTOTYPE, State.new.freeze
+      const_set :SAFE_STATE_PROTOTYPE, State.new
       const_set :FAST_STATE_PROTOTYPE, State.new(
         :indent         => '',
         :space          => '',
         :object_nl      => "",
         :array_nl       => "",
         :max_nesting    => false
-      ).freeze
+      )
       const_set :PRETTY_STATE_PROTOTYPE, State.new(
         :indent         => '  ',
         :space          => ' ',
         :object_nl      => "\n",
         :array_nl       => "\n"
-      ).freeze
+      )
     end
 
     # Returns the JSON generator modul, that is used by JSON. This might be
@@ -196,6 +196,7 @@ module JSON
   # amount of sanity checks, and the pretty_generate method for some
   # defaults for a pretty output.
   def generate(obj, opts = nil)
+    state = SAFE_STATE_PROTOTYPE.dup
     if opts
       if opts.respond_to? :to_hash
         opts = opts.to_hash
@@ -204,10 +205,7 @@ module JSON
       else
         raise TypeError, "can't convert #{opts.class} into Hash"
       end
-      state = SAFE_STATE_PROTOTYPE.dup
       state = state.configure(opts)
-    else
-      state = SAFE_STATE_PROTOTYPE
     end
     state.generate(obj)
   end
@@ -225,6 +223,7 @@ module JSON
   # *WARNING*: Be careful not to pass any Ruby data structures with circles as
   # _obj_ argument, because this will cause JSON to go into an infinite loop.
   def fast_generate(obj, opts = nil)
+    state = FAST_STATE_PROTOTYPE.dup
     if opts
       if opts.respond_to? :to_hash
         opts = opts.to_hash
@@ -233,10 +232,7 @@ module JSON
       else
         raise TypeError, "can't convert #{opts.class} into Hash"
       end
-      state = FAST_STATE_PROTOTYPE.dup
       state.configure(opts)
-    else
-      state = FAST_STATE_PROTOTYPE
     end
     state.generate(obj)
   end
@@ -254,6 +250,7 @@ module JSON
   # The _opts_ argument can be used to configure the generator, see the
   # generate method for a more detailed explanation.
   def pretty_generate(obj, opts = nil)
+    state = PRETTY_STATE_PROTOTYPE.dup
     if opts
       if opts.respond_to? :to_hash
         opts = opts.to_hash
@@ -262,10 +259,7 @@ module JSON
       else
         raise TypeError, "can't convert #{opts.class} into Hash"
       end
-      state = PRETTY_STATE_PROTOTYPE.dup
       state.configure(opts)
-    else
-      state = PRETTY_STATE_PROTOTYPE
     end
     state.generate(obj)
   end
@@ -377,11 +371,11 @@ module ::Kernel
   #
   # The _opts_ argument is passed through to generate/parse respectively, see
   # generate and parse for their documentation.
-  def JSON(object, opts = {})
+  def JSON(object, *args)
     if object.respond_to? :to_str
-      JSON.parse(object.to_str, opts)
+      JSON.parse(object.to_str, args.first)
     else
-      JSON.generate(object, opts)
+      JSON.generate(object, args.first)
     end
   end
 end

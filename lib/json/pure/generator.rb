@@ -163,6 +163,10 @@ module JSON
         # the generated JSON, max_nesting = 0 if no maximum is checked.
         attr_accessor :max_nesting
 
+        # This integer returns the current depth data structure nesting in the
+        # generated JSON.
+        attr_accessor :depth
+
         def check_max_nesting(depth) # :nodoc:
           return if @max_nesting.zero?
           current_nesting = depth + 1
@@ -196,6 +200,7 @@ module JSON
           @array_nl       = opts[:array_nl] if opts.key?(:array_nl)
           @allow_nan      = !!opts[:allow_nan] if opts.key?(:allow_nan)
           @ascii_only     = opts[:ascii_only] if opts.key?(:ascii_only)
+          @depth          = opts[:depth] || 0
           if !opts.key?(:max_nesting) # defaults to 19
             @max_nesting = 19
           elsif opts[:max_nesting]
@@ -210,7 +215,7 @@ module JSON
         # passed to the configure method.
         def to_h
           result = {}
-          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting]
+          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting ascii_only depth]
             result[iv.intern] = instance_variable_get("@#{iv}")
           end
           result
