@@ -63,20 +63,20 @@ module JSON
       end
       self.state = generator::State
       const_set :State, self.state
-      const_set :SAFE_STATE_PROTOTYPE, State.new.freeze
+      const_set :SAFE_STATE_PROTOTYPE, State.new
       const_set :FAST_STATE_PROTOTYPE, State.new(
         :indent         => '',
         :space          => '',
         :object_nl      => "",
         :array_nl       => "",
         :max_nesting    => false
-      ).freeze
+      )
       const_set :PRETTY_STATE_PROTOTYPE, State.new(
         :indent         => '  ',
         :space          => ' ',
         :object_nl      => "\n",
         :array_nl       => "\n"
-      ).freeze
+      )
     end
 
     # Returns the JSON generator modul, that is used by JSON. This might be
