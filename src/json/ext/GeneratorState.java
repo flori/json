@@ -382,12 +382,9 @@ public class GeneratorState extends RubyObject {
 
     private ByteList prepareByteList(ThreadContext context, IRubyObject value) {
         RubyString str = value.convertToString();
-        IRubyObject encoding = str.encoding(context);
-        if (encoding != null) {
-            RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
-            if (encoding != info.utf8) {
-                str = (RubyString)str.encode(context, info.utf8);
-            }
+        RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
+        if (info.encodingsSupported() && str.encoding(context) != info.utf8) {
+            str = (RubyString)str.encode(context, info.utf8);
         }
         return str.getByteList().dup();
     }
