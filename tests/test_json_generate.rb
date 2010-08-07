@@ -164,4 +164,21 @@ EOT
     assert_raises(GeneratorError) { pretty_generate([JSON::MinusInfinity]) }
     assert_equal "[\n  -Infinity\n]", pretty_generate([JSON::MinusInfinity], :allow_nan => true)
   end
+
+  def test_depth
+    ary = []; ary << ary
+    assert_equal 0, JSON::SAFE_STATE_PROTOTYPE.depth
+    assert_raises(JSON::NestingError) { JSON.generate(ary) }
+    assert_equal 0, JSON::SAFE_STATE_PROTOTYPE.depth
+    assert_equal 0, JSON::FAST_STATE_PROTOTYPE.depth
+    assert_raises(JSON::NestingError) { JSON.fast_generate(ary) }
+    assert_equal 0, JSON::FAST_STATE_PROTOTYPE.depth
+    assert_equal 0, JSON::PRETTY_STATE_PROTOTYPE.depth
+    assert_raises(JSON::NestingError) { JSON.pretty_generate(ary) }
+    assert_equal 0, JSON::PRETTY_STATE_PROTOTYPE.depth
+    s = JSON.state.new
+    assert_equal 0, s.depth
+    assert_raises(JSON::NestingError) { ary.to_json(s) }
+    assert_equal 19, s.depth
+  end
 end

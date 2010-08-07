@@ -14,7 +14,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
           i_pack, i_unpack, i_create_id, i_extend, i_key_p, i_aref, i_send,
-          i_respond_to_p, i_match, i_keys, i_depth;
+          i_respond_to_p, i_match, i_keys, i_depth, i_dup;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -1043,7 +1043,7 @@ static VALUE cState_from_state_s(VALUE self, VALUE opts)
         if (NIL_P(CJSON_SAFE_STATE_PROTOTYPE)) {
             CJSON_SAFE_STATE_PROTOTYPE = rb_const_get(mJSON, i_SAFE_STATE_PROTOTYPE);
         }
-        return CJSON_SAFE_STATE_PROTOTYPE;
+        return rb_funcall(CJSON_SAFE_STATE_PROTOTYPE, i_dup, 0);
     }
 }
 
@@ -1406,6 +1406,7 @@ void Init_generator()
     i_respond_to_p = rb_intern("respond_to?");
     i_match = rb_intern("match");
     i_keys = rb_intern("keys");
+    i_dup = rb_intern("dup");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");
