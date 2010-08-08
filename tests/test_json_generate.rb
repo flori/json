@@ -170,9 +170,6 @@ EOT
     assert_equal 0, JSON::SAFE_STATE_PROTOTYPE.depth
     assert_raises(JSON::NestingError) { JSON.generate(ary) }
     assert_equal 0, JSON::SAFE_STATE_PROTOTYPE.depth
-    assert_equal 0, JSON::FAST_STATE_PROTOTYPE.depth
-    assert_raises(JSON::NestingError) { JSON.fast_generate(ary) }
-    assert_equal 0, JSON::FAST_STATE_PROTOTYPE.depth
     assert_equal 0, JSON::PRETTY_STATE_PROTOTYPE.depth
     assert_raises(JSON::NestingError) { JSON.pretty_generate(ary) }
     assert_equal 0, JSON::PRETTY_STATE_PROTOTYPE.depth
