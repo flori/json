@@ -1,3 +1,7 @@
+2010-08-09 (1.4.6)
+  * Fixed oversight reported in http://github.com/flori/json/issues/closed#issue/23,
+    always create a new object from the state prototype.
+  * Made pure and ext api more similar again.
 2010-08-07 (1.4.5)
   * Manage data structure nesting depth in state object during generation. This
     should reduce problems with to_json method definіtions that only have one
