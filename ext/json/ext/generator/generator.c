@@ -748,7 +748,7 @@ static void generate_json_object(FBuffer *buffer, VALUE Vstate, JSON_Generator_S
     VALUE key, key_to_s, keys;
     if (max_nesting != 0 && depth > max_nesting) {
         fbuffer_free(buffer);
-        rb_raise(eNestingError, "nesting of %ld is too deep", depth);
+        rb_raise(eNestingError, "nesting of %ld is too deep", --state->depth);
     }
     fbuffer_append_char(buffer, '{');
     keys = rb_funcall(obj, i_keys, 0);
@@ -794,7 +794,7 @@ static void generate_json_array(FBuffer *buffer, VALUE Vstate, JSON_Generator_St
     int i, j;
     if (max_nesting != 0 && depth > max_nesting) {
         fbuffer_free(buffer);
-        rb_raise(eNestingError, "nesting of %ld is too deep", depth);
+        rb_raise(eNestingError, "nesting of %ld is too deep", --state->depth);
     }
     fbuffer_append_char(buffer, '[');
     if (array_nl) fbuffer_append(buffer, array_nl, array_nl_len);
