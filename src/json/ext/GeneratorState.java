@@ -131,7 +131,7 @@ public class GeneratorState extends RubyObject {
         }
 
         // for other values, return the safe prototype
-        return info.getSafeStatePrototype(context);
+        return (GeneratorState)info.getSafeStatePrototype(context).dup();
     }
 
     /**
