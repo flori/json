@@ -466,6 +466,7 @@ public class GeneratorState extends RubyObject {
      */
     private void checkMaxNesting() {
         if (maxNesting != 0 && depth > maxNesting) {
+            depth--;
             throw Utils.newException(getRuntime().getCurrentContext(),
                     Utils.M_NESTING_ERROR, "nesting of " + depth + " is too deep");
         }
