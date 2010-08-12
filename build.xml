@@ -10,8 +10,7 @@
         </exec>
     </target>
     
-    <target name="-pre-compile" depends="ragel">
-    </target>
+    <target name="-pre-compile" depends="ragel"/>
     
     <target name="clean-dist">
         <delete>
@@ -53,9 +52,19 @@
     
     <target name="gem" depends="jar" description="Build a RubyGem.">
         <exec executable="${jruby.dir}/bin/jruby">
-            <arg value="json-jruby.gemspec"/>
+            <arg value="json-java.gemspec"/>
         </exec>
     </target>
+
+    <target name="release" depends="gem" description="Release the current version of the RubyGem.">
+        <mkdir dir="pkg"/>
+        <move todir="pkg">
+            <fileset dir=".">
+                <include name="*.gem"/>
+            </fileset>
+        </move>
+    </target>
+
     
     <target name="-post-test" depends="ruby-tests" />
     

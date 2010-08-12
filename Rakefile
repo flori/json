@@ -13,16 +13,16 @@ require 'rbconfig'
 include Config
 
 require 'rake/clean'
-CLOBBER.include Dir['benchmarks/data/*.{dat,log}'], FileList['**/*.rbc']
+CLOBBER.include Dir['benchmarks/data/*.{dat,log}']
 CLEAN.include FileList['diagrams/*.*'], 'doc', 'coverage', 'tmp',
-  FileList["ext/**/{Makefile,mkmf.log}"],
-  FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def}"]
+  FileList["ext/**/{Makefile,mkmf.log}"], 'build', 'dist', FileList['**/*.rbc'],
+  FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def,jar}"]
 
 MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
 PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
-PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\./).exclude(/\.(so|bundle|o|#{CONFIG['DLEXT']})$/)
+PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\./).exclude(/\.(so|bundle|o|class|#{CONFIG['DLEXT']})$/)
 EXT_ROOT_DIR      = 'ext/json/ext'
 EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
 EXT_PARSER_DL     = "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}"
@@ -42,6 +42,16 @@ def myruby(*args, &block)
     sh(*([@myruby] + args + [options]), &block)
   else
     sh("#{@myruby} #{args.first}", options, &block)
+  end
+end
+
+def jruby(*args, &block)
+  @jruby ||= `which jruby`.chomp
+  options = (Hash === args.last) ? args.pop : {}
+  if args.length > 1 then
+    sh(*([@jruby] + args + [options]), &block)
+  else
+    sh("#{@jruby} #{args.first}", options, &block)
   end
 end
 
@@ -73,6 +83,19 @@ end
 
 desc "Compiling extension"
 task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
+
+desc "Compiling jruby extension"
+task :compile_jruby do
+  sh 'ant -buildfile build.xml jar'
+end
+
+desc "Package the jruby gem"
+task :jruby_gem do
+  sh 'ant -buildfile build.xml clean gem'
+  sh 'gem build json-java.gemspec'
+  mkdir_p 'pkg'
+  mv "json-#{PKG_VERSION}-java.gem", 'pkg'
+end
 
 file EXT_PARSER_DL => EXT_PARSER_SRC do
   cd EXT_PARSER_DIR do
@@ -152,8 +175,15 @@ task :test_ext => :compile_ext do
   myruby "-S testrb #{Dir['./tests/*.rb'] * ' '}"
 end
 
+desc "Testing library (jruby)"
+task :test_jruby => :compile_jruby do
+  ENV['JSON'] = 'ext'
+  ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
+  jruby "-S testrb #{Dir['./tests/*.rb'] * ' '}"
+end
+
 desc "Testing library (pure ruby and extension)"
-task :test => [ :test_pure, :test_ext ]
+task :test => [ :test_pure, :test_jruby, :test_ext ]
 
 desc "Benchmarking parser"
 task :benchmark_parser do
@@ -282,11 +312,17 @@ EOT
   end
 end
 
-desc "Build all gems and archives for a new release."
-task :release => [ :clean, :version, :cross, :native, :gem ] do
+desc "Build all gems and archives for a new release of the jruby extension."
+task :release_jruby => [ :clean, :version, :jruby_gem ]
+
+desc "Build all gems and archives for a new release of json and json_pure."
+task :release_ruby => [ :clean, :version, :cross, :native, :gem, ] do
   sh "#$0 clean native gem"
   sh "#$0 clean package"
 end
+
+desc "Build all gems and archives for a new release."
+task :release => [ :release_ruby, :release_jruby ]
 
 desc "Compile in the the source directory"
 task :default => [ :version, :compile_ext ]

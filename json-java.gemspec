@@ -12,7 +12,7 @@ spec = Gem::Specification.new do |s|
   s.platform = 'java'
   s.rubyforge_project = "json-jruby"
 
-  s.files = Dir["{docs,lib,tests}/**/*"]
+  s.files = Dir["../{docs,lib,tests}/**/*"]
 end
 
 if $0 == __FILE__

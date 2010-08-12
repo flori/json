@@ -68,7 +68,7 @@ module JSON
   # This module holds all the modules/classes that implement JSON's
   # functionality in pure ruby.
   module Pure
-    $DEBUG and warn "Using pure library for JSON."
+    $DEBUG and warn "Using Pure library for JSON."
     JSON.parser = Parser
     JSON.generator = Generator
   end
