@@ -231,8 +231,7 @@ public class GeneratorState extends RubyObject {
         for (int endPos = len - 1; endPos > pos; endPos--) {
             int b = bl.get(endPos);
             if (Character.isWhitespace(b)) continue;
-            if (b == brace) return true;
-            return false;
+            return b == brace;
         }
         return false;
     }

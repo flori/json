@@ -70,7 +70,7 @@ class GeneratorMethods {
             return Generator.generateJson(context, (RubyHash)vSelf,
                     Generator.HASH_HANDLER, args);
         }
-    };
+    }
 
     public static class RbArray {
         @JRubyMethod(rest=true)
@@ -79,7 +79,7 @@ class GeneratorMethods {
             return Generator.generateJson(context, (RubyArray)vSelf,
                     Generator.ARRAY_HANDLER, args);
         }
-    };
+    }
 
     public static class RbInteger {
         @JRubyMethod(rest=true)
@@ -87,7 +87,7 @@ class GeneratorMethods {
                 IRubyObject vSelf, IRubyObject[] args) {
             return Generator.generateJson(context, vSelf, args);
         }
-    };
+    }
 
     public static class RbFloat {
         @JRubyMethod(rest=true)
@@ -96,7 +96,7 @@ class GeneratorMethods {
             return Generator.generateJson(context, (RubyFloat)vSelf,
                     Generator.FLOAT_HANDLER, args);
         }
-    };
+    }
 
     public static class RbString {
         @JRubyMethod(rest=true)
@@ -160,7 +160,7 @@ class GeneratorMethods {
             RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
             return module.callMethod(context, "extend", info.stringExtendModule);
         }
-    };
+    }
 
     public static class StringExtend {
         /**
@@ -192,7 +192,7 @@ class GeneratorMethods {
             }
             return runtime.newString(new ByteList(bytes, false));
         }
-    };
+    }
 
     public static class RbTrue {
         @JRubyMethod(rest=true)
@@ -227,5 +227,5 @@ class GeneratorMethods {
                 IRubyObject self, IRubyObject[] args) {
             return RbString.to_json(context, self.asString(), args);
         }
-    };
+    }
 }
