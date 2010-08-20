@@ -40,8 +40,8 @@ module JSON
         else
           begin
             p.const_missing(c)
-          rescue NameError
-            raise ArgumentError, "can't find const #{path}"
+          rescue NameError => e
+            raise ArgumentError, "can't get const #{path}: #{e}"
           end
         end
       end

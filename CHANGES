@@ -1,6 +1,7 @@
 2010-08-15 (1.5.0)
   * Included Java source codes for the Jruby extension made by Daniel Luz
     <dev@mernen.com>.
+  * Output full exception message of deep_const_get to aid debugging.
 2010-08-09 (1.4.6)
   * Fixed oversight reported in http://github.com/flori/json/issues/closed#issue/23,
     always create a new object from the state prototype.
