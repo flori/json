@@ -50,10 +50,10 @@
 /* fbuffer implementation */
 
 typedef struct FBufferStruct {
-    unsigned int initial_length;
+    unsigned long initial_length;
     char *ptr;
-    unsigned int len;
-    unsigned int capa;
+    unsigned long len;
+    unsigned long capa;
 } FBuffer;
 
 #define FBUFFER_INITIAL_LENGTH 4096
@@ -63,13 +63,13 @@ typedef struct FBufferStruct {
 #define FBUFFER_CAPA(fb) (fb->capa)
 #define FBUFFER_PAIR(fb) FBUFFER_PTR(fb), FBUFFER_LEN(fb)
 
-static char *fstrndup(const char *ptr, int len);
+static char *fstrndup(const char *ptr, unsigned long len);
 static FBuffer *fbuffer_alloc();
-static FBuffer *fbuffer_alloc_with_length(unsigned initial_length);
+static FBuffer *fbuffer_alloc_with_length(unsigned long initial_length);
 static void fbuffer_free(FBuffer *fb);
 static void fbuffer_free_only_buffer(FBuffer *fb);
 static void fbuffer_clear(FBuffer *fb);
-static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len);
+static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned long len);
 static void fbuffer_append_long(FBuffer *fb, long number);
 static void fbuffer_append_char(FBuffer *fb, char newchr);
 static FBuffer *fbuffer_dup(FBuffer *fb);
@@ -99,7 +99,7 @@ static const int halfShift  = 10; /* used for shifting by 10 bits */
 static const UTF32 halfBase = 0x0010000UL;
 static const UTF32 halfMask = 0x3FFUL;
 
-static unsigned char isLegalUTF8(const UTF8 *source, int length);
+static unsigned char isLegalUTF8(const UTF8 *source, unsigned long length);
 static void unicode_escape(char *buf, UTF16 character);
 static void unicode_escape_to_buffer(FBuffer *buffer, char buf[6], UTF16 character);
 static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string);

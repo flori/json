@@ -74,7 +74,7 @@ static const UTF32 offsetsFromUTF8[6] = { 0x00000000UL, 0x00003080UL, 0x000E2080
  * If presented with a length > 4, this returns 0.  The Unicode
  * definition of UTF-8 goes up to 4-byte sequences.
  */
-static unsigned char isLegalUTF8(const UTF8 *source, int length)
+static unsigned char isLegalUTF8(const UTF8 *source, unsigned long length)
 {
     UTF8 a;
     const UTF8 *srcptr = source+length;
@@ -223,7 +223,7 @@ static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
 static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
 {
     const char *ptr = RSTRING_PTR(string), *p;
-    int len = RSTRING_LEN(string), start = 0, end = 0;
+    unsigned long len = RSTRING_LEN(string), start = 0, end = 0;
     const char *escape = NULL;
     int escape_len;
     unsigned char c;
@@ -284,7 +284,7 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
     fbuffer_append(buffer, ptr + start, end - start);
 }
 
-static char *fstrndup(const char *ptr, int len) {
+static char *fstrndup(const char *ptr, unsigned long len) {
   char *result;
   if (len <= 0) return NULL;
   result = ALLOC_N(char, len);
@@ -302,7 +302,7 @@ static FBuffer *fbuffer_alloc()
     return fb;
 }
 
-static FBuffer *fbuffer_alloc_with_length(unsigned int initial_length)
+static FBuffer *fbuffer_alloc_with_length(unsigned long initial_length)
 {
     FBuffer *fb;
     assert(initial_length > 0);
@@ -328,9 +328,9 @@ static void fbuffer_clear(FBuffer *fb)
     fb->len = 0;
 }
 
-static void fbuffer_inc_capa(FBuffer *fb, unsigned int requested)
+static void fbuffer_inc_capa(FBuffer *fb, unsigned long requested)
 {
-    unsigned int required;
+    unsigned long required;
 
     if (!fb->ptr) {
         fb->ptr = ALLOC_N(char, fb->initial_length);
@@ -345,7 +345,7 @@ static void fbuffer_inc_capa(FBuffer *fb, unsigned int requested)
     }
 }
 
-static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned int len)
+static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned long len)
 {
     if (len > 0) {
         fbuffer_inc_capa(fb, len);
@@ -370,7 +370,7 @@ static void freverse(char *start, char *end)
     }
 }
 
-static int fltoa(long number, char *buf)
+static long fltoa(long number, char *buf)
 {
 	static char digits[] = "0123456789";
 	long sign = number;
@@ -386,13 +386,13 @@ static int fltoa(long number, char *buf)
 static void fbuffer_append_long(FBuffer *fb, long number)
 {
     char buf[20];
-    int len = fltoa(number, buf);
+    unsigned long len = fltoa(number, buf);
     fbuffer_append(fb, buf, len);
 }
 
 static FBuffer *fbuffer_dup(FBuffer *fb)
 {
-    int len = fb->len;
+    unsigned long len = fb->len;
     FBuffer *result;
 
     if (len > 0) {
@@ -628,7 +628,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     opts = tmp;
     tmp = rb_hash_aref(opts, ID2SYM(i_indent));
     if (RTEST(tmp)) {
-        int len;
+        unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
         state->indent = fstrndup(RSTRING_PTR(tmp), len);
@@ -636,7 +636,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space));
     if (RTEST(tmp)) {
-        int len;
+        unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
         state->space = fstrndup(RSTRING_PTR(tmp), len);
@@ -644,7 +644,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space_before));
     if (RTEST(tmp)) {
-        int len;
+        unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
         state->space_before = fstrndup(RSTRING_PTR(tmp), len);
@@ -652,7 +652,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_array_nl));
     if (RTEST(tmp)) {
-        int len;
+        unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
         state->array_nl = fstrndup(RSTRING_PTR(tmp), len);
@@ -660,7 +660,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_object_nl));
     if (RTEST(tmp)) {
-        int len;
+        unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
         state->object_nl = fstrndup(RSTRING_PTR(tmp), len);
@@ -1065,7 +1065,7 @@ static VALUE cState_indent(VALUE self)
  */
 static VALUE cState_indent_set(VALUE self, VALUE indent)
 {
-    int len;
+    unsigned long len;
     GET_STATE(self);
     Check_Type(indent, T_STRING);
     len = RSTRING_LEN(indent);
@@ -1103,7 +1103,7 @@ static VALUE cState_space(VALUE self)
  */
 static VALUE cState_space_set(VALUE self, VALUE space)
 {
-    int len;
+    unsigned long len;
     GET_STATE(self);
     Check_Type(space, T_STRING);
     len = RSTRING_LEN(space);
@@ -1139,7 +1139,7 @@ static VALUE cState_space_before(VALUE self)
  */
 static VALUE cState_space_before_set(VALUE self, VALUE space_before)
 {
-    int len;
+    unsigned long len;
     GET_STATE(self);
     Check_Type(space_before, T_STRING);
     len = RSTRING_LEN(space_before);
@@ -1177,7 +1177,7 @@ static VALUE cState_object_nl(VALUE self)
  */
 static VALUE cState_object_nl_set(VALUE self, VALUE object_nl)
 {
-    int len;
+    unsigned long len;
     GET_STATE(self);
     Check_Type(object_nl, T_STRING);
     len = RSTRING_LEN(object_nl);
@@ -1212,7 +1212,7 @@ static VALUE cState_array_nl(VALUE self)
  */
 static VALUE cState_array_nl_set(VALUE self, VALUE array_nl)
 {
-    int len;
+    unsigned long len;
     GET_STATE(self);
     Check_Type(array_nl, T_STRING);
     len = RSTRING_LEN(array_nl);
