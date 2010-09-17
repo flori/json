@@ -49,6 +49,7 @@ module JSON
 
     # Set the module _generator_ to be used by JSON.
     def generator=(generator) # :nodoc:
+      old, $VERBOSE = $VERBOSE, nil
       @generator = generator
       generator_methods = generator::GeneratorMethods
       for const in generator_methods.constants
@@ -77,6 +78,8 @@ module JSON
         :object_nl      => "\n",
         :array_nl       => "\n"
       )
+    ensure
+      $VERBOSE = old
     end
 
     # Returns the JSON generator modul, that is used by JSON. This might be

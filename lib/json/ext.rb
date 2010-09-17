@@ -11,5 +11,5 @@ module JSON
     JSON.generator = Generator
   end
 
-  JSON_LOADED = true
+  JSON_LOADED = true unless const_defined?(:JSON_LOADED)
 end
