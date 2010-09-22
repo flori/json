@@ -84,6 +84,8 @@ EOT
     assert_raise(GeneratorError) { fast_generate(666) }
   end
 
+
+
   def test_states
     json = generate({1=>2}, nil)
     assert_equal('{"1":2}', json)

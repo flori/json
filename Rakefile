@@ -6,7 +6,7 @@ end
 begin
   require 'rake/extensiontask'
 rescue LoadError
-  puts "WARNING: rake-compiler is not installed. You will not be able to build the json gem until you install it."
+  warn "WARNING: rake-compiler is not installed. You will not be able to build the json gem until you install it."
 end
 
 require 'rbconfig'
@@ -16,13 +16,15 @@ require 'rake/clean'
 CLOBBER.include Dir['benchmarks/data/*.{dat,log}']
 CLEAN.include FileList['diagrams/*.*'], 'doc', 'coverage', 'tmp',
   FileList["ext/**/{Makefile,mkmf.log}"], 'build', 'dist', FileList['**/*.rbc'],
-  FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def,jar}"]
+  FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def,jar,class}"],
+  FileList['java/src/**/*.class']
 
 MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
 PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
 PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\./).exclude(/\.(so|bundle|o|class|#{CONFIG['DLEXT']})$/)
+
 EXT_ROOT_DIR      = 'ext/json/ext'
 EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
 EXT_PARSER_DL     = "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}"
@@ -31,6 +33,14 @@ PKG_FILES << EXT_PARSER_SRC
 EXT_GENERATOR_DIR = "#{EXT_ROOT_DIR}/generator"
 EXT_GENERATOR_DL  = "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}"
 EXT_GENERATOR_SRC = "#{EXT_GENERATOR_DIR}/generator.c"
+
+JAVA_DIR            = "java/src/json/ext"
+JAVA_PARSER_SRC     = "#{JAVA_DIR}/Parser.java"
+JAVA_SOURCES        = FileList["#{JAVA_DIR}/*.java"]
+JAVA_CLASSES        = []
+JRUBY_PARSER_JAR    = File.expand_path("lib/json/ext/parser.jar")
+JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
+
 RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| system(c, '-v') }
 RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| system(c, '-v') }
 RAGEL_PATH        = "#{EXT_PARSER_DIR}/parser.rl"
@@ -42,16 +52,6 @@ def myruby(*args, &block)
     sh(*([@myruby] + args + [options]), &block)
   else
     sh("#{@myruby} #{args.first}", options, &block)
-  end
-end
-
-def jruby(*args, &block)
-  @jruby ||= `which jruby`.chomp
-  options = (Hash === args.last) ? args.pop : {}
-  if args.length > 1 then
-    sh(*([@jruby] + args + [options]), &block)
-  else
-    sh("#{@jruby} #{args.first}", options, &block)
   end
 end
 
@@ -84,19 +84,6 @@ end
 desc "Compiling extension"
 task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
 
-desc "Compiling jruby extension"
-task :compile_jruby do
-  sh 'ant -buildfile build.xml jar'
-end
-
-desc "Package the jruby gem"
-task :jruby_gem do
-  sh 'ant -buildfile build.xml clean gem'
-  sh 'gem build json-java.gemspec'
-  mkdir_p 'pkg'
-  mv "json-#{PKG_VERSION}-java.gem", 'pkg'
-end
-
 file EXT_PARSER_DL => EXT_PARSER_SRC do
   cd EXT_PARSER_DIR do
     myruby 'extconf.rb'
@@ -116,6 +103,7 @@ end
 desc "Generate parser with ragel"
 task :ragel => EXT_PARSER_SRC
 
+desc "Delete the ragel generated C source"
 task :ragel_clean do
   rm_rf EXT_PARSER_SRC
 end
@@ -164,26 +152,16 @@ task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 desc "Testing library (pure ruby)"
 task :test_pure => :clean do
   ENV['JSON'] = 'pure'
-  ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
-  myruby "-S testrb #{Dir['./tests/*.rb'] * ' '}"
+  ENV['RUBYOPT'] = "-Ilib #{ENV['RUBYOPT']}"
+  myruby '-S', 'testrb', *Dir['tests/*.rb']
 end
 
 desc "Testing library (extension)"
 task :test_ext => :compile_ext do
   ENV['JSON'] = 'ext'
   ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
-  myruby "-S testrb #{Dir['./tests/*.rb'] * ' '}"
+  myruby '-S', 'testrb', *Dir['./tests/*.rb']
 end
-
-desc "Testing library (jruby)"
-task :test_jruby => :compile_jruby do
-  ENV['JSON'] = 'ext'
-  ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
-  jruby "-S testrb #{Dir['./tests/*.rb'] * ' '}"
-end
-
-desc "Testing library (pure ruby and extension)"
-task :test => [ :test_pure, :test_jruby, :test_ext ]
 
 desc "Benchmarking parser"
 task :benchmark_parser do
@@ -312,17 +290,105 @@ EOT
   end
 end
 
-desc "Build all gems and archives for a new release of the jruby extension."
-task :release_jruby => [ :clean, :version, :jruby_gem ]
+if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
+  file JAVA_PARSER_SRC => RAGEL_PATH do
+    cd JAVA_DIR do
+      if RAGEL_CODEGEN == 'ragel'
+        sh "ragel Parser.rl -J -o Parser.java"
+      else
+        sh "ragel -x Parser.rl | #{RAGEL_CODEGEN} -J"
+      end
+    end
+  end
 
-desc "Build all gems and archives for a new release of json and json_pure."
-task :release_ruby => [ :clean, :version, :cross, :native, :gem, ] do
-  sh "#$0 clean native gem"
-  sh "#$0 clean package"
+  JRUBY_JAR = File.join(Config::CONFIG["libdir"], "jruby.jar")
+  if File.exist?(JRUBY_JAR)
+    JAVA_SOURCES.each do |src|
+      classpath = (Dir['java/lib/*.jar'] << 'java/src' << JRUBY_JAR) * ':'
+      obj = src.sub(/\.java\Z/, '.class')
+      file obj => src do
+        sh 'javac', '-classpath', classpath, '-source', '1.5', src
+      end
+      JAVA_CLASSES << obj
+    end
+  else
+    warn "WARNING: Cannot find jruby in path => Cannot build jruby extension!"
+  end
+
+  desc "Generate parser for java with ragel"
+  task :ragel_java => JAVA_PARSER_SRC
+
+  desc "Delete the ragel generated Java source"
+  task :ragel_clean_java do
+    rm_rf JAVA_PARSER_SRC
+  end
+
+  desc "Compiling jruby extension"
+  task :compile_jruby => JAVA_CLASSES
+
+  desc "Package the jruby gem"
+  task :jruby_gem => :create_jar do
+    sh 'gem build json-java.gemspec'
+    mkdir_p 'pkg'
+    mv "json-#{PKG_VERSION}-java.gem", 'pkg'
+  end
+
+  desc "Testing library (jruby)"
+  task :test_jruby => :create_jar do
+    ENV['JSON'] = 'ext'
+    myruby '-S', 'testrb', '-Ilib', *Dir['tests/*.rb']
+  end
+
+  desc "Create parser jar"
+  task :create_parser_jar => :compile_jruby do
+    cd 'java/src' do
+      parser_classes = FileList[
+        "json/ext/ByteListTranscoder*.class",
+        "json/ext/OptionsReader*.class",
+        "json/ext/Parser*.class",
+        "json/ext/RuntimeInfo*.class",
+        "json/ext/StringDecoder*.class",
+        "json/ext/Utils*.class"
+      ]
+      sh 'jar', 'cf', File.basename(JRUBY_PARSER_JAR), *parser_classes
+      mv File.basename(JRUBY_PARSER_JAR), File.dirname(JRUBY_PARSER_JAR)
+    end
+  end
+
+  desc "Create generator jar"
+  task :create_generator_jar => :compile_jruby do
+    cd 'java/src' do
+      generator_classes = FileList[
+        "json/ext/ByteListTranscoder*.class",
+        "json/ext/OptionsReader*.class",
+        "json/ext/Generator*.class",
+        "json/ext/RuntimeInfo*.class",
+        "json/ext/StringEncoder*.class",
+        "json/ext/Utils*.class"
+      ]
+      sh 'jar', 'cf', File.basename(JRUBY_GENERATOR_JAR), *generator_classes
+      mv File.basename(JRUBY_GENERATOR_JAR), File.dirname(JRUBY_GENERATOR_JAR)
+    end
+  end
+
+  desc "Create parser and generator jars"
+  task :create_jar => [ :create_parser_jar, :create_generator_jar ]
+
+  desc "Build all gems and archives for a new release of the jruby extension."
+  task :release => [ :clean, :version, :jruby_gem ]
+
+  desc "Testing library (jruby extension)"
+  task :test => :test_jruby
+else
+  desc "Testing library (pure ruby and extension)"
+  task :test => [ :test_pure, :test_ext ]
+
+  desc "Build all gems and archives for a new release of json and json_pure."
+  task :release => [ :clean, :version, :cross, :native, :gem, ] do
+    sh "#$0 clean native gem"
+    sh "#$0 clean package"
+  end
 end
 
-desc "Build all gems and archives for a new release."
-task :release => [ :release_ruby, :release_jruby ]
-
 desc "Compile in the the source directory"
-task :default => [ :version, :compile_ext ]
+task :default => [ :version ]
