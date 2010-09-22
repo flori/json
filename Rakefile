@@ -339,8 +339,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
     myruby '-S', 'testrb', '-Ilib', *Dir['tests/*.rb']
   end
 
-  desc "Create parser jar"
-  task :create_parser_jar => :compile_jruby do
+  file JRUBY_PARSER_JAR => :compile_jruby do
     cd 'java/src' do
       parser_classes = FileList[
         "json/ext/ByteListTranscoder*.class",
@@ -355,8 +354,10 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
     end
   end
 
-  desc "Create generator jar"
-  task :create_generator_jar => :compile_jruby do
+  desc "Create parser jar"
+  task :create_parser_jar => JRUBY_PARSER_JAR
+
+  file JRUBY_GENERATOR_JAR => :compile_jruby do
     cd 'java/src' do
       generator_classes = FileList[
         "json/ext/ByteListTranscoder*.class",
@@ -370,6 +371,9 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
       mv File.basename(JRUBY_GENERATOR_JAR), File.dirname(JRUBY_GENERATOR_JAR)
     end
   end
+
+  desc "Create generator jar"
+  task :create_generator_jar => JRUBY_GENERATOR_JAR
 
   desc "Create parser and generator jars"
   task :create_jar => [ :create_parser_jar, :create_generator_jar ]
