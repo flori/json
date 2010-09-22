@@ -106,11 +106,13 @@ module JSON
         # an unconfigured instance. If _opts_ is a State object, it is just
         # returned.
         def self.from_state(opts)
-          case opts
-          when self
+          case
+          when self === opts
             opts
-          when Hash
-            new(opts)
+          when opts.respond_to?(:to_hash)
+            new(opts.to_hash)
+          when opts.respond_to?(:to_h)
+            new(opts.to_h)
           else
             SAFE_STATE_PROTOTYPE.dup
           end

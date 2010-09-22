@@ -7,7 +7,7 @@ when 'pure' then require 'json/pure'
 when 'ext'  then require 'json/ext'
 else             require 'json'
 end
-require 'json/add/core'
+load 'json/add/core.rb'
 require 'date'
 
 class TC_JSONAddition < Test::Unit::TestCase

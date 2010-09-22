@@ -140,7 +140,7 @@ class GeneratorBenchmarkRails < Bullshit::RepeatCase
   histogram yes
 
   def benchmark_generator
-    @result = @big.to_json
+    @result = ActiveSupport::JSON.encode @big
   end
 
   alias reset_benchmark_generator generic_reset_method
