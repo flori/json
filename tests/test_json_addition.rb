@@ -36,6 +36,15 @@ class TC_JSONAddition < Test::Unit::TestCase
     end
   end
 
+  class A2 < A
+    def to_json(*args)
+      {
+        'json_class'  => self.class.name,
+        'args'        => [ @a ],
+      }.to_json(*args)
+    end
+  end
+
   class B
     def self.json_creatable?
       false

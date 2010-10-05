@@ -113,13 +113,13 @@ module JSON
         else
           @max_nesting = 0
         end
-        @allow_nan = !!opts[:allow_nan]
-        @symbolize_names = !!opts[:symbolize_names]
-        ca = true
-        ca = opts[:create_additions] if opts.key?(:create_additions)
-        @create_id = ca ? JSON.create_id : nil
-        @object_class = opts[:object_class] || Hash
-        @array_class = opts[:array_class] || Array
+        @allow_nan        = !!opts[:allow_nan]
+        @symbolize_names  = !!opts[:symbolize_names]
+        @create_additions = opts.key?(:create_additions) ? !!opts[:create_additions] : true
+        @create_id        = opts[:create_id] || JSON.create_id
+        @object_class     = opts[:object_class] || Hash
+        @array_class      = opts[:array_class] || Array
+        @match            = opts[:match]
       end
 
       alias source string
@@ -188,6 +188,12 @@ module JSON
           end
           if string.respond_to?(:force_encoding)
             string.force_encoding(::Encoding::UTF_8)
+          end
+          if @create_additions and @match
+            for (regexp, klass) in @match
+              klass.json_creatable? or next
+              string =~ regexp and return klass.json_create(string)
+            end
           end
           string
         else
@@ -295,7 +301,7 @@ module JSON
             if delim
               raise ParserError, "expected next name, value pair in object at '#{peek(20)}'!"
             end
-            if @create_id and klassname = result[@create_id]
+            if @create_additions and klassname = result[@create_id]
               klass = JSON.deep_const_get klassname
               break unless klass and klass.json_creatable?
               result = klass.json_create(result)

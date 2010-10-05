@@ -13,6 +13,7 @@
 #else
 #define FORCE_UTF8(obj)
 #endif
+#include "ruby/st.h"
 
 #define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
 
@@ -41,6 +42,8 @@ typedef struct JSON_ParserStruct {
     int symbolize_names;
     VALUE object_class;
     VALUE array_class;
+		int create_additions;
+		VALUE match;
 } JSON_Parser;
 
 #define GET_PARSER                          \
