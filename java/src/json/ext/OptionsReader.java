@@ -74,15 +74,20 @@ final class OptionsReader {
      *                        converted to string
      */
     ByteList getString(String key) {
+        RubyString str = getString(key, null);
+        return str == null ? null : str.getByteList().dup();
+    }
+
+    RubyString getString(String key, RubyString defaultValue) {
         IRubyObject value = get(key);
-        if (value == null || !value.isTrue()) return null;
+        if (value == null || !value.isTrue()) return defaultValue;
 
         RubyString str = value.convertToString();
         RuntimeInfo info = getRuntimeInfo();
         if (info.encodingsSupported() && str.encoding(context) != info.utf8) {
             str = (RubyString)str.encode(context, info.utf8);
         }
-        return str.getByteList().dup();
+        return str;
     }
 
     /**
@@ -104,5 +109,11 @@ final class OptionsReader {
         }
         throw runtime.newTypeError(key + " option must be a subclass of "
                                    + defaultValue);
+    }
+
+    public RubyHash getHash(String key) {
+        IRubyObject value = get(key);
+        if (value == null || value.isNil()) return new RubyHash(runtime);
+        return (RubyHash) value;
     }
 }
