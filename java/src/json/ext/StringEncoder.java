@@ -40,14 +40,17 @@ final class StringEncoder extends ByteListTranscoder {
     void encode(ByteList src, ByteList out) {
         init(src, out);
         append('"');
+        int lastChar = -1;
         while (hasNext()) {
-            handleChar(readUtf8Char());
+            int newChar = readUtf8Char();
+            handleChar(newChar, lastChar);
+            lastChar = newChar;
         }
         quoteStop(pos);
         append('"');
     }
 
-    private void handleChar(int c) {
+    private void handleChar(int c, int lastChar) {
         switch (c) {
         case '"':
         case '\\':
@@ -67,6 +70,13 @@ final class StringEncoder extends ByteListTranscoder {
             break;
         case '\b':
             escapeChar('b');
+            break;
+        case '/':
+            if (lastChar == '<') {
+                escapeChar('/');
+            } else {
+                quoteStart();
+            }
             break;
         default:
             if (c >= 0x20 && c <= 0x7f ||
