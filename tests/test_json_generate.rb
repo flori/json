@@ -180,4 +180,10 @@ EOT
     assert_raises(JSON::NestingError) { ary.to_json(s) }
     assert_equal 19, s.depth
   end
+
+
+  def test_no_close_tag
+    assert_equal '["<\/script>"]', generate(["</script>"])
+    assert_equal '["<\/SCRIPT>"]', generate(["</SCRIPT>"])
+  end
 end
