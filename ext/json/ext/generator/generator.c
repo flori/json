@@ -226,7 +226,7 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
     unsigned long len = RSTRING_LEN(string), start = 0, end = 0;
     const char *escape = NULL;
     int escape_len;
-    unsigned char c;
+    unsigned char c, last_c = -1;
     char buf[6] = { '\\', 'u' };
 
     for (start = 0, end = 0; end < len;) {
@@ -271,13 +271,20 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
                     escape_len = 2;
                     break;
                 default:
-                    end++;
-                    continue;
+                    if (c == '/' && last_c == '<') {
+                        escape = "\\/";
+                        escape_len = 2;
+                    } else {
+                        last_c = c;
+                        end++;
+                        continue;
+                    }
                     break;
             }
         }
         fbuffer_append(buffer, ptr + start, end - start);
         fbuffer_append(buffer, escape, escape_len);
+        last_c = c;
         start = ++end;
         escape = NULL;
     }
