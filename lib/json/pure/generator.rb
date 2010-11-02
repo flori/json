@@ -44,6 +44,7 @@ module JSON
       string << '' # XXX workaround: avoid buffer sharing
       string.force_encoding(::Encoding::ASCII_8BIT)
       string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub!("</", '<\/') # avoid "</script>"
       string.force_encoding(::Encoding::UTF_8)
       string
     end
@@ -65,6 +66,7 @@ module JSON
                       s = JSON::UTF8toUTF16.iconv(c).unpack('H*')[0]
                       s.gsub!(/.{4}/n, '\\\\u\&')
                     }
+      string.gsub!("</", '<\/') # avoid "</script>"
       string.force_encoding(::Encoding::UTF_8)
       string
     rescue Iconv::Failure => e
@@ -72,7 +74,9 @@ module JSON
     end
   else
     def utf8_to_json(string) # :nodoc:
-      string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
+      string = string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub!("</", '<\/') # avoid "</script>"
+      string
     end
 
     def utf8_to_json_ascii(string) # :nodoc:
@@ -89,6 +93,7 @@ module JSON
         s = JSON::UTF8toUTF16.iconv(c).unpack('H*')[0]
         s.gsub!(/.{4}/n, '\\\\u\&')
       }
+      string.gsub!("</", '<\/') # avoid "</script>"
       string
     rescue Iconv::Failure => e
       raise GeneratorError, "Caught #{e.class}: #{e}"
