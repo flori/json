@@ -341,11 +341,13 @@ module JSON
   end
 
   # Shortuct for iconv.
-  def self.iconv(to, from, string)
-    if String.method_defined?(:encode)
+  if String.method_defined?(:encode)
+    def self.iconv(to, from, string)
       string.encode(to, from)
-    else
-      require 'iconv'
+    end
+  else
+    require 'iconv'
+    def self.iconv(to, from, string)
       Iconv.iconv(to, from, string).first
     end
   end
