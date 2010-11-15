@@ -1,5 +1,4 @@
 require 'json/version'
-require 'iconv'
 
 module JSON
   class << self
@@ -343,7 +342,12 @@ module JSON
 
   # Shortuct for iconv.
   def self.iconv(to, from, string)
-    Iconv.iconv(to, from, string).first
+    if String.method_defined?(:encode)
+      string.encode(to, from)
+    else
+      require 'iconv'
+      Iconv.iconv(to, from, string).first
+    end
   end
 end
 
