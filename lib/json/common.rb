@@ -24,7 +24,7 @@ module JSON
     # Set the JSON parser class _parser_ to be used by JSON.
     def parser=(parser) # :nodoc:
       @parser = parser
-      remove_const :Parser if const_defined? :Parser
+      remove_const :Parser if constants.include? :Parser
       const_set :Parser, parser
     end
 
