@@ -340,6 +340,15 @@ module JSON
     raise ArgumentError, "exceed depth limit"
   end
 
+  # Swap consecutive bytes of _string_ in place.
+  def self.swap!(string) # :nodoc:
+    0.upto(string.size / 2) do |i|
+      break unless string[2 * i + 1]
+      string[2 * i], string[2 * i + 1] = string[2 * i + 1], string[2 * i]
+    end
+    string
+  end
+
   # Shortuct for iconv.
   if String.method_defined?(:encode)
     def self.iconv(to, from, string)
