@@ -178,7 +178,7 @@ module JSON
                 bytes << c[6 * i + 2, 2].to_i(16) << c[6 * i + 4, 2].to_i(16)
                 i += 1
               end
-              JSON::UTF16toUTF8.iconv(bytes)
+              JSON.iconv('utf-8', 'utf-16be', bytes)
             end
           end
           if string.respond_to?(:force_encoding)
@@ -188,8 +188,8 @@ module JSON
         else
           UNPARSED
         end
-      rescue Iconv::Failure => e
-        raise GeneratorError, "Caught #{e.class}: #{e}"
+      rescue => e
+        raise ParserError, "Caught #{e.class}: #{e}"
       end
 
       def parse_value
