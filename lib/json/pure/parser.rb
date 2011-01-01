@@ -165,6 +165,11 @@ module JSON
         ?u  => nil, 
       })
 
+      EMPTY_8BIT_STRING = ''
+      if ::String.method_defined?(:encode)
+        EMPTY_8BIT_STRING.force_encoding Encoding::ASCII_8BIT 
+      end
+
       def parse_string
         if scan(STRING)
           return '' if self[1].empty?
@@ -172,7 +177,7 @@ module JSON
             if u = UNESCAPE_MAP[$&[1]]
               u
             else # \uXXXX
-              bytes = ''
+              bytes = EMPTY_8BIT_STRING.dup
               i = 0
               while c[6 * i] == ?\\ && c[6 * i + 1] == ?u
                 bytes << c[6 * i + 2, 2].to_i(16) << c[6 * i + 4, 2].to_i(16)
@@ -189,7 +194,7 @@ module JSON
           UNPARSED
         end
       rescue => e
-        raise ParserError, "Caught #{e.class}: #{e}"
+        raise ParserError, "Caught #{e.class} at '#{peek(20)}': #{e}"
       end
 
       def parse_value
