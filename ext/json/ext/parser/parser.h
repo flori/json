@@ -13,7 +13,11 @@
 #else
 #define FORCE_UTF8(obj)
 #endif
+#ifdef HAVE_RUBY_ST_H
 #include "ruby/st.h"
+#else
+#include "st.h"
+#endif
 
 #define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
 
