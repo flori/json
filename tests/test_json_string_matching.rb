@@ -9,7 +9,7 @@ require 'time'
 class TestJsonStringMatching < Test::Unit::TestCase
   include JSON
 
-  class TestTime < Time
+  class TestTime < ::Time
     def self.json_create(string)
       Time.parse(string)
     end

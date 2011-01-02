@@ -119,7 +119,7 @@ module JSON
         @create_id        = opts[:create_id] || JSON.create_id
         @object_class     = opts[:object_class] || Hash
         @array_class      = opts[:array_class] || Array
-        @match            = opts[:match]
+        @json_match       = opts[:match] # @match is an ivar in rbx's strscan
       end
 
       alias source string
@@ -189,8 +189,8 @@ module JSON
           if string.respond_to?(:force_encoding)
             string.force_encoding(::Encoding::UTF_8)
           end
-          if @create_additions and @match
-            for (regexp, klass) in @match
+          if @create_additions and @json_match
+            for (regexp, klass) in @json_match
               klass.json_creatable? or next
               string =~ regexp and return klass.json_create(string)
             end
