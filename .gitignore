@@ -2,3 +2,5 @@
 coverage
 pkg
 .nfs.*
+.idea
+java/Json.iml
