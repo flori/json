@@ -101,7 +101,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for ruby' << '--main' << 'README'
-    s.test_files.concat Dir['tests/*.rb']
+    s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -138,7 +138,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for Ruby' << '--main' << 'README'
-    s.test_files.concat Dir['tests/*.rb']
+    s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -187,6 +187,17 @@ EOT
   end
 end
 
+desc "Testing library (pure ruby)"
+task :test_pure => :clean do
+  ENV['JSON'] = 'pure'
+  ENV['RUBYOPT'] = "-Ilib #{ENV['RUBYOPT']}"
+  myruby '-S', 'testrb', *Dir['./tests/test_*.rb']
+end
+
+desc "Testing library (pure ruby and extension)"
+task :test => [ :test_pure, :test_ext ]
+
+
 if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   file JAVA_PARSER_SRC => JAVA_RAGEL_PATH do
     cd JAVA_DIR do
@@ -233,7 +244,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   desc "Testing library (jruby)"
   task :test_ext => :create_jar do
     ENV['JSON'] = 'ext'
-    myruby '-S', 'testrb', '-Ilib', *Dir['tests/*.rb']
+    myruby '-S', 'testrb', '-Ilib', *Dir['./tests/test_*.rb']
   end
 
   file JRUBY_PARSER_JAR => :compile_ext do
@@ -277,9 +288,6 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
 
   desc "Build all gems and archives for a new release of the jruby extension."
   task :release => [ :clean, :version, :jruby_gem ]
-
-  desc "Testing library (jruby extension)"
-  task :test => :test_ext
 else
   desc "Compiling extension"
   task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
@@ -304,7 +312,7 @@ else
   task :test_ext => :compile_ext do
     ENV['JSON'] = 'ext'
     ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
-    myruby '-S', 'testrb', *Dir['./tests/*.rb']
+    myruby '-S', 'testrb', *Dir['./tests/test_*.rb']
   end
 
   desc "Benchmarking parser"
@@ -377,16 +385,6 @@ else
 
   desc "Generate diagrams of ragel parser"
   task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
-
-  desc "Testing library (pure ruby)"
-  task :test_pure => :clean do
-    ENV['JSON'] = 'pure'
-    ENV['RUBYOPT'] = "-Ilib #{ENV['RUBYOPT']}"
-    myruby '-S', 'testrb', *Dir['tests/*.rb']
-  end
-
-  desc "Testing library (pure ruby and extension)"
-  task :test => [ :test_pure, :test_ext ]
 
   desc "Build all gems and archives for a new release of json and json_pure."
   task :release => [ :clean, :version, :cross, :native, :gem, ] do
