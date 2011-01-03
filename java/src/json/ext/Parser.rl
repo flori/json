@@ -555,22 +555,20 @@ public class Parser extends RubyObject {
             if (parser.createAdditions) {
                 RubyHash match = parser.match;
                 if (match != null) {
-                    final RubyArray memoArray = RubyArray.newArray(context.getRuntime(), 2);
-                    memoArray.add(result);
+                    final IRubyObject[] memoArray = { result, null };
                     try {
                       match.visitAll(new RubyHash.Visitor() {
                           @Override
                           public void visit(IRubyObject pattern, IRubyObject klass) {
-                              if (pattern.callMethod(context, "===", memoArray.entry(0)).isTrue()) {
-                                  memoArray.add(klass);
+                              if (pattern.callMethod(context, "===", memoArray[0]).isTrue()) {
+                                  memoArray[1] = klass;
                                   throw JumpException.SPECIAL_JUMP;
                               }
                           }
                       });
                     } catch (JumpException e) { }
-                    IRubyObject matched = memoArray.entry(1);
-                    if (!matched.isNil()) { 
-                        RubyClass klass = (RubyClass) matched;
+                    if (memoArray[1] != null) { 
+                        RubyClass klass = (RubyClass) memoArray[1];
                         if (klass.respondsTo("json_creatable?") &&
                             klass.callMethod(context, "json_creatable?").isTrue()) {
                             result = klass.callMethod(context, "json_create", result);
