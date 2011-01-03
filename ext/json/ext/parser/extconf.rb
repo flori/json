@@ -12,4 +12,5 @@ if CONFIG['CC'] =~ /gcc/
 end
 
 have_header("re.h")
+have_header("ruby/st.h")
 create_makefile 'json/ext/parser'

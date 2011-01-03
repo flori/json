@@ -1,5 +1,4 @@
 require 'json/version'
-require 'iconv'
 
 module JSON
   class << self
@@ -24,7 +23,7 @@ module JSON
     # Set the JSON parser class _parser_ to be used by JSON.
     def parser=(parser) # :nodoc:
       @parser = parser
-      remove_const :Parser if const_defined? :Parser
+      remove_const :Parser if JSON.const_defined_in?(self, :Parser)
       const_set :Parser, parser
     end
 
@@ -35,8 +34,8 @@ module JSON
     def deep_const_get(path) # :nodoc:
       path.to_s.split(/::/).inject(Object) do |p, c|
         case
-        when c.empty?             then p
-        when p.const_defined?(c)  then p.const_get(c)
+        when c.empty?                     then p
+        when JSON.const_defined_in?(p, c) then p.const_get(c)
         else
           begin
             p.const_missing(c)
@@ -341,9 +340,35 @@ module JSON
     raise ArgumentError, "exceed depth limit"
   end
 
+  # Swap consecutive bytes of _string_ in place.
+  def self.swap!(string) # :nodoc:
+    0.upto(string.size / 2) do |i|
+      break unless string[2 * i + 1]
+      string[2 * i], string[2 * i + 1] = string[2 * i + 1], string[2 * i]
+    end
+    string
+  end
+
   # Shortuct for iconv.
-  def self.iconv(to, from, string)
-    Iconv.iconv(to, from, string).first
+  if ::String.method_defined?(:encode)
+    def self.iconv(to, from, string)
+      string.encode(to, from)
+    end
+  else
+    require 'iconv'
+    def self.iconv(to, from, string)
+      Iconv.iconv(to, from, string).first
+    end
+  end
+
+  if ::Object.method(:const_defined?).arity == 1
+    def self.const_defined_in?(modul, constant)
+      modul.const_defined?(constant)
+    end
+  else
+    def self.const_defined_in?(modul, constant)
+      modul.const_defined?(constant, false)
+    end
   end
 end
 

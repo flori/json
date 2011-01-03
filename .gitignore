@@ -2,10 +2,5 @@
 coverage
 pkg
 .nfs.*
-# java: NetBeans
-/nbproject/private
-# java: Eclipse
-/.classpath
-/.project
-/.settings
-/.externalToolBuilders
+.idea
+java/Json.iml

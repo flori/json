@@ -77,7 +77,7 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_object_class,
-          i_array_class, i_key_p, i_deep_const_get;
+          i_array_class, i_key_p, i_deep_const_get, i_match;
 
 %%{
     machine JSON_common;
@@ -159,11 +159,11 @@ static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *resu
     %% write exec;
 
     if (cs >= JSON_object_first_final) {
-        if (RTEST(json->create_id)) {
+        if (json->create_additions) {
             VALUE klassname = rb_hash_aref(*result, json->create_id);
             if (!NIL_P(klassname)) {
                 VALUE klass = rb_funcall(mJSON, i_deep_const_get, 1, klassname);
-                if RTEST(rb_funcall(klass, i_json_creatable_p, 0)) {
+                if (RTEST(rb_funcall(klass, i_json_creatable_p, 0))) {
                     *result = rb_funcall(klass, i_json_create, 1, *result);
                 }
             }
@@ -457,27 +457,51 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
     action parse_string {
         *result = json_string_unescape(*result, json->memo + 1, p);
         if (NIL_P(*result)) {
-			fhold;
-			fbreak;
-		} else {
-			FORCE_UTF8(*result);
-			fexec p + 1;
-		}
-	}
+            fhold;
+            fbreak;
+        } else {
+            FORCE_UTF8(*result);
+            fexec p + 1;
+        }
+    }
 
     action exit { fhold; fbreak; }
 
     main := '"' ((^(["\\] | 0..0x1f) | '\\'["\\/bfnrt] | '\\u'[0-9a-fA-F]{4} | '\\'^(["\\/bfnrtu]|0..0x1f))* %parse_string) '"' @exit;
 }%%
 
+static int
+match_i(VALUE regexp, VALUE klass, VALUE memo)
+{
+    if (regexp == Qundef) return ST_STOP;
+    if (RTEST(rb_funcall(klass, i_json_creatable_p, 0)) &&
+      RTEST(rb_funcall(regexp, i_match, 1, rb_ary_entry(memo, 0)))) {
+        rb_ary_push(memo, klass);
+        return ST_STOP;
+    }
+    return ST_CONTINUE;
+}
+
 static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result)
 {
     int cs = EVIL;
+    VALUE match;
 
     *result = rb_str_buf_new(0);
     %% write init;
     json->memo = p;
     %% write exec;
+
+    if (json->create_additions && RTEST(match = json->match)) {
+          VALUE klass;
+          VALUE memo = rb_ary_new2(2);
+          rb_ary_push(memo, *result);
+          rb_hash_foreach(match, match_i, memo);
+          klass = rb_ary_entry(memo, 1);
+          if (RTEST(klass)) {
+              *result = rb_funcall(klass, i_json_create, 1, *result);
+          }
+    }
 
     if (json->symbolize_names && json->parsing_name) {
       *result = rb_str_intern(*result);
@@ -632,26 +656,25 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             }
             tmp = ID2SYM(i_allow_nan);
             if (option_given_p(opts, tmp)) {
-                VALUE allow_nan = rb_hash_aref(opts, tmp);
-                json->allow_nan = RTEST(allow_nan) ? 1 : 0;
+                json->allow_nan = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->allow_nan = 0;
             }
             tmp = ID2SYM(i_symbolize_names);
             if (option_given_p(opts, tmp)) {
-                VALUE symbolize_names = rb_hash_aref(opts, tmp);
-                json->symbolize_names = RTEST(symbolize_names) ? 1 : 0;
+                json->symbolize_names = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->symbolize_names = 0;
             }
             tmp = ID2SYM(i_create_additions);
             if (option_given_p(opts, tmp)) {
-                VALUE create_additions = rb_hash_aref(opts, tmp);
-                if (RTEST(create_additions)) {
-                    json->create_id = rb_funcall(mJSON, i_create_id, 0);
-                } else {
-                    json->create_id = Qnil;
-                }
+                json->create_additions = RTEST(rb_hash_aref(opts, tmp));
+            } else {
+                json->create_additions = 1;
+            }
+            tmp = ID2SYM(i_create_id);
+            if (option_given_p(opts, tmp)) {
+                json->create_id = rb_hash_aref(opts, tmp);
             } else {
                 json->create_id = rb_funcall(mJSON, i_create_id, 0);
             }
@@ -667,10 +690,18 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             } else {
                 json->array_class = Qnil;
             }
+            tmp = ID2SYM(i_match);
+            if (option_given_p(opts, tmp)) {
+                VALUE match = rb_hash_aref(opts, tmp);
+                json->match = RTEST(match) ? match : Qnil;
+            } else {
+                json->match = Qnil;
+            }
         }
     } else {
         json->max_nesting = 19;
         json->allow_nan = 0;
+        json->create_additions = 1;
         json->create_id = rb_funcall(mJSON, i_create_id, 0);
         json->object_class = Qnil;
         json->array_class = Qnil;
@@ -721,6 +752,7 @@ static void JSON_mark(JSON_Parser *json)
     rb_gc_mark_maybe(json->create_id);
     rb_gc_mark_maybe(json->object_class);
     rb_gc_mark_maybe(json->array_class);
+    rb_gc_mark_maybe(json->match);
 }
 
 static void JSON_free(JSON_Parser *json)
@@ -773,6 +805,7 @@ void Init_parser()
     i_symbolize_names = rb_intern("symbolize_names");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
+    i_match = rb_intern("match");
     i_key_p = rb_intern("key?");
     i_deep_const_get = rb_intern("deep_const_get");
 #ifdef HAVE_RUBY_ENCODING_H

@@ -23,11 +23,12 @@ MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
 PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
-PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\./).exclude(/\.(so|bundle|o|class|#{CONFIG['DLEXT']})$/)
+PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\.|\.iml\Z/).exclude(/\.(so|bundle|o|class|#{CONFIG['DLEXT']})$/)
 
 EXT_ROOT_DIR      = 'ext/json/ext'
 EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
 EXT_PARSER_DL     = "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}"
+RAGEL_PATH        = "#{EXT_PARSER_DIR}/parser.rl"
 EXT_PARSER_SRC    = "#{EXT_PARSER_DIR}/parser.c"
 PKG_FILES << EXT_PARSER_SRC
 EXT_GENERATOR_DIR = "#{EXT_ROOT_DIR}/generator"
@@ -35,6 +36,7 @@ EXT_GENERATOR_DL  = "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}"
 EXT_GENERATOR_SRC = "#{EXT_GENERATOR_DIR}/generator.c"
 
 JAVA_DIR            = "java/src/json/ext"
+JAVA_RAGEL_PATH     = "#{JAVA_DIR}/Parser.rl"
 JAVA_PARSER_SRC     = "#{JAVA_DIR}/Parser.java"
 JAVA_SOURCES        = FileList["#{JAVA_DIR}/*.java"]
 JAVA_CLASSES        = []
@@ -43,7 +45,6 @@ JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
 
 RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| system(c, '-v') }
 RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| system(c, '-v') }
-RAGEL_PATH        = "#{EXT_PARSER_DIR}/parser.rl"
 
 def myruby(*args, &block)
   @myruby ||= File.join(CONFIG['bindir'], CONFIG['ruby_install_name'])
@@ -81,110 +82,6 @@ else
   task :install => :install_ext
 end
 
-desc "Compiling extension"
-task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
-
-file EXT_PARSER_DL => EXT_PARSER_SRC do
-  cd EXT_PARSER_DIR do
-    myruby 'extconf.rb'
-    sh MAKE
-  end
-  cp "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
-end
-
-file EXT_GENERATOR_DL => EXT_GENERATOR_SRC do
-  cd EXT_GENERATOR_DIR do
-    myruby 'extconf.rb'
-    sh MAKE
-  end
-  cp "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
-end
-
-desc "Generate parser with ragel"
-task :ragel => EXT_PARSER_SRC
-
-desc "Delete the ragel generated C source"
-task :ragel_clean do
-  rm_rf EXT_PARSER_SRC
-end
-
-file EXT_PARSER_SRC => RAGEL_PATH do
-  cd EXT_PARSER_DIR do
-    if RAGEL_CODEGEN == 'ragel'
-      sh "ragel parser.rl -G2 -o parser.c"
-    else
-      sh "ragel -x parser.rl | #{RAGEL_CODEGEN} -G2"
-    end
-  end
-end
-
-desc "Generate diagrams of ragel parser (ps)"
-task :ragel_dot_ps do
-  root = 'diagrams'
-  specs = []
-  File.new(RAGEL_PATH).grep(/^\s*machine\s*(\S+);\s*$/) { specs << $1 }
-  for s in specs
-    if RAGEL_DOTGEN == 'ragel'
-      sh "ragel #{RAGEL_PATH} -S#{s} -p -V | dot -Tps -o#{root}/#{s}.ps"
-    else
-      sh "ragel -x #{RAGEL_PATH} -S#{s} | #{RAGEL_DOTGEN} -p|dot -Tps -o#{root}/#{s}.ps"
-    end
-  end
-end
-
-desc "Generate diagrams of ragel parser (png)"
-task :ragel_dot_png do
-  root = 'diagrams'
-  specs = []
-  File.new(RAGEL_PATH).grep(/^\s*machine\s*(\S+);\s*$/) { specs << $1 }
-  for s in specs
-    if RAGEL_DOTGEN == 'ragel'
-      sh "ragel #{RAGEL_PATH} -S#{s} -p -V | dot -Tpng -o#{root}/#{s}.png"
-    else
-      sh "ragel -x #{RAGEL_PATH} -S#{s} | #{RAGEL_DOTGEN} -p|dot -Tpng -o#{root}/#{s}.png"
-    end
-  end
-end
-
-desc "Generate diagrams of ragel parser"
-task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
-
-desc "Testing library (pure ruby)"
-task :test_pure => :clean do
-  ENV['JSON'] = 'pure'
-  ENV['RUBYOPT'] = "-Ilib #{ENV['RUBYOPT']}"
-  myruby '-S', 'testrb', *Dir['tests/*.rb']
-end
-
-desc "Testing library (extension)"
-task :test_ext => :compile_ext do
-  ENV['JSON'] = 'ext'
-  ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
-  myruby '-S', 'testrb', *Dir['./tests/*.rb']
-end
-
-desc "Benchmarking parser"
-task :benchmark_parser do
-  ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
-  myruby 'benchmarks/parser_benchmark.rb'
-  myruby 'benchmarks/parser2_benchmark.rb'
-end
-
-desc "Benchmarking generator"
-task :benchmark_generator do
-  ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
-  myruby 'benchmarks/generator_benchmark.rb'
-  myruby 'benchmarks/generator2_benchmark.rb'
-end
-
-desc "Benchmarking library"
-task :benchmark => [ :benchmark_parser, :benchmark_generator ]
-
-desc "Create RDOC documentation"
-task :doc => [ :version, EXT_PARSER_SRC ] do
-  sh "sdoc -o doc -t '#{PKG_TITLE}' -m README README lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
-end
-
 if defined?(Gem) and defined?(Rake::GemPackageTask)
   spec_pure = Gem::Specification.new do |s|
     s.name = 'json_pure'
@@ -204,7 +101,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for ruby' << '--main' << 'README'
-    s.test_files.concat Dir['tests/*.rb']
+    s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -241,7 +138,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for Ruby' << '--main' << 'README'
-    s.test_files.concat Dir['tests/*.rb']
+    s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -290,8 +187,19 @@ EOT
   end
 end
 
+desc "Testing library (pure ruby)"
+task :test_pure => :clean do
+  ENV['JSON'] = 'pure'
+  ENV['RUBYOPT'] = "-Ilib #{ENV['RUBYOPT']}"
+  myruby '-S', 'testrb', *Dir['./tests/test_*.rb']
+end
+
+desc "Testing library (pure ruby and extension)"
+task :test => [ :test_pure, :test_ext ]
+
+
 if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
-  file JAVA_PARSER_SRC => RAGEL_PATH do
+  file JAVA_PARSER_SRC => JAVA_RAGEL_PATH do
     cd JAVA_DIR do
       if RAGEL_CODEGEN == 'ragel'
         sh "ragel Parser.rl -J -o Parser.java"
@@ -299,6 +207,14 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
         sh "ragel -x Parser.rl | #{RAGEL_CODEGEN} -J"
       end
     end
+  end
+
+  desc "Generate parser for java with ragel"
+  task :ragel => JAVA_PARSER_SRC
+
+  desc "Delete the ragel generated Java source"
+  task :ragel_clean do
+    rm_rf JAVA_PARSER_SRC
   end
 
   JRUBY_JAR = File.join(Config::CONFIG["libdir"], "jruby.jar")
@@ -315,16 +231,8 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
     warn "WARNING: Cannot find jruby in path => Cannot build jruby extension!"
   end
 
-  desc "Generate parser for java with ragel"
-  task :ragel_java => JAVA_PARSER_SRC
-
-  desc "Delete the ragel generated Java source"
-  task :ragel_clean_java do
-    rm_rf JAVA_PARSER_SRC
-  end
-
   desc "Compiling jruby extension"
-  task :compile_jruby => JAVA_CLASSES
+  task :compile_ext => JAVA_CLASSES
 
   desc "Package the jruby gem"
   task :jruby_gem => :create_jar do
@@ -334,12 +242,12 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   end
 
   desc "Testing library (jruby)"
-  task :test_jruby => :create_jar do
+  task :test_ext => :create_jar do
     ENV['JSON'] = 'ext'
-    myruby '-S', 'testrb', '-Ilib', *Dir['tests/*.rb']
+    myruby '-S', 'testrb', '-Ilib', *Dir['./tests/test_*.rb']
   end
 
-  file JRUBY_PARSER_JAR => :compile_jruby do
+  file JRUBY_PARSER_JAR => :compile_ext do
     cd 'java/src' do
       parser_classes = FileList[
         "json/ext/ByteListTranscoder*.class",
@@ -357,7 +265,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   desc "Create parser jar"
   task :create_parser_jar => JRUBY_PARSER_JAR
 
-  file JRUBY_GENERATOR_JAR => :compile_jruby do
+  file JRUBY_GENERATOR_JAR => :compile_ext do
     cd 'java/src' do
       generator_classes = FileList[
         "json/ext/ByteListTranscoder*.class",
@@ -380,12 +288,103 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
 
   desc "Build all gems and archives for a new release of the jruby extension."
   task :release => [ :clean, :version, :jruby_gem ]
-
-  desc "Testing library (jruby extension)"
-  task :test => :test_jruby
 else
-  desc "Testing library (pure ruby and extension)"
-  task :test => [ :test_pure, :test_ext ]
+  desc "Compiling extension"
+  task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
+
+  file EXT_PARSER_DL => EXT_PARSER_SRC do
+    cd EXT_PARSER_DIR do
+      myruby 'extconf.rb'
+      sh MAKE
+    end
+    cp "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
+  end
+
+  file EXT_GENERATOR_DL => EXT_GENERATOR_SRC do
+    cd EXT_GENERATOR_DIR do
+      myruby 'extconf.rb'
+      sh MAKE
+    end
+    cp "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
+  end
+
+  desc "Testing library (extension)"
+  task :test_ext => :compile_ext do
+    ENV['JSON'] = 'ext'
+    ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
+    myruby '-S', 'testrb', *Dir['./tests/test_*.rb']
+  end
+
+  desc "Benchmarking parser"
+  task :benchmark_parser do
+    ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
+    myruby 'benchmarks/parser_benchmark.rb'
+    myruby 'benchmarks/parser2_benchmark.rb'
+  end
+
+  desc "Benchmarking generator"
+  task :benchmark_generator do
+    ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
+    myruby 'benchmarks/generator_benchmark.rb'
+    myruby 'benchmarks/generator2_benchmark.rb'
+  end
+
+  desc "Benchmarking library"
+  task :benchmark => [ :benchmark_parser, :benchmark_generator ]
+
+  desc "Create RDOC documentation"
+  task :doc => [ :version, EXT_PARSER_SRC ] do
+    sh "sdoc -o doc -t '#{PKG_TITLE}' -m README README lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
+  end
+
+  desc "Generate parser with ragel"
+  task :ragel => EXT_PARSER_SRC
+
+  desc "Delete the ragel generated C source"
+  task :ragel_clean do
+    rm_rf EXT_PARSER_SRC
+  end
+
+  file EXT_PARSER_SRC => RAGEL_PATH do
+    cd EXT_PARSER_DIR do
+      if RAGEL_CODEGEN == 'ragel'
+        sh "ragel parser.rl -G2 -o parser.c"
+      else
+        sh "ragel -x parser.rl | #{RAGEL_CODEGEN} -G2"
+      end
+    end
+  end
+
+  desc "Generate diagrams of ragel parser (ps)"
+  task :ragel_dot_ps do
+    root = 'diagrams'
+    specs = []
+    File.new(RAGEL_PATH).grep(/^\s*machine\s*(\S+);\s*$/) { specs << $1 }
+    for s in specs
+      if RAGEL_DOTGEN == 'ragel'
+        sh "ragel #{RAGEL_PATH} -S#{s} -p -V | dot -Tps -o#{root}/#{s}.ps"
+      else
+        sh "ragel -x #{RAGEL_PATH} -S#{s} | #{RAGEL_DOTGEN} -p|dot -Tps -o#{root}/#{s}.ps"
+      end
+    end
+  end
+
+  desc "Generate diagrams of ragel parser (png)"
+  task :ragel_dot_png do
+    root = 'diagrams'
+    specs = []
+    File.new(RAGEL_PATH).grep(/^\s*machine\s*(\S+);\s*$/) { specs << $1 }
+    for s in specs
+      if RAGEL_DOTGEN == 'ragel'
+        sh "ragel #{RAGEL_PATH} -S#{s} -p -V | dot -Tpng -o#{root}/#{s}.png"
+      else
+        sh "ragel -x #{RAGEL_PATH} -S#{s} | #{RAGEL_DOTGEN} -p|dot -Tpng -o#{root}/#{s}.png"
+      end
+    end
+  end
+
+  desc "Generate diagrams of ragel parser"
+  task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 
   desc "Build all gems and archives for a new release of json and json_pure."
   task :release => [ :clean, :version, :cross, :native, :gem, ] do

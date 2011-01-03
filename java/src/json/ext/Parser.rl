@@ -18,6 +18,7 @@ import org.jruby.RubyNumeric;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
 import org.jruby.anno.JRubyMethod;
+import org.jruby.exceptions.JumpException;
 import org.jruby.exceptions.RaiseException;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.ObjectAllocator;
@@ -44,11 +45,13 @@ public class Parser extends RubyObject {
     private final RuntimeInfo info;
     private RubyString vSource;
     private RubyString createId;
+    private boolean createAdditions;
     private int maxNesting;
     private boolean allowNaN;
     private boolean symbolizeNames;
     private RubyClass objectClass;
     private RubyClass arrayClass;
+    private RubyHash match;
 
     private static final int DEFAULT_MAX_NESTING = 19;
 
@@ -139,20 +142,18 @@ public class Parser extends RubyObject {
 
     @JRubyMethod(required = 1, optional = 1, visibility = Visibility.PRIVATE)
     public IRubyObject initialize(ThreadContext context, IRubyObject[] args) {
-        Ruby runtime = context.getRuntime();
+        Ruby runtime      = context.getRuntime();
         RubyString source = convertEncoding(context, args[0].convertToString());
 
-        OptionsReader opts =
-            new OptionsReader(context, args.length > 1 ? args[1] : null);
-
-        this.maxNesting = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
-        this.allowNaN = opts.getBool("allow_nan", false);
-        this.symbolizeNames = opts.getBool("symbolize_names", false);
-        this.createId =
-            opts.getBool("create_additions", true) ? getCreateId(context)
-                                                   : null;
-        this.objectClass = opts.getClass("object_class", runtime.getHash());
-        this.arrayClass = opts.getClass("array_class", runtime.getArray());
+        OptionsReader opts   = new OptionsReader(context, args.length > 1 ? args[1] : null);
+        this.maxNesting      = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
+        this.allowNaN        = opts.getBool("allow_nan", false);
+        this.symbolizeNames  = opts.getBool("symbolize_names", false);
+        this.createId        = opts.getString("create_id", getCreateId(context));
+        this.createAdditions = opts.getBool("create_additions", true);
+        this.objectClass     = opts.getClass("object_class", runtime.getHash());
+        this.arrayClass      = opts.getClass("array_class", runtime.getArray());
+        this.match           = opts.getHash("match");
 
         this.vSource = source;
         return this;
@@ -545,11 +546,36 @@ public class Parser extends RubyObject {
 
         ParserResult parseString(int p, int pe) {
             int cs = EVIL;
-            RubyString result = null;
+            IRubyObject result = null;
 
             %% write init;
             int memo = p;
             %% write exec;
+
+            if (parser.createAdditions) {
+                RubyHash match = parser.match;
+                if (match != null) {
+                    final IRubyObject[] memoArray = { result, null };
+                    try {
+                      match.visitAll(new RubyHash.Visitor() {
+                          @Override
+                          public void visit(IRubyObject pattern, IRubyObject klass) {
+                              if (pattern.callMethod(context, "===", memoArray[0]).isTrue()) {
+                                  memoArray[1] = klass;
+                                  throw JumpException.SPECIAL_JUMP;
+                              }
+                          }
+                      });
+                    } catch (JumpException e) { }
+                    if (memoArray[1] != null) { 
+                        RubyClass klass = (RubyClass) memoArray[1];
+                        if (klass.respondsTo("json_creatable?") &&
+                            klass.callMethod(context, "json_creatable?").isTrue()) {
+                            result = klass.callMethod(context, "json_create", result);
+                        }
+                    }
+                }
+            }
 
             if (cs >= JSON_string_first_final && result != null) {
                 return new ParserResult(result, p + 1);
@@ -692,7 +718,7 @@ public class Parser extends RubyObject {
             IRubyObject returnedResult = result;
 
             // attempt to de-serialize object
-            if (parser.createId != null) {
+            if (parser.createAdditions) {
                 IRubyObject vKlassName = result.op_aref(context, parser.createId);
                 if (!vKlassName.isNil()) {
                     // might throw ArgumentError, we let it propagate
