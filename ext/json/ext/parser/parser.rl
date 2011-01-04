@@ -77,7 +77,7 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_object_class,
-          i_array_class, i_key_p, i_deep_const_get, i_match;
+          i_array_class, i_key_p, i_deep_const_get, i_match, i_match_string;
 
 %%{
     machine JSON_common;
@@ -485,18 +485,18 @@ match_i(VALUE regexp, VALUE klass, VALUE memo)
 static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result)
 {
     int cs = EVIL;
-    VALUE match;
+    VALUE match_string;
 
     *result = rb_str_buf_new(0);
     %% write init;
     json->memo = p;
     %% write exec;
 
-    if (json->create_additions && RTEST(match = json->match)) {
+    if (json->create_additions && RTEST(match_string = json->match_string)) {
           VALUE klass;
           VALUE memo = rb_ary_new2(2);
           rb_ary_push(memo, *result);
-          rb_hash_foreach(match, match_i, memo);
+          rb_hash_foreach(match_string, match_i, memo);
           klass = rb_ary_entry(memo, 1);
           if (RTEST(klass)) {
               *result = rb_funcall(klass, i_json_create, 1, *result);
@@ -690,12 +690,12 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             } else {
                 json->array_class = Qnil;
             }
-            tmp = ID2SYM(i_match);
+            tmp = ID2SYM(i_match_string);
             if (option_given_p(opts, tmp)) {
-                VALUE match = rb_hash_aref(opts, tmp);
-                json->match = RTEST(match) ? match : Qnil;
+                VALUE match_string = rb_hash_aref(opts, tmp);
+                json->match_string = RTEST(match_string) ? match_string : Qnil;
             } else {
-                json->match = Qnil;
+                json->match_string = Qnil;
             }
         }
     } else {
@@ -752,7 +752,7 @@ static void JSON_mark(JSON_Parser *json)
     rb_gc_mark_maybe(json->create_id);
     rb_gc_mark_maybe(json->object_class);
     rb_gc_mark_maybe(json->array_class);
-    rb_gc_mark_maybe(json->match);
+    rb_gc_mark_maybe(json->match_string);
 }
 
 static void JSON_free(JSON_Parser *json)
@@ -806,6 +806,7 @@ void Init_parser()
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
     i_match = rb_intern("match");
+    i_match_string = rb_intern("match_string");
     i_key_p = rb_intern("key?");
     i_deep_const_get = rb_intern("deep_const_get");
 #ifdef HAVE_RUBY_ENCODING_H

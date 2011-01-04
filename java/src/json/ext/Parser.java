@@ -53,7 +53,7 @@ public class Parser extends RubyObject {
     private boolean symbolizeNames;
     private RubyClass objectClass;
     private RubyClass arrayClass;
-    private RubyHash match;
+    private RubyHash match_string;
 
     private static final int DEFAULT_MAX_NESTING = 19;
 
@@ -155,7 +155,7 @@ public class Parser extends RubyObject {
         this.createAdditions = opts.getBool("create_additions", true);
         this.objectClass     = opts.getClass("object_class", runtime.getHash());
         this.arrayClass      = opts.getClass("array_class", runtime.getArray());
-        this.match           = opts.getHash("match");
+        this.match_string    = opts.getHash("match_string");
 
         this.vSource = source;
         return this;
@@ -1383,11 +1383,11 @@ case 5:
 // line 554 "Parser.rl"
 
             if (parser.createAdditions) {
-                RubyHash match = parser.match;
-                if (match != null) {
+                RubyHash match_string = parser.match_string;
+                if (match_string != null) {
                     final IRubyObject[] memoArray = { result, null };
                     try {
-                      match.visitAll(new RubyHash.Visitor() {
+                      match_string.visitAll(new RubyHash.Visitor() {
                           @Override
                           public void visit(IRubyObject pattern, IRubyObject klass) {
                               if (pattern.callMethod(context, "===", memoArray[0]).isTrue()) {
