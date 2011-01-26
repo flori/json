@@ -1,4 +1,7 @@
-2010-08-15 (1.5.0)
+2011-01-24 (1.5.1)
+  * Made rake-compiler build a fat binary gem. This should fix issue
+    https://github.com/flori/json/issues#issue/54.
+2011-01-22 (1.5.0)
   * Included Java source codes for the Jruby extension made by Daniel Luz
     <dev@mernen.com>.
   * Output full exception message of deep_const_get to aid debugging.

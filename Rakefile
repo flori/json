@@ -386,8 +386,12 @@ else
   desc "Generate diagrams of ragel parser"
   task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 
+  task :environment do
+    ENV['RUBY_CC_VERSION'] = '1.8.7:1.9.2'
+  end
+
   desc "Build all gems and archives for a new release of json and json_pure."
-  task :release => [ :clean, :version, :cross, :native, :gem, ] do
+  task :release => [ :clean, :version, :environment, :cross, :native, :gem, ] do
     sh "#$0 clean native gem"
     sh "#$0 clean package"
   end
