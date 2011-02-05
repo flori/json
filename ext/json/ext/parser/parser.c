@@ -4,7 +4,7 @@
 
 /* unicode */
 
-static const char digit_values[256] = { 
+static const char digit_values[256] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1,
@@ -40,7 +40,7 @@ static UTF32 unescape_unicode(const unsigned char *p)
     return result;
 }
 
-static int convert_UTF32_to_UTF8(char *buf, UTF32 ch) 
+static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
 {
     int len = 1;
     if (ch <= 0x7F) {
@@ -228,7 +228,7 @@ tr11:
 #line 116 "parser.rl"
 	{
         VALUE v = Qnil;
-        char *np = JSON_parse_value(json, p, pe, &v); 
+        char *np = JSON_parse_value(json, p, pe, &v);
         if (np == NULL) {
             p--; {p++; cs = 9; goto _out;}
         } else {
@@ -534,7 +534,7 @@ tr2:
 	goto st21;
 tr5:
 #line 233 "parser.rl"
-	{ 
+	{
         char *np;
         json->current_nesting++;
         np = JSON_parse_array(json, p, pe, result);
@@ -544,7 +544,7 @@ tr5:
 	goto st21;
 tr9:
 #line 241 "parser.rl"
-	{ 
+	{
         char *np;
         json->current_nesting++;
         np =  JSON_parse_object(json, p, pe, result);
@@ -1097,7 +1097,7 @@ tr2:
 #line 343 "parser.rl"
 	{
         VALUE v = Qnil;
-        char *np = JSON_parse_value(json, p, pe, &v); 
+        char *np = JSON_parse_value(json, p, pe, &v);
         if (np == NULL) {
             p--; {p++; cs = 3; goto _out;}
         } else {
@@ -1320,7 +1320,7 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
                     unescape = (char *) "\f";
                     break;
                 case 'u':
-                    if (pe > stringEnd - 4) { 
+                    if (pe > stringEnd - 4) {
                         return Qnil;
                     } else {
                         char buf[4];
@@ -1551,7 +1551,7 @@ static const int JSON_en_main = 1;
 #line 550 "parser.rl"
 
 
-/* 
+/*
  * Document-class: JSON::Ext::Parser
  *
  * This is the JSON parser implemented as a C extension. It can be configured
@@ -1977,3 +1977,10 @@ void Init_parser()
     i_iconv = rb_intern("iconv");
 #endif
 }
+
+/*
+ * Local variables:
+ * mode: c
+ * c-file-style: ruby
+ * End:
+ */
