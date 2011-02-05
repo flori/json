@@ -1642,7 +1642,11 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     char *ptr;
     long len;
     VALUE source, opts;
-    GET_PARSER;
+    GET_PARSER_INIT;
+
+    if (json->Vsource) {
+        rb_raise(rb_eArgError, "already initialized instance");
+    }
     rb_scan_args(argc, argv, "11", &source, &opts);
     source = convert_encoding(StringValue(source));
     ptr = RSTRING_PTR(source);
@@ -1737,16 +1741,16 @@ static VALUE cParser_parse(VALUE self)
     GET_PARSER;
 
     
-#line 1741 "parser.c"
+#line 1745 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 738 "parser.rl"
+#line 742 "parser.rl"
     p = json->source;
     pe = p + json->len;
     
-#line 1750 "parser.c"
+#line 1754 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1823,7 +1827,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1827 "parser.c"
+#line 1831 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1880,7 +1884,7 @@ case 9:
 	_out: {}
 	}
 
-#line 741 "parser.rl"
+#line 745 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;
@@ -1982,5 +1986,6 @@ void Init_parser()
  * Local variables:
  * mode: c
  * c-file-style: ruby
+ * indent-tabs-mode: nil
  * End:
  */
