@@ -360,7 +360,7 @@ module JSON
     require 'iconv'
     # Encodes string using _iconv_ library
     def self.iconv(to, from, string)
-      Iconv.iconv(to, from, string).first
+      Iconv.conv(to, from, string)
     end
   end
 
