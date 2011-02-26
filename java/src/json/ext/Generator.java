@@ -354,7 +354,7 @@ public final class Generator {
                 state.decreaseDepth();
                 if (objectNl.length() != 0) {
                     buffer.append(objectNl);
-		    buffer.append(Utils.repeat(state.getIndent(), state.getDepth()));
+                    buffer.append(Utils.repeat(state.getIndent(), state.getDepth()));
                 }
                 buffer.append((byte)'}');
             }
