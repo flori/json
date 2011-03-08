@@ -1026,6 +1026,13 @@ static VALUE cState_init_copy(VALUE obj, VALUE orig)
     return obj;
 }
 
+#if defined(MAGLEV)
+static int rb_obj_is_kind_of(VALUE obj, VALUE klass)
+{
+  return rb_obj_is_kind_of_(obj, klass);
+}
+#endif
+
 /*
  * call-seq: from_state(opts)
  *

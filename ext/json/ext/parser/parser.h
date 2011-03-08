@@ -34,10 +34,11 @@ typedef unsigned char	UTF8;	  /* typically 8 bits */
 #define UNI_SUR_LOW_END     (UTF32)0xDFFF
 
 typedef struct JSON_ParserStruct {
+    VALUE dwrapped_parser;
     VALUE Vsource;
-    char *source;
+    const char *source;
     long len;
-    char *memo;
+    const char *memo;
     VALUE create_id;
     int max_nesting;
     int current_nesting;
@@ -46,8 +47,8 @@ typedef struct JSON_ParserStruct {
     int symbolize_names;
     VALUE object_class;
     VALUE array_class;
-		int create_additions;
-		VALUE match_string;
+    int create_additions;
+    VALUE match_string;
 } JSON_Parser;
 
 #define GET_PARSER                          \
@@ -59,13 +60,13 @@ typedef struct JSON_ParserStruct {
 
 static UTF32 unescape_unicode(const unsigned char *p);
 static int convert_UTF32_to_UTF8(char *buf, UTF32 ch);
-static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_value(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_integer(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd);
-static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result);
+static const char *JSON_parse_object(JSON_Parser *json, const char *p, const char *pe, VALUE *result);
+static const char *JSON_parse_value(JSON_Parser *json, const char *p, const char *pe, VALUE *result);
+static const char *JSON_parse_integer(JSON_Parser *json, const char *p, const char *pe, VALUE *result);
+static const char *JSON_parse_float(JSON_Parser *json, const char *p, const char *pe, VALUE *result);
+static const char *JSON_parse_array(JSON_Parser *json, const char *p, const char *pe, VALUE *result);
+static VALUE json_string_unescape(VALUE result, const char *string, const char *stringEnd);
+static const char *JSON_parse_string(JSON_Parser *json, const char *p, const char *pe, VALUE *result);
 static VALUE convert_encoding(VALUE source);
 static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self);
 static VALUE cParser_parse(VALUE self);
