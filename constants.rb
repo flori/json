@@ -5,7 +5,7 @@ PKG_NAME    = 'json'
 PKG_TITLE   = 'JSON Implementation for Ruby'
 PKG_VERSION = File.read('VERSION').chomp
 PKG_FILES   = Dir.glob("**/**").reject { |file|
-                file =~ /CVS|pkg|tmp|coverage|Makefile|\.nfs\.|\.iml\Z/ ||
+                file =~ /CVS|pkg|tmp|coverage|constants|Makefile|\.nfs\.|\.iml\Z/ ||
                 file =~ /\.(so|bundle|o|class|#{CONFIG['DLEXT']})$/
               }
 
@@ -27,5 +27,5 @@ JAVA_CLASSES        = []
 JRUBY_PARSER_JAR    = File.expand_path("lib/json/ext/parser.jar")
 JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
 
-RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| system(c, '-v') }
-RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| system(c, '-v') }
+RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| `which #{c}` != "" }
+RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| `which #{c}` != "" }
