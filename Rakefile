@@ -20,31 +20,7 @@ CLEAN.include FileList['diagrams/*.*'], 'doc', 'coverage', 'tmp',
   FileList['java/src/**/*.class']
 
 MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
-PKG_NAME          = 'json'
-PKG_TITLE         = 'JSON Implementation for Ruby'
-PKG_VERSION       = File.read('VERSION').chomp
-PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\.|\.iml\Z/).exclude(/\.(so|bundle|o|class|#{CONFIG['DLEXT']})$/)
-
-EXT_ROOT_DIR      = 'ext/json/ext'
-EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
-EXT_PARSER_DL     = "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}"
-RAGEL_PATH        = "#{EXT_PARSER_DIR}/parser.rl"
-EXT_PARSER_SRC    = "#{EXT_PARSER_DIR}/parser.c"
-PKG_FILES << EXT_PARSER_SRC
-EXT_GENERATOR_DIR = "#{EXT_ROOT_DIR}/generator"
-EXT_GENERATOR_DL  = "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}"
-EXT_GENERATOR_SRC = "#{EXT_GENERATOR_DIR}/generator.c"
-
-JAVA_DIR            = "java/src/json/ext"
-JAVA_RAGEL_PATH     = "#{JAVA_DIR}/Parser.rl"
-JAVA_PARSER_SRC     = "#{JAVA_DIR}/Parser.java"
-JAVA_SOURCES        = FileList["#{JAVA_DIR}/*.java"]
-JAVA_CLASSES        = []
-JRUBY_PARSER_JAR    = File.expand_path("lib/json/ext/parser.jar")
-JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
-
-RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| system(c, '-v') }
-RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| system(c, '-v') }
+require File.dirname(__FILE__) + '/constants'
 
 def myruby(*args, &block)
   @myruby ||= File.join(CONFIG['bindir'], CONFIG['ruby_install_name'])
@@ -83,32 +59,8 @@ else
 end
 
 if defined?(Gem) and defined?(Rake::GemPackageTask)
-  spec_pure = Gem::Specification.new do |s|
-    s.name = 'json_pure'
-    s.version = PKG_VERSION
-    s.summary = PKG_TITLE
-    s.description = "This is a JSON implementation in pure Ruby."
-
-    s.files = PKG_FILES
-
-    s.require_path = 'lib'
-
-    s.bindir = "bin"
-    s.executables = [ "edit_json.rb", "prettify_json.rb" ]
-    s.default_executable = "edit_json.rb"
-
-    s.has_rdoc = true
-    s.extra_rdoc_files << 'README'
-    s.rdoc_options <<
-      '--title' <<  'JSON implemention for ruby' << '--main' << 'README'
-    s.test_files.concat Dir['./tests/test_*.rb']
-
-    s.author = "Florian Frank"
-    s.email = "flori@ping.de"
-    s.homepage = "http://flori.github.com/#{PKG_NAME}"
-    s.rubyforge_project = "json"
-  end
-
+  spec_pure = Gem::Specification.load(File.dirname(__FILE__) + '/json_pure.gemspec')
+  
   Rake::GemPackageTask.new(spec_pure) do |pkg|
       pkg.need_tar = true
       pkg.package_files = PKG_FILES
@@ -116,35 +68,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
 end
 
 if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::ExtensionTask)
-  spec_ext = Gem::Specification.new do |s|
-    s.name = 'json'
-    s.version = PKG_VERSION
-    s.summary = PKG_TITLE
-    s.description = "This is a JSON implementation as a Ruby extension in C."
-
-    s.files = PKG_FILES
-
-    s.extensions = FileList['ext/**/extconf.rb']
-
-    s.require_path = EXT_ROOT_DIR
-    s.require_paths << 'ext'
-    s.require_paths << 'lib'
-
-    s.bindir = "bin"
-    s.executables = [ "edit_json.rb", "prettify_json.rb" ]
-    s.default_executable = "edit_json.rb"
-
-    s.has_rdoc = true
-    s.extra_rdoc_files << 'README'
-    s.rdoc_options <<
-      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README'
-    s.test_files.concat Dir['./tests/test_*.rb']
-
-    s.author = "Florian Frank"
-    s.email = "flori@ping.de"
-    s.homepage = "http://flori.github.com/#{PKG_NAME}"
-    s.rubyforge_project = "json"
-  end
+  spec_ext = Gem::Specification.load(File.dirname(__FILE__) + '/json.gemspec')
 
   Rake::GemPackageTask.new(spec_ext) do |pkg|
     pkg.need_tar      = true
