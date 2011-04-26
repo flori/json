@@ -119,7 +119,11 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
         if (np == NULL) {
             fhold; fbreak;
         } else {
-            rb_hash_aset(*result, last_name, v);
+            if (NIL_P(json->object_class)) {
+              rb_hash_aset(*result, last_name, v);
+            } else {
+              rb_funcall(*result, rb_intern("[]="), 2, last_name, v);
+            }
             fexec np;
         }
     }

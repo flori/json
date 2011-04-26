@@ -197,12 +197,22 @@ class TC_JSON < Test::Unit::TestCase
       o.delete JSON.create_id
       self[o]
     end
+
+    def []=(k, v)
+      @item_set = true
+      super
+    end
+
+    def item_set?
+      @item_set
+    end
   end
 
   def test_parse_object_custom_class
-    res = parse('{}', :object_class => SubHash2)
-    assert_equal({}, res)
+    res = parse('{"foo":"bar"}', :object_class => SubHash2)
+    assert_equal({"foo" => "bar"}, res)
     assert_equal(SubHash2, res.class)
+    assert res.item_set?
   end
 
   def test_generation_of_core_subclasses_with_new_to_json
