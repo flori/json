@@ -3,12 +3,6 @@ begin
 rescue LoadError
 end
 
-begin
-  require 'rake/extensiontask'
-rescue LoadError
-  warn "WARNING: rake-compiler is not installed. You will not be able to build the json gem until you install it."
-end
-
 require 'rbconfig'
 include Config
 
@@ -95,9 +89,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
 
     s.bindir = "bin"
     s.executables = [ "edit_json.rb", "prettify_json.rb" ]
-    s.default_executable = "edit_json.rb"
 
-    s.has_rdoc = true
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for ruby' << '--main' << 'README'
@@ -109,13 +101,18 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     s.rubyforge_project = "json"
   end
 
+  desc 'Creates a json_pure.gemspec file'
+  task :gemspec_pure do
+    File.open('json_pure.gemspec', 'w') do |gemspec|
+      gemspec.write spec_pure.to_ruby
+    end
+  end
+
   Rake::GemPackageTask.new(spec_pure) do |pkg|
       pkg.need_tar = true
       pkg.package_files = PKG_FILES
   end
-end
 
-if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::ExtensionTask)
   spec_ext = Gem::Specification.new do |s|
     s.name = 'json'
     s.version = PKG_VERSION
@@ -132,9 +129,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
 
     s.bindir = "bin"
     s.executables = [ "edit_json.rb", "prettify_json.rb" ]
-    s.default_executable = "edit_json.rb"
 
-    s.has_rdoc = true
     s.extra_rdoc_files << 'README'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for Ruby' << '--main' << 'README'
@@ -146,28 +141,21 @@ if defined?(Gem) and defined?(Rake::GemPackageTask) and defined?(Rake::Extension
     s.rubyforge_project = "json"
   end
 
+  desc 'Creates a json.gemspec file'
+  task :gemspec_ext do
+    File.open('json.gemspec', 'w') do |gemspec|
+      gemspec.write spec_ext.to_ruby
+    end
+  end
+
   Rake::GemPackageTask.new(spec_ext) do |pkg|
     pkg.need_tar      = true
     pkg.package_files = PKG_FILES
   end
 
-  Rake::ExtensionTask.new do |ext|
-    ext.name            = 'parser'
-    ext.gem_spec        = spec_ext
-    ext.cross_compile   = true
-    ext.cross_platform  = %w[i386-mswin32 i386-mingw32]
-    ext.ext_dir         = 'ext/json/ext/parser'
-    ext.lib_dir         = 'lib/json/ext'
-  end
 
-  Rake::ExtensionTask.new do |ext|
-    ext.name            = 'generator'
-    ext.gem_spec        = spec_ext
-    ext.cross_compile   = true
-    ext.cross_platform  = %w[i386-mswin32 i386-mingw32]
-    ext.ext_dir         = 'ext/json/ext/generator'
-    ext.lib_dir         = 'lib/json/ext'
-  end
+  desc 'Create all gemspec files'
+  task :gemspec => [ :gemspec_pure, :gemspec_ext ]
 end
 
 desc m = "Writing version information for #{PKG_VERSION}"
@@ -196,7 +184,6 @@ end
 
 desc "Testing library (pure ruby and extension)"
 task :test => [ :test_pure, :test_ext ]
-
 
 if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   file JAVA_PARSER_SRC => JAVA_RAGEL_PATH do
@@ -386,15 +373,8 @@ else
   desc "Generate diagrams of ragel parser"
   task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 
-  task :environment do
-    ENV['RUBY_CC_VERSION'] = '1.8.7:1.9.2'
-  end
-
   desc "Build all gems and archives for a new release of json and json_pure."
-  task :release => [ :clean, :version, :environment, :cross, :native, :gem, ] do
-    sh "#$0 clean native gem"
-    sh "#$0 clean package"
-  end
+  task :release => [ :clean, :version, :package ]
 end
 
 desc "Compile in the the source directory"
