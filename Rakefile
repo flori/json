@@ -7,7 +7,7 @@ require 'rbconfig'
 include Config
 
 require 'rake/clean'
-CLOBBER.include Dir['benchmarks/data/*.{dat,log}']
+CLOBBER.include Dir['benchmarks/data/*.{dat,log}'], 'doc'
 CLEAN.include FileList['diagrams/*.*'], 'doc', 'coverage', 'tmp',
   FileList["ext/**/{Makefile,mkmf.log}"], 'build', 'dist', FileList['**/*.rbc'],
   FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def,jar,class}"],
@@ -86,6 +86,9 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     s.files = PKG_FILES
 
     s.require_path = 'lib'
+    s.add_development_dependency 'permutation'
+    s.add_development_dependency 'bullshit'
+    s.add_development_dependency 'sdoc'
 
     s.bindir = "bin"
     s.executables = [ "edit_json.rb", "prettify_json.rb" ]
@@ -126,6 +129,9 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     s.require_path = EXT_ROOT_DIR
     s.require_paths << 'ext'
     s.require_paths << 'lib'
+    s.add_development_dependency 'permutation'
+    s.add_development_dependency 'bullshit'
+    s.add_development_dependency 'sdoc'
 
     s.bindir = "bin"
     s.executables = [ "edit_json.rb", "prettify_json.rb" ]
