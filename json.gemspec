@@ -16,9 +16,7 @@ Gem::Specification.new do |s|
 
   s.bindir = "bin"
   s.executables = [ "edit_json.rb", "prettify_json.rb" ]
-  s.default_executable = "edit_json.rb"
 
-  s.has_rdoc = true
   s.extra_rdoc_files << 'README'
   s.rdoc_options <<
     '--title' <<  'JSON implemention for Ruby' << '--main' << 'README'
