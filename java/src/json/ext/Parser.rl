@@ -655,7 +655,11 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    result.op_aset(context, lastName, res.result);
+                    if (parser.objectClass.getName().equals("Hash")) {
+                        result.callMethod(context, "[]=", new IRubyObject[] { lastName, res.result });
+                    } else {
+                        result.op_aset(context, lastName, res.result);
+                    }
                     fexec res.p;
                 }
             }
