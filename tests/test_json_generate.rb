@@ -54,7 +54,7 @@ EOT
 
   def test_generate_pretty
     json = pretty_generate(@hash)
-    assert_equal(@json3, json)
+    # hashes aren't (insertion) ordered on every ruby implementation assert_equal(@json3, json)
     assert_equal(JSON.parse(@json3), JSON.parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
