@@ -208,6 +208,28 @@ class TC_JSON < Test::Unit::TestCase
     end
   end
 
+  class MyArray < Array
+    def to_json(*a)
+      {
+        JSON.create_id => self.class.name,
+        data           => self,
+      }.to_json(*a)
+    end
+
+    def self.json_create(o)
+      self[*o['data']]
+    end
+
+    def <<(v)
+      @shifted = true
+      super
+    end
+
+    def shifted?
+      @shifted
+    end
+  end
+
   def test_parse_object_custom_class
     res = parse('{"foo":"bar"}', :object_class => SubHash2)
     assert_equal({"foo" => "bar"}, res)
@@ -224,6 +246,13 @@ class TC_JSON < Test::Unit::TestCase
     assert obj_again['foo']['bar']
     assert_equal obj, obj_again
     assert_equal ["foo"], JSON(JSON(SubArray2["foo"]))
+  end
+
+  def test_parse_array_custom_class
+    res = parse('["foo","bar"]', :array_class => MyArray)
+    assert_equal(["foo", "bar"], res)
+    assert_equal(MyArray, res.class)
+    assert res.shifted?
   end
 
   def test_generation_of_core_subclasses_with_default_to_json
