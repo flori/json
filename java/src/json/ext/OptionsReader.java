@@ -84,8 +84,8 @@ final class OptionsReader {
 
         RubyString str = value.convertToString();
         RuntimeInfo info = getRuntimeInfo();
-        if (info.encodingsSupported() && str.encoding(context) != info.utf8) {
-            str = (RubyString)str.encode(context, info.utf8);
+        if (info.encodingsSupported() && str.encoding(context) != info.utf8.get()) {
+            str = (RubyString)str.encode(context, info.utf8.get());
         }
         return str;
     }

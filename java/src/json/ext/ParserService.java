@@ -7,6 +7,7 @@
 package json.ext;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
@@ -23,8 +24,8 @@ public class ParserService implements BasicLibraryService {
         runtime.getLoadService().require("json/common");
         RuntimeInfo info = RuntimeInfo.initRuntime(runtime);
 
-        info.jsonModule = runtime.defineModule("JSON");
-        RubyModule jsonExtModule = info.jsonModule.defineModuleUnder("Ext");
+        info.jsonModule = new WeakReference<RubyModule>(runtime.defineModule("JSON"));
+        RubyModule jsonExtModule = info.jsonModule.get().defineModuleUnder("Ext");
         RubyClass parserClass =
             jsonExtModule.defineClassUnder("Parser", runtime.getObject(),
                                            Parser.ALLOCATOR);
