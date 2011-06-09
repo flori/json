@@ -596,7 +596,11 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    result.append(res.result);
+                    if (!parser.arrayClass.getName().equals("Array")) {
+                        result.callMethod(context, "<<", res.result);
+                    } else {
+                        result.append(res.result);
+                    }
                     fexec res.p;
                 }
             }
@@ -655,7 +659,7 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    if (parser.objectClass.getName().equals("Hash")) {
+                    if (!parser.objectClass.getName().equals("Hash")) {
                         result.callMethod(context, "[]=", new IRubyObject[] { lastName, res.result });
                     } else {
                         result.op_aset(context, lastName, res.result);

@@ -154,7 +154,16 @@ class TC_JSON < Test::Unit::TestCase
       , [2718.0E-3 ],\r[ null] , [[1, -2, 3 ]], [false ],[ true]\n ]  }))
   end
 
-  class SubArray < Array; end
+  class SubArray < Array
+    def <<(v)
+      @shifted = true
+      super
+    end
+
+    def shifted?
+      @shifted
+    end
+  end
 
   class SubArray2 < Array
     def to_json(*a)
@@ -171,9 +180,10 @@ class TC_JSON < Test::Unit::TestCase
   end
 
   def test_parse_array_custom_class
-    res = parse('[]', :array_class => SubArray)
-    assert_equal([], res)
+    res = parse('[1,2]', :array_class => SubArray)
+    assert_equal([1,2], res)
     assert_equal(SubArray, res.class)
+    assert res.shifted?
   end
 
   def test_parse_object
@@ -184,6 +194,14 @@ class TC_JSON < Test::Unit::TestCase
   end
 
   class SubHash < Hash
+    def []=(k, v)
+      @item_set = true
+      super
+    end
+
+    def item_set?
+      @item_set
+    end
   end
 
   class SubHash2 < Hash
@@ -197,21 +215,12 @@ class TC_JSON < Test::Unit::TestCase
       o.delete JSON.create_id
       self[o]
     end
-
-    def []=(k, v)
-      @item_set = true
-      super
-    end
-
-    def item_set?
-      @item_set
-    end
   end
 
   def test_parse_object_custom_class
-    res = parse('{"foo":"bar"}', :object_class => SubHash2)
+    res = parse('{"foo":"bar"}', :object_class => SubHash)
     assert_equal({"foo" => "bar"}, res)
-    assert_equal(SubHash2, res.class)
+    assert_equal(SubHash, res.class)
     assert res.item_set?
   end
 
