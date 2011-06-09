@@ -561,6 +561,7 @@ static VALUE mFalseClass_to_json(int argc, VALUE *argv, VALUE self)
 /*
  * call-seq: to_json(*)
  *
+ * Returns a JSON string for nil: 'null'.
  */
 static VALUE mNilClass_to_json(int argc, VALUE *argv, VALUE self)
 {

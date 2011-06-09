@@ -291,7 +291,8 @@ module JSON
     recurse_proc(result, &proc) if proc
     result
   end
-
+  
+  # Recursively calls passed _Proc_ if the parsed data structure is an _Array_ or _Hash_
   def recurse_proc(result, &proc)
     case result
     when Array
@@ -351,11 +352,13 @@ module JSON
 
   # Shortuct for iconv.
   if ::String.method_defined?(:encode)
+    # Encodes string using Ruby's _String.encode_
     def self.iconv(to, from, string)
       string.encode(to, from)
     end
   else
     require 'iconv'
+    # Encodes string using _iconv_ library
     def self.iconv(to, from, string)
       Iconv.iconv(to, from, string).first
     end
@@ -408,6 +411,7 @@ module ::Kernel
   end
 end
 
+# Extends any Class to include _json_creatable?_ method.
 class ::Class
   # Returns true, if this class can be used to create an instance
   # from a serialised JSON string. The class has to implement a class
