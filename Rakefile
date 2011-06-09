@@ -67,7 +67,7 @@ task :install_ext_really do
 end
 
 desc "Installing library (extension)"
-task :install_ext => [ :compile_ext, :install_pure, :install_ext_really ]
+task :install_ext => [ :compile, :install_pure, :install_ext_really ]
 
 desc "Installing library (extension)"
 if RUBY_PLATFORM =~ /java/
@@ -105,7 +105,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
   end
 
   desc 'Creates a json_pure.gemspec file'
-  task :gemspec_pure do
+  task :gemspec_pure => :version do
     File.open('json_pure.gemspec', 'w') do |gemspec|
       gemspec.write spec_pure.to_ruby
     end
@@ -148,7 +148,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
   end
 
   desc 'Creates a json.gemspec file'
-  task :gemspec_ext do
+  task :gemspec_ext => :version do
     File.open('json.gemspec', 'w') do |gemspec|
       gemspec.write spec_ext.to_ruby
     end
@@ -225,7 +225,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   end
 
   desc "Compiling jruby extension"
-  task :compile_ext => JAVA_CLASSES
+  task :compile => JAVA_CLASSES
 
   desc "Package the jruby gem"
   task :jruby_gem => :create_jar do
@@ -240,7 +240,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
     myruby '-S', 'testrb', '-Ilib', *Dir['./tests/test_*.rb']
   end
 
-  file JRUBY_PARSER_JAR => :compile_ext do
+  file JRUBY_PARSER_JAR => :compile do
     cd 'java/src' do
       parser_classes = FileList[
         "json/ext/ByteListTranscoder*.class",
@@ -258,7 +258,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   desc "Create parser jar"
   task :create_parser_jar => JRUBY_PARSER_JAR
 
-  file JRUBY_GENERATOR_JAR => :compile_ext do
+  file JRUBY_GENERATOR_JAR => :compile do
     cd 'java/src' do
       generator_classes = FileList[
         "json/ext/ByteListTranscoder*.class",
@@ -283,7 +283,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   task :release => [ :clean, :version, :jruby_gem ]
 else
   desc "Compiling extension"
-  task :compile_ext => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
+  task :compile => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
 
   file EXT_PARSER_DL => EXT_PARSER_SRC do
     cd EXT_PARSER_DIR do
@@ -302,7 +302,7 @@ else
   end
 
   desc "Testing library (extension)"
-  task :test_ext => :compile_ext do
+  task :test_ext => :compile do
     ENV['JSON'] = 'ext'
     ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
     myruby '-S', 'testrb', *Dir['./tests/test_*.rb']
@@ -380,8 +380,8 @@ else
   task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 
   desc "Build all gems and archives for a new release of json and json_pure."
-  task :release => [ :clean, :version, :package ]
+  task :release => [ :clean, :gemspec, :package ]
 end
 
 desc "Compile in the the source directory"
-task :default => [ :version ]
+task :default => [ :clean, :gemspec, :compile ]
