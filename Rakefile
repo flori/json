@@ -10,7 +10,7 @@ require 'rake/clean'
 CLOBBER.include Dir['benchmarks/data/*.{dat,log}'], 'doc'
 CLEAN.include FileList['diagrams/*.*'], 'doc', 'coverage', 'tmp',
   FileList["ext/**/{Makefile,mkmf.log}"], 'build', 'dist', FileList['**/*.rbc'],
-  FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def,jar,class}"],
+  FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def,jar,class,dSYM}"],
   FileList['java/src/**/*.class']
 
 MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
@@ -93,9 +93,9 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     s.bindir = "bin"
     s.executables = [ "edit_json.rb", "prettify_json.rb" ]
 
-    s.extra_rdoc_files << 'README'
+    s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
-      '--title' <<  'JSON implemention for ruby' << '--main' << 'README'
+      '--title' <<  'JSON implemention for ruby' << '--main' << 'README.rdoc'
     s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
@@ -136,9 +136,9 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     s.bindir = "bin"
     s.executables = [ "edit_json.rb", "prettify_json.rb" ]
 
-    s.extra_rdoc_files << 'README'
+    s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
-      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README'
+      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.rdoc'
     s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
@@ -327,7 +327,7 @@ else
 
   desc "Create RDOC documentation"
   task :doc => [ :version, EXT_PARSER_SRC ] do
-    sh "sdoc -o doc -t '#{PKG_TITLE}' -m README README lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
+    sh "sdoc -o doc -t '#{PKG_TITLE}' -m README.rdoc README.rdoc lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
   end
 
   desc "Generate parser with ragel"
