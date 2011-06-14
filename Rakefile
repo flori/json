@@ -1,5 +1,5 @@
 begin
-  require 'rake/gempackagetask'
+  require 'rubygems/package_task'
 rescue LoadError
 end
 
@@ -76,7 +76,7 @@ else
   task :install => :install_ext
 end
 
-if defined?(Gem) and defined?(Rake::GemPackageTask)
+if defined?(Gem) and defined?(Gem::PackageTask)
   spec_pure = Gem::Specification.new do |s|
     s.name = 'json_pure'
     s.version = PKG_VERSION
@@ -111,7 +111,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     end
   end
 
-  Rake::GemPackageTask.new(spec_pure) do |pkg|
+  Gem::PackageTask.new(spec_pure) do |pkg|
       pkg.need_tar = true
       pkg.package_files = PKG_FILES
   end
@@ -154,7 +154,7 @@ if defined?(Gem) and defined?(Rake::GemPackageTask)
     end
   end
 
-  Rake::GemPackageTask.new(spec_ext) do |pkg|
+  Gem::PackageTask.new(spec_ext) do |pkg|
     pkg.need_tar      = true
     pkg.package_files = PKG_FILES
   end
