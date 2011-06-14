@@ -23,9 +23,9 @@
 
 /* unicode */
 
-typedef unsigned long	UTF32;	/* at least 32 bits */
-typedef unsigned short UTF16;	/* at least 16 bits */
-typedef unsigned char	UTF8;	  /* typically 8 bits */
+typedef unsigned long UTF32;  /* at least 32 bits */
+typedef unsigned short UTF16; /* at least 16 bits */
+typedef unsigned char UTF8;   /* typically 8 bits */
 
 #define UNI_REPLACEMENT_CHAR (UTF32)0x0000FFFD
 #define UNI_SUR_HIGH_START  (UTF32)0xD800
@@ -46,8 +46,8 @@ typedef struct JSON_ParserStruct {
     int symbolize_names;
     VALUE object_class;
     VALUE array_class;
-		int create_additions;
-		VALUE match_string;
+    int create_additions;
+    VALUE match_string;
 } JSON_Parser;
 
 #define GET_PARSER                          \

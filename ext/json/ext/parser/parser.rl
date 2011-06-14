@@ -347,10 +347,10 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
             fhold; fbreak;
         } else {
             if (NIL_P(json->array_class)) {
-							rb_ary_push(*result, v);
-						} else {
-              rb_funcall(*result, i_leftshift, 1, v);
-						}
+                rb_ary_push(*result, v);
+            } else {
+                rb_funcall(*result, i_leftshift, 1, v);
+            }
             fexec np;
         }
     }
@@ -817,8 +817,8 @@ void Init_parser()
     i_match_string = rb_intern("match_string");
     i_key_p = rb_intern("key?");
     i_deep_const_get = rb_intern("deep_const_get");
-		i_aset = rb_intern("[]=");
-		i_leftshift = rb_intern("<<");
+    i_aset = rb_intern("[]=");
+    i_leftshift = rb_intern("<<");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     CEncoding_UTF_16BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16be"));
