@@ -15,6 +15,3 @@ spec = Gem::Specification.new do |s|
   s.files = Dir["{docs,lib,tests}/**/*"]
 end
 
-if $0 == __FILE__
-  Gem::Builder.new(spec).build
-end
