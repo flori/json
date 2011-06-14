@@ -1,4 +1,4 @@
-#! /usr/bin/env jruby
+#!/usr/bin/env jruby
 require "rubygems"
 
 spec = Gem::Specification.new do |s|
@@ -17,4 +17,6 @@ end
 
 if $0 == __FILE__
   Gem::Builder.new(spec).build
+else
+  spec
 end
