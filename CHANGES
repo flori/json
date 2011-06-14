@@ -1,5 +1,8 @@
 2011-05-11 (1.5.2)
-  *
+  * Apply documentation patch by Cory Monty <cory.monty@gmail.com>.
+  * Add gemspecs for json and json_pure.
+  * Fix bug in jruby pretty printing.
+  * Fix bug in object_class and array_class when inheriting from Hash or Array.
 2011-01-24 (1.5.1)
   * Made rake-compiler build a fat binary gem. This should fix issue
     https://github.com/flori/json/issues#issue/54.
