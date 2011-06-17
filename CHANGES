@@ -1,3 +1,5 @@
+2011-06-17 (1.5.3)
+  * Alias State#configure method as State#merge to increase duck type synonymy with Hash.
 2011-05-11 (1.5.2)
   * Apply documentation patch by Cory Monty <cory.monty@gmail.com>.
   * Add gemspecs for json and json_pure.
