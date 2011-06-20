@@ -13,9 +13,3 @@ rvm:
   - 1.8.6
 
 script: "bundle exec rake test"
-
-# Specify the recipients for email notification
-notifications:
-  disabled: false
-  recipients:
-    - flori@ping.de

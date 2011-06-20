@@ -1,3 +1,5 @@
+= JSON implementation for Ruby http://travis-ci.org/flori/json.png
+
 == Description
 
 This is a implementation of the JSON specification according to RFC 4627
