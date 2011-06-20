@@ -16,9 +16,6 @@ script: "bundle exec rake test"
 
 # Specify the recipients for email notification
 notifications:
+  disabled: false
   recipients:
     - flori@ping.de
-
-# Disable email notifications
-notifications:
-  disabled: false
