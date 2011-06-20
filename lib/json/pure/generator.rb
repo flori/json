@@ -212,6 +212,7 @@ module JSON
           end
           self
         end
+        alias merge configure
 
         # Returns the configuration instance variables as a hash, that can be
         # passed to the configure method.
