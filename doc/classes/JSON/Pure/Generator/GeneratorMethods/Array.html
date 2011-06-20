@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Pure::Generator::GeneratorMethods::Array</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../../../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../../../../css/main.css" type="text/css" media="screen" />
+    <script src="../../../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Module</span> 
+            JSON::Pure::Generator::GeneratorMethods::Array 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../../../files/lib/json/pure/generator_rb.html">lib/json/pure/generator.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>T</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000044">to_json</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000044">
+                    
+                    <a name="M000044"></a><b>to_json</b>(state = nil, *)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Returns a <a href="../../../../JSON.html">JSON</a> string containing a <a
+href="../../../../JSON.html">JSON</a> array, that is unparsed from this <a
+href="Array.html">Array</a> instance. <em>state</em> is a JSON::State
+object, that can also be used to configure the produced <a
+href="../../../../JSON.html">JSON</a> string output further.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000044_source')" id="l_M000044_source">show</a>
+                        
+                    </p>
+                    <div id="M000044_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 302</span>
+          <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_json</span>(<span class="ruby-identifier">state</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">*</span>)
+            <span class="ruby-identifier">state</span> = <span class="ruby-constant">State</span>.<span class="ruby-identifier">from_state</span>(<span class="ruby-identifier">state</span>)
+            <span class="ruby-identifier">state</span>.<span class="ruby-identifier">check_max_nesting</span>
+            <span class="ruby-identifier">json_transform</span>(<span class="ruby-identifier">state</span>)
+          <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    

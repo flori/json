@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Pure::Generator::State</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../../../css/main.css" type="text/css" media="screen" />
+    <script src="../../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            JSON::Pure::Generator::State 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="../../../Object.html">Object</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../../files/lib/json/pure/generator_rb.html">lib/json/pure/generator.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <p>
+This class is used to create <a href="State.html">State</a> instances, that
+are use to hold data while generating a <a
+href="../../../JSON.html">JSON</a> text from a Ruby data structure.
+</p>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>#</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000039">[]</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>A</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000033">allow_nan?</a>,</li>
+                
+                <li><a href="#M000034">ascii_only?</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>C</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000032">check_circular?</a>,</li>
+                
+                <li><a href="#M000035">configure</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>F</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000029">from_state</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>G</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000038">generate</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>M</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000036">merge</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>N</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000030">new</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>T</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000037">to_h</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="sectiontitle">Attributes</div>
+    <table border='0' cellpadding='5'>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>indent</td>
+            <td class='attr-desc'><p>
+This string is used to indent levels in the <a
+href="../../../JSON.html">JSON</a> text.
+</p></td>
+        </tr>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>space</td>
+            <td class='attr-desc'><p>
+This string is used to insert a space between the tokens in a <a
+href="../../../JSON.html">JSON</a> string.
+</p></td>
+        </tr>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>space_before</td>
+            <td class='attr-desc'><p>
+This string is used to insert a space before the &#8217;:&#8217; in <a
+href="../../../JSON.html">JSON</a> objects.
+</p></td>
+        </tr>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>object_nl</td>
+            <td class='attr-desc'><p>
+This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> object (or Hash).
+</p></td>
+        </tr>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>array_nl</td>
+            <td class='attr-desc'><p>
+This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> array.
+</p></td>
+        </tr>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>max_nesting</td>
+            <td class='attr-desc'><p>
+This integer returns the maximum level of data structure nesting in the
+generated <a href="../../../JSON.html">JSON</a>, <a
+href="State.html#max_nesting">max_nesting</a> = 0 if no maximum is checked.
+</p></td>
+        </tr>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>depth</td>
+            <td class='attr-desc'><p>
+This integer returns the current depth data structure nesting in the
+generated <a href="../../../JSON.html">JSON</a>.
+</p></td>
+        </tr>
+        
+    </table>
+    
+
+    
+            <div class="sectiontitle">Class Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000029">
+                    
+                    <a name="M000029"></a><b>from_state</b>(opts)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Creates a <a href="State.html">State</a> object from <em>opts</em>, which
+ought to be Hash to create a new <a href="State.html">State</a> instance
+configured by <em>opts</em>, something else to create an unconfigured
+instance. If <em>opts</em> is a <a href="State.html">State</a> object, it
+is just returned.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000029_source')" id="l_M000029_source">show</a>
+                        
+                    </p>
+                    <div id="M000029_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 108</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">from_state</span>(<span class="ruby-identifier">opts</span>)
+          <span class="ruby-keyword kw">case</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-keyword kw">self</span> <span class="ruby-operator">===</span> <span class="ruby-identifier">opts</span>
+            <span class="ruby-identifier">opts</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:to_hash</span>)
+            <span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_hash</span>)
+          <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:to_h</span>)
+            <span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>)
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-constant">SAFE_STATE_PROTOTYPE</span>.<span class="ruby-identifier">dup</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000030">
+                    
+                    <a name="M000030"></a><b>new</b>(opts = {})
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Instantiates a new <a href="State.html">State</a> object, configured by
+<em>opts</em>.
+</p>
+<p>
+<em>opts</em> can have the following keys:
+</p>
+<ul>
+<li><b>indent</b>: a string used to indent levels (default: &#8217;&#8217;),
+
+</li>
+<li><b>space</b>: a string that is put after, a : or , delimiter (default:
+&#8217;&#8217;),
+
+</li>
+<li><b><a href="State.html#space_before">space_before</a></b>: a string that is
+put before a : pair delimiter (default: &#8217;&#8217;),
+
+</li>
+<li><b><a href="State.html#object_nl">object_nl</a></b>: a string that is put
+at the end of a <a href="../../../JSON.html">JSON</a> object (default:
+&#8217;&#8217;),
+
+</li>
+<li><b><a href="State.html#array_nl">array_nl</a></b>: a string that is put at
+the end of a <a href="../../../JSON.html">JSON</a> array (default:
+&#8217;&#8217;),
+
+</li>
+<li><b>check_circular</b>: is deprecated now, use the :<a
+href="State.html#max_nesting">max_nesting</a> option instead,
+
+</li>
+<li><b><a href="State.html#max_nesting">max_nesting</a></b>: sets the maximum
+level of data structure nesting in the generated <a
+href="../../../JSON.html">JSON</a>, <a
+href="State.html#max_nesting">max_nesting</a> = 0 if no maximum should be
+checked.
+
+</li>
+<li><b>allow_nan</b>: true if NaN, Infinity, and -Infinity should be generated,
+otherwise an exception is thrown, if these values are encountered. This
+options defaults to false.
+
+</li>
+</ul>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000030_source')" id="l_M000030_source">show</a>
+                        
+                    </p>
+                    <div id="M000030_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 136</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">opts</span> = {})
+          <span class="ruby-ivar">@indent</span>         = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@space</span>          = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@space_before</span>   = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@object_nl</span>      = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@array_nl</span>       = <span class="ruby-value str">''</span>
+          <span class="ruby-ivar">@allow_nan</span>      = <span class="ruby-keyword kw">false</span>
+          <span class="ruby-ivar">@ascii_only</span>     = <span class="ruby-keyword kw">false</span>
+          <span class="ruby-identifier">configure</span> <span class="ruby-identifier">opts</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000039">
+                    
+                    <a name="M000039"></a><b>[]</b>(name)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Return the value returned by method <tt>name</tt>.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000039_source')" id="l_M000039_source">show</a>
+                        
+                    </p>
+                    <div id="M000039_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 239</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-operator">[]</span>(<span class="ruby-identifier">name</span>)
+          <span class="ruby-identifier">__send__</span> <span class="ruby-identifier">name</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000033">
+                    
+                    <a name="M000033"></a><b>allow_nan?</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Returns true if NaN, Infinity, and -Infinity should be considered as valid
+<a href="../../../JSON.html">JSON</a> and output.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000033_source')" id="l_M000033_source">show</a>
+                        
+                    </p>
+                    <div id="M000033_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 187</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">allow_nan?</span>
+          <span class="ruby-ivar">@allow_nan</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000034">
+                    
+                    <a name="M000034"></a><b>ascii_only?</b>()
+                    
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000034_source')" id="l_M000034_source">show</a>
+                        
+                    </p>
+                    <div id="M000034_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 191</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">ascii_only?</span>
+          <span class="ruby-ivar">@ascii_only</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000032">
+                    
+                    <a name="M000032"></a><b>check_circular?</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Returns true, if circular data structures are checked, otherwise returns
+false.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000032_source')" id="l_M000032_source">show</a>
+                        
+                    </p>
+                    <div id="M000032_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 181</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_circular?</span>
+          <span class="ruby-operator">!</span><span class="ruby-ivar">@max_nesting</span>.<span class="ruby-identifier">zero?</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000035">
+                    
+                    <a name="M000035"></a><b>configure</b>(opts)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Configure this <a href="State.html">State</a> instance with the Hash
+<em>opts</em>, and return itself.
+</p>
+
+                </div>
+                
+                
+                <div class="aka">
+                    This method is also aliased as
+                    
+                    <a href="State.html#M000036">merge</a>
+                    
+                </div>
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000035_source')" id="l_M000035_source">show</a>
+                        
+                    </p>
+                    <div id="M000035_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 197</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">configure</span>(<span class="ruby-identifier">opts</span>)
+          <span class="ruby-ivar">@indent</span>         = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:indent</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:indent</span>)
+          <span class="ruby-ivar">@space</span>          = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:space</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:space</span>)
+          <span class="ruby-ivar">@space_before</span>   = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:space_before</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:space_before</span>)
+          <span class="ruby-ivar">@object_nl</span>      = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:object_nl</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:object_nl</span>)
+          <span class="ruby-ivar">@array_nl</span>       = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:array_nl</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:array_nl</span>)
+          <span class="ruby-ivar">@allow_nan</span>      = <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:allow_nan</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:allow_nan</span>)
+          <span class="ruby-ivar">@ascii_only</span>     = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:ascii_only</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:ascii_only</span>)
+          <span class="ruby-ivar">@depth</span>          = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:depth</span>] <span class="ruby-operator">||</span> <span class="ruby-value">0</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">:max_nesting</span>) <span class="ruby-comment cmt"># defaults to 19</span>
+            <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-value">19</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:max_nesting</span>]
+            <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:max_nesting</span>]
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-ivar">@max_nesting</span> = <span class="ruby-value">0</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">self</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000038">
+                    
+                    <a name="M000038"></a><b>generate</b>(obj)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Generates a valid <a href="../../../JSON.html">JSON</a> document from
+object <tt>obj</tt> and returns the result. If no valid <a
+href="../../../JSON.html">JSON</a> document can be created this method
+raises a <a href="../../GeneratorError.html">GeneratorError</a> exception.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000038_source')" id="l_M000038_source">show</a>
+                        
+                    </p>
+                    <div id="M000038_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 230</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">generate</span>(<span class="ruby-identifier">obj</span>)
+          <span class="ruby-identifier">result</span> = <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_json</span>(<span class="ruby-keyword kw">self</span>)
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">result</span> <span class="ruby-operator">!~</span> <span class="ruby-regexp re">/\A\s*(?:\[.*\]|\{.*\})\s*\Z/</span><span class="ruby-identifier">m</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">GeneratorError</span>, <span class="ruby-value str">&quot;only generation of JSON objects or arrays allowed&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">result</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000036">
+                    
+                    <a name="M000036"></a><b>merge</b>(opts)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Alias for <a href="State.html#M000035">configure</a>
+</p>
+
+                </div>
+                
+                
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000037">
+                    
+                    <a name="M000037"></a><b>to_h</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Returns the configuration instance variables as a hash, that can be passed
+to the configure method.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000037_source')" id="l_M000037_source">show</a>
+                        
+                    </p>
+                    <div id="M000037_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/pure/generator.rb, line 219</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_h</span>
+          <span class="ruby-identifier">result</span> = {}
+          <span class="ruby-keyword kw">for</span> <span class="ruby-identifier">iv</span> <span class="ruby-keyword kw">in</span> <span class="ruby-node">%w[indent space space_before object_nl array_nl allow_nan max_nesting ascii_only depth]</span>
+            <span class="ruby-identifier">result</span>[<span class="ruby-identifier">iv</span>.<span class="ruby-identifier">intern</span>] = <span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-node">&quot;@#{iv}&quot;</span>)
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">result</span>
+        <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    

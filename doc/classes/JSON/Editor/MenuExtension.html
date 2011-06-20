@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Editor::MenuExtension</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+    <script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Module</span> 
+            JSON::Editor::MenuExtension 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/json/editor_rb.html">lib/json/editor.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <p>
+This module bundles some method, that can be used to create a menu. It
+should be included into the class in question.
+</p>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>A</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000099">add_item</a>,</li>
+                
+                <li><a href="#M000098">add_separator</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>C</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000100">create</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>M</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000101">method_missing</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>N</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000097">new</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+        
+        <li>
+            
+            <a href="../Editor.html">JSON::Editor</a>
+            
+            START:includes
+        </li>
+        
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="sectiontitle">Attributes</div>
+    <table border='0' cellpadding='5'>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [R]
+            </td>
+            <td class='attr-name'>treeview</td>
+            <td class='attr-desc'><p>
+Returns the Gtk::TreeView of this menu.
+</p></td>
+        </tr>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [R]
+            </td>
+            <td class='attr-name'>menu</td>
+            <td class='attr-desc'><p>
+Returns the menu.
+</p></td>
+        </tr>
+        
+    </table>
+    
+
+    
+            <div class="sectiontitle">Class Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000097">
+                    
+                    <a name="M000097"></a><b>new</b>(treeview)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Creates a Menu, that includes <a
+href="MenuExtension.html">MenuExtension</a>. <em>treeview</em> is the
+Gtk::TreeView, on which it operates.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000097_source')" id="l_M000097_source">show</a>
+                        
+                    </p>
+                    <div id="M000097_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 211</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">treeview</span>)
+        <span class="ruby-ivar">@treeview</span> = <span class="ruby-identifier">treeview</span>
+        <span class="ruby-ivar">@menu</span> = <span class="ruby-constant">Menu</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000099">
+                    
+                    <a name="M000099"></a><b>add_item</b>(label, keyval = nil, klass = MenuItem, &amp;callback)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Adds a Gtk::MenuItem to this instance&#8217;s <a
+href="MenuExtension.html#menu">menu</a>. <em>label</em> is the label
+string, <em>klass</em> is the item type, and <em>callback</em> is the
+procedure, that is called if the <em>item</em> is activated.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000099_source')" id="l_M000099_source">show</a>
+                        
+                    </p>
+                    <div id="M000099_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 230</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_item</span>(<span class="ruby-identifier">label</span>, <span class="ruby-identifier">keyval</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">klass</span> = <span class="ruby-constant">MenuItem</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">callback</span>)
+        <span class="ruby-identifier">label</span> = <span class="ruby-node">&quot;#{label} (C-#{keyval.chr})&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">keyval</span>
+        <span class="ruby-identifier">item</span> = <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">label</span>)
+        <span class="ruby-identifier">item</span>.<span class="ruby-identifier">signal_connect</span>(<span class="ruby-identifier">:activate</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">callback</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">keyval</span>
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">signal_connect</span>(<span class="ruby-identifier">:'key-press-event'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">item</span>, <span class="ruby-identifier">event</span><span class="ruby-operator">|</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">event</span>.<span class="ruby-identifier">state</span> <span class="ruby-operator">&amp;</span> <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Window</span><span class="ruby-operator">::</span><span class="ruby-constant">ModifierType</span><span class="ruby-operator">::</span><span class="ruby-constant">CONTROL_MASK</span> <span class="ruby-operator">!=</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">and</span>
+              <span class="ruby-identifier">event</span>.<span class="ruby-identifier">keyval</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">keyval</span>
+              <span class="ruby-identifier">callback</span>.<span class="ruby-identifier">call</span> <span class="ruby-identifier">item</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">menu</span>.<span class="ruby-identifier">append</span> <span class="ruby-identifier">item</span>
+        <span class="ruby-identifier">item</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000098">
+                    
+                    <a name="M000098"></a><b>add_separator</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Adds a Gtk::SeparatorMenuItem to this instance&#8217;s <a
+href="MenuExtension.html#menu">menu</a>.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000098_source')" id="l_M000098_source">show</a>
+                        
+                    </p>
+                    <div id="M000098_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 223</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_separator</span>
+        <span class="ruby-identifier">menu</span>.<span class="ruby-identifier">append</span> <span class="ruby-constant">SeparatorMenuItem</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000100">
+                    
+                    <a name="M000100"></a><b>create</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+This method should be implemented in subclasses to create the <a
+href="MenuExtension.html#menu">menu</a> of this instance. It has to be
+called after an instance of this class is created, to build the menu.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000100_source')" id="l_M000100_source">show</a>
+                        
+                    </p>
+                    <div id="M000100_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 249</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000101">
+                    
+                    <a name="M000101"></a><b>method_missing</b>(*a, &amp;b)
+                    
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000101_source')" id="l_M000101_source">show</a>
+                        
+                    </p>
+                    <div id="M000101_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 253</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">a</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">b</span>)
+        <span class="ruby-identifier">treeview</span>.<span class="ruby-identifier">__send__</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">a</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">b</span>)
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    

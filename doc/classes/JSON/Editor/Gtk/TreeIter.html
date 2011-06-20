@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Editor::Gtk::TreeIter</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../../../css/main.css" type="text/css" media="screen" />
+    <script src="../../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            JSON::Editor::Gtk::TreeIter 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="../../../Object.html">Object</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../../files/lib/json/editor_rb.html">lib/json/editor.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <p>
+The <a href="TreeIter.html">Gtk::TreeIter</a> class is reopened and some
+auxiliary methods are added.
+</p>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>C</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000095">content</a>,</li>
+                
+                <li><a href="#M000096">content=</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>E</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000090">each</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>R</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000091">recursive_each</a>,</li>
+                
+                <li><a href="#M000092">remove_subtree</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>T</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000093">type</a>,</li>
+                
+                <li><a href="#M000094">type=</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+        
+        <li>
+            
+            <span>Enumerable</span>
+            
+            START:includes
+        </li>
+        
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000095">
+                    
+                    <a name="M000095"></a><b>content</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Returns the content of this node.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000095_source')" id="l_M000095_source">show</a>
+                        
+                    </p>
+                    <div id="M000095_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 194</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content</span>
+        <span class="ruby-keyword kw">self</span>[<span class="ruby-constant">CONTENT_COL</span>]
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000096">
+                    
+                    <a name="M000096"></a><b>content=</b>(value)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Sets the content of this node to <em>value</em>.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000096_source')" id="l_M000096_source">show</a>
+                        
+                    </p>
+                    <div id="M000096_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 199</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content=</span>(<span class="ruby-identifier">value</span>)
+        <span class="ruby-keyword kw">self</span>[<span class="ruby-constant">CONTENT_COL</span>] = <span class="ruby-identifier">value</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000090">
+                    
+                    <a name="M000090"></a><b>each</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Traverse each of this <a href="TreeIter.html">Gtk::TreeIter</a>
+instance&#8217;s children and yield to them.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000090_source')" id="l_M000090_source">show</a>
+                        
+                    </p>
+                    <div id="M000090_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 160</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">each</span>
+        <span class="ruby-identifier">n_children</span>.<span class="ruby-identifier">times</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">nth_child</span>(<span class="ruby-identifier">i</span>) }
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000091">
+                    
+                    <a name="M000091"></a><b>recursive_each</b>(&amp;block)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Recursively traverse all nodes of this Gtk::TreeIter&#8217;s subtree
+(including self) and yield to them.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000091_source')" id="l_M000091_source">show</a>
+                        
+                    </p>
+                    <div id="M000091_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 166</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">recursive_each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+        <span class="ruby-keyword kw">yield</span> <span class="ruby-keyword kw">self</span>
+        <span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">i</span>.<span class="ruby-identifier">recursive_each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000092">
+                    
+                    <a name="M000092"></a><b>remove_subtree</b>(model)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Remove the subtree of this <a href="TreeIter.html">Gtk::TreeIter</a>
+instance from the model <em>model</em>.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000092_source')" id="l_M000092_source">show</a>
+                        
+                    </p>
+                    <div id="M000092_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 175</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remove_subtree</span>(<span class="ruby-identifier">model</span>)
+        <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">first_child</span>
+          <span class="ruby-identifier">model</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-identifier">current</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000093">
+                    
+                    <a name="M000093"></a><b>type</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Returns the type of this node.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000093_source')" id="l_M000093_source">show</a>
+                        
+                    </p>
+                    <div id="M000093_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 182</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">type</span>
+        <span class="ruby-keyword kw">self</span>[<span class="ruby-constant">TYPE_COL</span>]
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000094">
+                    
+                    <a name="M000094"></a><b>type=</b>(value)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Sets the type of this node to <em>value</em>. This implies setting the
+respective icon accordingly.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000094_source')" id="l_M000094_source">show</a>
+                        
+                    </p>
+                    <div id="M000094_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 188</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">type=</span>(<span class="ruby-identifier">value</span>)
+        <span class="ruby-keyword kw">self</span>[<span class="ruby-constant">TYPE_COL</span>] = <span class="ruby-identifier">value</span>
+        <span class="ruby-keyword kw">self</span>[<span class="ruby-constant">ICON_COL</span>] = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">fetch_icon</span>(<span class="ruby-identifier">value</span>)
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    

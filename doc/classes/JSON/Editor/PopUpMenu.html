@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Editor::PopUpMenu</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+    <script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            JSON::Editor::PopUpMenu 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="../../Object.html">Object</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/json/editor_rb.html">lib/json/editor.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <p>
+This class creates the popup menu, that opens when clicking onto the
+treeview.
+</p>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>A</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000107">append_new_node</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>C</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000102">change_node</a>,</li>
+                
+                <li><a href="#M000109">collapse_expand</a>,</li>
+                
+                <li><a href="#M000104">copy_node</a>,</li>
+                
+                <li><a href="#M000110">create</a>,</li>
+                
+                <li><a href="#M000103">cut_node</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>I</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000108">insert_new_node</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>P</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000105">paste_node_appending</a>,</li>
+                
+                <li><a href="#M000106">paste_node_inserting_before</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+        
+        <li>
+            
+            <a href="../Editor.html">JSON::Editor</a>
+            
+            START:includes
+        </li>
+        
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000107">
+                    
+                    <a name="M000107"></a><b>append_new_node</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Append a new node to the selected Hash or Array.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000107_source')" id="l_M000107_source">show</a>
+                        
+                    </p>
+                    <div id="M000107_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 387</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">append_new_node</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">parent</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-identifier">parent_type</span> = <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">type</span>
+          <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">parent_type</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'Hash'</span>
+            <span class="ruby-identifier">key</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span> = <span class="ruby-identifier">ask_for_hash_pair</span>(<span class="ruby-identifier">parent</span>)
+            <span class="ruby-identifier">key</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+            <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">create_node</span>(<span class="ruby-identifier">parent</span>, <span class="ruby-value str">'Key'</span>, <span class="ruby-identifier">key</span>)
+            <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">create_node</span>(<span class="ruby-identifier">iter</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span>)
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(
+              <span class="ruby-node">&quot;Added a (key, value)-pair to '#{parent_type}'.&quot;</span>)
+            <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'Array'</span>
+            <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span> = <span class="ruby-identifier">ask_for_element</span>(<span class="ruby-identifier">parent</span>)
+            <span class="ruby-identifier">type</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+            <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">create_node</span>(<span class="ruby-identifier">parent</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span>)
+            <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-node">&quot;Appendend an element to '#{parent_type}'.&quot;</span>)
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-node">&quot;Cannot append to '#{parent_type}'!&quot;</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span> = <span class="ruby-identifier">ask_for_element</span>
+          <span class="ruby-identifier">type</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+          <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">create_node</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span>)
+          <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000102">
+                    
+                    <a name="M000102"></a><b>change_node</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Change the type or content of the selected node.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000102_source')" id="l_M000102_source">show</a>
+                        
+                    </p>
+                    <div id="M000102_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 264</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">change_node</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-identifier">parent</span> = <span class="ruby-identifier">current</span>.<span class="ruby-identifier">parent</span>
+          <span class="ruby-identifier">old_type</span>, <span class="ruby-identifier">old_content</span> = <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span>, <span class="ruby-identifier">current</span>.<span class="ruby-identifier">content</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-constant">ALL_TYPES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">old_type</span>)
+            <span class="ruby-ivar">@clipboard_data</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>)
+            <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span> = <span class="ruby-identifier">ask_for_element</span>(<span class="ruby-identifier">parent</span>, <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span>,
+              <span class="ruby-identifier">current</span>.<span class="ruby-identifier">content</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">type</span>
+              <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span>, <span class="ruby-identifier">current</span>.<span class="ruby-identifier">content</span> = <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span>
+              <span class="ruby-identifier">current</span>.<span class="ruby-identifier">remove_subtree</span>(<span class="ruby-identifier">model</span>)
+              <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Changed a node in tree.&quot;</span>)
+              <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(
+              <span class="ruby-node">&quot;Cannot change node of type #{old_type} in tree!&quot;</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000109">
+                    
+                    <a name="M000109"></a><b>collapse_expand</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Recursively collapse/expand a subtree starting from the selected node.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000109_source')" id="l_M000109_source">show</a>
+                        
+                    </p>
+                    <div id="M000109_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 443</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">collapse_expand</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">row_expanded?</span>(<span class="ruby-identifier">current</span>.<span class="ruby-identifier">path</span>)
+            <span class="ruby-identifier">collapse_row</span>(<span class="ruby-identifier">current</span>.<span class="ruby-identifier">path</span>)
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">expand_row</span>(<span class="ruby-identifier">current</span>.<span class="ruby-identifier">path</span>, <span class="ruby-keyword kw">true</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Append a node into the root first!&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000104">
+                    
+                    <a name="M000104"></a><b>copy_node</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Copy the selected node and its subtree, and save it into the clipboard.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000104_source')" id="l_M000104_source">show</a>
+                        
+                    </p>
+                    <div id="M000104_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 304</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">copy_node</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'Key'</span>
+            <span class="ruby-ivar">@clipboard_data</span> = {
+              <span class="ruby-identifier">current</span>.<span class="ruby-identifier">content</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>.<span class="ruby-identifier">first_child</span>)
+            }
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-ivar">@clipboard_data</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>)
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+          <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Copied a node from tree.&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000110">
+                    
+                    <a name="M000110"></a><b>create</b>()
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Create the menu.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000110_source')" id="l_M000110_source">show</a>
+                        
+                    </p>
+                    <div id="M000110_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 456</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Change node&quot;</span>, <span class="ruby-value">?n</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:change_node</span>))
+        <span class="ruby-identifier">add_separator</span>
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Cut node&quot;</span>, <span class="ruby-value">?X</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:cut_node</span>))
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Copy node&quot;</span>, <span class="ruby-value">?C</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:copy_node</span>))
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Paste node (appending)&quot;</span>, <span class="ruby-value">?A</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:paste_node_appending</span>))
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Paste node (inserting before)&quot;</span>, <span class="ruby-value">?I</span>,
+          <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:paste_node_inserting_before</span>))
+        <span class="ruby-identifier">add_separator</span>
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Append new node&quot;</span>, <span class="ruby-value">?a</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:append_new_node</span>))
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Insert new node before&quot;</span>, <span class="ruby-value">?i</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:insert_new_node</span>))
+        <span class="ruby-identifier">add_separator</span> 
+        <span class="ruby-identifier">add_item</span>(<span class="ruby-value str">&quot;Collapse/Expand node (recursively)&quot;</span>, <span class="ruby-value">?e</span>,
+          <span class="ruby-operator">&amp;</span><span class="ruby-identifier">method</span>(<span class="ruby-identifier">:collapse_expand</span>))
+
+        <span class="ruby-identifier">menu</span>.<span class="ruby-identifier">show_all</span>
+        <span class="ruby-identifier">signal_connect</span>(<span class="ruby-identifier">:button_press_event</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">widget</span>, <span class="ruby-identifier">event</span><span class="ruby-operator">|</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">event</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">EventButton</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">event</span>.<span class="ruby-identifier">button</span> <span class="ruby-operator">==</span> <span class="ruby-value">3</span>
+            <span class="ruby-identifier">menu</span>.<span class="ruby-identifier">popup</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">event</span>.<span class="ruby-identifier">button</span>, <span class="ruby-identifier">event</span>.<span class="ruby-identifier">time</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">signal_connect</span>(<span class="ruby-identifier">:popup_menu</span>) <span class="ruby-keyword kw">do</span>
+          <span class="ruby-identifier">menu</span>.<span class="ruby-identifier">popup</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value">0</span>, <span class="ruby-constant">Gdk</span><span class="ruby-operator">::</span><span class="ruby-constant">Event</span><span class="ruby-operator">::</span><span class="ruby-constant">CURRENT_TIME</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000103">
+                    
+                    <a name="M000103"></a><b>cut_node</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Cut the selected node and its subtree, and save it into the clipboard.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000103_source')" id="l_M000103_source">show</a>
+                        
+                    </p>
+                    <div id="M000103_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 287</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">cut_node</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'Key'</span>
+            <span class="ruby-ivar">@clipboard_data</span> = {
+              <span class="ruby-identifier">current</span>.<span class="ruby-identifier">content</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>.<span class="ruby-identifier">first_child</span>)
+            }
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-ivar">@clipboard_data</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>)
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">model</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-identifier">current</span>)
+          <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+          <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Cut a node from tree.&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000108">
+                    
+                    <a name="M000108"></a><b>insert_new_node</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Insert a new node into an Array before the selected element.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000108_source')" id="l_M000108_source">show</a>
+                        
+                    </p>
+                    <div id="M000108_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 417</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">insert_new_node</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-identifier">parent</span> = <span class="ruby-identifier">current</span>.<span class="ruby-identifier">parent</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+          <span class="ruby-identifier">parent_parent</span> = <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">parent</span>
+          <span class="ruby-identifier">parent_type</span> = <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">type</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">parent_type</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'Array'</span>
+            <span class="ruby-identifier">selected_index</span> = <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+              <span class="ruby-keyword kw">break</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">c</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">current</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span> = <span class="ruby-identifier">ask_for_element</span>(<span class="ruby-identifier">parent</span>)
+            <span class="ruby-identifier">type</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+            <span class="ruby-identifier">iter</span> = <span class="ruby-identifier">model</span>.<span class="ruby-identifier">insert_before</span>(<span class="ruby-identifier">parent</span>, <span class="ruby-identifier">current</span>)
+            <span class="ruby-identifier">iter</span>.<span class="ruby-identifier">type</span>, <span class="ruby-identifier">iter</span>.<span class="ruby-identifier">content</span> = <span class="ruby-identifier">type</span>, <span class="ruby-identifier">content</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Inserted an element to &quot;</span> <span class="ruby-operator">+</span>
+              <span class="ruby-node">&quot;'#{parent_type}' before index #{selected_index}.&quot;</span>)
+            <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(
+              <span class="ruby-node">&quot;Cannot insert node below '#{parent_type}'!&quot;</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Append a node into the root first!&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000105">
+                    
+                    <a name="M000105"></a><b>paste_node_appending</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Paste the data in the clipboard into the selected Array or Hash by
+appending it.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000105_source')" id="l_M000105_source">show</a>
+                        
+                    </p>
+                    <div id="M000105_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 320</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">paste_node_appending</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@clipboard_data</span>
+            <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">current</span>.<span class="ruby-identifier">type</span>
+            <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'Array'</span>
+              <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">data2model</span>(<span class="ruby-ivar">@clipboard_data</span>, <span class="ruby-identifier">model</span>, <span class="ruby-identifier">current</span>)
+              <span class="ruby-identifier">expand_collapse</span>(<span class="ruby-identifier">current</span>)
+            <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'Hash'</span>
+              <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@clipboard_data</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Hash</span>
+                <span class="ruby-identifier">parent</span> = <span class="ruby-identifier">current</span>.<span class="ruby-identifier">parent</span>
+                <span class="ruby-identifier">hash</span> = <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">model2data</span>(<span class="ruby-identifier">current</span>)
+                <span class="ruby-identifier">model</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-identifier">current</span>)
+                <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">update</span>(<span class="ruby-ivar">@clipboard_data</span>)
+                <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">data2model</span>(<span class="ruby-identifier">hash</span>, <span class="ruby-identifier">model</span>, <span class="ruby-identifier">parent</span>)
+                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">parent</span>
+                  <span class="ruby-identifier">expand_collapse</span>(<span class="ruby-identifier">parent</span>)
+                <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@expanded</span>
+                  <span class="ruby-identifier">expand_all</span>
+                <span class="ruby-keyword kw">end</span>
+                <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+              <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(
+                  <span class="ruby-node">&quot;Cannot paste non-#{current.type} data into '#{current.type}'!&quot;</span>)
+              <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(
+                <span class="ruby-node">&quot;Cannot paste node below '#{current.type}'!&quot;</span>)
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Nothing to paste in clipboard!&quot;</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Append a node into the root first!&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000106">
+                    
+                    <a name="M000106"></a><b>paste_node_inserting_before</b>(item)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Paste the data in the clipboard into the selected Array inserting it before
+the selected element.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000106_source')" id="l_M000106_source">show</a>
+                        
+                    </p>
+                    <div id="M000106_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json/editor.rb, line 358</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">paste_node_inserting_before</span>(<span class="ruby-identifier">item</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">current</span> = <span class="ruby-identifier">selection</span>.<span class="ruby-identifier">selected</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@clipboard_data</span>
+            <span class="ruby-identifier">parent</span> = <span class="ruby-identifier">current</span>.<span class="ruby-identifier">parent</span> <span class="ruby-keyword kw">or</span> <span class="ruby-keyword kw">return</span>
+            <span class="ruby-identifier">parent_type</span> = <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">type</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">parent_type</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'Array'</span>
+              <span class="ruby-identifier">selected_index</span> = <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+                <span class="ruby-keyword kw">break</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">c</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">current</span>
+              <span class="ruby-keyword kw">end</span>
+              <span class="ruby-constant">Editor</span>.<span class="ruby-identifier">data2model</span>(<span class="ruby-ivar">@clipboard_data</span>, <span class="ruby-identifier">model</span>, <span class="ruby-identifier">parent</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">m</span><span class="ruby-operator">|</span>
+                <span class="ruby-identifier">m</span>.<span class="ruby-identifier">insert_before</span>(<span class="ruby-identifier">parent</span>, <span class="ruby-identifier">current</span>)
+              <span class="ruby-keyword kw">end</span>
+              <span class="ruby-identifier">expand_collapse</span>(<span class="ruby-identifier">current</span>)
+              <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Inserted an element to &quot;</span> <span class="ruby-operator">+</span>
+                <span class="ruby-node">&quot;'#{parent_type}' before index #{selected_index}.&quot;</span>)
+              <span class="ruby-identifier">window</span>.<span class="ruby-identifier">change</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(
+                <span class="ruby-node">&quot;Cannot insert node below '#{parent_type}'!&quot;</span>)
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Nothing to paste in clipboard!&quot;</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">toplevel</span>.<span class="ruby-identifier">display_status</span>(<span class="ruby-value str">&quot;Append a node into the root first!&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    

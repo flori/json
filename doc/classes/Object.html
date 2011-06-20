@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Object</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+    <script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            Object 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="Object.html">Object</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>J</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000024">json/common</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000024">
+                    
+                    <a name="M000024"></a><b>json/common</b>
+                    
+                </div>
+                
+                <div class="description">
+                  <h1>JavaScript <a href="Object.html">Object</a> Notation (<a href="JSON.html">JSON</a>)</h1>
+<p>
+<a href="JSON.html">JSON</a> is a lightweight data-interchange format. It
+is easy for us humans to read and write. Plus, equally simple for machines
+to generate or parse. <a href="JSON.html">JSON</a> is completely language
+agnostic, making it the ideal interchange format.
+</p>
+<p>
+Built on two universally available structures:
+</p>
+<pre>
+  1. A collection of name/value pairs. Often referred to as an _object_, hash table, record, struct, keyed list, or associative array.
+  2. An orderd list of values. More commonly named as an _array_, vector, sequence, or list.
+</pre>
+<p>
+To read more about <a href="JSON.html">JSON</a> visit: <a
+href="http://json.org">json.org</a>
+</p>
+<h2>Parsing <a href="JSON.html">JSON</a></h2>
+<p>
+To parse a <a href="JSON.html">JSON</a> string received by another
+application, or generated within your existing application:
+</p>
+<pre>
+  require 'json'
+
+  my_hash = JSON.parse('{&quot;hello&quot;: &quot;goodbye&quot;}')
+  puts my_hash[&quot;hello&quot;] =&gt; &quot;goodbye&quot;
+</pre>
+<p>
+Notice the extra quotes <tt>''</tt> around the hash notation. Ruby expects
+the argument to be a string and can&#8217;t convert objects like a hash or
+array.
+</p>
+<p>
+Ruby converts your string into a hash
+</p>
+<h2>Generating <a href="JSON.html">JSON</a></h2>
+<p>
+Creating a <a href="JSON.html">JSON</a> string for communication or
+serialization is just as simple.
+</p>
+<pre>
+  require 'json'
+
+  my_hash = {:hello =&gt; &quot;goodbye&quot;}
+  puts JSON.generate(my_hash) =&gt; &quot;{\&quot;hello\&quot;:\&quot;goodbye\&quot;}&quot;
+</pre>
+<p>
+Or an alternative way:
+</p>
+<pre>
+  require 'json'
+  puts {:hello =&gt; &quot;goodbye&quot;}.to_json =&gt; &quot;{\&quot;hello\&quot;:\&quot;goodbye\&quot;}&quot;
+</pre>
+<p>
+<tt><a href="JSON.html#M000063">JSON.generate</a></tt> only allows objects
+or arrays to be converted to <a href="JSON.html">JSON</a> syntax. While
+<tt>to_json</tt> accepts many Ruby classes even though it only acts a
+method for serialization:
+</p>
+<pre>
+  require 'json'
+
+  1.to_json =&gt; &quot;1&quot;
+</pre>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000024_source')" id="l_M000024_source">show</a>
+                        
+                    </p>
+                    <div id="M000024_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/json.rb, line 53</span>
+<span class="ruby-identifier">require</span> <span class="ruby-value str">'json/common'</span>
+</pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    
