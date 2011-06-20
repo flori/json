@@ -1,0 +1,22 @@
+# Passes arguments to bundle install (http://gembundler.com/man/bundle-install.1.html)
+bundler_args: --binstubs
+
+# Specify which ruby versions you wish to run your tests on, each version will be used
+rvm:
+  - 1.8.7
+  - 1.9.2
+  - rbx
+  - rbx-2.0
+  - ree
+  - jruby
+  - ruby-head
+  - 1.8.6
+
+# Specify the recipients for email notification
+notifications:
+  recipients:
+    - flori@ping.de
+
+# Disable email notifications
+notifications:
+  disabled: false
