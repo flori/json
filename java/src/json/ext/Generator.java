@@ -376,9 +376,9 @@ public final class Generator {
                 RubyString src;
 
                 if (info.encodingsSupported() &&
-                        object.encoding(session.getContext()) != info.utf8) {
+                        object.encoding(session.getContext()) != info.utf8.get()) {
                     src = (RubyString)object.encode(session.getContext(),
-                                                    info.utf8);
+                                                    info.utf8.get());
                 } else {
                     src = object;
                 }

@@ -118,7 +118,7 @@ public class GeneratorState extends RubyObject {
 
     static GeneratorState fromState(ThreadContext context, RuntimeInfo info,
                                     IRubyObject opts) {
-        RubyClass klass = info.generatorStateClass;
+        RubyClass klass = info.generatorStateClass.get();
         if (opts != null) {
             // if the given parameter is a Generator::State, return itself
             if (klass.isInstance(opts)) return (GeneratorState)opts;
@@ -382,8 +382,8 @@ public class GeneratorState extends RubyObject {
     private ByteList prepareByteList(ThreadContext context, IRubyObject value) {
         RubyString str = value.convertToString();
         RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
-        if (info.encodingsSupported() && str.encoding(context) != info.utf8) {
-            str = (RubyString)str.encode(context, info.utf8);
+        if (info.encodingsSupported() && str.encoding(context) != info.utf8.get()) {
+            str = (RubyString)str.encode(context, info.utf8.get());
         }
         return str.getByteList().dup();
     }
