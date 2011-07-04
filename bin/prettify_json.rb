@@ -53,18 +53,21 @@ EOT
 end
 
 filename = nil
-json = JSON[
-  if args.empty?
-    STDIN.read
-  else
-    File.read filename = args.first
-  end
-]
+str = nil
+json_opts = {:max_nesting => false, :create_additions => false}
+
+if args.empty?
+  str = STDIN.read
+else
+  str = File.read(filename = args.first)
+end
+
+json = JSON[str, json_opts]
 
 output = if opts['s']
-  JSON.fast_generate json
+  JSON.fast_generate json, json_opts
 else # default is -l
-  JSON.pretty_generate json
+  JSON.pretty_generate json, json_opts
 end
 
 if opts['i'] && filename
