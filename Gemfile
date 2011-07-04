@@ -2,8 +2,6 @@
 
 source :rubygems
 
-group :test do
-  gem 'permutation', '~>0.1'
-  gem 'test-unit', '~>2.3'
-  gem 'rake', '~>0.9'
-end
+gemspec :name => 'json'
+gemspec :name => 'json_pure'
+gemspec :name => 'json-java'

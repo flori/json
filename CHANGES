@@ -1,3 +1,6 @@
+2011-07-04 (1.5.4)
+  * Fix memory leak when used from multiple JRuby. (Patch by
+    jfirebaugh@github).
 2011-06-20 (1.5.3)
   * Alias State#configure method as State#merge to increase duck type synonymy with Hash.
 	* Add as_json methods in json/add/core, so rails can create its json objects

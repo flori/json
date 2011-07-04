@@ -192,7 +192,22 @@ end
 desc "Testing library (pure ruby and extension)"
 task :test => [ :test_pure, :test_ext ]
 
+namespace :gems do
+  task :install do
+    sh 'bundle'
+  end
+end
+
 if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
+  if ENV.key?('JAVA_HOME')
+    warn " *** JAVA_HOME was set to #{ENV['JAVA_HOME'].inspect}"
+  else File.directory?(local_java = '/usr/local/java/jdk')
+    ENV['JAVA_HOME'] = local_java
+    warn " *** JAVA_HOME is set to #{ENV['JAVA_HOME'].inspect}"
+    ENV['PATH'] = ENV['PATH'].split(/:/).unshift(java_path = "#{ENV['JAVA_HOME']}/bin") * ':'
+    warn " *** java binaries are assumed to be in #{java_path.inspect}"
+  end
+
   file JAVA_PARSER_SRC => JAVA_RAGEL_PATH do
     cd JAVA_DIR do
       if RAGEL_CODEGEN == 'ragel'
