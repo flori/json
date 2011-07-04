@@ -6,6 +6,7 @@
  */
 package json.ext;
 
+import java.lang.ref.WeakReference;
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
 import org.jruby.RubyBoolean;
@@ -45,9 +46,9 @@ class GeneratorMethods {
         defineMethods(module, "String",     RbString.class);
         defineMethods(module, "TrueClass",  RbTrue.class);
 
-        info.stringExtendModule = module.defineModuleUnder("String")
-                                            .defineModuleUnder("Extend");
-        info.stringExtendModule.defineAnnotatedMethods(StringExtend.class);
+        info.stringExtendModule = new WeakReference<RubyModule>(module.defineModuleUnder("String")
+                                            .defineModuleUnder("Extend"));
+        info.stringExtendModule.get().defineAnnotatedMethods(StringExtend.class);
     }
 
     /**
@@ -140,7 +141,7 @@ class GeneratorMethods {
             RubyHash result = RubyHash.newHash(runtime);
 
             IRubyObject createId = RuntimeInfo.forRuntime(runtime)
-                    .jsonModule.callMethod(context, "create_id");
+                    .jsonModule.get().callMethod(context, "create_id");
             result.op_aset(context, createId, self.getMetaClass().to_s());
 
             ByteList bl = self.getByteList();
@@ -158,7 +159,7 @@ class GeneratorMethods {
         public static IRubyObject included(ThreadContext context,
                 IRubyObject vSelf, IRubyObject module) {
             RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
-            return module.callMethod(context, "extend", info.stringExtendModule);
+            return module.callMethod(context, "extend", info.stringExtendModule.get());
         }
     }
 
