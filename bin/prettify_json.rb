@@ -3,37 +3,8 @@
 require 'json'
 require 'fileutils'
 include FileUtils
-
-# Parses the argument array _args_, according to the pattern _s_, to
-# retrieve the single character command line options from it. If _s_ is
-# 'xy:' an option '-x' without an option argument is searched, and an
-# option '-y foo' with an option argument ('foo').
-#
-# An option hash is returned with all found options set to true or the
-# found option argument.
-def go(s, args = ARGV)
-  b, v = s.scan(/(.)(:?)/).inject([{},{}]) { |t,(o,a)|
-    t[a.empty? ? 0 : 1][o] = a.empty? ? false : nil
-    t
-  }
-  while a = args.shift
-    a !~ /\A-(.+)/ and args.unshift a and break
-    p = $1
-    until p == ''
-      o = p.slice!(0, 1)
-      if v.key?(o)
-        v[o] = if p == '' then args.shift or break 1 else p end
-        break
-      elsif b.key?(o)
-        b[o] = true
-      else
-        args.unshift a
-        break 1
-      end
-    end and break
-  end
-  b.merge(v)
-end
+require 'spruz/go'
+include Spruz::GO
 
 opts = go 'slhi:', args = ARGV.dup
 if opts['h'] || opts['l'] && opts['s']
@@ -52,17 +23,16 @@ EOT
   exit 0
 end
 
-filename = nil
-str = nil
-json_opts = {:max_nesting => false, :create_additions => false}
+json_opts = { :max_nesting => false, :create_additions => false }
 
-if args.empty?
-  str = STDIN.read
-else
-  str = File.read(filename = args.first)
-end
+document =
+  if filename = args.first or filename == '-'
+    File.read(filename)
+  else
+    STDIN.read
+  end
 
-json = JSON[str, json_opts]
+json = JSON.parse document, json_opts
 
 output = if opts['s']
   JSON.fast_generate json, json_opts

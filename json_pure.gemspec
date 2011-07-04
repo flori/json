@@ -28,16 +28,19 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bullshit>, [">= 0"])
       s.add_development_dependency(%q<sdoc>, [">= 0"])
       s.add_development_dependency(%q<rake>, ["~> 0.9.2"])
+      s.add_runtime_dependency(%q<spruz>, ["~> 0.2.8"])
     else
       s.add_dependency(%q<permutation>, [">= 0"])
       s.add_dependency(%q<bullshit>, [">= 0"])
       s.add_dependency(%q<sdoc>, [">= 0"])
       s.add_dependency(%q<rake>, ["~> 0.9.2"])
+      s.add_dependency(%q<spruz>, ["~> 0.2.8"])
     end
   else
     s.add_dependency(%q<permutation>, [">= 0"])
     s.add_dependency(%q<bullshit>, [">= 0"])
     s.add_dependency(%q<sdoc>, [">= 0"])
     s.add_dependency(%q<rake>, ["~> 0.9.2"])
+    s.add_dependency(%q<spruz>, ["~> 0.2.8"])
   end
 end
