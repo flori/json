@@ -90,6 +90,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.add_development_dependency 'permutation'
     s.add_development_dependency 'bullshit'
     s.add_development_dependency 'sdoc'
+    s.add_development_dependency 'rake', '~>0.9.2'
 
     s.bindir = "bin"
     s.executables = [ "edit_json.rb", "prettify_json.rb" ]
