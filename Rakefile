@@ -63,6 +63,7 @@ task :install_ext_really do
       mkdir_p File.dirname(d)
       install(file, d)
     end
+    warn " *** Installed EXT ruby library."
   end
 end
 
@@ -384,4 +385,4 @@ else
 end
 
 desc "Compile in the the source directory"
-task :default => [ :clean, :gemspec, :compile ]
+task :default => [ :clean, :gemspec, :test ]
