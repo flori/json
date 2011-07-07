@@ -12,4 +12,4 @@ rvm:
   - ruby-head
   - 1.8.6
 
-script: "bundle exec rake test"
+script: "bundle exec rake"
