@@ -408,9 +408,17 @@ EOT
   end
 
   if defined?(JSON::Ext::Parser)
-    def test_uninitialized
+    def test_allocate
+      parser = JSON::Ext::Parser.new("{}")
+      assert_raise(TypeError, '[ruby-core:35079]') {parser.__send__(:initialize, "{}")}
       parser = JSON::Ext::Parser.allocate
-      assert_raise(TypeError) {parser.source}
+      assert_raise(TypeError, '[ruby-core:35079]') {parser.source}
     end
   end
+
+  def test_argument_encoding
+    source = "{}".force_encoding("ascii-8bit")
+    JSON::Parser.new(source)
+    assert_equal Encoding::ASCII_8BIT, source.encoding
+  end if defined?(Encoding::ASCII_8BIT)
 end

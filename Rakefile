@@ -363,6 +363,8 @@ else
       else
         sh "ragel -x parser.rl | #{RAGEL_CODEGEN} -G2"
       end
+      src = File.read("parser.c").gsub(/[ \t]+$/, '')
+      File.open("parser.c", "w") {|f| f.print src}
     end
   end
 
