@@ -2,7 +2,7 @@
 
 /* unicode */
 
-static const char digit_values[256] = { 
+static const char digit_values[256] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1,
@@ -38,7 +38,7 @@ static UTF32 unescape_unicode(const unsigned char *p)
     return result;
 }
 
-static int convert_UTF32_to_UTF8(char *buf, UTF32 ch) 
+static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
 {
     int len = 1;
     if (ch <= 0x7F) {
@@ -97,7 +97,7 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
     VNaN                = 'NaN';
     VInfinity           = 'Infinity';
     VMinusInfinity      = '-Infinity';
-    begin_value         = [nft"\-[{NI] | digit;
+    begin_value         = [nft\"\-\[\{NI] | digit;
     begin_object        = '{';
     end_object          = '}';
     begin_array         = '[';
@@ -115,7 +115,7 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
 
     action parse_value {
         VALUE v = Qnil;
-        char *np = JSON_parse_value(json, fpc, pe, &v); 
+        char *np = JSON_parse_value(json, fpc, pe, &v);
         if (np == NULL) {
             fhold; fbreak;
         } else {
@@ -230,7 +230,7 @@ static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *resu
         fhold; fbreak;
     }
 
-    action parse_array { 
+    action parse_array {
         char *np;
         json->current_nesting++;
         np = JSON_parse_array(json, fpc, pe, result);
@@ -238,7 +238,7 @@ static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *resu
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
-    action parse_object { 
+    action parse_object {
         char *np;
         json->current_nesting++;
         np =  JSON_parse_object(json, fpc, pe, result);
@@ -342,7 +342,7 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
 
     action parse_value {
         VALUE v = Qnil;
-        char *np = JSON_parse_value(json, fpc, pe, &v); 
+        char *np = JSON_parse_value(json, fpc, pe, &v);
         if (np == NULL) {
             fhold; fbreak;
         } else {
@@ -419,7 +419,7 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
                     unescape = (char *) "\f";
                     break;
                 case 'u':
-                    if (pe > stringEnd - 4) { 
+                    if (pe > stringEnd - 4) {
                         return Qnil;
                     } else {
                         char buf[4];
@@ -475,7 +475,7 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 
     action exit { fhold; fbreak; }
 
-    main := '"' ((^(["\\] | 0..0x1f) | '\\'["\\/bfnrt] | '\\u'[0-9a-fA-F]{4} | '\\'^(["\\/bfnrtu]|0..0x1f))* %parse_string) '"' @exit;
+    main := '"' ((^([\"\\] | 0..0x1f) | '\\'[\"\\/bfnrt] | '\\u'[0-9a-fA-F]{4} | '\\'^([\"\\/bfnrtu]|0..0x1f))* %parse_string) '"' @exit;
 }%%
 
 static int
@@ -549,7 +549,7 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
             ) ignore*;
 }%%
 
-/* 
+/*
  * Document-class: JSON::Ext::Parser
  *
  * This is the JSON parser implemented as a C extension. It can be configured
@@ -640,7 +640,11 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     char *ptr;
     long len;
     VALUE source, opts;
-    GET_PARSER;
+    GET_PARSER_INIT;
+
+    if (json->Vsource) {
+        rb_raise(rb_eTypeError, "already initialized instance");
+    }
     rb_scan_args(argc, argv, "11", &source, &opts);
     source = convert_encoding(StringValue(source));
     ptr = RSTRING_PTR(source);
@@ -834,3 +838,11 @@ void Init_parser()
     i_iconv = rb_intern("iconv");
 #endif
 }
+
+/*
+ * Local variables:
+ * mode: c
+ * c-file-style: ruby
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -406,4 +406,11 @@ EOT
     json5 = JSON([orig = 1 << 64])
     assert_equal orig, JSON[json5][0]
   end
+
+  if defined?(JSON::Ext::Parser)
+    def test_uninitialized
+      parser = JSON::Ext::Parser.allocate
+      assert_raise(TypeError) {parser.source}
+    end
+  end
 end
