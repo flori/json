@@ -415,4 +415,10 @@ EOT
       assert_raise(TypeError, '[ruby-core:35079]') {parser.source}
     end
   end
+
+  def test_argument_encoding
+    source = "{}".force_encoding("ascii-8bit")
+    JSON::Parser.new(source)
+    assert_equal Encoding::ASCII_8BIT, source.encoding
+  end if defined?(Encoding::ASCII_8BIT)
 end
