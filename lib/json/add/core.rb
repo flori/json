@@ -21,7 +21,7 @@ class Symbol
   def to_json(*a)
     as_json.to_json(*a)
   end
-  
+
   # Deserializes JSON string by converting the <tt>string</tt> value stored in the object to a Symbol
   def self.json_create(o)
     o['s'].to_sym
@@ -52,7 +52,7 @@ class Time
       'n'            => respond_to?(:tv_nsec) ? tv_nsec : tv_usec * 1000
     }
   end
-  
+
   # Stores class name (Time) with number of seconds since epoch and number of
   # microseconds for Time as JSON string
   def to_json(*args)
@@ -62,7 +62,7 @@ end
 
 # Date serialization/deserialization
 class Date
-  
+
   # Deserializes JSON string by converting Julian year <tt>y</tt>, month
   # <tt>m</tt>, day <tt>d</tt> and Day of Calendar Reform <tt>sg</tt> to Date.
   def self.json_create(object)
@@ -80,7 +80,7 @@ class Date
       'm' => month,
       'd' => day,
       'sg' => start,
-    }  
+    }
   end
 
   # Stores class name (Date) with Julian year <tt>y</tt>, month <tt>m</tt>, day
@@ -123,7 +123,7 @@ class DateTime
       'S' => sec,
       'of' => offset.to_s,
       'sg' => start,
-    } 
+    }
   end
 
   # Stores class name (DateTime) with Julian year <tt>y</tt>, month <tt>m</tt>,
@@ -136,7 +136,7 @@ end
 
 # Range serialization/deserialization
 class Range
-  
+
   # Deserializes JSON string by constructing new Range object with arguments
   # <tt>a</tt> serialized by <tt>to_json</tt>.
   def self.json_create(object)
@@ -162,7 +162,7 @@ end
 
 # Struct serialization/deserialization
 class Struct
-  
+
   # Deserializes JSON string by constructing new Struct object with values
   # <tt>v</tt> serialized by <tt>to_json</tt>.
   def self.json_create(object)

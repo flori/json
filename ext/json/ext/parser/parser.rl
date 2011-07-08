@@ -120,9 +120,9 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
             fhold; fbreak;
         } else {
             if (NIL_P(json->object_class)) {
-              rb_hash_aset(*result, last_name, v);
+                rb_hash_aset(*result, last_name, v);
             } else {
-              rb_funcall(*result, i_aset, 2, last_name, v);
+                rb_funcall(*result, i_aset, 2, last_name, v);
             }
             fexec np;
         }
@@ -581,6 +581,7 @@ static VALUE convert_encoding(VALUE source)
             } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
                 source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16LE);
             } else {
+                source = rb_str_dup(source);
                 FORCE_UTF8(source);
             }
         } else {
