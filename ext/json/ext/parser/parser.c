@@ -233,9 +233,9 @@ tr11:
             p--; {p++; cs = 9; goto _out;}
         } else {
             if (NIL_P(json->object_class)) {
-              rb_hash_aset(*result, last_name, v);
+                rb_hash_aset(*result, last_name, v);
             } else {
-              rb_funcall(*result, i_aset, 2, last_name, v);
+                rb_funcall(*result, i_aset, 2, last_name, v);
             }
             {p = (( np))-1;}
         }
@@ -1583,6 +1583,7 @@ static VALUE convert_encoding(VALUE source)
             } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
                 source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16LE);
             } else {
+                source = rb_str_dup(source);
                 FORCE_UTF8(source);
             }
         } else {
@@ -1733,16 +1734,16 @@ static VALUE cParser_parse(VALUE self)
     GET_PARSER;
 
 
-#line 1737 "parser.c"
+#line 1738 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 734 "parser.rl"
+#line 735 "parser.rl"
     p = json->source;
     pe = p + json->len;
 
-#line 1746 "parser.c"
+#line 1747 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1819,7 +1820,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1823 "parser.c"
+#line 1824 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1876,7 +1877,7 @@ case 9:
 	_out: {}
 	}
 
-#line 737 "parser.rl"
+#line 738 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;

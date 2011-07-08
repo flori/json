@@ -120,7 +120,7 @@ loop do
   if $DEBUG
     puts "-" * 80
     puts json, json.size
-  else 
+  else
     puts json.size
   end
   begin

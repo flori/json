@@ -291,7 +291,7 @@ module JSON
     recurse_proc(result, &proc) if proc
     result
   end
-  
+
   # Recursively calls passed _Proc_ if the parsed data structure is an _Array_ or _Hash_
   def recurse_proc(result, &proc)
     case result

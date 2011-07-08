@@ -47,14 +47,14 @@ module JSON
     # Opens an error dialog on top of _window_ showing the error message
     # _text_.
     def Editor.error_dialog(window, text)
-      dialog = MessageDialog.new(window, Dialog::MODAL, 
-        MessageDialog::ERROR, 
+      dialog = MessageDialog.new(window, Dialog::MODAL,
+        MessageDialog::ERROR,
         MessageDialog::BUTTONS_CLOSE, text)
       dialog.show_all
       dialog.run
     rescue TypeError
-      dialog = MessageDialog.new(Editor.window, Dialog::MODAL, 
-        MessageDialog::ERROR, 
+      dialog = MessageDialog.new(Editor.window, Dialog::MODAL,
+        MessageDialog::ERROR,
         MessageDialog::BUTTONS_CLOSE, text)
       dialog.show_all
       dialog.run
@@ -66,8 +66,8 @@ module JSON
     # message _text_. If yes was answered _true_ is returned, otherwise
     # _false_.
     def Editor.question_dialog(window, text)
-      dialog = MessageDialog.new(window, Dialog::MODAL, 
-        MessageDialog::QUESTION, 
+      dialog = MessageDialog.new(window, Dialog::MODAL,
+        MessageDialog::QUESTION,
         MessageDialog::BUTTONS_YES_NO, text)
       dialog.show_all
       dialog.run do |response|
@@ -464,7 +464,7 @@ module JSON
         add_separator
         add_item("Append new node", ?a, &method(:append_new_node))
         add_item("Insert new node before", ?i, &method(:insert_new_node))
-        add_separator 
+        add_separator
         add_item("Collapse/Expand node (recursively)", ?e,
           &method(:collapse_expand))
 
@@ -503,7 +503,7 @@ module JSON
       # Revert the current JSON document in the editor to the saved version.
       def revert(item)
         window.instance_eval do
-          @filename and file_open(@filename) 
+          @filename and file_open(@filename)
         end
       end
 
@@ -665,7 +665,7 @@ module JSON
           collapse_all
         else
           self.expanded = true
-          expand_all 
+          expand_all
         end
       end
 
@@ -884,7 +884,7 @@ module JSON
         dialog.signal_connect(:'key-press-event', &DEFAULT_DIALOG_KEY_PRESS_HANDLER)
         dialog.show_all
         self.focus = dialog
-        dialog.run do |response| 
+        dialog.run do |response|
           if response == Dialog::RESPONSE_ACCEPT
             @key = key_input.text
             type = ALL_TYPES[@type = type_input.active]
@@ -936,7 +936,7 @@ module JSON
         dialog.signal_connect(:'key-press-event', &DEFAULT_DIALOG_KEY_PRESS_HANDLER)
         dialog.show_all
         self.focus = dialog
-        dialog.run do |response| 
+        dialog.run do |response|
           if response == Dialog::RESPONSE_ACCEPT
             type = types[type_input.active]
             @content = case type
@@ -981,7 +981,7 @@ module JSON
         dialog.signal_connect(:'key-press-event', &DEFAULT_DIALOG_KEY_PRESS_HANDLER)
         dialog.show_all
         self.focus = dialog
-        dialog.run do |response| 
+        dialog.run do |response|
           if response == Dialog::RESPONSE_ACCEPT
             return @order = order_input.text, reverse_checkbox.active?
           end
@@ -1016,7 +1016,7 @@ module JSON
         dialog.signal_connect(:'key-press-event', &DEFAULT_DIALOG_KEY_PRESS_HANDLER)
         dialog.show_all
         self.focus = dialog
-        dialog.run do |response| 
+        dialog.run do |response|
           if response == Dialog::RESPONSE_ACCEPT
             begin
               return Regexp.new(regex_input.text, icase_checkbox.active? ? Regexp::IGNORECASE : 0)
@@ -1215,7 +1215,7 @@ module JSON
         end
       end
 
-      # Save the current file as the filename 
+      # Save the current file as the filename
       def file_save_as
         filename = select_file('Save as a JSON file')
         store_file(filename)
@@ -1241,7 +1241,7 @@ module JSON
       rescue SystemCallError => e
         Editor.error_dialog(self, "Failed to store JSON file: #{e}!")
       end
-  
+
       # Load the file named _filename_ into the editor as a JSON document.
       def load_file(filename)
         if filename
@@ -1333,7 +1333,7 @@ module JSON
 
         dialog.signal_connect(:'key-press-event', &DEFAULT_DIALOG_KEY_PRESS_HANDLER)
         dialog.show_all
-        dialog.run do |response| 
+        dialog.run do |response|
           if response == Dialog::RESPONSE_ACCEPT
             return @location = location_input.text
           end

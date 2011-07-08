@@ -15,7 +15,7 @@
 #
 # To parse a JSON string received by another application, or generated within
 # your existing application:
-#   
+#
 #   require 'json'
 #
 #   my_hash = JSON.parse('{"hello": "goodbye"}')
@@ -32,7 +32,7 @@
 # just as simple.
 #
 #   require 'json'
-#   
+#
 #   my_hash = {:hello => "goodbye"}
 #   puts JSON.generate(my_hash) => "{\"hello\":\"goodbye\"}"
 #
@@ -41,8 +41,8 @@
 #   require 'json'
 #   puts {:hello => "goodbye"}.to_json => "{\"hello\":\"goodbye\"}"
 #
-# <tt>JSON.generate</tt> only allows objects or arrays to be converted 
-# to JSON syntax. While <tt>to_json</tt> accepts many Ruby classes 
+# <tt>JSON.generate</tt> only allows objects or arrays to be converted
+# to JSON syntax. While <tt>to_json</tt> accepts many Ruby classes
 # even though it only acts a method for serialization:
 #
 #   require 'json'
