@@ -2,7 +2,7 @@
 // line 1 "Parser.rl"
 /*
  * This code is copyrighted work by Daniel Luz <dev at mernen dot com>.
- * 
+ *
  * Distributed under the Ruby and GPLv2 licenses; see COPYING and GPL files
  * for details.
  */
@@ -31,16 +31,16 @@ import org.jruby.util.ByteList;
 
 /**
  * The <code>JSON::Ext::Parser</code> class.
- * 
+ *
  * <p>This is the JSON parser implemented as a Java class. To use it as the
  * standard parser, set
  *   <pre>JSON.parser = JSON::Ext::Parser</pre>
  * This is performed for you when you <code>include "json/ext"</code>.
- * 
+ *
  * <p>This class does not perform the actual parsing, just acts as an interface
  * to Ruby code. When the {@link #parse()} method is invoked, a
  * Parser.ParserSession object is instantiated, which handles the process.
- * 
+ *
  * @author mernen
  */
 public class Parser extends RubyObject {
@@ -71,7 +71,7 @@ public class Parser extends RubyObject {
 
     /**
      * Multiple-value return for internal parser methods.
-     * 
+     *
      * <p>All the <code>parse<var>Stuff</var></code> methods return instances of
      * <code>ParserResult</code> when successful, or <code>null</code> when
      * there's a problem with the input data.
@@ -100,18 +100,18 @@ public class Parser extends RubyObject {
 
     /**
      * <code>Parser.new(source, opts = {})</code>
-     * 
+     *
      * <p>Creates a new <code>JSON::Ext::Parser</code> instance for the string
      * <code>source</code>.
      * It will be configured by the <code>opts</code> Hash.
      * <code>opts</code> can have the following keys:
-     * 
+     *
      * <dl>
      * <dt><code>:max_nesting</code>
      * <dd>The maximum depth of nesting allowed in the parsed data
      * structures. Disable depth checking with <code>:max_nesting => false|nil|0</code>,
      * it defaults to 19.
-     * 
+     *
      * <dt><code>:allow_nan</code>
      * <dd>If set to <code>true</code>, allow <code>NaN</code>,
      * <code>Infinity</code> and <code>-Infinity</code> in defiance of RFC 4627
@@ -120,15 +120,15 @@ public class Parser extends RubyObject {
      * <dt><code>:symbolize_names</code>
      * <dd>If set to <code>true</code>, returns symbols for the names (keys) in
      * a JSON object. Otherwise strings are returned, which is also the default.
-     * 
+     *
      * <dt><code>:create_additions</code>
      * <dd>If set to <code>false</code>, the Parser doesn't create additions
      * even if a matchin class and <code>create_id</code> was found. This option
      * defaults to <code>true</code>.
-     * 
+     *
      * <dt><code>:object_class</code>
      * <dd>Defaults to Hash.
-     * 
+     *
      * <dt><code>:array_class</code>
      * <dd>Defaults to Array.
      * </dl>
@@ -229,7 +229,7 @@ public class Parser extends RubyObject {
 
     /**
      * <code>Parser#parse()</code>
-     * 
+     *
      * <p>Parses the current JSON text <code>source</code> and returns the
      * complete data structure as a result.
      */
@@ -240,7 +240,7 @@ public class Parser extends RubyObject {
 
     /**
      * <code>Parser#source()</code>
-     * 
+     *
      * <p>Returns a copy of the current <code>source</code> string, that was
      * used to construct this Parser.
      */
@@ -268,7 +268,7 @@ public class Parser extends RubyObject {
 
     /**
      * A string parsing session.
-     * 
+     *
      * <p>Once a ParserSession is instantiated, the source string should not
      * change until the parsing is complete. The ParserSession object assumes
      * the source {@link RubyString} is still associated to its original
@@ -308,11 +308,11 @@ public class Parser extends RubyObject {
             return context.getRuntime();
         }
 
-        
+
 // line 335 "Parser.rl"
 
 
-        
+
 // line 317 "Parser.java"
 private static byte[] init__JSON_value_actions_0()
 {
@@ -434,14 +434,14 @@ static final int JSON_value_en_main = 1;
             int cs = EVIL;
             IRubyObject result = null;
 
-            
+
 // line 439 "Parser.java"
 	{
 	cs = JSON_value_start;
 	}
 
 // line 448 "Parser.rl"
-            
+
 // line 446 "Parser.java"
 	{
 	int _klen;
@@ -675,7 +675,7 @@ case 5:
             }
         }
 
-        
+
 // line 680 "Parser.java"
 private static byte[] init__JSON_integer_actions_0()
 {
@@ -781,7 +781,7 @@ static final int JSON_integer_en_main = 1;
         ParserResult parseInteger(int p, int pe) {
             int cs = EVIL;
 
-            
+
 // line 786 "Parser.java"
 	{
 	cs = JSON_integer_start;
@@ -789,7 +789,7 @@ static final int JSON_integer_en_main = 1;
 
 // line 474 "Parser.rl"
             int memo = p;
-            
+
 // line 794 "Parser.java"
 	{
 	int _klen;
@@ -911,7 +911,7 @@ case 5:
             return new ParserResult(number, p + 1);
         }
 
-        
+
 // line 916 "Parser.java"
 private static byte[] init__JSON_float_actions_0()
 {
@@ -1020,7 +1020,7 @@ static final int JSON_float_en_main = 1;
         ParserResult parseFloat(int p, int pe) {
             int cs = EVIL;
 
-            
+
 // line 1025 "Parser.java"
 	{
 	cs = JSON_float_start;
@@ -1028,7 +1028,7 @@ static final int JSON_float_en_main = 1;
 
 // line 510 "Parser.rl"
             int memo = p;
-            
+
 // line 1033 "Parser.java"
 	{
 	int _klen;
@@ -1150,7 +1150,7 @@ case 5:
             return new ParserResult(number, p + 1);
         }
 
-        
+
 // line 1155 "Parser.java"
 private static byte[] init__JSON_string_actions_0()
 {
@@ -1260,7 +1260,7 @@ static final int JSON_string_en_main = 1;
             int cs = EVIL;
             IRubyObject result = null;
 
-            
+
 // line 1265 "Parser.java"
 	{
 	cs = JSON_string_start;
@@ -1268,7 +1268,7 @@ static final int JSON_string_en_main = 1;
 
 // line 563 "Parser.rl"
             int memo = p;
-            
+
 // line 1273 "Parser.java"
 	{
 	int _klen;
@@ -1408,7 +1408,7 @@ case 5:
                           }
                       });
                     } catch (JumpException e) { }
-                    if (memoArray[1] != null) { 
+                    if (memoArray[1] != null) {
                         RubyClass klass = (RubyClass) memoArray[1];
                         if (klass.respondsTo("json_creatable?") &&
                             klass.callMethod(context, "json_creatable?").isTrue()) {
@@ -1425,7 +1425,7 @@ case 5:
             }
         }
 
-        
+
 // line 1430 "Parser.java"
 private static byte[] init__JSON_array_actions_0()
 {
@@ -1556,14 +1556,14 @@ static final int JSON_array_en_main = 1;
                 (RubyArray)parser.arrayClass.newInstance(context,
                     IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
 
-            
+
 // line 1561 "Parser.java"
 	{
 	cs = JSON_array_start;
 	}
 
 // line 652 "Parser.rl"
-            
+
 // line 1568 "Parser.java"
 	{
 	int _klen;
@@ -1697,7 +1697,7 @@ case 5:
             }
         }
 
-        
+
 // line 1702 "Parser.java"
 private static byte[] init__JSON_object_actions_0()
 {
@@ -1839,14 +1839,14 @@ static final int JSON_object_en_main = 1;
                 (RubyHash)parser.objectClass.newInstance(context,
                     IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
 
-            
+
 // line 1844 "Parser.java"
 	{
 	cs = JSON_object_start;
 	}
 
 // line 731 "Parser.rl"
-            
+
 // line 1851 "Parser.java"
 	{
 	int _klen;
@@ -2016,7 +2016,7 @@ case 5:
             return new ParserResult(returnedResult, p + 1);
         }
 
-        
+
 // line 2021 "Parser.java"
 private static byte[] init__JSON_actions_0()
 {
@@ -2129,7 +2129,7 @@ static final int JSON_en_main = 1;
             int p, pe;
             IRubyObject result = null;
 
-            
+
 // line 2134 "Parser.java"
 	{
 	cs = JSON_start;
@@ -2138,7 +2138,7 @@ static final int JSON_en_main = 1;
 // line 798 "Parser.rl"
             p = byteList.begin();
             pe = p + byteList.length();
-            
+
 // line 2143 "Parser.java"
 	{
 	int _klen;

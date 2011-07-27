@@ -1,6 +1,6 @@
 /*
  * This code is copyrighted work by Daniel Luz <dev at mernen dot com>.
- * 
+ *
  * Distributed under the Ruby and GPLv2 licenses; see COPYING and GPL files
  * for details.
  */
@@ -29,16 +29,16 @@ import org.jruby.util.ByteList;
 
 /**
  * The <code>JSON::Ext::Parser</code> class.
- * 
+ *
  * <p>This is the JSON parser implemented as a Java class. To use it as the
  * standard parser, set
  *   <pre>JSON.parser = JSON::Ext::Parser</pre>
  * This is performed for you when you <code>include "json/ext"</code>.
- * 
+ *
  * <p>This class does not perform the actual parsing, just acts as an interface
  * to Ruby code. When the {@link #parse()} method is invoked, a
  * Parser.ParserSession object is instantiated, which handles the process.
- * 
+ *
  * @author mernen
  */
 public class Parser extends RubyObject {
@@ -69,7 +69,7 @@ public class Parser extends RubyObject {
 
     /**
      * Multiple-value return for internal parser methods.
-     * 
+     *
      * <p>All the <code>parse<var>Stuff</var></code> methods return instances of
      * <code>ParserResult</code> when successful, or <code>null</code> when
      * there's a problem with the input data.
@@ -98,18 +98,18 @@ public class Parser extends RubyObject {
 
     /**
      * <code>Parser.new(source, opts = {})</code>
-     * 
+     *
      * <p>Creates a new <code>JSON::Ext::Parser</code> instance for the string
      * <code>source</code>.
      * It will be configured by the <code>opts</code> Hash.
      * <code>opts</code> can have the following keys:
-     * 
+     *
      * <dl>
      * <dt><code>:max_nesting</code>
      * <dd>The maximum depth of nesting allowed in the parsed data
      * structures. Disable depth checking with <code>:max_nesting => false|nil|0</code>,
      * it defaults to 19.
-     * 
+     *
      * <dt><code>:allow_nan</code>
      * <dd>If set to <code>true</code>, allow <code>NaN</code>,
      * <code>Infinity</code> and <code>-Infinity</code> in defiance of RFC 4627
@@ -118,15 +118,15 @@ public class Parser extends RubyObject {
      * <dt><code>:symbolize_names</code>
      * <dd>If set to <code>true</code>, returns symbols for the names (keys) in
      * a JSON object. Otherwise strings are returned, which is also the default.
-     * 
+     *
      * <dt><code>:create_additions</code>
      * <dd>If set to <code>false</code>, the Parser doesn't create additions
      * even if a matchin class and <code>create_id</code> was found. This option
      * defaults to <code>true</code>.
-     * 
+     *
      * <dt><code>:object_class</code>
      * <dd>Defaults to Hash.
-     * 
+     *
      * <dt><code>:array_class</code>
      * <dd>Defaults to Array.
      * </dl>
@@ -227,7 +227,7 @@ public class Parser extends RubyObject {
 
     /**
      * <code>Parser#parse()</code>
-     * 
+     *
      * <p>Parses the current JSON text <code>source</code> and returns the
      * complete data structure as a result.
      */
@@ -238,7 +238,7 @@ public class Parser extends RubyObject {
 
     /**
      * <code>Parser#source()</code>
-     * 
+     *
      * <p>Returns a copy of the current <code>source</code> string, that was
      * used to construct this Parser.
      */
@@ -266,7 +266,7 @@ public class Parser extends RubyObject {
 
     /**
      * A string parsing session.
-     * 
+     *
      * <p>Once a ParserSession is instantiated, the source string should not
      * change until the parsing is complete. The ParserSession object assumes
      * the source {@link RubyString} is still associated to its original
@@ -578,7 +578,7 @@ public class Parser extends RubyObject {
                           }
                       });
                     } catch (JumpException e) { }
-                    if (memoArray[1] != null) { 
+                    if (memoArray[1] != null) {
                         RubyClass klass = (RubyClass) memoArray[1];
                         if (klass.respondsTo("json_creatable?") &&
                             klass.callMethod(context, "json_creatable?").isTrue()) {

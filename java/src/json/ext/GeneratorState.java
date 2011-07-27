@@ -1,6 +1,6 @@
 /*
  * This code is copyrighted work by Daniel Luz <dev at mernen dot com>.
- * 
+ *
  * Distributed under the Ruby and GPLv2 licenses; see COPYING and GPL files
  * for details.
  */
@@ -24,10 +24,10 @@ import org.jruby.util.ByteList;
 
 /**
  * The <code>JSON::Ext::Generator::State</code> class.
- * 
+ *
  * <p>This class is used to create State instances, that are use to hold data
  * while generating a JSON text from a a Ruby data structure.
- * 
+ *
  * @author mernen
  */
 public class GeneratorState extends RubyObject {
@@ -76,6 +76,11 @@ public class GeneratorState extends RubyObject {
      */
     private boolean asciiOnly = DEFAULT_ASCII_ONLY;
     static final boolean DEFAULT_ASCII_ONLY = false;
+    /**
+     * XXX
+     */
+    private boolean quirksMode = DEFAULT_QUIRKS_MODE;
+    static final boolean DEFAULT_QUIRKS_MODE = false;
 
     /**
      * The current depth (inside a #to_json call)
@@ -94,7 +99,7 @@ public class GeneratorState extends RubyObject {
 
     /**
      * <code>State.from_state(opts)</code>
-     * 
+     *
      * <p>Creates a State object from <code>opts</code>, which ought to be
      * {@link RubyHash Hash} to create a new <code>State</code> instance
      * configured by <codes>opts</code>, something else to create an
@@ -136,11 +141,11 @@ public class GeneratorState extends RubyObject {
 
     /**
      * <code>State#initialize(opts = {})</code>
-     * 
+     *
      * Instantiates a new <code>State</code> object, configured by <code>opts</code>.
-     * 
+     *
      * <code>opts</code> can have the following keys:
-     * 
+     *
      * <dl>
      * <dt><code>:indent</code>
      * <dd>a {@link RubyString String} used to indent levels (default: <code>""</code>)
@@ -151,7 +156,7 @@ public class GeneratorState extends RubyObject {
      * <dd>a String that is put before a <code>":"</code> pair delimiter
      * (default: <code>""</code>)
      * <dt><code>:object_nl</code>
-     * <dd>a String that is put at the end of a JSON object (default: <code>""</code>) 
+     * <dd>a String that is put at the end of a JSON object (default: <code>""</code>)
      * <dt><code>:array_nl</code>
      * <dd>a String that is put at the end of a JSON array (default: <code>""</code>)
      * <dt><code>:allow_nan</code>
@@ -181,6 +186,7 @@ public class GeneratorState extends RubyObject {
         this.maxNesting = orig.maxNesting;
         this.allowNaN = orig.allowNaN;
         this.asciiOnly = orig.asciiOnly;
+        this.quirksMode = orig.quirksMode;
         this.depth = orig.depth;
         return this;
     }
@@ -191,7 +197,7 @@ public class GeneratorState extends RubyObject {
     @JRubyMethod
     public IRubyObject generate(ThreadContext context, IRubyObject obj) {
         RubyString result = Generator.generateJson(context, obj, this);
-        if (!objectOrArrayLiteral(result)) {
+        if (!quirksMode && !objectOrArrayLiteral(result)) {
             throw Utils.newException(context, Utils.M_GENERATOR_ERROR,
                     "only generation of JSON objects or arrays allowed");
         }
@@ -364,6 +370,22 @@ public class GeneratorState extends RubyObject {
         return context.getRuntime().newBoolean(asciiOnly);
     }
 
+    @JRubyMethod(name="quirks_mode")
+    public RubyBoolean quirks_mode_get(ThreadContext context) {
+        return context.getRuntime().newBoolean(quirksMode);
+    }
+
+    @JRubyMethod(name="quirks_mode=")
+    public IRubyObject quirks_mode_set(IRubyObject quirks_mode) {
+        quirksMode = quirks_mode.isTrue();
+        return quirks_mode.getRuntime().newBoolean(quirksMode);
+    }
+
+    @JRubyMethod(name="quirks_mode?")
+    public RubyBoolean quirks_mode_p(ThreadContext context) {
+        return context.getRuntime().newBoolean(quirksMode);
+    }
+
     public int getDepth() {
         return depth;
     }
@@ -390,7 +412,7 @@ public class GeneratorState extends RubyObject {
 
     /**
      * <code>State#configure(opts)</code>
-     * 
+     *
      * <p>Configures this State instance with the {@link RubyHash Hash}
      * <code>opts</code>, and returns itself.
      * @param vOpts The options hash
@@ -418,6 +440,7 @@ public class GeneratorState extends RubyObject {
         maxNesting = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
+        quirksMode = opts.getBool("quirks_mode", DEFAULT_QUIRKS_MODE);
 
         depth = opts.getInt("depth", 0);
 
@@ -426,7 +449,7 @@ public class GeneratorState extends RubyObject {
 
     /**
      * <code>State#to_h()</code>
-     * 
+     *
      * <p>Returns the configuration instance variables as a hash, that can be
      * passed to the configure method.
      * @return
@@ -443,6 +466,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("array_nl"), array_nl_get(context));
         result.op_aset(context, runtime.newSymbol("allow_nan"), allow_nan_p(context));
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
+        result.op_aset(context, runtime.newSymbol("quirks_mode"), quirks_mode_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         return result;
