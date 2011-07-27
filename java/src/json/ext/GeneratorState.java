@@ -72,7 +72,8 @@ public class GeneratorState extends RubyObject {
     private boolean allowNaN = DEFAULT_ALLOW_NAN;
     static final boolean DEFAULT_ALLOW_NAN = false;
     /**
-     * XXX
+     * If set to <code>true</code> all JSON documents generated do not contain
+     * any other characters than ASCII characters.
      */
     private boolean asciiOnly = DEFAULT_ASCII_ONLY;
     static final boolean DEFAULT_ASCII_ONLY = false;
@@ -186,7 +187,9 @@ public class GeneratorState extends RubyObject {
     }
 
     /**
-     * XXX
+     * Generates a valid JSON document from object <code>obj</code> and returns
+     * the result. If no valid JSON document can be created this method raises
+     * a GeneratorError exception.
      */
     @JRubyMethod
     public IRubyObject generate(ThreadContext context, IRubyObject obj) {
