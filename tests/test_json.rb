@@ -109,8 +109,14 @@ class TC_JSON < Test::Unit::TestCase
     assert_raise(JSON::ParserError) { JSON.parse('', :quirks_mode => true) }
     assert_raise(JSON::ParserError) { JSON.parse('  /* foo */ ') }
     assert_raise(JSON::ParserError) { JSON.parse('  /* foo */ ', :quirks_mode => true) }
+    parser = JSON::Parser.new('null')
+    assert_equal false, parser.quirks_mode?
+    assert_raise(JSON::ParserError) { parser.parse }
     assert_raise(JSON::ParserError) { JSON.parse('null') }
     assert_equal nil, JSON.parse('null', :quirks_mode => true)
+    parser = JSON::Parser.new('null', :quirks_mode => true)
+    assert_equal true, parser.quirks_mode?
+    assert_equal nil, parser.parse
     assert_raise(JSON::ParserError) { JSON.parse('false') }
     assert_equal false, JSON.parse('false', :quirks_mode => true)
     assert_raise(JSON::ParserError) { JSON.parse('true') }

@@ -49,6 +49,7 @@ public class Parser extends RubyObject {
     private int maxNesting;
     private boolean allowNaN;
     private boolean symbolizeNames;
+    private boolean quirksMode;
     private RubyClass objectClass;
     private RubyClass arrayClass;
     private RubyHash match_string;
@@ -119,6 +120,10 @@ public class Parser extends RubyObject {
      * <dd>If set to <code>true</code>, returns symbols for the names (keys) in
      * a JSON object. Otherwise strings are returned, which is also the default.
      *
+     * <dt><code>:quirks_mode?</code>
+     * <dd>If set to <code>true</code>, if the parse is in quirks_mode, false
+     * otherwise.
+     * 
      * <dt><code>:create_additions</code>
      * <dd>If set to <code>false</code>, the Parser doesn't create additions
      * even if a matchin class and <code>create_id</code> was found. This option
@@ -146,19 +151,21 @@ public class Parser extends RubyObject {
         if (this.vSource != null) {
             throw runtime.newTypeError("already initialized instance");
          }
-        RubyString source = convertEncoding(context, args[0].convertToString());
 
         OptionsReader opts   = new OptionsReader(context, args.length > 1 ? args[1] : null);
         this.maxNesting      = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
         this.allowNaN        = opts.getBool("allow_nan", false);
         this.symbolizeNames  = opts.getBool("symbolize_names", false);
+        this.quirksMode      = opts.getBool("quirks_mode", false);
         this.createId        = opts.getString("create_id", getCreateId(context));
         this.createAdditions = opts.getBool("create_additions", true);
         this.objectClass     = opts.getClass("object_class", runtime.getHash());
         this.arrayClass      = opts.getClass("array_class", runtime.getArray());
         this.match_string    = opts.getHash("match_string");
 
-        this.vSource = source;
+        this.vSource = args[0].convertToString();
+        if (!quirksMode) this.vSource = convertEncoding(context, vSource);
+
         return this;
     }
 
@@ -245,6 +252,17 @@ public class Parser extends RubyObject {
     @JRubyMethod(name = "source")
     public IRubyObject source_get() {
         return checkAndGetSource().dup();
+    }
+
+    /**
+     * <code>Parser#quirks_mode?()</code>
+     * 
+     * <p>If set to <code>true</code>, if the parse is in quirks_mode, false
+     * otherwise.
+     */
+    @JRubyMethod(name = "quirks_mode?")
+    public IRubyObject quirks_mode_p(ThreadContext context) {
+        return context.getRuntime().newBoolean(quirksMode);
     }
 
     public RubyString checkAndGetSource() {
@@ -364,7 +382,7 @@ public class Parser extends RubyObject {
                 }
             }
             action parse_number {
-                if (pe > fpc + 9 &&
+                if (pe > fpc + 9 - (parser.quirksMode ? 1 : 0) &&
                     absSubSequence(fpc, fpc + 9).toString().equals(JSON_MINUS_INFINITY)) {
 
                     if (parser.allowNaN) {
@@ -464,7 +482,7 @@ public class Parser extends RubyObject {
                 fbreak;
             }
 
-            main := '-'? ( '0' | [1-9][0-9]* ) ( ^[0-9] @exit );
+            main := '-'? ( '0' | [1-9][0-9]* ) ( ^[0-9]? @exit );
         }%%
 
         ParserResult parseInteger(int p, int pe) {
@@ -500,7 +518,7 @@ public class Parser extends RubyObject {
             main := '-'?
                     ( ( ( '0' | [1-9][0-9]* ) '.' [0-9]+ ( [Ee] [+\-]?[0-9]+ )? )
                     | ( ( '0' | [1-9][0-9]* ) ( [Ee] [+\-]? [0-9]+ ) ) )
-                    ( ^[0-9Ee.\-] @exit );
+                    ( ^[0-9Ee.\-]? @exit );
         }%%
 
         ParserResult parseFloat(int p, int pe) {
@@ -701,15 +719,14 @@ public class Parser extends RubyObject {
                 fhold;
                 fbreak;
             }
+            
+            pair      = ignore* begin_name >parse_name ignore* name_separator
+              ignore* begin_value >parse_value;
+            next_pair = ignore* value_separator pair;
 
-            a_pair = ignore*
-                     begin_name >parse_name
-                     ignore* name_separator ignore*
-                     begin_value >parse_value;
-
-            main := begin_object
-                    (a_pair (ignore* value_separator a_pair)*)?
-                    ignore* end_object @exit;
+            main := (
+              begin_object (pair (next_pair)*)? ignore* end_object
+            ) @exit;
         }%%
 
         ParserResult parseObject(int p, int pe) {
@@ -789,7 +806,7 @@ public class Parser extends RubyObject {
                     ignore*;
         }%%
 
-        public IRubyObject parse() {
+        public IRubyObject parseStrict() {
             int cs = EVIL;
             int p, pe;
             IRubyObject result = null;
@@ -804,6 +821,54 @@ public class Parser extends RubyObject {
             } else {
                 throw unexpectedToken(p, pe);
             }
+        }
+
+        %%{
+            machine JSON_quirks_mode;
+            include JSON_common;
+
+            write data;
+
+            action parse_value {
+                ParserResult res = parseValue(fpc, pe);
+                if (res == null) {
+                    fhold;
+                    fbreak;
+                } else {
+                    result = res.result;
+                    fexec res.p;
+                }
+            }
+
+            main := ignore*
+                    ( begin_value >parse_value)
+                    ignore*;
+        }%%
+
+        public IRubyObject parseQuirksMode() {
+            int cs = EVIL;
+            int p, pe;
+            IRubyObject result = null;
+
+            %% write init;
+            p = byteList.begin();
+            pe = p + byteList.length();
+            %% write exec;
+
+            if (cs >= JSON_quirks_mode_first_final && p == pe) {
+                return result;
+            } else {
+                throw unexpectedToken(p, pe);
+            }
+        }
+
+        public IRubyObject parse() {
+          if (parser.quirksMode) {
+            return parseQuirksMode();
+          } else {
+            return parseStrict();
+          }
+
         }
 
         /**
