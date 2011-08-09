@@ -647,9 +647,11 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     GET_PARSER_INIT;
     init_count += 1;
 
+#ifndef MAGLEV
     if (json->Vsource) {
         rb_raise(rb_eTypeError, "already initialized instance");
     }
+#endif
     rb_scan_args(argc, argv, "11", &source, &opts);
     source = convert_encoding(StringValue(source));
     ptr = RSTRING_PTR(source);
