@@ -99,7 +99,7 @@ module JSON
   module Pure
     module Generator
       # This class is used to create State instances, that are use to hold data
-      # while generating a JSON text from a a Ruby data structure.
+      # while generating a JSON text from a Ruby data structure.
       class State
         # Creates a State object from _opts_, which ought to be Hash to create
         # a new State instance configured by _opts_, something else to create
@@ -125,7 +125,7 @@ module JSON
         # * *indent*: a string used to indent levels (default: ''),
         # * *space*: a string that is put after, a : or , delimiter (default: ''),
         # * *space_before*: a string that is put before a : pair delimiter (default: ''),
-        # * *object_nl*: a string that is put at the end of a JSON object (default: ''), 
+        # * *object_nl*: a string that is put at the end of a JSON object (default: ''),
         # * *array_nl*: a string that is put at the end of a JSON array (default: ''),
         # * *check_circular*: is deprecated now, use the :max_nesting option instead,
         # * *max_nesting*: sets the maximum level of data structure nesting in
@@ -212,6 +212,7 @@ module JSON
           end
           self
         end
+        alias merge configure
 
         # Returns the configuration instance variables as a hash, that can be
         # passed to the configure method.

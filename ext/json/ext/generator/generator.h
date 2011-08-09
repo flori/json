@@ -67,7 +67,6 @@ static char *fstrndup(const char *ptr, unsigned long len);
 static FBuffer *fbuffer_alloc();
 static FBuffer *fbuffer_alloc_with_length(unsigned long initial_length);
 static void fbuffer_free(FBuffer *fb);
-static void fbuffer_free_only_buffer(FBuffer *fb);
 static void fbuffer_clear(FBuffer *fb);
 static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned long len);
 static void fbuffer_append_long(FBuffer *fb, long number);
@@ -79,9 +78,9 @@ static VALUE fbuffer_to_s(FBuffer *fb);
 
 #define UNI_STRICT_CONVERSION 1
 
-typedef unsigned long	UTF32;	/* at least 32 bits */
-typedef unsigned short	UTF16;	/* at least 16 bits */
-typedef unsigned char	UTF8;	/* typically 8 bits */
+typedef unsigned long  UTF32; /* at least 32 bits */
+typedef unsigned short UTF16; /* at least 16 bits */
+typedef unsigned char  UTF8;  /* typically 8 bits */
 
 #define UNI_REPLACEMENT_CHAR (UTF32)0x0000FFFD
 #define UNI_MAX_BMP (UTF32)0x0000FFFF

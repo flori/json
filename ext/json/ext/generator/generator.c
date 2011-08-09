@@ -18,9 +18,9 @@ static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
- * 
+ *
  * Disclaimer
- * 
+ *
  * This source code is provided as is by Unicode, Inc. No claims are
  * made as to fitness for any particular purpose. No warranties of any
  * kind are expressed or implied. The recipient agrees to determine
@@ -28,9 +28,9 @@ static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
  * purchased on magnetic or optical media from Unicode, Inc., the
  * sole remedy for any claim will be exchange of defective media
  * within 90 days of receipt.
- * 
+ *
  * Limitations on Rights to Redistribute This Code
- * 
+ *
  * Unicode, Inc. hereby grants the right to freely use the information
  * supplied in this file in the creation of products supporting the
  * Unicode Standard, and to make copies of this file in any form
@@ -61,8 +61,8 @@ static const char trailingBytesForUTF8[256] = {
  * This table contains as many values as there might be trailing bytes
  * in a UTF-8 sequence.
  */
-static const UTF32 offsetsFromUTF8[6] = { 0x00000000UL, 0x00003080UL, 0x000E2080UL, 
-		     0x03C82080UL, 0xFA082080UL, 0x82082080UL };
+static const UTF32 offsetsFromUTF8[6] = { 0x00000000UL, 0x00003080UL, 0x000E2080UL,
+    0x03C82080UL, 0xFA082080UL, 0x82082080UL };
 
 /*
  * Utility routine to tell whether a sequence of bytes is legal UTF-8.
@@ -318,11 +318,6 @@ static void fbuffer_free(FBuffer *fb)
     ruby_xfree(fb);
 }
 
-static void fbuffer_free_only_buffer(FBuffer *fb)
-{
-    ruby_xfree(fb);
-}
-
 static void fbuffer_clear(FBuffer *fb)
 {
     fb->len = 0;
@@ -363,23 +358,23 @@ static void fbuffer_append_char(FBuffer *fb, char newchr)
 
 static void freverse(char *start, char *end)
 {
-	char c;
+    char c;
 
-	while (end > start) {
-		c = *end, *end-- = *start, *start++ = c;
+    while (end > start) {
+        c = *end, *end-- = *start, *start++ = c;
     }
 }
 
 static long fltoa(long number, char *buf)
 {
-	static char digits[] = "0123456789";
-	long sign = number;
-	char* tmp = buf;
+    static char digits[] = "0123456789";
+    long sign = number;
+    char* tmp = buf;
 
-	if (sign < 0) number = -number;
+    if (sign < 0) number = -number;
     do *tmp++ = digits[number % 10]; while (number /= 10);
-	if (sign < 0) *tmp++ = '-';
-	freverse(buf, tmp - 1);
+    if (sign < 0) *tmp++ = '-';
+    freverse(buf, tmp - 1);
     return tmp - buf;
 }
 
@@ -404,7 +399,7 @@ static FBuffer *fbuffer_dup(FBuffer *fb)
     return result;
 }
 
-/* 
+/*
  * Document-module: JSON::Ext::Generator
  *
  * This is the JSON generator implemented as a C extension. It can be
@@ -561,6 +556,7 @@ static VALUE mFalseClass_to_json(int argc, VALUE *argv, VALUE self)
 /*
  * call-seq: to_json(*)
  *
+ * Returns a JSON string for nil: 'null'.
  */
 static VALUE mNilClass_to_json(int argc, VALUE *argv, VALUE self)
 {
@@ -984,7 +980,7 @@ static VALUE cState_generate(VALUE self, VALUE obj)
  * * *indent*: a string used to indent levels (default: ''),
  * * *space*: a string that is put after, a : or , delimiter (default: ''),
  * * *space_before*: a string that is put before a : pair delimiter (default: ''),
- * * *object_nl*: a string that is put at the end of a JSON object (default: ''), 
+ * * *object_nl*: a string that is put at the end of a JSON object (default: ''),
  * * *array_nl*: a string that is put at the end of a JSON array (default: ''),
  * * *allow_nan*: true if NaN, Infinity, and -Infinity should be
  *   generated, otherwise an exception is thrown, if these values are
@@ -1359,6 +1355,7 @@ void Init_generator()
     rb_define_method(cState, "depth", cState_depth, 0);
     rb_define_method(cState, "depth=", cState_depth_set, 1);
     rb_define_method(cState, "configure", cState_configure, 1);
+    rb_define_alias(cState, "merge", "configure");
     rb_define_method(cState, "to_h", cState_to_h, 0);
     rb_define_method(cState, "[]", cState_aref, 1);
     rb_define_method(cState, "generate", cState_generate, 1);

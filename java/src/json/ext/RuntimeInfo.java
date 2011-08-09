@@ -27,19 +27,21 @@ final class RuntimeInfo {
     private static Map<Ruby, RuntimeInfo> runtimes;
 
     // these fields are filled by the service loaders
+    // Use WeakReferences so that RuntimeInfo doesn't indirectly hold a hard reference to
+    // the Ruby runtime object, which would cause memory leaks in the runtimes map above.
     /** JSON */
-    RubyModule jsonModule;
+    WeakReference<RubyModule> jsonModule;
     /** JSON::Ext::Generator::GeneratorMethods::String::Extend */
-    RubyModule stringExtendModule;
+    WeakReference<RubyModule> stringExtendModule;
     /** JSON::Ext::Generator::State */
-    RubyClass generatorStateClass;
+    WeakReference<RubyClass> generatorStateClass;
     /** JSON::SAFE_STATE_PROTOTYPE */
-    GeneratorState safeStatePrototype;
+    WeakReference<GeneratorState> safeStatePrototype;
 
-    final RubyEncoding utf8;
-    final RubyEncoding ascii8bit;
+    final WeakReference<RubyEncoding> utf8;
+    final WeakReference<RubyEncoding> ascii8bit;
     // other encodings
-    private final Map<String, RubyEncoding> encodings;
+    private final Map<String, WeakReference<RubyEncoding>> encodings;
 
     private RuntimeInfo(Ruby runtime) {
         RubyClass encodingClass = runtime.getEncoding();
@@ -49,11 +51,11 @@ final class RuntimeInfo {
         } else {
             ThreadContext context = runtime.getCurrentContext();
 
-            utf8 = (RubyEncoding)RubyEncoding.find(context,
-                    encodingClass, runtime.newString("utf-8"));
-            ascii8bit = (RubyEncoding)RubyEncoding.find(context,
-                    encodingClass, runtime.newString("ascii-8bit"));
-            encodings = new HashMap<String, RubyEncoding>();
+            utf8 = new WeakReference<RubyEncoding>((RubyEncoding)RubyEncoding.find(context,
+                    encodingClass, runtime.newString("utf-8")));
+            ascii8bit = new WeakReference<RubyEncoding>((RubyEncoding)RubyEncoding.find(context,
+                    encodingClass, runtime.newString("ascii-8bit")));
+            encodings = new HashMap<String, WeakReference<RubyEncoding>>();
         }
     }
 
@@ -90,30 +92,30 @@ final class RuntimeInfo {
     }
 
     public boolean encodingsSupported() {
-        return utf8 != null;
+        return utf8 != null && utf8.get() != null;
     }
 
     public RubyEncoding getEncoding(ThreadContext context, String name) {
         synchronized (encodings) {
-            RubyEncoding encoding = encodings.get(name);
+            WeakReference<RubyEncoding> encoding = encodings.get(name);
             if (encoding == null) {
                 Ruby runtime = context.getRuntime();
-                encoding = (RubyEncoding)RubyEncoding.find(context,
-                        runtime.getEncoding(), runtime.newString(name));
+                encoding = new WeakReference<RubyEncoding>((RubyEncoding)RubyEncoding.find(context,
+                        runtime.getEncoding(), runtime.newString(name)));
                 encodings.put(name, encoding);
             }
-            return encoding;
+            return encoding.get();
         }
     }
 
     public GeneratorState getSafeStatePrototype(ThreadContext context) {
         if (safeStatePrototype == null) {
-            IRubyObject value = jsonModule.getConstant("SAFE_STATE_PROTOTYPE");
+            IRubyObject value = jsonModule.get().getConstant("SAFE_STATE_PROTOTYPE");
             if (!(value instanceof GeneratorState)) {
-                throw context.getRuntime().newTypeError(value, generatorStateClass);
+                throw context.getRuntime().newTypeError(value, generatorStateClass.get());
             }
-            safeStatePrototype = (GeneratorState)value;
+            safeStatePrototype = new WeakReference<GeneratorState>((GeneratorState)value);
         }
-        return safeStatePrototype;
+        return safeStatePrototype.get();
     }
 }

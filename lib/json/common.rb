@@ -185,7 +185,7 @@ module JSON
   # * *indent*: a string used to indent levels (default: ''),
   # * *space*: a string that is put after, a : or , delimiter (default: ''),
   # * *space_before*: a string that is put before a : pair delimiter (default: ''),
-  # * *object_nl*: a string that is put at the end of a JSON object (default: ''), 
+  # * *object_nl*: a string that is put at the end of a JSON object (default: ''),
   # * *array_nl*: a string that is put at the end of a JSON array (default: ''),
   # * *allow_nan*: true if NaN, Infinity, and -Infinity should be
   #   generated, otherwise an exception is thrown, if these values are
@@ -292,6 +292,7 @@ module JSON
     result
   end
 
+  # Recursively calls passed _Proc_ if the parsed data structure is an _Array_ or _Hash_
   def recurse_proc(result, &proc)
     case result
     when Array
@@ -351,13 +352,15 @@ module JSON
 
   # Shortuct for iconv.
   if ::String.method_defined?(:encode)
+    # Encodes string using Ruby's _String.encode_
     def self.iconv(to, from, string)
       string.encode(to, from)
     end
   else
     require 'iconv'
+    # Encodes string using _iconv_ library
     def self.iconv(to, from, string)
-      Iconv.iconv(to, from, string).first
+      Iconv.conv(to, from, string)
     end
   end
 
@@ -408,6 +411,7 @@ module ::Kernel
   end
 end
 
+# Extends any Class to include _json_creatable?_ method.
 class ::Class
   # Returns true, if this class can be used to create an instance
   # from a serialised JSON string. The class has to implement a class

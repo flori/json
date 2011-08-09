@@ -1,3 +1,15 @@
+2011-07-04 (1.5.4)
+  * Fix memory leak when used from multiple JRuby. (Patch by
+    jfirebaugh@github).
+2011-06-20 (1.5.3)
+  * Alias State#configure method as State#merge to increase duck type synonymy with Hash.
+	* Add as_json methods in json/add/core, so rails can create its json objects
+	  the new way.
+2011-05-11 (1.5.2)
+  * Apply documentation patch by Cory Monty <cory.monty@gmail.com>.
+  * Add gemspecs for json and json_pure.
+  * Fix bug in jruby pretty printing.
+  * Fix bug in object_class and array_class when inheriting from Hash or Array.
 2011-01-24 (1.5.1)
   * Made rake-compiler build a fat binary gem. This should fix issue
     https://github.com/flori/json/issues#issue/54.

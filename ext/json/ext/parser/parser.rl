@@ -2,7 +2,7 @@
 
 /* unicode */
 
-static const char digit_values[256] = { 
+static const char digit_values[256] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1,
@@ -38,7 +38,7 @@ static UTF32 unescape_unicode(const unsigned char *p)
     return result;
 }
 
-static int convert_UTF32_to_UTF8(char *buf, UTF32 ch) 
+static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
 {
     int len = 1;
     if (ch <= 0x7F) {
@@ -67,7 +67,7 @@ static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
 #ifdef HAVE_RUBY_ENCODING_H
 static VALUE CEncoding_ASCII_8BIT, CEncoding_UTF_8, CEncoding_UTF_16BE,
     CEncoding_UTF_16LE, CEncoding_UTF_32BE, CEncoding_UTF_32LE;
-static ID i_encoding, i_encode, i_encode_bang, i_force_encoding;
+static ID i_encoding, i_encode;
 #else
 static ID i_iconv;
 #endif
@@ -77,7 +77,7 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_object_class,
-          i_array_class, i_key_p, i_deep_const_get, i_match, i_match_string;
+          i_array_class, i_key_p, i_deep_const_get, i_match, i_match_string, i_aset, i_leftshift;
 
 %%{
     machine JSON_common;
@@ -97,7 +97,7 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
     VNaN                = 'NaN';
     VInfinity           = 'Infinity';
     VMinusInfinity      = '-Infinity';
-    begin_value         = [nft"\-[{NI] | digit;
+    begin_value         = [nft\"\-\[\{NI] | digit;
     begin_object        = '{';
     end_object          = '}';
     begin_array         = '[';
@@ -115,11 +115,15 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
 
     action parse_value {
         VALUE v = Qnil;
-        const char *np = JSON_parse_value(json, fpc, pe, &v); 
+        const char *np = JSON_parse_value(json, fpc, pe, &v);
         if (np == NULL) {
             fhold; fbreak;
         } else {
-            rb_hash_aset(*result, last_name, v);
+            if (NIL_P(json->object_class)) {
+                rb_hash_aset(*result, last_name, v);
+            } else {
+                rb_funcall(*result, i_aset, 2, last_name, v);
+            }
             fexec np;
         }
     }
@@ -226,7 +230,7 @@ static const char *JSON_parse_object(JSON_Parser *json, const char *p, const cha
         fhold; fbreak;
     }
 
-    action parse_array { 
+    action parse_array {
         const char *np;
         json->current_nesting++;
         np = JSON_parse_array(json, fpc, pe, result);
@@ -234,7 +238,7 @@ static const char *JSON_parse_object(JSON_Parser *json, const char *p, const cha
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
-    action parse_object { 
+    action parse_object {
         const char *np;
         json->current_nesting++;
         np =  JSON_parse_object(json, fpc, pe, result);
@@ -338,11 +342,15 @@ static const char *JSON_parse_float(JSON_Parser *json, const char *p, const char
 
     action parse_value {
         VALUE v = Qnil;
-        const char *np = JSON_parse_value(json, fpc, pe, &v); 
+        const char *np = JSON_parse_value(json, fpc, pe, &v);
         if (np == NULL) {
             fhold; fbreak;
         } else {
-            rb_ary_push(*result, v);
+            if (NIL_P(json->array_class)) {
+                rb_ary_push(*result, v);
+            } else {
+                rb_funcall(*result, i_leftshift, 1, v);
+            }
             fexec np;
         }
     }
@@ -411,7 +419,7 @@ static VALUE json_string_unescape(VALUE result, const char *string, const char *
                     unescape = (char *) "\f";
                     break;
                 case 'u':
-                    if (pe > stringEnd - 4) { 
+                    if (pe > stringEnd - 4) {
                         return Qnil;
                     } else {
                         char buf[4];
@@ -467,7 +475,7 @@ static VALUE json_string_unescape(VALUE result, const char *string, const char *
 
     action exit { fhold; fbreak; }
 
-    main := '"' ((^(["\\] | 0..0x1f) | '\\'["\\/bfnrt] | '\\u'[0-9a-fA-F]{4} | '\\'^(["\\/bfnrtu]|0..0x1f))* %parse_string) '"' @exit;
+    main := '"' ((^([\"\\] | 0..0x1f) | '\\'[\"\\/bfnrt] | '\\u'[0-9a-fA-F]{4} | '\\'^([\"\\/bfnrtu]|0..0x1f))* %parse_string) '"' @exit;
 }%%
 
 static int
@@ -542,7 +550,7 @@ static const char *JSON_parse_string(JSON_Parser *json, const char *p, const cha
             ) ignore*;
 }%%
 
-/* 
+/*
  * Document-class: JSON::Ext::Parser
  *
  * This is the JSON parser implemented as a C extension. It can be configured
@@ -566,22 +574,15 @@ static VALUE convert_encoding(VALUE source)
         VALUE encoding = rb_funcall(source, i_encoding, 0);
         if (encoding == CEncoding_ASCII_8BIT) {
             if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
-                source = rb_str_dup(source);
-                rb_funcall(source, i_force_encoding, 1, CEncoding_UTF_32BE);
-                source = rb_funcall(source, i_encode_bang, 1, CEncoding_UTF_8);
+                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32BE);
             } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
-                source = rb_str_dup(source);
-                rb_funcall(source, i_force_encoding, 1, CEncoding_UTF_16BE);
-                source = rb_funcall(source, i_encode_bang, 1, CEncoding_UTF_8);
+                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16BE);
             } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
-                source = rb_str_dup(source);
-                rb_funcall(source, i_force_encoding, 1, CEncoding_UTF_32LE);
-                source = rb_funcall(source, i_encode_bang, 1, CEncoding_UTF_8);
+                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32LE);
             } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
-                source = rb_str_dup(source);
-                rb_funcall(source, i_force_encoding, 1, CEncoding_UTF_16LE);
-                source = rb_funcall(source, i_encode_bang, 1, CEncoding_UTF_8);
+                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16LE);
             } else {
+                source = rb_str_dup(source);
                 FORCE_UTF8(source);
             }
         } else {
@@ -604,7 +605,7 @@ static VALUE convert_encoding(VALUE source)
 
 static inline void parser_iv_set(JSON_Parser *json, const char* iv_name, VALUE v)
 {
-  // store reference to v in a Ruby instVar to keep v alive 
+  // store reference to v in a Ruby instVar to keep v alive
   //  without using a gc_mark function in Data_Wrap_Struct calls
   rb_iv_set(json->dwrapped_parser, iv_name, v);
 }
@@ -642,8 +643,13 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     const char *ptr;
     long len;
     VALUE source, opts;
-    GET_PARSER;
-init_count += 1;
+
+    GET_PARSER_INIT;
+    init_count += 1;
+
+    if (json->Vsource) {
+        rb_raise(rb_eTypeError, "already initialized instance");
+    }
     rb_scan_args(argc, argv, "11", &source, &opts);
     source = convert_encoding(StringValue(source));
     ptr = RSTRING_PTR(source);
@@ -820,6 +826,8 @@ void Init_parser()
     i_match_string = rb_intern("match_string");
     i_key_p = rb_intern("key?");
     i_deep_const_get = rb_intern("deep_const_get");
+    i_aset = rb_intern("[]=");
+    i_leftshift = rb_intern("<<");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     CEncoding_UTF_16BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16be"));
@@ -829,9 +837,15 @@ void Init_parser()
     CEncoding_ASCII_8BIT = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("ascii-8bit"));
     i_encoding = rb_intern("encoding");
     i_encode = rb_intern("encode");
-    i_encode_bang = rb_intern("encode!");
-    i_force_encoding = rb_intern("force_encoding");
 #else
     i_iconv = rb_intern("iconv");
 #endif
 }
+
+/*
+ * Local variables:
+ * mode: c
+ * c-file-style: ruby
+ * indent-tabs-mode: nil
+ * End:
+ */

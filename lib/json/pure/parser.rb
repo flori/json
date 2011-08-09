@@ -41,7 +41,7 @@ module JSON
           [^*/]|        # normal chars
           /[^*]|        # slashes that do not start a nested comment
           \*[^/]|       # asterisks that do not end this comment
-          /(?=\*/)      # single slash before this comment's end 
+          /(?=\*/)      # single slash before this comment's end
          )*
            \*/               # the End of this comment
            |[ \t\r\n]+       # whitespaces: space, horicontal tab, lf, cr
@@ -162,12 +162,12 @@ module JSON
         ?n  => "\n",
         ?r  => "\r",
         ?t  => "\t",
-        ?u  => nil, 
+        ?u  => nil,
       })
 
       EMPTY_8BIT_STRING = ''
       if ::String.method_defined?(:encode)
-        EMPTY_8BIT_STRING.force_encoding Encoding::ASCII_8BIT 
+        EMPTY_8BIT_STRING.force_encoding Encoding::ASCII_8BIT
       end
 
       def parse_string

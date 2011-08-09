@@ -142,7 +142,10 @@ public class Parser extends RubyObject {
 
     @JRubyMethod(required = 1, optional = 1, visibility = Visibility.PRIVATE)
     public IRubyObject initialize(ThreadContext context, IRubyObject[] args) {
-        Ruby runtime      = context.getRuntime();
+        Ruby runtime = context.getRuntime();
+        if (this.vSource != null) {
+            throw runtime.newTypeError("already initialized instance");
+         }
         RubyString source = convertEncoding(context, args[0].convertToString());
 
         OptionsReader opts   = new OptionsReader(context, args.length > 1 ? args[1] : null);
@@ -174,8 +177,8 @@ public class Parser extends RubyObject {
 
         if (info.encodingsSupported()) {
             RubyEncoding encoding = (RubyEncoding)source.encoding(context);
-            if (encoding != info.ascii8bit) {
-                return (RubyString)source.encode(context, info.utf8);
+            if (encoding != info.ascii8bit.get()) {
+                return (RubyString)source.encode(context, info.utf8.get());
             }
 
             String sniffedEncoding = sniffByteList(bl);
@@ -186,7 +189,7 @@ public class Parser extends RubyObject {
         String sniffedEncoding = sniffByteList(bl);
         if (sniffedEncoding == null) return source; // assume UTF-8
         Ruby runtime = context.getRuntime();
-        return (RubyString)info.jsonModule.
+        return (RubyString)info.jsonModule.get().
             callMethod(context, "iconv",
                 new IRubyObject[] {
                     runtime.newString("utf-8"),
@@ -216,7 +219,7 @@ public class Parser extends RubyObject {
     private RubyString reinterpretEncoding(ThreadContext context,
             RubyString str, String sniffedEncoding) {
         RubyEncoding actualEncoding = info.getEncoding(context, sniffedEncoding);
-        RubyEncoding targetEncoding = info.utf8;
+        RubyEncoding targetEncoding = info.utf8.get();
         RubyString dup = (RubyString)str.dup();
         dup.force_encoding(context, actualEncoding);
         return (RubyString)dup.encode_bang(context, targetEncoding);
@@ -241,7 +244,15 @@ public class Parser extends RubyObject {
      */
     @JRubyMethod(name = "source")
     public IRubyObject source_get() {
-        return vSource.dup();
+        return checkAndGetSource().dup();
+    }
+
+    public RubyString checkAndGetSource() {
+      if (vSource != null) {
+        return vSource;
+      } else {
+        throw getRuntime().newTypeError("uninitialized instance");
+      }
     }
 
     /**
@@ -249,7 +260,7 @@ public class Parser extends RubyObject {
      * set to <code>nil</code> or <code>false</code>, and a String if not.
      */
     private RubyString getCreateId(ThreadContext context) {
-        IRubyObject v = info.jsonModule.callMethod(context, "create_id");
+        IRubyObject v = info.jsonModule.get().callMethod(context, "create_id");
         return v.isTrue() ? v.convertToString() : null;
     }
 
@@ -279,7 +290,7 @@ public class Parser extends RubyObject {
         private ParserSession(Parser parser, ThreadContext context) {
             this.parser = parser;
             this.context = context;
-            this.byteList = parser.vSource.getByteList();
+            this.byteList = parser.checkAndGetSource().getByteList();
             this.data = byteList.unsafeBytes();
             this.decoder = new StringDecoder(context);
         }
@@ -596,7 +607,11 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    result.append(res.result);
+                    if (!parser.arrayClass.getName().equals("Array")) {
+                        result.callMethod(context, "<<", res.result);
+                    } else {
+                        result.append(res.result);
+                    }
                     fexec res.p;
                 }
             }
@@ -655,7 +670,11 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    result.op_aset(context, lastName, res.result);
+                    if (!parser.objectClass.getName().equals("Hash")) {
+                        result.callMethod(context, "[]=", new IRubyObject[] { lastName, res.result });
+                    } else {
+                        result.op_aset(context, lastName, res.result);
+                    }
                     fexec res.p;
                 }
             }
@@ -722,7 +741,7 @@ public class Parser extends RubyObject {
                 IRubyObject vKlassName = result.op_aref(context, parser.createId);
                 if (!vKlassName.isNil()) {
                     // might throw ArgumentError, we let it propagate
-                    IRubyObject klass = parser.info.jsonModule.
+                    IRubyObject klass = parser.info.jsonModule.get().
                             callMethod(context, "deep_const_get", vKlassName);
                     if (klass.respondsTo("json_creatable?") &&
                         klass.callMethod(context, "json_creatable?").isTrue()) {
@@ -805,7 +824,7 @@ public class Parser extends RubyObject {
          * @param name The constant name
          */
         private IRubyObject getConstant(String name) {
-            return parser.info.jsonModule.getConstant(name);
+            return parser.info.jsonModule.get().getConstant(name);
         }
 
         private RaiseException newException(String className, String message) {
