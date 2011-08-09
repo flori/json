@@ -20,4 +20,3 @@ if $0 == __FILE__
 else
   spec
 end
-spec
