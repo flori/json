@@ -4,7 +4,12 @@ rescue LoadError
 end
 
 require 'rbconfig'
-include Config
+begin
+  include RbConfig
+rescue NameError
+  include Config
+end
+
 
 require 'rake/clean'
 CLOBBER.include Dir['benchmarks/data/*.{dat,log}'], 'doc', 'Gemfile.lock'
@@ -228,7 +233,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
     rm_rf JAVA_PARSER_SRC
   end
 
-  JRUBY_JAR = File.join(Config::CONFIG["libdir"], "jruby.jar")
+  JRUBY_JAR = File.join(CONFIG["libdir"], "jruby.jar")
   if File.exist?(JRUBY_JAR)
     JAVA_SOURCES.each do |src|
       classpath = (Dir['java/lib/*.jar'] << 'java/src' << JRUBY_JAR) * ':'
