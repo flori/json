@@ -1,6 +1,6 @@
 /*
  * This code is copyrighted work by Daniel Luz <dev at mernen dot com>.
- * 
+ *
  * Distributed under the Ruby and GPLv2 licenses; see COPYING and GPL files
  * for details.
  */
@@ -25,7 +25,7 @@ import org.jruby.util.ByteList;
 /**
  * A class that populates the
  * <code>Json::Ext::Generator::GeneratorMethods</code> module.
- * 
+ *
  * @author mernen
  */
 class GeneratorMethods {
