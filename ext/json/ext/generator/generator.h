@@ -45,6 +45,11 @@
 #define RSTRING_LEN(string) RSTRING(string)->len
 #endif
 
+/* We don't need to guard objects for rbx, so let's do nothing at all. */
+#ifndef RB_GC_GUARD
+#define RB_GC_GUARD(object)
+#endif
+
 /* fbuffer implementation */
 
 typedef struct FBufferStruct {
