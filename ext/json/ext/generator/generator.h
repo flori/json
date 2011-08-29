@@ -45,8 +45,6 @@
 #define RSTRING_LEN(string) RSTRING(string)->len
 #endif
 
-#define RSTRING_PAIR(string) RSTRING_PTR(string), RSTRING_LEN(string)
-
 /* fbuffer implementation */
 
 typedef struct FBufferStruct {

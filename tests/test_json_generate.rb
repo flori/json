@@ -197,4 +197,17 @@ EOT
     assert_raises(JSON::NestingError) { ary.to_json(s) }
     assert_equal 19, s.depth
   end
+
+  def test_gc
+    bignum_too_long_to_embed_as_string = 1234567890123456789012345
+    expect = bignum_too_long_to_embed_as_string.to_s
+    stress, GC.stress = GC.stress, true
+
+    10.times do |i|
+      tmp = bignum_too_long_to_embed_as_string.to_json
+      assert_equal expect, tmp
+    end
+  ensure
+    GC.stress = stress
+  end if GC.respond_to?(:stress=)
 end

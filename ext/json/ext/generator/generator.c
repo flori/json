@@ -349,6 +349,16 @@ static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned long len)
     }
 }
 
+static void fbuffer_append_str(FBuffer *fb, VALUE str)
+{
+    const char *newstr = StringValuePtr(str);
+    unsigned long len = RSTRING_LEN(str);
+
+    RB_GC_GUARD(str);
+
+    fbuffer_append(fb, newstr, len);
+}
+
 static void fbuffer_append_char(FBuffer *fb, char newchr)
 {
     fbuffer_inc_capa(fb, 1);
@@ -855,7 +865,7 @@ static void generate_json_fixnum(FBuffer *buffer, VALUE Vstate, JSON_Generator_S
 static void generate_json_bignum(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
 {
     VALUE tmp = rb_funcall(obj, i_to_s, 0);
-    fbuffer_append(buffer, RSTRING_PAIR(tmp));
+    fbuffer_append_str(buffer, tmp);
 }
 
 static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
@@ -872,7 +882,7 @@ static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_St
             rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
         }
     }
-    fbuffer_append(buffer, RSTRING_PAIR(tmp));
+    fbuffer_append_str(buffer, tmp);
 }
 
 static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
@@ -900,7 +910,7 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
     } else if (rb_respond_to(obj, i_to_json)) {
         tmp = rb_funcall(obj, i_to_json, 1, Vstate);
         Check_Type(tmp, T_STRING);
-        fbuffer_append(buffer, RSTRING_PAIR(tmp));
+        fbuffer_append_str(buffer, tmp);
     } else {
         tmp = rb_funcall(obj, i_to_s, 0);
         Check_Type(tmp, T_STRING);
