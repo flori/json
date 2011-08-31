@@ -1,6 +1,11 @@
-2011-07-04 (1.5.4)
+2011-08-31 (1.5.4)
   * Fix memory leak when used from multiple JRuby. (Patch by
     jfirebaugh@github).
+  * Apply patch by Eric Wong <nocode@yhbt.net> that fixes garbage collection problem
+    reported in https://github.com/flori/json/issues/46.
+  * Add :quirks_mode option to parser and generator.
+  * Add support for Rational and Complex number additions via json/add/complex
+    and json/add/rational requires.
 2011-06-20 (1.5.3)
   * Alias State#configure method as State#merge to increase duck type synonymy with Hash.
 	* Add as_json methods in json/add/core, so rails can create its json objects

@@ -78,7 +78,8 @@ public class GeneratorState extends RubyObject {
     private boolean asciiOnly = DEFAULT_ASCII_ONLY;
     static final boolean DEFAULT_ASCII_ONLY = false;
     /**
-     * XXX
+     * If set to <code>true</code> all JSON values generated might not be
+     * RFC-conform JSON documents.
      */
     private boolean quirksMode = DEFAULT_QUIRKS_MODE;
     static final boolean DEFAULT_QUIRKS_MODE = false;

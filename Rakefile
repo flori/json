@@ -303,7 +303,9 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   task :create_jar => [ :create_parser_jar, :create_generator_jar ]
 
   desc "Build all gems and archives for a new release of the jruby extension."
-  task :release => [ :clean, :version, :jruby_gem ]
+  task :build => [ :clean, :version, :jruby_gem ]
+
+  task :release => :build
 else
   desc "Compiling extension"
   task :compile => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
@@ -405,7 +407,9 @@ else
   task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 
   desc "Build all gems and archives for a new release of json and json_pure."
-  task :release => [ :clean, :gemspec, :package ]
+  task :build => [ :clean, :gemspec, :package ]
+
+  task :release => :build
 end
 
 desc "Compile in the the source directory"

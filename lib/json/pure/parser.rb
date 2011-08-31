@@ -68,6 +68,8 @@ module JSON
       #   defaults to true.
       # * *object_class*: Defaults to Hash
       # * *array_class*: Defaults to Array
+      # * *quirks_mode*: Enables quirks_mode for parser, that is for example
+      #   parsing single JSON values instead of documents is possible.
       def initialize(source, opts = {})
         opts ||= {}
         unless @quirks_mode = opts[:quirks_mode]

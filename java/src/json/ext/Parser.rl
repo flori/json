@@ -134,6 +134,10 @@ public class Parser extends RubyObject {
      *
      * <dt><code>:array_class</code>
      * <dd>Defaults to Array.
+     *
+     * <dt><code>:quirks_mode</code>
+     * <dd>Enables quirks_mode for parser, that is for example parsing single
+     * JSON values instead of documents is possible.
      * </dl>
      */
     @JRubyMethod(name = "new", required = 1, optional = 1, meta = true)

@@ -133,6 +133,8 @@ module JSON
         # * *allow_nan*: true if NaN, Infinity, and -Infinity should be
         #   generated, otherwise an exception is thrown, if these values are
         #   encountered. This options defaults to false.
+        # * *quirks_mode*: Enables quirks_mode for parser, that is for example
+        #   generating single JSON values instead of documents is possible.
         def initialize(opts = {})
           @indent         = ''
           @space          = ''
