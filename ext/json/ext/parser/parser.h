@@ -3,7 +3,7 @@
 
 #include "ruby.h"
 
-#if HAVE_RE_H
+#ifndef HAVE_RUBY_RE_H
 #include "re.h"
 #endif
 
