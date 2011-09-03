@@ -1,5 +1,4 @@
 require 'mkmf'
-require 'rbconfig'
 
 unless $CFLAGS.gsub!(/ -O[\dsz]?/, ' -O3')
   $CFLAGS << ' -O3'
@@ -11,6 +10,4 @@ if CONFIG['CC'] =~ /gcc/
   #end
 end
 
-have_header("re.h")
-have_header("ruby/st.h")
 create_makefile 'json/ext/parser'
