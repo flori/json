@@ -96,10 +96,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.add_development_dependency 'bullshit'
     s.add_development_dependency 'sdoc'
     s.add_development_dependency 'rake', '~>0.9.2'
-    s.add_dependency 'spruz', '~>0.2.8'
-
-    s.bindir = "bin"
-    s.executables = [ "edit_json.rb", "prettify_json.rb" ]
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
@@ -140,9 +136,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.add_development_dependency 'permutation'
     s.add_development_dependency 'bullshit'
     s.add_development_dependency 'sdoc'
-
-    s.bindir = "bin"
-    s.executables = [ "edit_json.rb", "prettify_json.rb" ]
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
