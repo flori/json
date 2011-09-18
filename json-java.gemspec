@@ -3,7 +3,7 @@ require "rubygems"
 
 spec = Gem::Specification.new do |s|
   s.name = "json"
-  s.version = File.read("VERSION").chomp
+  s.version = "1.6.0.1"
   s.summary = "JSON implementation for JRuby"
   s.description = "A JSON implementation as a JRuby extension."
   s.author = "Daniel Luz"
