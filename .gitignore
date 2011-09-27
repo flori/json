@@ -5,3 +5,4 @@ pkg
 .idea
 java/Json.iml
 Gemfile.lock
+.rvmrc

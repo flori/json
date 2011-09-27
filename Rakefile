@@ -4,7 +4,12 @@ rescue LoadError
 end
 
 require 'rbconfig'
-include Config
+begin
+  include RbConfig
+rescue NameError
+  include Config
+end
+
 
 require 'rake/clean'
 CLOBBER.include Dir['benchmarks/data/*.{dat,log}'], 'doc', 'Gemfile.lock'
@@ -91,10 +96,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.add_development_dependency 'bullshit'
     s.add_development_dependency 'sdoc'
     s.add_development_dependency 'rake', '~>0.9.2'
-    s.add_dependency 'spruz', '~>0.2.8'
-
-    s.bindir = "bin"
-    s.executables = [ "edit_json.rb", "prettify_json.rb" ]
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
@@ -135,9 +136,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.add_development_dependency 'permutation'
     s.add_development_dependency 'bullshit'
     s.add_development_dependency 'sdoc'
-
-    s.bindir = "bin"
-    s.executables = [ "edit_json.rb", "prettify_json.rb" ]
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
@@ -228,13 +226,13 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
     rm_rf JAVA_PARSER_SRC
   end
 
-  JRUBY_JAR = File.join(Config::CONFIG["libdir"], "jruby.jar")
+  JRUBY_JAR = File.join(CONFIG["libdir"], "jruby.jar")
   if File.exist?(JRUBY_JAR)
     JAVA_SOURCES.each do |src|
       classpath = (Dir['java/lib/*.jar'] << 'java/src' << JRUBY_JAR) * ':'
       obj = src.sub(/\.java\Z/, '.class')
       file obj => src do
-        sh 'javac', '-classpath', classpath, '-source', '1.5', src
+        sh 'javac', '-classpath', classpath, '-source', '1.5', '-target', '1.5', src
       end
       JAVA_CLASSES << obj
     end
@@ -298,7 +296,9 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   task :create_jar => [ :create_parser_jar, :create_generator_jar ]
 
   desc "Build all gems and archives for a new release of the jruby extension."
-  task :release => [ :clean, :version, :jruby_gem ]
+  task :build => [ :clean, :version, :jruby_gem ]
+
+  task :release => :build
 else
   desc "Compiling extension"
   task :compile => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
@@ -400,7 +400,9 @@ else
   task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 
   desc "Build all gems and archives for a new release of json and json_pure."
-  task :release => [ :clean, :gemspec, :package ]
+  task :build => [ :clean, :gemspec, :package ]
+
+  task :release => :build
 end
 
 desc "Compile in the the source directory"

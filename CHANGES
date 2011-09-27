@@ -1,6 +1,16 @@
-2011-07-04 (1.5.4)
+2011-09-18 (1.6.1)
+  * Using -target 1.5 to force Java bits to compile with 1.5.
+2011-09-12 (1.6.0)
+  * Extract utilities (prettifier and GUI-editor) in its own gem json-utils.
+  * Split json/add/core into different files for classes to be serialised.
+2011-08-31 (1.5.4)
   * Fix memory leak when used from multiple JRuby. (Patch by
     jfirebaugh@github).
+  * Apply patch by Eric Wong <nocode@yhbt.net> that fixes garbage collection problem
+    reported in https://github.com/flori/json/issues/46.
+  * Add :quirks_mode option to parser and generator.
+  * Add support for Rational and Complex number additions via json/add/complex
+    and json/add/rational requires.
 2011-06-20 (1.5.3)
   * Alias State#configure method as State#merge to increase duck type synonymy with Hash.
 	* Add as_json methods in json/add/core, so rails can create its json objects

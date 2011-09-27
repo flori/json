@@ -3,7 +3,9 @@
 
 require 'test/unit'
 require File.join(File.dirname(__FILE__), 'setup_variant')
-load 'json/add/core.rb'
+require 'json/add/core'
+require 'json/add/complex'
+require 'json/add/rational'
 require 'date'
 
 class TC_JSONAddition < Test::Unit::TestCase
@@ -163,5 +165,10 @@ class TC_JSONAddition < Test::Unit::TestCase
     assert_equal d, JSON.parse(d.to_json)
     d = DateTime.civil(2008, 6, 17, 11, 48, 32, Rational(12,24))
     assert_equal d, JSON.parse(d.to_json)
+  end
+
+  def test_rational_complex
+    assert_equal Rational(2, 9), JSON(JSON(Rational(2, 9)))
+    assert_equal Complex(2, 9), JSON(JSON(Complex(2, 9)))
   end
 end
