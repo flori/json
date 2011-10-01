@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Florian Frank}]
-  s.date = %q{2011-09-18}
   s.description = %q{This is a JSON implementation in pure Ruby.}
   s.email = %q{flori@ping.de}
   s.extra_rdoc_files = [%q{README.rdoc}]
