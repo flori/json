@@ -6,6 +6,7 @@ require File.join(File.dirname(__FILE__), 'setup_variant')
 require 'json/add/core'
 require 'json/add/complex'
 require 'json/add/rational'
+require 'json/add/bigdecimal'
 require 'date'
 
 class TC_JSONAddition < Test::Unit::TestCase
@@ -170,5 +171,10 @@ class TC_JSONAddition < Test::Unit::TestCase
   def test_rational_complex
     assert_equal Rational(2, 9), JSON(JSON(Rational(2, 9)))
     assert_equal Complex(2, 9), JSON(JSON(Complex(2, 9)))
+  end
+
+  def test_bigdecimal
+    assert_equal BigDecimal('3.141', 23), JSON(JSON(BigDecimal('3.141', 23)))
+    assert_equal BigDecimal('3.141', 666), JSON(JSON(BigDecimal('3.141', 666)))
   end
 end

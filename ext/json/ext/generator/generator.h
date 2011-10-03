@@ -7,11 +7,9 @@
 
 #include "ruby.h"
 
-#if HAVE_RUBY_RE_H
+#ifdef HAVE_RUBY_RE_H
 #include "ruby/re.h"
-#endif
-
-#if HAVE_RE_H
+#else
 #include "re.h"
 #endif
 
