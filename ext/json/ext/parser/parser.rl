@@ -688,6 +688,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->object_class = Qnil;
         json->array_class = Qnil;
     }
+    source = rb_convert_type(source, T_STRING, "String", "to_str");
     if (!json->quirks_mode) {
       source = convert_encoding(StringValue(source));
     }
