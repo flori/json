@@ -296,7 +296,7 @@ module JSON
       source = source.to_str
     elsif source.respond_to? :to_io
       source = source.to_io.read
-    else
+    elsif source.respond_to?(:read)
       source = source.read
     end
     result = parse(source, :max_nesting => false, :allow_nan => true)
