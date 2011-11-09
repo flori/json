@@ -57,7 +57,7 @@ typedef struct FBufferStruct {
     unsigned long capa;
 } FBuffer;
 
-#define FBUFFER_INITIAL_LENGTH 4096
+#define FBUFFER_INITIAL_LENGTH_DEFAULT 4096
 
 #define FBUFFER_PTR(fb) (fb->ptr)
 #define FBUFFER_LEN(fb) (fb->len)
@@ -65,8 +65,7 @@ typedef struct FBufferStruct {
 #define FBUFFER_PAIR(fb) FBUFFER_PTR(fb), FBUFFER_LEN(fb)
 
 static char *fstrndup(const char *ptr, unsigned long len);
-static FBuffer *fbuffer_alloc();
-static FBuffer *fbuffer_alloc_with_length(unsigned long initial_length);
+static FBuffer *fbuffer_alloc(unsigned long initial_length);
 static void fbuffer_free(FBuffer *fb);
 static void fbuffer_clear(FBuffer *fb);
 static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned long len);
@@ -126,6 +125,7 @@ typedef struct JSON_Generator_StateStruct {
     char ascii_only;
     char quirks_mode;
     long depth;
+    long buffer_initial_length;
 } JSON_Generator_State;
 
 #define GET_STATE(self)                       \

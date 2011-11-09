@@ -233,7 +233,7 @@ if $0 == __FILE__
     system "#{RUBY_PATH} #$0 yaml"
     system "#{RUBY_PATH} #$0 rails"
     system "#{RUBY_PATH} #$0 pure"
-    system "#{RAKE_PATH} compile_ext"
+    system "#{RAKE_PATH} compile"
     system "#{RUBY_PATH} #$0 ext"
     system "#{RUBY_PATH} #$0 yajl"
     Bullshit.compare do
