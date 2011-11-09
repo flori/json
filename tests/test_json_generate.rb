@@ -208,6 +208,8 @@ EOT
     assert_equal 4096, s.buffer_initial_length
     s.buffer_initial_length = -1
     assert_equal 4096, s.buffer_initial_length
+    s.buffer_initial_length = 128
+    assert_equal 128, s.buffer_initial_length
   end
 
   def test_gc
