@@ -173,15 +173,15 @@ module JSON
         # it's disabled.
         attr_accessor :quirks_mode
 
-        # XXX
+        # :stopdoc:
         attr_reader :buffer_initial_length
 
-        # XXX
         def buffer_initial_length=(length)
           if length > 0
             @buffer_initial_length = length
           end
         end
+        # :startdoc:
 
         # This integer returns the current depth data structure nesting in the
         # generated JSON.

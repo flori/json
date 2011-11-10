@@ -1007,6 +1007,8 @@ static VALUE cState_generate(VALUE self, VALUE obj)
  *   encountered. This options defaults to false.
  * * *quirks_mode*: Enables quirks_mode for parser, that is for example
  *   generating single JSON values instead of documents is possible.
+ * * *buffer_initial_length*: sets the initial length of the generator's
+ *   internal buffer.
  */
 static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
 {
@@ -1373,7 +1375,7 @@ static VALUE cState_buffer_initial_length(VALUE self)
  * call-seq: buffer_initial_length=(length)
  *
  * This sets the initial length of the buffer to +length+, if +length+ > 0,
- * otherwise it's set to the default value.
+ * otherwise its value isn't changed.
  */
 static VALUE cState_buffer_initial_length_set(VALUE self, VALUE buffer_initial_length)
 {
