@@ -73,7 +73,7 @@ module JSON
       def initialize(source, opts = {})
         opts ||= {}
         unless @quirks_mode = opts[:quirks_mode]
-          source = determine_encoding source
+          source = convert_encoding source
         end
         super source
         if !opts.key?(:max_nesting) # defaults to 19
@@ -145,7 +145,12 @@ module JSON
 
       private
 
-      def determine_encoding(source)
+      def convert_encoding(source)
+        if source.respond_to?(:to_str)
+          source = source.to_str
+        else
+          raise TypeError, "#{source.inspect} is not like a string"
+        end
         if defined?(::Encoding)
           if source.encoding == ::Encoding::ASCII_8BIT
             b = source[0, 4].bytes.to_a

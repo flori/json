@@ -210,4 +210,24 @@ EOT
   ensure
     GC.stress = stress
   end if GC.respond_to?(:stress=)
+
+  def test_broken_bignum # [ruby-core:38867]
+    pid = fork do
+      Bignum.class_eval do
+        def to_s
+        end
+      end
+      begin
+        JSON::Ext::Generator::State.new.generate(1<<64)
+        exit 1
+      rescue TypeError
+        exit 0
+      end
+    end
+    _, status = Process.waitpid2(pid)
+    assert status.success?
+  rescue NotImplementedError
+    # forking to avoid modifying core class of a parent process and
+    # introducing race conditions of tests are run in parallel
+  end if defined?(JSON::Ext)
 end

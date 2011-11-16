@@ -107,6 +107,8 @@ class TC_JSON < Test::Unit::TestCase
   def test_parse_json_primitive_values
     assert_raise(JSON::ParserError) { JSON.parse('') }
     assert_raise(JSON::ParserError) { JSON.parse('', :quirks_mode => true) }
+    assert_raise(TypeError) { JSON.parse(nil) }
+    assert_raise(TypeError) { JSON.parse(nil, :quirks_mode => true) }
     assert_raise(JSON::ParserError) { JSON.parse('  /* foo */ ') }
     assert_raise(JSON::ParserError) { JSON.parse('  /* foo */ ', :quirks_mode => true) }
     parser = JSON::Parser.new('null')
