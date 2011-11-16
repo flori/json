@@ -2093,12 +2093,12 @@ static JSON_Parser *JSON_allocate()
 {
     JSON_Parser *json = ALLOC(JSON_Parser);
     MEMZERO(json, JSON_Parser, 1);
-    json->dwrapped_parser = Qnil;
-    json->Vsource = Qnil;
-    json->create_id = Qnil;
-    json->object_class = Qnil;
-    json->array_class = Qnil;
-    json->match_string = Qnil;
+    json->dwrapped_parser = Qfalse;
+    json->Vsource = Qfalse;
+    json->create_id = Qfalse;
+    json->object_class = Qfalse;
+    json->array_class = Qfalse;
+    json->match_string = Qfalse;
 
     return json;
 }
