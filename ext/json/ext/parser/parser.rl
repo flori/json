@@ -298,7 +298,17 @@ static char *JSON_parse_integer(JSON_Parser *json, char *p, char *pe, VALUE *res
 
     if (cs >= JSON_integer_first_final) {
         long len = p - json->memo;
-        *result = rb_Integer(rb_str_new(json->memo, len));
+        if(len > json->buffer_len) {
+          char* buf = malloc(len + 1);
+          memcpy(buf, json->memo, len);
+          buf[len] = 0;
+          *result = rb_cstr2inum(buf, 10);
+          free(buf);
+        } else {
+          memcpy(json->buffer, json->memo, len);
+          json->buffer[len] = 0;
+          *result = rb_cstr2inum(json->buffer, 10);
+        }
         return p + 1;
     } else {
         return NULL;
@@ -806,6 +816,8 @@ static JSON_Parser *JSON_allocate()
 {
     JSON_Parser *json = ALLOC(JSON_Parser);
     MEMZERO(json, JSON_Parser, 1);
+    json->buffer_len = 1024;
+    json->buffer = malloc(json->buffer_len);
     return json;
 }
 
@@ -820,6 +832,7 @@ static void JSON_mark(JSON_Parser *json)
 
 static void JSON_free(JSON_Parser *json)
 {
+    if(json->buffer) ruby_xfree(json->buffer);
     ruby_xfree(json);
 }
 
