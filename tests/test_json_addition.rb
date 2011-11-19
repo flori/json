@@ -129,7 +129,7 @@ class TC_JSONAddition < Test::Unit::TestCase
 
   def test_core
     t = Time.now
-    assert_equal t.inspect, JSON(JSON(t)).inspect
+    assert_equal t, JSON(JSON(t))
     d = Date.today
     assert_equal d, JSON(JSON(d))
     d = DateTime.civil(2007, 6, 14, 14, 57, 10, Rational(1, 12), 2299161)
