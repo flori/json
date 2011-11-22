@@ -3,6 +3,8 @@
   * Fix bug when parsing nil in quirks_mode.
   * Make JSON.dump and JSON.load methods better cooperate with Rails' serialize
     method. Just use: serialize :value, JSON
+  * Fix bug with time serialization concerning nanoseconds. Thanks for the
+    patch go to Josh Partlow (jpartlow@github).
 2011-09-18 (1.6.1)
   * Using -target 1.5 to force Java bits to compile with 1.5.
 2011-09-12 (1.6.0)
