@@ -43,6 +43,8 @@ EOT
   def test_generate
     json = generate(@hash)
     assert_equal(JSON.parse(@json2), JSON.parse(json))
+    json = JSON[@hash]
+    assert_equal(JSON.parse(@json2), JSON.parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
     json = generate({1=>2})
