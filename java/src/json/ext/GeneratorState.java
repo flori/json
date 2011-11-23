@@ -83,6 +83,12 @@ public class GeneratorState extends RubyObject {
      */
     private boolean quirksMode = DEFAULT_QUIRKS_MODE;
     static final boolean DEFAULT_QUIRKS_MODE = false;
+    /**
+     * The initial buffer length of this state. (This isn't really used on all
+     * non-C implementations.)
+     */
+    private int bufferInitialLength = DEFAULT_BUFFER_INITIAL_LENGTH;
+    static final int DEFAULT_BUFFER_INITIAL_LENGTH = 1024;
 
     /**
      * The current depth (inside a #to_json call)
@@ -189,6 +195,7 @@ public class GeneratorState extends RubyObject {
         this.allowNaN = orig.allowNaN;
         this.asciiOnly = orig.asciiOnly;
         this.quirksMode = orig.quirksMode;
+        this.bufferInitialLength = orig.bufferInitialLength;
         this.depth = orig.depth;
         return this;
     }
@@ -385,6 +392,18 @@ public class GeneratorState extends RubyObject {
         return quirks_mode.getRuntime().newBoolean(quirksMode);
     }
 
+    @JRubyMethod(name="buffer_initial_length")
+    public RubyInteger buffer_initial_length_get(ThreadContext context) {
+        return context.getRuntime().newFixnum(bufferInitialLength);
+    }
+
+    @JRubyMethod(name="buffer_initial_length=")
+    public IRubyObject buffer_initial_length_set(IRubyObject buffer_initial_length) {
+        int newLength = RubyNumeric.fix2int(buffer_initial_length);
+        if (newLength > 0) bufferInitialLength = newLength;
+        return buffer_initial_length;
+    }
+
     @JRubyMethod(name="quirks_mode?")
     public RubyBoolean quirks_mode_p(ThreadContext context) {
         return context.getRuntime().newBoolean(quirksMode);
@@ -445,6 +464,7 @@ public class GeneratorState extends RubyObject {
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
         quirksMode = opts.getBool("quirks_mode", DEFAULT_QUIRKS_MODE);
+        bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
 
         depth = opts.getInt("depth", 0);
 
@@ -473,6 +493,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("quirks_mode"), quirks_mode_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
+        result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));
         return result;
     }
 
