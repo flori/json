@@ -144,7 +144,7 @@ module JSON
           @allow_nan             = false
           @ascii_only            = false
           @quirks_mode           = false
-          @buffer_initial_length = 4096
+          @buffer_initial_length = 1024
           configure opts
         end
 

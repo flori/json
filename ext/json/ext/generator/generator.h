@@ -13,13 +13,6 @@
 #include "re.h"
 #endif
 
-#ifdef HAVE_RUBY_ENCODING_H
-#include "ruby/encoding.h"
-#define FORCE_UTF8(obj) rb_enc_associate((obj), rb_utf8_encoding())
-#else
-#define FORCE_UTF8(obj)
-#endif
-
 #define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
 
 #ifndef RHASH_SIZE
@@ -42,37 +35,6 @@
 #ifndef RSTRING_LEN
 #define RSTRING_LEN(string) RSTRING(string)->len
 #endif
-
-/* We don't need to guard objects for rbx, so let's do nothing at all. */
-#ifndef RB_GC_GUARD
-#define RB_GC_GUARD(object)
-#endif
-
-/* fbuffer implementation */
-
-typedef struct FBufferStruct {
-    unsigned long initial_length;
-    char *ptr;
-    unsigned long len;
-    unsigned long capa;
-} FBuffer;
-
-#define FBUFFER_INITIAL_LENGTH_DEFAULT 4096
-
-#define FBUFFER_PTR(fb) (fb->ptr)
-#define FBUFFER_LEN(fb) (fb->len)
-#define FBUFFER_CAPA(fb) (fb->capa)
-#define FBUFFER_PAIR(fb) FBUFFER_PTR(fb), FBUFFER_LEN(fb)
-
-static char *fstrndup(const char *ptr, unsigned long len);
-static FBuffer *fbuffer_alloc(unsigned long initial_length);
-static void fbuffer_free(FBuffer *fb);
-static void fbuffer_clear(FBuffer *fb);
-static void fbuffer_append(FBuffer *fb, const char *newstr, unsigned long len);
-static void fbuffer_append_long(FBuffer *fb, long number);
-static void fbuffer_append_char(FBuffer *fb, char newchr);
-static FBuffer *fbuffer_dup(FBuffer *fb);
-static VALUE fbuffer_to_s(FBuffer *fb);
 
 /* unicode defintions */
 
@@ -103,6 +65,7 @@ static void unicode_escape(char *buf, UTF16 character);
 static void unicode_escape_to_buffer(FBuffer *buffer, char buf[6], UTF16 character);
 static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string);
 static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string);
+static char *fstrndup(const char *ptr, unsigned long len);
 
 /* ruby api and some helpers */
 

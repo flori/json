@@ -124,7 +124,7 @@ EOT
       :allow_nan             => false,
       :array_nl              => "\n",
       :ascii_only            => false,
-      :buffer_initial_length => 4096,
+      :buffer_initial_length => 1024,
       :quirks_mode           => false,
       :depth                 => 0,
       :indent                => "  ",
@@ -141,7 +141,7 @@ EOT
       :allow_nan             => false,
       :array_nl              => "",
       :ascii_only            => false,
-      :buffer_initial_length => 4096,
+      :buffer_initial_length => 1024,
       :quirks_mode           => false,
       :depth                 => 0,
       :indent                => "",
@@ -158,7 +158,7 @@ EOT
       :allow_nan             => false,
       :array_nl              => "",
       :ascii_only            => false,
-      :buffer_initial_length => 4096,
+      :buffer_initial_length => 1024,
       :quirks_mode           => false,
       :depth                 => 0,
       :indent                => "",
@@ -203,11 +203,11 @@ EOT
 
   def test_buffer_initial_length
     s = JSON.state.new
-    assert_equal 4096, s.buffer_initial_length
+    assert_equal 1024, s.buffer_initial_length
     s.buffer_initial_length = 0
-    assert_equal 4096, s.buffer_initial_length
+    assert_equal 1024, s.buffer_initial_length
     s.buffer_initial_length = -1
-    assert_equal 4096, s.buffer_initial_length
+    assert_equal 1024, s.buffer_initial_length
     s.buffer_initial_length = 128
     assert_equal 128, s.buffer_initial_length
   end
