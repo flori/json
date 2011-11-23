@@ -1,4 +1,4 @@
-#include "fbuffer.h"
+#include "../fbuffer.h"
 #include "parser.h"
 
 /* unicode */
