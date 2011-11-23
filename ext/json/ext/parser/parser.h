@@ -49,6 +49,9 @@ typedef struct JSON_ParserStruct {
     VALUE array_class;
     int create_additions;
     VALUE match_string;
+
+    char* buffer;
+    int buffer_len;
 } JSON_Parser;
 
 #define GET_PARSER                          \
