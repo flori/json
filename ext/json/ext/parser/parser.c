@@ -1,6 +1,6 @@
 
 #line 1 "parser.rl"
-#include "../fbuffer.h"
+#include "../fbuffer/fbuffer.h"
 #include "parser.h"
 
 /* unicode */
