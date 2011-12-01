@@ -427,6 +427,7 @@ EOT
     stringio.rewind
     assert_equal @hash, JSON.load(stringio)
     assert_equal nil, JSON.load(nil)
+    assert_equal nil, JSON.load('')
   end
 
   def test_dump

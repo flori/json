@@ -1,3 +1,6 @@
+2011-12-01 (1.6.3)
+  * Let JSON.load('') return nil as well to make mysql text columns (default to
+    '') work better for serialization.
 2011-11-21 (1.6.2)
   * Add support for OpenStruct and BigDecimal.
   * Fix bug when parsing nil in quirks_mode.

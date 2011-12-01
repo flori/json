@@ -313,7 +313,8 @@ module JSON
       source = source.to_io.read
     elsif source.respond_to?(:read)
       source = source.read
-    elsif source.nil? && opts[:quirks_mode]
+    end
+    if opts[:quirks_mode] && (source.nil? || source.empty?)
       source = 'null'
     end
     result = parse(source, opts)
