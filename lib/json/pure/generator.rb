@@ -136,14 +136,15 @@ module JSON
         # * *quirks_mode*: Enables quirks_mode for parser, that is for example
         #   generating single JSON values instead of documents is possible.
         def initialize(opts = {})
-          @indent         = ''
-          @space          = ''
-          @space_before   = ''
-          @object_nl      = ''
-          @array_nl       = ''
-          @allow_nan      = false
-          @ascii_only     = false
-          @quirks_mode    = false
+          @indent                = ''
+          @space                 = ''
+          @space_before          = ''
+          @object_nl             = ''
+          @array_nl              = ''
+          @allow_nan             = false
+          @ascii_only            = false
+          @quirks_mode           = false
+          @buffer_initial_length = 1024
           configure opts
         end
 
@@ -171,6 +172,16 @@ module JSON
         # If this attribute is set to true, quirks mode is enabled, otherwise
         # it's disabled.
         attr_accessor :quirks_mode
+
+        # :stopdoc:
+        attr_reader :buffer_initial_length
+
+        def buffer_initial_length=(length)
+          if length > 0
+            @buffer_initial_length = length
+          end
+        end
+        # :startdoc:
 
         # This integer returns the current depth data structure nesting in the
         # generated JSON.
@@ -233,7 +244,7 @@ module JSON
         # passed to the configure method.
         def to_h
           result = {}
-          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting ascii_only quirks_mode depth]
+          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting ascii_only quirks_mode buffer_initial_length depth]
             result[iv.intern] = instance_variable_get("@#{iv}")
           end
           result

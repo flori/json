@@ -22,14 +22,13 @@ MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
 PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
-PKG_FILES         = FileList["**/*"].exclude(/CVS|pkg|tmp|coverage|Makefile|\.nfs\.|\.iml\Z/).exclude(/\.(so|bundle|o|class|#{CONFIG['DLEXT']})$/)
+PKG_FILES         = FileList[`git ls-files`.split(/\n/)]
 
 EXT_ROOT_DIR      = 'ext/json/ext'
 EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
 EXT_PARSER_DL     = "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}"
 RAGEL_PATH        = "#{EXT_PARSER_DIR}/parser.rl"
 EXT_PARSER_SRC    = "#{EXT_PARSER_DIR}/parser.c"
-PKG_FILES << EXT_PARSER_SRC
 EXT_GENERATOR_DIR = "#{EXT_ROOT_DIR}/generator"
 EXT_GENERATOR_DL  = "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}"
 EXT_GENERATOR_SRC = "#{EXT_GENERATOR_DIR}/generator.c"

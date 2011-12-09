@@ -7,12 +7,6 @@
 #include "re.h"
 #endif
 
-#ifdef HAVE_RUBY_ENCODING_H
-#include "ruby/encoding.h"
-#define FORCE_UTF8(obj) ((obj) = rb_enc_associate(rb_str_dup(obj), rb_utf8_encoding()))
-#else
-#define FORCE_UTF8(obj)
-#endif
 #ifdef HAVE_RUBY_ST_H
 #include "ruby/st.h"
 #else
@@ -50,6 +44,7 @@ typedef struct JSON_ParserStruct {
     VALUE array_class;
     int create_additions;
     VALUE match_string;
+    FBuffer *fbuffer;
 } JSON_Parser;
 
 #define GET_PARSER                          \

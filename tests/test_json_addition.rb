@@ -7,6 +7,7 @@ require 'json/add/core'
 require 'json/add/complex'
 require 'json/add/rational'
 require 'json/add/bigdecimal'
+require 'json/add/ostruct'
 require 'date'
 
 class TC_JSONAddition < Test::Unit::TestCase
@@ -129,7 +130,7 @@ class TC_JSONAddition < Test::Unit::TestCase
 
   def test_core
     t = Time.now
-    assert_equal t.inspect, JSON(JSON(t)).inspect
+    assert_equal t, JSON(JSON(t))
     d = Date.today
     assert_equal d, JSON(JSON(d))
     d = DateTime.civil(2007, 6, 14, 14, 57, 10, Rational(1, 12), 2299161)
@@ -176,5 +177,12 @@ class TC_JSONAddition < Test::Unit::TestCase
   def test_bigdecimal
     assert_equal BigDecimal('3.141', 23), JSON(JSON(BigDecimal('3.141', 23)))
     assert_equal BigDecimal('3.141', 666), JSON(JSON(BigDecimal('3.141', 666)))
+  end
+
+  def test_ostruct
+    o = OpenStruct.new
+    # XXX this won't work; o.foo = { :bar => true }
+    o.foo = { 'bar' => true }
+    assert_equal o, JSON(JSON(o))
   end
 end

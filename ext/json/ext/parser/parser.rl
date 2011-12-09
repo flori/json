@@ -1,3 +1,4 @@
+#include "../fbuffer/fbuffer.h"
 #include "parser.h"
 
 /* unicode */
@@ -298,7 +299,10 @@ static char *JSON_parse_integer(JSON_Parser *json, char *p, char *pe, VALUE *res
 
     if (cs >= JSON_integer_first_final) {
         long len = p - json->memo;
-        *result = rb_Integer(rb_str_new(json->memo, len));
+        fbuffer_clear(json->fbuffer);
+        fbuffer_append(json->fbuffer, json->memo, len);
+        fbuffer_append_char(json->fbuffer, '\0');
+        *result = rb_cstr2inum(FBUFFER_PTR(json->fbuffer), 10);
         return p + 1;
     } else {
         return NULL;
@@ -329,7 +333,10 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
 
     if (cs >= JSON_float_first_final) {
         long len = p - json->memo;
-        *result = rb_Float(rb_str_new(json->memo, len));
+        fbuffer_clear(json->fbuffer);
+        fbuffer_append(json->fbuffer, json->memo, len);
+        fbuffer_append_char(json->fbuffer, '\0');
+        *result = rb_float_new(rb_cstr_to_dbl(FBUFFER_PTR(json->fbuffer), 1));
         return p + 1;
     } else {
         return NULL;
@@ -822,7 +829,7 @@ static JSON_Parser *JSON_allocate()
     json->object_class = Qfalse;
     json->array_class = Qfalse;
     json->match_string = Qfalse;
-
+    json->fbuffer = fbuffer_alloc(0);
     return json;
 }
 
@@ -837,6 +844,7 @@ static void JSON_mark(JSON_Parser *json)
 
 static void JSON_free(JSON_Parser *json)
 {
+    fbuffer_free(json->fbuffer);
     ruby_xfree(json);
 }
 

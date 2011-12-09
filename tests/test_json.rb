@@ -4,6 +4,7 @@
 require 'test/unit'
 require File.join(File.dirname(__FILE__), 'setup_variant')
 require 'stringio'
+require 'tempfile'
 
 unless Array.method_defined?(:permutation)
   begin
@@ -416,7 +417,20 @@ EOT
       JSON.parse('{"foo":"bar", "baz":"quux"}', :symbolize_names => true))
   end
 
-  def test_load_dump
+  def test_load
+    assert_equal @hash, JSON.load(@json)
+    tempfile = Tempfile.open('json')
+    tempfile.write @json
+    tempfile.rewind
+    assert_equal @hash, JSON.load(tempfile)
+    stringio = StringIO.new(@json)
+    stringio.rewind
+    assert_equal @hash, JSON.load(stringio)
+    assert_equal nil, JSON.load(nil)
+    assert_equal nil, JSON.load('')
+  end
+
+  def test_dump
     too_deep = '[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]'
     assert_equal too_deep, JSON.dump(eval(too_deep))
     assert_kind_of String, Marshal.dump(eval(too_deep))

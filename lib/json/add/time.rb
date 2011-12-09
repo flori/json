@@ -10,8 +10,8 @@ class Time
     if usec = object.delete('u') # used to be tv_usec -> tv_nsec
       object['n'] = usec * 1000
     end
-    if respond_to?(:tv_nsec)
-      at(*object.values_at('s', 'n'))
+    if instance_methods.include?(:tv_nsec)
+      at(object['s'], Rational(object['n'], 1000))
     else
       at(object['s'], object['n'] / 1000)
     end
