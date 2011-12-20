@@ -494,6 +494,13 @@ public class Parser extends RubyObject {
         }%%
 
         ParserResult parseInteger(int p, int pe) {
+            int new_p = parseIntegerInternal(p, pe);
+            if (new_p == -1) return null;
+            RubyInteger number = createInteger(p, new_p);
+            return new ParserResult(number, new_p + 1);
+        }
+
+        int parseIntegerInternal(int p, int pe) {
             int cs = EVIL;
 
             %% write init;
@@ -501,14 +508,18 @@ public class Parser extends RubyObject {
             %% write exec;
 
             if (cs < JSON_integer_first_final) {
-                return null;
+                return -1;
             }
 
-            ByteList num = absSubSequence(memo, p);
-            RubyInteger number = getRuntime().is1_9() ?
-                    ConvertBytes.byteListToInum19(getRuntime(), num, 10, true) :
-                    ConvertBytes.byteListToInum(getRuntime(), num, 10, true);
-            return new ParserResult(number, p + 1);
+            return p;
+        }
+        
+        RubyInteger createInteger(int p, int new_p) {
+            Ruby runtime = getRuntime();
+            ByteList num = absSubSequence(p, new_p);
+            return runtime.is1_9() ?
+                    ConvertBytes.byteListToInum19(runtime, num, 10, true) :
+                    ConvertBytes.byteListToInum(runtime, num, 10, true);
         }
 
         %%{
@@ -529,6 +540,13 @@ public class Parser extends RubyObject {
         }%%
 
         ParserResult parseFloat(int p, int pe) {
+            int new_p = parseFloatInternal(p, pe);
+            if (new_p == -1) return null;
+            RubyFloat number = createFloat(p, new_p);
+            return new ParserResult(number, new_p + 1);
+        }
+
+        int parseFloatInternal(int p, int pe) {
             int cs = EVIL;
 
             %% write init;
@@ -536,12 +554,16 @@ public class Parser extends RubyObject {
             %% write exec;
 
             if (cs < JSON_float_first_final) {
-                return null;
+                return -1;
             }
-
-            ByteList num = absSubSequence(memo, p);
-            RubyFloat number = RubyFloat.newFloat(getRuntime(), dc.parse(num, true, getRuntime().is1_9()));
-            return new ParserResult(number, p + 1);
+            
+            return p;
+        }
+        
+        RubyFloat createFloat(int p, int new_p) {
+            Ruby runtime = getRuntime();
+            ByteList num = absSubSequence(p, new_p);
+            return RubyFloat.newFloat(runtime, dc.parse(num, true, runtime.is1_9()));
         }
 
         %%{
@@ -891,9 +913,7 @@ public class Parser extends RubyObject {
          * @param end
          */
         private ByteList absSubSequence(int absStart, int absEnd) {
-            int offset = byteList.begin();
-            return (ByteList)byteList.subSequence(absStart - offset,
-                                                  absEnd - offset);
+            return new ByteList(byteList.unsafeBytes(), absStart, absEnd - absStart, false);
         }
 
         /**
