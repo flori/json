@@ -505,7 +505,9 @@ public class Parser extends RubyObject {
             }
 
             ByteList num = absSubSequence(memo, p);
-            RubyInteger number = ConvertBytes.byteListToInum(getRuntime(), num, 10, true);
+            RubyInteger number = getRuntime().is1_9() ?
+                    ConvertBytes.byteListToInum19(getRuntime(), num, 10, true) :
+                    ConvertBytes.byteListToInum(getRuntime(), num, 10, true);
             return new ParserResult(number, p + 1);
         }
 
