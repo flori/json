@@ -730,10 +730,10 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    if (parser.objectClass != getRuntime().getHash()) {
-                        result.callMethod(context, "[]=", new IRubyObject[] { lastName, res.result });
+                    if (parser.objectClass == getRuntime().getHash()) {
+                        ((RubyHash)result).op_aset(context, lastName, res.result);
                     } else {
-                        result.op_aset(context, lastName, res.result);
+                        result.callMethod(context, "[]=", new IRubyObject[] { lastName, res.result });
                     }
                     fexec res.p;
                 }
@@ -774,6 +774,7 @@ public class Parser extends RubyObject {
         void parseObject(ParserResult res, int p, int pe) {
             int cs = EVIL;
             IRubyObject lastName = null;
+            boolean objectDefault = true;
 
             if (parser.maxNesting > 0 && currentNesting > parser.maxNesting) {
                 throw newException(Utils.M_NESTING_ERROR,
@@ -782,26 +783,33 @@ public class Parser extends RubyObject {
 
             // this is guaranteed to be a RubyHash due to the earlier
             // allocator test at OptionsReader#getClass
-            RubyHash result;
-            if (parser.objectClass != getRuntime().getHash()) {
-                result = (RubyHash)parser.objectClass.newInstance(context,
-                        IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
-            } else {
+            IRubyObject result;
+            if (parser.objectClass == getRuntime().getHash()) {
                 result = RubyHash.newHash(getRuntime());
+            } else {
+                objectDefault = false;
+                result = parser.objectClass.newInstance(context,
+                        IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
             }
 
             %% write init;
             %% write exec;
 
             if (cs < JSON_object_first_final) {
-                return null;
+                return;
             }
 
             IRubyObject returnedResult = result;
 
             // attempt to de-serialize object
             if (parser.createAdditions) {
-                IRubyObject vKlassName = result.op_aref(context, parser.createId);
+                IRubyObject vKlassName;
+                if (objectDefault) {
+                    vKlassName = ((RubyHash)result).op_aref(context, parser.createId);
+                } else {
+                    vKlassName = result.callMethod(context, "[]", parser.createId);
+                }
+
                 if (!vKlassName.isNil()) {
                     // might throw ArgumentError, we let it propagate
                     IRubyObject klass = parser.info.jsonModule.get().
