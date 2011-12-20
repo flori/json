@@ -1608,12 +1608,12 @@ static final int JSON_array_en_main = 1;
 
             // this is guaranteed to be a RubyArray due to the earlier
             // allocator test at OptionsReader#getClass
-            RubyArray result;
-            if (parser.arrayClass != getRuntime().getArray()) {
-                result = (RubyArray)parser.arrayClass.newInstance(context,
-                        IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
-            } else {
+            IRubyObject result;
+            if (parser.arrayClass == getRuntime().getArray()) {
                 result = RubyArray.newArray(getRuntime());
+            } else {
+                result = parser.arrayClass.newInstance(context,
+                        IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
             }
 
             
@@ -1712,10 +1712,10 @@ case 1:
                     p--;
                     { p += 1; _goto_targ = 5; if (true)  continue _goto;}
                 } else {
-                    if (parser.arrayClass != getRuntime().getArray()) {
-                        result.callMethod(context, "<<", res.result);
+                    if (parser.arrayClass == getRuntime().getArray()) {
+                        ((RubyArray)result).append(res.result);
                     } else {
-                        result.append(res.result);
+                        result.callMethod(context, "<<", res.result);
                     }
                     {p = (( res.p))-1;}
                 }

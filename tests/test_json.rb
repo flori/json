@@ -219,10 +219,38 @@ class TC_JSON < Test::Unit::TestCase
     end
   end
 
-  def test_parse_array_custom_class
+  class SubArrayWrapper
+    def initialize
+      @data = []
+    end
+
+    attr_reader :data
+
+    def [](index)
+      @data[index]
+    end
+
+    def <<(value)
+      @data << value
+      @shifted = true
+    end
+
+    def shifted?
+      @shifted
+    end
+  end
+
+  def test_parse_array_custom_array_derived_class
     res = parse('[1,2]', :array_class => SubArray)
     assert_equal([1,2], res)
     assert_equal(SubArray, res.class)
+    assert res.shifted?
+  end
+
+  def test_parse_array_custom_non_array_derived_class
+    res = parse('[1,2]', :array_class => SubArrayWrapper)
+    assert_equal([1,2], res.data)
+    assert_equal(SubArrayWrapper, res.class)
     assert res.shifted?
   end
 

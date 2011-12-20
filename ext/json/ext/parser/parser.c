@@ -445,12 +445,12 @@ case 26:
 
     if (cs >= JSON_object_first_final) {
         if (json->create_additions) {
-						VALUE klassname;
+            VALUE klassname;
             if (NIL_P(json->object_class)) {
-							klassname = rb_hash_aref(*result, json->create_id);
-						} else {
-							klassname = rb_funcall(*result, i_aref, 1, json->create_id);
-						}
+              klassname = rb_hash_aref(*result, json->create_id);
+            } else {
+              klassname = rb_funcall(*result, i_aref, 1, json->create_id);
+            }
             if (!NIL_P(klassname)) {
                 VALUE klass = rb_funcall(mJSON, i_deep_const_get, 1, klassname);
                 if (RTEST(rb_funcall(klass, i_json_creatable_p, 0))) {
