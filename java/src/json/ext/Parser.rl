@@ -303,6 +303,7 @@ public class Parser extends RubyObject {
         private final Parser parser;
         private final ThreadContext context;
         private final ByteList byteList;
+        private final ByteList view;
         private final byte[] data;
         private final StringDecoder decoder;
         private int currentNesting = 0;
@@ -317,6 +318,7 @@ public class Parser extends RubyObject {
             this.context = context;
             this.byteList = parser.checkAndGetSource().getByteList();
             this.data = byteList.unsafeBytes();
+            this.view = new ByteList(data, false);
             this.decoder = new StringDecoder(context);
             this.dc = new DoubleConverter();
         }
@@ -796,6 +798,7 @@ public class Parser extends RubyObject {
             %% write exec;
 
             if (cs < JSON_object_first_final) {
+                res.update(null, p + 1);
                 return;
             }
 
@@ -928,14 +931,14 @@ public class Parser extends RubyObject {
         }
 
         /**
-         * Returns a subsequence of the source ByteList, based on source
-         * array byte offsets (i.e., the ByteList's own begin offset is not
-         * automatically added).
+         * Updates the "view" bytelist with the new offsets and returns it.
          * @param start
          * @param end
          */
         private ByteList absSubSequence(int absStart, int absEnd) {
-            return new ByteList(byteList.unsafeBytes(), absStart, absEnd - absStart, false);
+            view.setBegin(absStart);
+            view.setRealSize(absEnd - absStart);
+            return view;
         }
 
         /**
