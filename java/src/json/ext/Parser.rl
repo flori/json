@@ -26,6 +26,8 @@ import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.ByteList;
+import org.jruby.util.ConvertBytes;
+import static org.jruby.util.ConvertDouble.DoubleConverter;
 
 /**
  * The <code>JSON::Ext::Parser</code> class.
@@ -56,7 +58,7 @@ public class Parser extends RubyObject {
 
     private static final int DEFAULT_MAX_NESTING = 19;
 
-    private static final String JSON_MINUS_INFINITY = "-Infinity";
+    private static final ByteList JSON_MINUS_INFINITY = new ByteList(ByteList.plain("-Infinity"));
     // constant names in the JSON module containing those values
     private static final String CONST_NAN = "NaN";
     private static final String CONST_INFINITY = "Infinity";
@@ -304,6 +306,7 @@ public class Parser extends RubyObject {
         private final byte[] data;
         private final StringDecoder decoder;
         private int currentNesting = 0;
+        private final DoubleConverter dc;
 
         // initialization value for all state variables.
         // no idea about the origins of this value, ask Flori ;)
@@ -315,6 +318,7 @@ public class Parser extends RubyObject {
             this.byteList = parser.checkAndGetSource().getByteList();
             this.data = byteList.unsafeBytes();
             this.decoder = new StringDecoder(context);
+            this.dc = new DoubleConverter();
         }
 
         private RaiseException unexpectedToken(int absStart, int absEnd) {
@@ -387,7 +391,7 @@ public class Parser extends RubyObject {
             }
             action parse_number {
                 if (pe > fpc + 9 - (parser.quirksMode ? 1 : 0) &&
-                    absSubSequence(fpc, fpc + 9).toString().equals(JSON_MINUS_INFINITY)) {
+                    absSubSequence(fpc, fpc + 9).equals(JSON_MINUS_INFINITY)) {
 
                     if (parser.allowNaN) {
                         result = getConstant(CONST_MINUS_INFINITY);
@@ -501,10 +505,7 @@ public class Parser extends RubyObject {
             }
 
             ByteList num = absSubSequence(memo, p);
-            // note: this is actually a shared string, but since it is temporary and
-            //       read-only, it doesn't really matter
-            RubyString expr = RubyString.newStringLight(getRuntime(), num);
-            RubyInteger number = RubyNumeric.str2inum(getRuntime(), expr, 10, true);
+            RubyInteger number = ConvertBytes.byteListToInum(getRuntime(), num, 10, true);
             return new ParserResult(number, p + 1);
         }
 
@@ -537,10 +538,7 @@ public class Parser extends RubyObject {
             }
 
             ByteList num = absSubSequence(memo, p);
-            // note: this is actually a shared string, but since it is temporary and
-            //       read-only, it doesn't really matter
-            RubyString expr = RubyString.newStringLight(getRuntime(), num);
-            RubyFloat number = RubyNumeric.str2fnum(getRuntime(), expr, true);
+            RubyFloat number = RubyFloat.newFloat(getRuntime(), dc.parse(num, true, getRuntime().is1_9()));
             return new ParserResult(number, p + 1);
         }
 
@@ -629,7 +627,7 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    if (!parser.arrayClass.getName().equals("Array")) {
+                    if (parser.arrayClass != getRuntime().getArray()) {
                         result.callMethod(context, "<<", res.result);
                     } else {
                         result.append(res.result);
@@ -666,9 +664,13 @@ public class Parser extends RubyObject {
 
             // this is guaranteed to be a RubyArray due to the earlier
             // allocator test at OptionsReader#getClass
-            RubyArray result =
-                (RubyArray)parser.arrayClass.newInstance(context,
-                    IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
+            RubyArray result;
+            if (parser.arrayClass != getRuntime().getArray()) {
+                result = (RubyArray)parser.arrayClass.newInstance(context,
+                        IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
+            } else {
+                result = RubyArray.newArray(getRuntime());
+            }
 
             %% write init;
             %% write exec;
@@ -692,7 +694,7 @@ public class Parser extends RubyObject {
                     fhold;
                     fbreak;
                 } else {
-                    if (!parser.objectClass.getName().equals("Hash")) {
+                    if (parser.objectClass != getRuntime().getHash()) {
                         result.callMethod(context, "[]=", new IRubyObject[] { lastName, res.result });
                     } else {
                         result.op_aset(context, lastName, res.result);
@@ -744,9 +746,13 @@ public class Parser extends RubyObject {
 
             // this is guaranteed to be a RubyHash due to the earlier
             // allocator test at OptionsReader#getClass
-            RubyHash result =
-                (RubyHash)parser.objectClass.newInstance(context,
-                    IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
+            RubyHash result;
+            if (parser.objectClass != getRuntime().getHash()) {
+                result = (RubyHash)parser.objectClass.newInstance(context,
+                        IRubyObject.NULL_ARRAY, Block.NULL_BLOCK);
+            } else {
+                result = RubyHash.newHash(getRuntime());
+            }
 
             %% write init;
             %% write exec;
