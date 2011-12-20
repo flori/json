@@ -82,13 +82,13 @@ public class Parser extends RubyObject {
          * The result of the successful parsing. Should never be
          * <code>null</code>.
          */
-        final IRubyObject result;
+        IRubyObject result;
         /**
          * The point where the parser returned.
          */
-        final int p;
+        int p;
 
-        ParserResult(IRubyObject result, int p) {
+        void update(IRubyObject result, int p) {
             this.result = result;
             this.p = p;
         }
@@ -402,13 +402,13 @@ public class Parser extends RubyObject {
                         throw unexpectedToken(p, pe);
                     }
                 }
-                ParserResult res = parseFloat(fpc, pe);
-                if (res != null) {
+                parseFloat(res, fpc, pe);
+                if (res.result != null) {
                     result = res.result;
                     fexec res.p;
                 }
-                res = parseInteger(fpc, pe);
-                if (res != null) {
+                parseInteger(res, fpc, pe);
+                if (res.result != null) {
                     result = res.result;
                     fexec res.p;
                 }
@@ -416,8 +416,8 @@ public class Parser extends RubyObject {
                 fbreak;
             }
             action parse_string {
-                ParserResult res = parseString(fpc, pe);
-                if (res == null) {
+                parseString(res, fpc, pe);
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -427,9 +427,9 @@ public class Parser extends RubyObject {
             }
             action parse_array {
                 currentNesting++;
-                ParserResult res = parseArray(fpc, pe);
+                parseArray(res, fpc, pe);
                 currentNesting--;
-                if (res == null) {
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -439,9 +439,9 @@ public class Parser extends RubyObject {
             }
             action parse_object {
                 currentNesting++;
-                ParserResult res = parseObject(fpc, pe);
+                parseObject(res, fpc, pe);
                 currentNesting--;
-                if (res == null) {
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -466,7 +466,7 @@ public class Parser extends RubyObject {
                     ) %*exit;
         }%%
 
-        ParserResult parseValue(int p, int pe) {
+        void parseValue(ParserResult res, int p, int pe) {
             int cs = EVIL;
             IRubyObject result = null;
 
@@ -474,9 +474,9 @@ public class Parser extends RubyObject {
             %% write exec;
 
             if (cs >= JSON_value_first_final && result != null) {
-                return new ParserResult(result, p);
+                res.update(result, p);
             } else {
-                return null;
+                res.update(null, p);
             }
         }
 
@@ -493,11 +493,15 @@ public class Parser extends RubyObject {
             main := '-'? ( '0' | [1-9][0-9]* ) ( ^[0-9]? @exit );
         }%%
 
-        ParserResult parseInteger(int p, int pe) {
+        void parseInteger(ParserResult res, int p, int pe) {
             int new_p = parseIntegerInternal(p, pe);
-            if (new_p == -1) return null;
+            if (new_p == -1) {
+                res.update(null, p);
+                return;
+            }
             RubyInteger number = createInteger(p, new_p);
-            return new ParserResult(number, new_p + 1);
+            res.update(number, new_p + 1);
+            return;
         }
 
         int parseIntegerInternal(int p, int pe) {
@@ -517,6 +521,10 @@ public class Parser extends RubyObject {
         RubyInteger createInteger(int p, int new_p) {
             Ruby runtime = getRuntime();
             ByteList num = absSubSequence(p, new_p);
+            return bytesToInum(runtime, num);
+        }
+        
+        RubyInteger bytesToInum(Ruby runtime, ByteList num) {
             return runtime.is1_9() ?
                     ConvertBytes.byteListToInum19(runtime, num, 10, true) :
                     ConvertBytes.byteListToInum(runtime, num, 10, true);
@@ -539,11 +547,15 @@ public class Parser extends RubyObject {
                     ( ^[0-9Ee.\-]? @exit );
         }%%
 
-        ParserResult parseFloat(int p, int pe) {
+        void parseFloat(ParserResult res, int p, int pe) {
             int new_p = parseFloatInternal(p, pe);
-            if (new_p == -1) return null;
+            if (new_p == -1) {
+                res.update(null, p);
+                return;
+            }
             RubyFloat number = createFloat(p, new_p);
-            return new ParserResult(number, new_p + 1);
+            res.update(number, new_p + 1);
+            return;
         }
 
         int parseFloatInternal(int p, int pe) {
@@ -599,7 +611,7 @@ public class Parser extends RubyObject {
                     ) '"' @exit;
         }%%
 
-        ParserResult parseString(int p, int pe) {
+        void parseString(ParserResult res, int p, int pe) {
             int cs = EVIL;
             IRubyObject result = null;
 
@@ -633,9 +645,9 @@ public class Parser extends RubyObject {
             }
 
             if (cs >= JSON_string_first_final && result != null) {
-                return new ParserResult(result, p + 1);
+                res.update(result, p + 1);
             } else {
-                return null;
+                res.update(null, p + 1);
             }
         }
 
@@ -646,8 +658,8 @@ public class Parser extends RubyObject {
             write data;
 
             action parse_value {
-                ParserResult res = parseValue(fpc, pe);
-                if (res == null) {
+                parseValue(res, fpc, pe);
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -678,7 +690,7 @@ public class Parser extends RubyObject {
                     end_array @exit;
         }%%
 
-        ParserResult parseArray(int p, int pe) {
+        void parseArray(ParserResult res, int p, int pe) {
             int cs = EVIL;
 
             if (parser.maxNesting > 0 && currentNesting > parser.maxNesting) {
@@ -700,7 +712,7 @@ public class Parser extends RubyObject {
             %% write exec;
 
             if (cs >= JSON_array_first_final) {
-                return new ParserResult(result, p + 1);
+                res.update(result, p + 1);
             } else {
                 throw unexpectedToken(p, pe);
             }
@@ -713,8 +725,8 @@ public class Parser extends RubyObject {
             write data;
 
             action parse_value {
-                ParserResult res = parseValue(fpc, pe);
-                if (res == null) {
+                parseValue(res, fpc, pe);
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -728,8 +740,8 @@ public class Parser extends RubyObject {
             }
 
             action parse_name {
-                ParserResult res = parseString(fpc, pe);
-                if (res == null) {
+                parseString(res, fpc, pe);
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -759,7 +771,7 @@ public class Parser extends RubyObject {
             ) @exit;
         }%%
 
-        ParserResult parseObject(int p, int pe) {
+        void parseObject(ParserResult res, int p, int pe) {
             int cs = EVIL;
             IRubyObject lastName = null;
 
@@ -801,7 +813,7 @@ public class Parser extends RubyObject {
                     }
                 }
             }
-            return new ParserResult(returnedResult, p + 1);
+            res.update(returnedResult, p + 1);
         }
 
         %%{
@@ -812,8 +824,8 @@ public class Parser extends RubyObject {
 
             action parse_object {
                 currentNesting = 1;
-                ParserResult res = parseObject(fpc, pe);
-                if (res == null) {
+                parseObject(res, fpc, pe);
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -824,8 +836,8 @@ public class Parser extends RubyObject {
 
             action parse_array {
                 currentNesting = 1;
-                ParserResult res = parseArray(fpc, pe);
-                if (res == null) {
+                parseArray(res, fpc, pe);
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -844,6 +856,7 @@ public class Parser extends RubyObject {
             int cs = EVIL;
             int p, pe;
             IRubyObject result = null;
+            ParserResult res = new ParserResult();
 
             %% write init;
             p = byteList.begin();
@@ -864,8 +877,8 @@ public class Parser extends RubyObject {
             write data;
 
             action parse_value {
-                ParserResult res = parseValue(fpc, pe);
-                if (res == null) {
+                parseValue(res, fpc, pe);
+                if (res.result == null) {
                     fhold;
                     fbreak;
                 } else {
@@ -883,6 +896,7 @@ public class Parser extends RubyObject {
             int cs = EVIL;
             int p, pe;
             IRubyObject result = null;
+            ParserResult res = new ParserResult();
 
             %% write init;
             p = byteList.begin();
