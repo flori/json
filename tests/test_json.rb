@@ -5,6 +5,7 @@ require 'test/unit'
 require File.join(File.dirname(__FILE__), 'setup_variant')
 require 'stringio'
 require 'tempfile'
+require 'ostruct'
 
 unless Array.method_defined?(:permutation)
   begin
@@ -256,10 +257,32 @@ class TC_JSON < Test::Unit::TestCase
     end
   end
 
-  def test_parse_object_custom_class
+  class SubOpenStruct < OpenStruct
+    def [](k)
+      __send__(k)
+    end
+
+    def []=(k, v)
+      @item_set = true
+      __send__("#{k}=", v)
+    end
+
+    def item_set?
+      @item_set
+    end
+  end
+
+  def test_parse_object_custom_hash_derived_class
     res = parse('{"foo":"bar"}', :object_class => SubHash)
     assert_equal({"foo" => "bar"}, res)
     assert_equal(SubHash, res.class)
+    assert res.item_set?
+  end
+
+  def test_parse_object_custom_non_hash_derived_class
+    res = parse('{"foo":"bar"}', :object_class => SubOpenStruct)
+    assert_equal "bar", res.foo
+    assert_equal(SubOpenStruct, res.class)
     assert res.item_set?
   end
 
