@@ -698,8 +698,6 @@ public class Parser extends RubyObject {
                     "nesting of " + currentNesting + " is too deep");
             }
 
-            // this is guaranteed to be a RubyArray due to the earlier
-            // allocator test at OptionsReader#getClass
             IRubyObject result;
             if (parser.arrayClass == getRuntime().getArray()) {
                 result = RubyArray.newArray(getRuntime());
