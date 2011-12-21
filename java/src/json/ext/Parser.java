@@ -1606,8 +1606,6 @@ static final int JSON_array_en_main = 1;
                     "nesting of " + currentNesting + " is too deep");
             }
 
-            // this is guaranteed to be a RubyArray due to the earlier
-            // allocator test at OptionsReader#getClass
             IRubyObject result;
             if (parser.arrayClass == getRuntime().getArray()) {
                 result = RubyArray.newArray(getRuntime());
