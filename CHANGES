@@ -1,3 +1,7 @@
+2011-12-24 (1.6.4)
+  * Patches that improve speed on JRuby contributed by Charles Oliver Nutter
+    <headius@headius.com>.
+  * Support object_class/array_class with duck typed hash/array.
 2011-12-01 (1.6.3)
   * Let JSON.load('') return nil as well to make mysql text columns (default to
     '') work better for serialization.
