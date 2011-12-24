@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Ext::Generator::GeneratorMethods::String</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            JSON::Ext::Generator::GeneratorMethods::String 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../../../files/ext/json/ext/generator/generator_c.html">ext/json/ext/generator/generator.c</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+    <!-- Namespace -->
+    <div class="sectiontitle">Namespace</div>
+    <ul>
+      
+        <li>
+          <span class="type">MODULE</span>
+          <a href="String/Extend.html">JSON::Ext::Generator::GeneratorMethods::String::Extend</a>
+        </li>
+      
+    </ul>
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-included">included</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-to_json">to_json</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-to_json_raw">to_json_raw</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-to_json_raw_object">to_json_raw_object</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-included">
+            
+              <a name="method-c-included"></a><b>String.included(modul)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Extends <em>modul</em> with the <a
+href="String/Extend.html">String::Extend</a> module.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-included_source')" id="l_method-c-included_source">show</a>
+                
+              </p>
+              <div id="method-c-included_source" class="dyn-source">
+                <pre>static VALUE mString_included_s(VALUE self, VALUE modul) {
+    VALUE result = rb_funcall(modul, i_extend, 1, mString_Extend);
+    return result;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-to_json">
+            
+              <a name="method-i-to_json"></a><b>to_json(*)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string should be encoded with UTF-8 A call to this method returns a <a
+href="../../../../JSON.html">JSON</a> string encoded with UTF16 big endian
+characters as u????.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_json_source')" id="l_method-i-to_json_source">show</a>
+                
+              </p>
+              <div id="method-i-to_json_source" class="dyn-source">
+                <pre>static VALUE mString_to_json(int argc, VALUE *argv, VALUE self)
+{
+    GENERATE_JSON(string);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-to_json_raw">
+            
+              <a name="method-i-to_json_raw"></a><b>to_json_raw(*args)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This method creates a <a href="../../../../JSON.html">JSON</a> text from
+the result of a call to <a
+href="String.html#method-i-to_json_raw_object">#to_json_raw_object</a> of
+this <a href="String.html">String</a>.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_json_raw_source')" id="l_method-i-to_json_raw_source">show</a>
+                
+              </p>
+              <div id="method-i-to_json_raw_source" class="dyn-source">
+                <pre>static VALUE mString_to_json_raw(int argc, VALUE *argv, VALUE self)
+{
+    VALUE obj = mString_to_json_raw_object(self);
+    Check_Type(obj, T_HASH);
+    return mHash_to_json(argc, argv, obj);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-to_json_raw_object">
+            
+              <a name="method-i-to_json_raw_object"></a><b>to_json_raw_object()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This method creates a raw object hash, that can be nested into other data
+structures and will be generated as a raw string. This method should be
+used, if you want to convert raw strings to <a
+href="../../../../JSON.html">JSON</a> instead of UTF-8 strings, e. g.
+binary data.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_json_raw_object_source')" id="l_method-i-to_json_raw_object_source">show</a>
+                
+              </p>
+              <div id="method-i-to_json_raw_object_source" class="dyn-source">
+                <pre>static VALUE mString_to_json_raw_object(VALUE self)
+{
+    VALUE ary;
+    VALUE result = rb_hash_new();
+    rb_hash_aset(result, rb_funcall(mJSON, i_create_id, 0), rb_class_name(rb_obj_class(self)));
+    ary = rb_funcall(self, i_unpack, 1, rb_str_new2(&quot;C*&quot;));
+    rb_hash_aset(result, rb_str_new2(&quot;raw&quot;), ary);
+    return result;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+    </div>
+  </body>
+</html>    

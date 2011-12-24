@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Ext::Parser</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            JSON::Ext::Parser 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/ext/json/ext/parser/parser_c.html">ext/json/ext/parser/parser.c</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>This is the <a href="../../JSON.html">JSON</a> parser implemented as a C
+extension. It can be configured to be used by setting</p>
+
+<pre>JSON.parser = JSON::Ext::Parser</pre>
+
+<p>with the method parser= in <a href="../../JSON.html">JSON</a>.</p>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-parse">parse</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>Q</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-quirks_mode-3F">quirks_mode?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-source">source</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <a name="method-c-new"></a><b>new(source, opts => {})
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Creates a new <a href="Parser.html">JSON::Ext::Parser</a> instance for the
+string <em>source</em>.</p>
+
+<p>Creates a new <a href="Parser.html">JSON::Ext::Parser</a> instance for the
+string <em>source</em>.</p>
+
+<p>It will be configured by the <em>opts</em> hash. <em>opts</em> can have the
+following keys:</p>
+
+<p><em>opts</em> can have the following keys:</p>
+<ul><li>
+<p><strong>max_nesting</strong>: The maximum depth of nesting allowed in the
+parsed data structures. Disable depth checking with :max_nesting =&gt;
+false|nil|0, it defaults to 19.</p>
+</li><li>
+<p><strong>allow_nan</strong>: If set to true, allow NaN, Infinity and
+-Infinity in defiance of RFC 4627 to be parsed by the <a
+href="Parser.html">Parser</a>. This option defaults to false.</p>
+</li><li>
+<p><strong>symbolize_names</strong>: If set to true, returns symbols for the
+names (keys) in a <a href="../../JSON.html">JSON</a> object. Otherwise
+strings are returned, which is also the default.</p>
+</li><li>
+<p><strong>create_additions</strong>: If set to false, the <a
+href="Parser.html">Parser</a> doesn’t create additions even if a matchin
+class and create_id was found. This option defaults to true.</p>
+</li><li>
+<p><strong>object_class</strong>: Defaults to Hash</p>
+</li><li>
+<p><strong>array_class</strong>: Defaults to Array</p>
+</li></ul>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre>static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
+{
+    VALUE source, opts;
+    GET_PARSER_INIT;
+
+    if (json-&gt;Vsource) {
+        rb_raise(rb_eTypeError, &quot;already initialized instance&quot;);
+    }
+    rb_scan_args(argc, argv, &quot;11&quot;, &amp;source, &amp;opts);
+    if (!NIL_P(opts)) {
+        opts = rb_convert_type(opts, T_HASH, &quot;Hash&quot;, &quot;to_hash&quot;);
+        if (NIL_P(opts)) {
+            rb_raise(rb_eArgError, &quot;opts needs to be like a hash&quot;);
+        } else {
+            VALUE tmp = ID2SYM(i_max_nesting);
+            if (option_given_p(opts, tmp)) {
+                VALUE max_nesting = rb_hash_aref(opts, tmp);
+                if (RTEST(max_nesting)) {
+                    Check_Type(max_nesting, T_FIXNUM);
+                    json-&gt;max_nesting = FIX2INT(max_nesting);
+                } else {
+                    json-&gt;max_nesting = 0;
+                }
+            } else {
+                json-&gt;max_nesting = 19;
+            }
+            tmp = ID2SYM(i_allow_nan);
+            if (option_given_p(opts, tmp)) {
+                json-&gt;allow_nan = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
+            } else {
+                json-&gt;allow_nan = 0;
+            }
+            tmp = ID2SYM(i_symbolize_names);
+            if (option_given_p(opts, tmp)) {
+                json-&gt;symbolize_names = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
+            } else {
+                json-&gt;symbolize_names = 0;
+            }
+            tmp = ID2SYM(i_quirks_mode);
+            if (option_given_p(opts, tmp)) {
+                VALUE quirks_mode = rb_hash_aref(opts, tmp);
+                json-&gt;quirks_mode = RTEST(quirks_mode) ? 1 : 0;
+            } else {
+                json-&gt;quirks_mode = 0;
+            }
+            tmp = ID2SYM(i_create_additions);
+            if (option_given_p(opts, tmp)) {
+                json-&gt;create_additions = RTEST(rb_hash_aref(opts, tmp));
+            } else {
+                json-&gt;create_additions = 1;
+            }
+            tmp = ID2SYM(i_create_id);
+            if (option_given_p(opts, tmp)) {
+                json-&gt;create_id = rb_hash_aref(opts, tmp);
+            } else {
+                json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+            }
+            tmp = ID2SYM(i_object_class);
+            if (option_given_p(opts, tmp)) {
+                json-&gt;object_class = rb_hash_aref(opts, tmp);
+            } else {
+                json-&gt;object_class = Qnil;
+            }
+            tmp = ID2SYM(i_array_class);
+            if (option_given_p(opts, tmp)) {
+                json-&gt;array_class = rb_hash_aref(opts, tmp);
+            } else {
+                json-&gt;array_class = Qnil;
+            }
+            tmp = ID2SYM(i_match_string);
+            if (option_given_p(opts, tmp)) {
+                VALUE match_string = rb_hash_aref(opts, tmp);
+                json-&gt;match_string = RTEST(match_string) ? match_string : Qnil;
+            } else {
+                json-&gt;match_string = Qnil;
+            }
+        }
+    } else {
+        json-&gt;max_nesting = 19;
+        json-&gt;allow_nan = 0;
+        json-&gt;create_additions = 1;
+        json-&gt;create_id = rb_funcall(mJSON, i_create_id, 0);
+        json-&gt;object_class = Qnil;
+        json-&gt;array_class = Qnil;
+    }
+    source = rb_convert_type(source, T_STRING, &quot;String&quot;, &quot;to_str&quot;);
+    if (!json-&gt;quirks_mode) {
+      source = convert_encoding(StringValue(source));
+    }
+    json-&gt;current_nesting = 0;
+    json-&gt;len = RSTRING_LEN(source);
+    json-&gt;source = RSTRING_PTR(source);;
+    json-&gt;Vsource = source;
+    return self;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-parse">
+            
+              <a name="method-i-parse"></a><b>parse()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Parses the current <a href="../../JSON.html">JSON</a> text <em>source</em>
+and returns the complete data structure as a result.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-parse_source')" id="l_method-i-parse_source">show</a>
+                
+              </p>
+              <div id="method-i-parse_source" class="dyn-source">
+                <pre>static VALUE cParser_parse(VALUE self)
+{
+  GET_PARSER;
+
+  if (json-&gt;quirks_mode) {
+    return cParser_parse_quirks_mode(self);
+  } else {
+    return cParser_parse_strict(self);
+  }
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-quirks_mode-3F">
+            
+              <a name="method-i-quirks_mode-3F"></a><b>quirks_mode?()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns a true, if this parser is in quirks_mode, false otherwise.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-quirks_mode-3F_source')" id="l_method-i-quirks_mode-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-quirks_mode-3F_source" class="dyn-source">
+                <pre>static VALUE cParser_quirks_mode_p(VALUE self)
+{
+    GET_PARSER;
+    return json-&gt;quirks_mode ? Qtrue : Qfalse;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-source">
+            
+              <a name="method-i-source"></a><b>source()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns a copy of the current <em>source</em> string, that was used to
+construct this <a href="Parser.html">Parser</a>.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-source_source')" id="l_method-i-source_source">show</a>
+                
+              </p>
+              <div id="method-i-source_source" class="dyn-source">
+                <pre>static VALUE cParser_source(VALUE self)
+{
+    GET_PARSER;
+    return rb_str_dup(json-&gt;Vsource);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+    </div>
+  </body>
+</html>    

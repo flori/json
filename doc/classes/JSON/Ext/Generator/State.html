@@ -1,0 +1,1684 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSON::Ext::Generator::State</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            JSON::Ext::Generator::State 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../../files/ext/json/ext/generator/generator_c.html">ext/json/ext/generator/generator.c</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>#</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-5B-5D">[]</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-allow_nan-3F">allow_nan?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-array_nl">array_nl</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-array_nl-3D">array_nl=</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-ascii_only-3F">ascii_only?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-buffer_initial_length">buffer_initial_length</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-buffer_initial_length-3D">buffer_initial_length=</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-check_circular-3F">check_circular?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-configure">configure</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-depth">depth</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-depth-3D">depth=</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-from_state">from_state</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-generate">generate</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-indent">indent</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-indent-3D">indent=</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-initialize_copy">initialize_copy</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-max_nesting">max_nesting</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-max_nesting-3D">max_nesting=</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-merge">merge</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>O</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-object_nl">object_nl</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-object_nl-3D">object_nl=</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>Q</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-quirks_mode">quirks_mode</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-quirks_mode-3D">quirks_mode=</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-quirks_mode-3F">quirks_mode?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-space">space</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-space-3D">space=</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-space_before">space_before</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-space_before-3D">space_before=</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-to_h">to_h</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-from_state">
+            
+              <a name="method-c-from_state"></a><b>from_state(opts)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Creates a <a href="State.html">State</a> object from <em>opts</em>, which
+ought to be Hash to create a new <a href="State.html">State</a> instance
+configured by <em>opts</em>, something else to create an unconfigured
+instance. If <em>opts</em> is a <a href="State.html">State</a> object, it
+is just returned.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-from_state_source')" id="l_method-c-from_state_source">show</a>
+                
+              </p>
+              <div id="method-c-from_state_source" class="dyn-source">
+                <pre>static VALUE cState_from_state_s(VALUE self, VALUE opts)
+{
+    if (rb_obj_is_kind_of(opts, self)) {
+        return opts;
+    } else if (rb_obj_is_kind_of(opts, rb_cHash)) {
+        return rb_funcall(self, i_new, 1, opts);
+    } else {
+        if (NIL_P(CJSON_SAFE_STATE_PROTOTYPE)) {
+            CJSON_SAFE_STATE_PROTOTYPE = rb_const_get(mJSON, i_SAFE_STATE_PROTOTYPE);
+        }
+        return rb_funcall(CJSON_SAFE_STATE_PROTOTYPE, i_dup, 0);
+    }
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <a name="method-c-new"></a><b>new(opts = {})
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Instantiates a new <a href="State.html">State</a> object, configured by
+<em>opts</em>.</p>
+
+<p><em>opts</em> can have the following keys:</p>
+<ul><li>
+<p><strong>indent</strong>: a string used to indent levels (default: ”),</p>
+</li><li>
+<p><strong>space</strong>: a string that is put after, a : or , delimiter
+(default: ”),</p>
+</li><li>
+<p><strong><a
+href="State.html#method-i-space_before">#space_before</a></strong>: a
+string that is put before a : pair delimiter (default: ”),</p>
+</li><li>
+<p><strong><a href="State.html#method-i-object_nl">#object_nl</a></strong>: a
+string that is put at the end of a <a href="../../../JSON.html">JSON</a>
+object (default: ”),</p>
+</li><li>
+<p><strong><a href="State.html#method-i-array_nl">#array_nl</a></strong>: a
+string that is put at the end of a <a href="../../../JSON.html">JSON</a>
+array (default: ”),</p>
+</li><li>
+<p><strong>allow_nan</strong>: true if NaN, Infinity, and -Infinity should be
+generated, otherwise an exception is thrown, if these values are
+encountered. This options defaults to false.</p>
+</li><li>
+<p><strong><a
+href="State.html#method-i-quirks_mode">#quirks_mode</a></strong>: Enables
+<a href="State.html#method-i-quirks_mode">#quirks_mode</a> for parser, that
+is for example generating single <a href="../../../JSON.html">JSON</a>
+values instead of documents is possible.</p>
+</li><li>
+<p><strong><a
+href="State.html#method-i-buffer_initial_length">#buffer_initial_length</a></strong>:
+sets the initial length of the generator’s internal buffer.</p>
+</li></ul>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre>static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
+{
+    VALUE opts;
+    GET_STATE(self);
+    state-&gt;max_nesting = 19;
+    state-&gt;buffer_initial_length = FBUFFER_INITIAL_LENGTH_DEFAULT;
+    rb_scan_args(argc, argv, &quot;01&quot;, &amp;opts);
+    if (!NIL_P(opts)) cState_configure(self, opts);
+    return self;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-5B-5D">
+            
+              <a name="method-i-5B-5D"></a><b>[](name)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Return the value returned by method <code>name</code>.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-5B-5D_source')" id="l_method-i-5B-5D_source">show</a>
+                
+              </p>
+              <div id="method-i-5B-5D_source" class="dyn-source">
+                <pre>static VALUE cState_aref(VALUE self, VALUE name)
+{
+    GET_STATE(self);
+    if (RTEST(rb_funcall(self, i_respond_to_p, 1, name))) {
+        return rb_funcall(self, i_send, 1, name);
+    } else {
+        return Qnil;
+    }
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-allow_nan-3F">
+            
+              <a name="method-i-allow_nan-3F"></a><b>allow_nan?
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns true, if NaN, Infinity, and -Infinity should be generated,
+otherwise returns false.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-allow_nan-3F_source')" id="l_method-i-allow_nan-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-allow_nan-3F_source" class="dyn-source">
+                <pre>static VALUE cState_allow_nan_p(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;allow_nan ? Qtrue : Qfalse;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-array_nl">
+            
+              <a name="method-i-array_nl"></a><b>array_nl()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> array.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-array_nl_source')" id="l_method-i-array_nl_source">show</a>
+                
+              </p>
+              <div id="method-i-array_nl_source" class="dyn-source">
+                <pre>static VALUE cState_array_nl(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;array_nl ? rb_str_new2(state-&gt;array_nl) : rb_str_new2(&quot;&quot;);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-array_nl-3D">
+            
+              <a name="method-i-array_nl-3D"></a><b>array_nl=(array_nl)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> array.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-array_nl-3D_source')" id="l_method-i-array_nl-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-array_nl-3D_source" class="dyn-source">
+                <pre>static VALUE cState_array_nl_set(VALUE self, VALUE array_nl)
+{
+    unsigned long len;
+    GET_STATE(self);
+    Check_Type(array_nl, T_STRING);
+    len = RSTRING_LEN(array_nl);
+    if (len == 0) {
+        if (state-&gt;array_nl) {
+            ruby_xfree(state-&gt;array_nl);
+            state-&gt;array_nl = NULL;
+        }
+    } else {
+        if (state-&gt;array_nl) ruby_xfree(state-&gt;array_nl);
+        state-&gt;array_nl = strdup(RSTRING_PTR(array_nl));
+        state-&gt;array_nl_len = len;
+    }
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-ascii_only-3F">
+            
+              <a name="method-i-ascii_only-3F"></a><b>ascii_only?
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns true, if NaN, Infinity, and -Infinity should be generated,
+otherwise returns false.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-ascii_only-3F_source')" id="l_method-i-ascii_only-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-ascii_only-3F_source" class="dyn-source">
+                <pre>static VALUE cState_ascii_only_p(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;ascii_only ? Qtrue : Qfalse;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-buffer_initial_length">
+            
+              <a name="method-i-buffer_initial_length"></a><b>buffer_initial_length
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This integer returns the current inital length of the buffer.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-buffer_initial_length_source')" id="l_method-i-buffer_initial_length_source">show</a>
+                
+              </p>
+              <div id="method-i-buffer_initial_length_source" class="dyn-source">
+                <pre>static VALUE cState_buffer_initial_length(VALUE self)
+{
+    GET_STATE(self);
+    return LONG2FIX(state-&gt;buffer_initial_length);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-buffer_initial_length-3D">
+            
+              <a name="method-i-buffer_initial_length-3D"></a><b>buffer_initial_length=(length)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This sets the initial length of the buffer to <code>length</code>, if
+<code>length</code> &gt; 0, otherwise its value isn’t changed.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-buffer_initial_length-3D_source')" id="l_method-i-buffer_initial_length-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-buffer_initial_length-3D_source" class="dyn-source">
+                <pre>static VALUE cState_buffer_initial_length_set(VALUE self, VALUE buffer_initial_length)
+{
+    long initial_length;
+    GET_STATE(self);
+    Check_Type(buffer_initial_length, T_FIXNUM);
+    initial_length = FIX2LONG(buffer_initial_length);
+    if (initial_length &gt; 0) {
+        state-&gt;buffer_initial_length = initial_length;
+    }
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-check_circular-3F">
+            
+              <a name="method-i-check_circular-3F"></a><b>check_circular?
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns true, if circular data structures should be checked, otherwise
+returns false.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-check_circular-3F_source')" id="l_method-i-check_circular-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-check_circular-3F_source" class="dyn-source">
+                <pre>static VALUE cState_check_circular_p(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;max_nesting ? Qtrue : Qfalse;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-configure">
+            
+              <a name="method-i-configure"></a><b>configure(opts)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Configure this <a href="State.html">State</a> instance with the Hash
+<em>opts</em>, and return itself.</p>
+            </div>
+          
+          
+          
+            <div class="aka">
+              Also aliased as: <a href="State.html#method-i-merge">merge</a>
+            </div>
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-configure_source')" id="l_method-i-configure_source">show</a>
+                
+              </p>
+              <div id="method-i-configure_source" class="dyn-source">
+                <pre>static VALUE cState_configure(VALUE self, VALUE opts)
+{
+    VALUE tmp;
+    GET_STATE(self);
+    tmp = rb_convert_type(opts, T_HASH, &quot;Hash&quot;, &quot;to_hash&quot;);
+    if (NIL_P(tmp)) tmp = rb_convert_type(opts, T_HASH, &quot;Hash&quot;, &quot;to_h&quot;);
+    if (NIL_P(tmp)) {
+        rb_raise(rb_eArgError, &quot;opts has to be hash like or convertable into a hash&quot;);
+    }
+    opts = tmp;
+    tmp = rb_hash_aref(opts, ID2SYM(i_indent));
+    if (RTEST(tmp)) {
+        unsigned long len;
+        Check_Type(tmp, T_STRING);
+        len = RSTRING_LEN(tmp);
+        state-&gt;indent = fstrndup(RSTRING_PTR(tmp), len);
+        state-&gt;indent_len = len;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_space));
+    if (RTEST(tmp)) {
+        unsigned long len;
+        Check_Type(tmp, T_STRING);
+        len = RSTRING_LEN(tmp);
+        state-&gt;space = fstrndup(RSTRING_PTR(tmp), len);
+        state-&gt;space_len = len;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_space_before));
+    if (RTEST(tmp)) {
+        unsigned long len;
+        Check_Type(tmp, T_STRING);
+        len = RSTRING_LEN(tmp);
+        state-&gt;space_before = fstrndup(RSTRING_PTR(tmp), len);
+        state-&gt;space_before_len = len;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_array_nl));
+    if (RTEST(tmp)) {
+        unsigned long len;
+        Check_Type(tmp, T_STRING);
+        len = RSTRING_LEN(tmp);
+        state-&gt;array_nl = fstrndup(RSTRING_PTR(tmp), len);
+        state-&gt;array_nl_len = len;
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_object_nl));
+    if (RTEST(tmp)) {
+        unsigned long len;
+        Check_Type(tmp, T_STRING);
+        len = RSTRING_LEN(tmp);
+        state-&gt;object_nl = fstrndup(RSTRING_PTR(tmp), len);
+        state-&gt;object_nl_len = len;
+    }
+    tmp = ID2SYM(i_max_nesting);
+    state-&gt;max_nesting = 19;
+    if (option_given_p(opts, tmp)) {
+        VALUE max_nesting = rb_hash_aref(opts, tmp);
+        if (RTEST(max_nesting)) {
+            Check_Type(max_nesting, T_FIXNUM);
+            state-&gt;max_nesting = FIX2LONG(max_nesting);
+        } else {
+            state-&gt;max_nesting = 0;
+        }
+    }
+    tmp = ID2SYM(i_depth);
+    state-&gt;depth = 0;
+    if (option_given_p(opts, tmp)) {
+        VALUE depth = rb_hash_aref(opts, tmp);
+        if (RTEST(depth)) {
+            Check_Type(depth, T_FIXNUM);
+            state-&gt;depth = FIX2LONG(depth);
+        } else {
+            state-&gt;depth = 0;
+        }
+    }
+    tmp = ID2SYM(i_buffer_initial_length);
+    if (option_given_p(opts, tmp)) {
+        VALUE buffer_initial_length = rb_hash_aref(opts, tmp);
+        if (RTEST(buffer_initial_length)) {
+            long initial_length;
+            Check_Type(buffer_initial_length, T_FIXNUM);
+            initial_length = FIX2LONG(buffer_initial_length);
+            if (initial_length &gt; 0) state-&gt;buffer_initial_length = initial_length;
+        }
+    }
+    tmp = rb_hash_aref(opts, ID2SYM(i_allow_nan));
+    state-&gt;allow_nan = RTEST(tmp);
+    tmp = rb_hash_aref(opts, ID2SYM(i_ascii_only));
+    state-&gt;ascii_only = RTEST(tmp);
+    tmp = rb_hash_aref(opts, ID2SYM(i_quirks_mode));
+    state-&gt;quirks_mode = RTEST(tmp);
+    return self;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-depth">
+            
+              <a name="method-i-depth"></a><b>depth
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This integer returns the current depth of data structure nesting.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-depth_source')" id="l_method-i-depth_source">show</a>
+                
+              </p>
+              <div id="method-i-depth_source" class="dyn-source">
+                <pre>static VALUE cState_depth(VALUE self)
+{
+    GET_STATE(self);
+    return LONG2FIX(state-&gt;depth);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-depth-3D">
+            
+              <a name="method-i-depth-3D"></a><b>depth=(depth)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This sets the maximum level of data structure nesting in the generated <a
+href="../../../JSON.html">JSON</a> to the integer depth, <a
+href="State.html#method-i-max_nesting">#max_nesting</a> = 0 if no maximum
+should be checked.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-depth-3D_source')" id="l_method-i-depth-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-depth-3D_source" class="dyn-source">
+                <pre>static VALUE cState_depth_set(VALUE self, VALUE depth)
+{
+    GET_STATE(self);
+    Check_Type(depth, T_FIXNUM);
+    state-&gt;depth = FIX2LONG(depth);
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-generate">
+            
+              <a name="method-i-generate"></a><b>generate(obj)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Generates a valid <a href="../../../JSON.html">JSON</a> document from
+object <code>obj</code> and returns the result. If no valid <a
+href="../../../JSON.html">JSON</a> document can be created this method
+raises a <a href="../../GeneratorError.html">GeneratorError</a> exception.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-generate_source')" id="l_method-i-generate_source">show</a>
+                
+              </p>
+              <div id="method-i-generate_source" class="dyn-source">
+                <pre>static VALUE cState_generate(VALUE self, VALUE obj)
+{
+    VALUE result = cState_partial_generate(self, obj);
+    VALUE re, args[2];
+    GET_STATE(self);
+    if (!state-&gt;quirks_mode) {
+        args[0] = rb_str_new2(&quot;\\A\\s*(?:\\[.*\\]|\\{.*\\})\\s*\\Z&quot;);
+        args[1] = CRegexp_MULTILINE;
+        re = rb_class_new_instance(2, args, rb_cRegexp);
+        if (NIL_P(rb_funcall(re, i_match, 1, result))) {
+            rb_raise(eGeneratorError, &quot;only generation of JSON objects or arrays allowed&quot;);
+        }
+    }
+    return result;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-indent">
+            
+              <a name="method-i-indent"></a><b>indent()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is used to indent levels in the <a
+href="../../../JSON.html">JSON</a> text.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-indent_source')" id="l_method-i-indent_source">show</a>
+                
+              </p>
+              <div id="method-i-indent_source" class="dyn-source">
+                <pre>static VALUE cState_indent(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;indent ? rb_str_new2(state-&gt;indent) : rb_str_new2(&quot;&quot;);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-indent-3D">
+            
+              <a name="method-i-indent-3D"></a><b>indent=(indent)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is used to indent levels in the <a
+href="../../../JSON.html">JSON</a> text.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-indent-3D_source')" id="l_method-i-indent-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-indent-3D_source" class="dyn-source">
+                <pre>static VALUE cState_indent_set(VALUE self, VALUE indent)
+{
+    unsigned long len;
+    GET_STATE(self);
+    Check_Type(indent, T_STRING);
+    len = RSTRING_LEN(indent);
+    if (len == 0) {
+        if (state-&gt;indent) {
+            ruby_xfree(state-&gt;indent);
+            state-&gt;indent = NULL;
+            state-&gt;indent_len = 0;
+        }
+    } else {
+        if (state-&gt;indent) ruby_xfree(state-&gt;indent);
+        state-&gt;indent = strdup(RSTRING_PTR(indent));
+        state-&gt;indent_len = len;
+    }
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-initialize_copy">
+            
+              <a name="method-i-initialize_copy"></a><b>initialize_copy(orig)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Initializes this object from orig if it to be duplicated/cloned and returns
+it.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-initialize_copy_source')" id="l_method-i-initialize_copy_source">show</a>
+                
+              </p>
+              <div id="method-i-initialize_copy_source" class="dyn-source">
+                <pre>static VALUE cState_init_copy(VALUE obj, VALUE orig)
+{
+    JSON_Generator_State *objState, *origState;
+
+    Data_Get_Struct(obj, JSON_Generator_State, objState);
+    Data_Get_Struct(orig, JSON_Generator_State, origState);
+    if (!objState) rb_raise(rb_eArgError, &quot;unallocated JSON::State&quot;);
+
+    MEMCPY(objState, origState, JSON_Generator_State, 1);
+    objState-&gt;indent = fstrndup(origState-&gt;indent, origState-&gt;indent_len);
+    objState-&gt;space = fstrndup(origState-&gt;space, origState-&gt;space_len);
+    objState-&gt;space_before = fstrndup(origState-&gt;space_before, origState-&gt;space_before_len);
+    objState-&gt;object_nl = fstrndup(origState-&gt;object_nl, origState-&gt;object_nl_len);
+    objState-&gt;array_nl = fstrndup(origState-&gt;array_nl, origState-&gt;array_nl_len);
+    if (origState-&gt;array_delim) objState-&gt;array_delim = fbuffer_dup(origState-&gt;array_delim);
+    if (origState-&gt;object_delim) objState-&gt;object_delim = fbuffer_dup(origState-&gt;object_delim);
+    if (origState-&gt;object_delim2) objState-&gt;object_delim2 = fbuffer_dup(origState-&gt;object_delim2);
+    return obj;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-max_nesting">
+            
+              <a name="method-i-max_nesting"></a><b>max_nesting
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This integer returns the maximum level of data structure nesting in the
+generated <a href="../../../JSON.html">JSON</a>, <a
+href="State.html#method-i-max_nesting">#max_nesting</a> = 0 if no maximum
+is checked.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-max_nesting_source')" id="l_method-i-max_nesting_source">show</a>
+                
+              </p>
+              <div id="method-i-max_nesting_source" class="dyn-source">
+                <pre>static VALUE cState_max_nesting(VALUE self)
+{
+    GET_STATE(self);
+    return LONG2FIX(state-&gt;max_nesting);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-max_nesting-3D">
+            
+              <a name="method-i-max_nesting-3D"></a><b>max_nesting=(depth)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This sets the maximum level of data structure nesting in the generated <a
+href="../../../JSON.html">JSON</a> to the integer depth, <a
+href="State.html#method-i-max_nesting">#max_nesting</a> = 0 if no maximum
+should be checked.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-max_nesting-3D_source')" id="l_method-i-max_nesting-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-max_nesting-3D_source" class="dyn-source">
+                <pre>static VALUE cState_max_nesting_set(VALUE self, VALUE depth)
+{
+    GET_STATE(self);
+    Check_Type(depth, T_FIXNUM);
+    return state-&gt;max_nesting = FIX2LONG(depth);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-merge">
+            
+              <a name="method-i-merge"></a><b>merge</b>(p1)
+            
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-object_nl">
+            
+              <a name="method-i-object_nl"></a><b>object_nl()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> object (or Hash).</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-object_nl_source')" id="l_method-i-object_nl_source">show</a>
+                
+              </p>
+              <div id="method-i-object_nl_source" class="dyn-source">
+                <pre>static VALUE cState_object_nl(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;object_nl ? rb_str_new2(state-&gt;object_nl) : rb_str_new2(&quot;&quot;);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-object_nl-3D">
+            
+              <a name="method-i-object_nl-3D"></a><b>object_nl=(object_nl)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is put at the end of a line that holds a <a
+href="../../../JSON.html">JSON</a> object (or Hash).</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-object_nl-3D_source')" id="l_method-i-object_nl-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-object_nl-3D_source" class="dyn-source">
+                <pre>static VALUE cState_object_nl_set(VALUE self, VALUE object_nl)
+{
+    unsigned long len;
+    GET_STATE(self);
+    Check_Type(object_nl, T_STRING);
+    len = RSTRING_LEN(object_nl);
+    if (len == 0) {
+        if (state-&gt;object_nl) {
+            ruby_xfree(state-&gt;object_nl);
+            state-&gt;object_nl = NULL;
+        }
+    } else {
+        if (state-&gt;object_nl) ruby_xfree(state-&gt;object_nl);
+        state-&gt;object_nl = strdup(RSTRING_PTR(object_nl));
+        state-&gt;object_nl_len = len;
+    }
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-quirks_mode">
+            
+              <a name="method-i-quirks_mode"></a><b>quirks_mode?
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns true, if quirks mode is enabled. Otherwise returns false.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-quirks_mode_source')" id="l_method-i-quirks_mode_source">show</a>
+                
+              </p>
+              <div id="method-i-quirks_mode_source" class="dyn-source">
+                <pre>static VALUE cState_quirks_mode_p(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;quirks_mode ? Qtrue : Qfalse;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-quirks_mode-3D">
+            
+              <a name="method-i-quirks_mode-3D"></a><b>quirks_mode=(enable)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>If set to true, enables the <a
+href="State.html#method-i-quirks_mode">#quirks_mode</a> mode.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-quirks_mode-3D_source')" id="l_method-i-quirks_mode-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-quirks_mode-3D_source" class="dyn-source">
+                <pre>static VALUE cState_quirks_mode_set(VALUE self, VALUE enable)
+{
+    GET_STATE(self);
+    state-&gt;quirks_mode = RTEST(enable);
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-quirks_mode-3F">
+            
+              <a name="method-i-quirks_mode-3F"></a><b>quirks_mode?
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns true, if quirks mode is enabled. Otherwise returns false.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-quirks_mode-3F_source')" id="l_method-i-quirks_mode-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-quirks_mode-3F_source" class="dyn-source">
+                <pre>static VALUE cState_quirks_mode_p(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;quirks_mode ? Qtrue : Qfalse;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-space">
+            
+              <a name="method-i-space"></a><b>space()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is used to insert a space between the tokens in a <a
+href="../../../JSON.html">JSON</a> string.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-space_source')" id="l_method-i-space_source">show</a>
+                
+              </p>
+              <div id="method-i-space_source" class="dyn-source">
+                <pre>static VALUE cState_space(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;space ? rb_str_new2(state-&gt;space) : rb_str_new2(&quot;&quot;);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-space-3D">
+            
+              <a name="method-i-space-3D"></a><b>space=(space)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is used to insert a space between the tokens in a <a
+href="../../../JSON.html">JSON</a> string.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-space-3D_source')" id="l_method-i-space-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-space-3D_source" class="dyn-source">
+                <pre>static VALUE cState_space_set(VALUE self, VALUE space)
+{
+    unsigned long len;
+    GET_STATE(self);
+    Check_Type(space, T_STRING);
+    len = RSTRING_LEN(space);
+    if (len == 0) {
+        if (state-&gt;space) {
+            ruby_xfree(state-&gt;space);
+            state-&gt;space = NULL;
+            state-&gt;space_len = 0;
+        }
+    } else {
+        if (state-&gt;space) ruby_xfree(state-&gt;space);
+        state-&gt;space = strdup(RSTRING_PTR(space));
+        state-&gt;space_len = len;
+    }
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-space_before">
+            
+              <a name="method-i-space_before"></a><b>space_before()
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is used to insert a space before the ‘:’ in <a
+href="../../../JSON.html">JSON</a> objects.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-space_before_source')" id="l_method-i-space_before_source">show</a>
+                
+              </p>
+              <div id="method-i-space_before_source" class="dyn-source">
+                <pre>static VALUE cState_space_before(VALUE self)
+{
+    GET_STATE(self);
+    return state-&gt;space_before ? rb_str_new2(state-&gt;space_before) : rb_str_new2(&quot;&quot;);
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-space_before-3D">
+            
+              <a name="method-i-space_before-3D"></a><b>space_before=(space_before)
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>This string is used to insert a space before the ‘:’ in <a
+href="../../../JSON.html">JSON</a> objects.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-space_before-3D_source')" id="l_method-i-space_before-3D_source">show</a>
+                
+              </p>
+              <div id="method-i-space_before-3D_source" class="dyn-source">
+                <pre>static VALUE cState_space_before_set(VALUE self, VALUE space_before)
+{
+    unsigned long len;
+    GET_STATE(self);
+    Check_Type(space_before, T_STRING);
+    len = RSTRING_LEN(space_before);
+    if (len == 0) {
+        if (state-&gt;space_before) {
+            ruby_xfree(state-&gt;space_before);
+            state-&gt;space_before = NULL;
+            state-&gt;space_before_len = 0;
+        }
+    } else {
+        if (state-&gt;space_before) ruby_xfree(state-&gt;space_before);
+        state-&gt;space_before = strdup(RSTRING_PTR(space_before));
+        state-&gt;space_before_len = len;
+    }
+    return Qnil;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-to_h">
+            
+              <a name="method-i-to_h"></a><b>to_h
+</b>
+            
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns the configuration instance variables as a hash, that can be passed
+to the configure method.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_h_source')" id="l_method-i-to_h_source">show</a>
+                
+              </p>
+              <div id="method-i-to_h_source" class="dyn-source">
+                <pre>static VALUE cState_to_h(VALUE self)
+{
+    VALUE result = rb_hash_new();
+    GET_STATE(self);
+    rb_hash_aset(result, ID2SYM(i_indent), rb_str_new(state-&gt;indent, state-&gt;indent_len));
+    rb_hash_aset(result, ID2SYM(i_space), rb_str_new(state-&gt;space, state-&gt;space_len));
+    rb_hash_aset(result, ID2SYM(i_space_before), rb_str_new(state-&gt;space_before, state-&gt;space_before_len));
+    rb_hash_aset(result, ID2SYM(i_object_nl), rb_str_new(state-&gt;object_nl, state-&gt;object_nl_len));
+    rb_hash_aset(result, ID2SYM(i_array_nl), rb_str_new(state-&gt;array_nl, state-&gt;array_nl_len));
+    rb_hash_aset(result, ID2SYM(i_allow_nan), state-&gt;allow_nan ? Qtrue : Qfalse);
+    rb_hash_aset(result, ID2SYM(i_ascii_only), state-&gt;ascii_only ? Qtrue : Qfalse);
+    rb_hash_aset(result, ID2SYM(i_quirks_mode), state-&gt;quirks_mode ? Qtrue : Qfalse);
+    rb_hash_aset(result, ID2SYM(i_max_nesting), LONG2FIX(state-&gt;max_nesting));
+    rb_hash_aset(result, ID2SYM(i_depth), LONG2FIX(state-&gt;depth));
+    rb_hash_aset(result, ID2SYM(i_buffer_initial_length), LONG2FIX(state-&gt;buffer_initial_length));
+    return result;
+}</pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+    </div>
+  </body>
+</html>    
