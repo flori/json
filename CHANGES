@@ -1,3 +1,8 @@
+2012-01-15 (1.6.5)
+  * Vit Ondruch <v.ondruch@tiscali.cz> reported a bug that shows up when using
+    optimisation under GCC 4.7. Thx to him, Bohuslav Kabrda
+    <bkabrda@redhat.com> and Yui NARUSE <naruse@airemix.jp> for debugging and
+    developing a patch fix.
 2011-12-24 (1.6.4)
   * Patches that improve speed on JRuby contributed by Charles Oliver Nutter
     <headius@headius.com>.
