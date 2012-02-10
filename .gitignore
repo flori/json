@@ -6,3 +6,5 @@ pkg
 java/Json.iml
 Gemfile.lock
 .rvmrc
+*.rbc
+.rbx
