@@ -1,10 +1,14 @@
 #!/usr/bin/env ruby
 
-require 'rbconfig'
 require 'fileutils'
 include FileUtils::Verbose
-
-include Config
+require 'rbconfig'
+include\
+  begin
+    RbConfig
+  rescue NameError
+    Config
+  end
 
 sitelibdir = CONFIG["sitelibdir"]
 cd 'lib' do
