@@ -1,4 +1,4 @@
-= JSON implementation for Ruby http://travis-ci.org/flori/json.png?branch=master
+= JSON implementation for Ruby {<img src="https://secure.travis-ci.org/flori/json.png" />}[http://travis-ci.org/flori/json]
 
 == Description
 
