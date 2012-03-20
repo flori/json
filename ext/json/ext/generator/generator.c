@@ -852,6 +852,31 @@ static VALUE cState_partial_generate(VALUE self, VALUE obj)
     return fbuffer_to_s(buffer);
 }
 
+static int isArrayOrObject(VALUE string)
+{
+    char c, *q, *p = RSTRING_PTR(string), *pend = p + RSTRING_LEN(string);
+
+    while (p < pend) {
+        if (isspace(*p)) {
+            p++;
+            continue;
+        }
+        if (*p == '[') c = ']';
+        else if (*p == '{') c = '}';
+        else return 0;
+        q = pend - 1;
+        while (q > p) {
+            if (isspace(*q)) {
+                q--;
+                continue;
+            }
+            if (*q == c) return 1;
+        }
+        return 0;
+    }
+    return 0;
+}
+
 /*
  * call-seq: generate(obj)
  *
@@ -862,15 +887,9 @@ static VALUE cState_partial_generate(VALUE self, VALUE obj)
 static VALUE cState_generate(VALUE self, VALUE obj)
 {
     VALUE result = cState_partial_generate(self, obj);
-    VALUE re, args[2];
     GET_STATE(self);
-    if (!state->quirks_mode) {
-        args[0] = rb_str_new2("\\A\\s*(?:\\[.*\\]|\\{.*\\})\\s*\\Z");
-        args[1] = CRegexp_MULTILINE;
-        re = rb_class_new_instance(2, args, rb_cRegexp);
-        if (NIL_P(rb_funcall(re, i_match, 1, result))) {
-            rb_raise(eGeneratorError, "only generation of JSON objects or arrays allowed");
-        }
+    if (!state->quirks_mode && !isArrayOrObject(result)) {
+        rb_raise(eGeneratorError, "only generation of JSON objects or arrays allowed");
     }
     return result;
 }
