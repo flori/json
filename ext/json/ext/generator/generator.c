@@ -854,27 +854,12 @@ static VALUE cState_partial_generate(VALUE self, VALUE obj)
 
 static int isArrayOrObject(VALUE string)
 {
-    char c, *q, *p = RSTRING_PTR(string), *pend = p + RSTRING_LEN(string);
-
-    while (p < pend) {
-        if (isspace(*p)) {
-            p++;
-            continue;
-        }
-        if (*p == '[') c = ']';
-        else if (*p == '{') c = '}';
-        else return 0;
-        q = pend - 1;
-        while (q > p) {
-            if (isspace(*q)) {
-                q--;
-                continue;
-            }
-            if (*q == c) return 1;
-        }
-        return 0;
-    }
-    return 0;
+    long string_len = RSTRING_LEN(string);
+    char c, *p = RSTRING_PTR(string), *q = p + string_len - 1;
+    if (string_len < 2) return 0;
+    for (; p < q && isspace(*p); p++);
+    for (; q > p && isspace(*q); q--);
+    return *p == '[' && *q == ']' || *p == '{' && *q == '}';
 }
 
 /*
