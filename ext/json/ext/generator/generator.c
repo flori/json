@@ -852,6 +852,11 @@ static VALUE cState_partial_generate(VALUE self, VALUE obj)
     return fbuffer_to_s(buffer);
 }
 
+/*
+ * This function returns true if string is either a JSON array or JSON object.
+ * It might suffer from false positives, e. g. syntactically incorrect JSON in
+ * the string or certain UTF-8 characters on the right hand side.
+ */
 static int isArrayOrObject(VALUE string)
 {
     long string_len = RSTRING_LEN(string);
