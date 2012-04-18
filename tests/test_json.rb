@@ -314,6 +314,16 @@ class TC_JSON < Test::Unit::TestCase
     assert res.item_set?
   end
 
+  def test_parse_light_object
+    res = parse('{"foo":"bar", "baz":{}}', :object_class => JSON::LightObject)
+    assert_equal(JSON::LightObject, res.class)
+    assert_equal "bar", res.foo
+    assert_equal "bar", res["foo"]
+    assert_equal "bar", res[:foo]
+    assert_equal "bar", res.to_hash[:foo]
+    assert_equal(JSON::LightObject, res.baz.class)
+  end
+
   def test_generate_core_subclasses_with_new_to_json
     obj = SubHash2["foo" => SubHash2["bar" => true]]
     obj_json = JSON(obj)

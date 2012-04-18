@@ -13,7 +13,15 @@ module JSON
     end
 
     def to_hash
-      __send__ :table
+      table
+    end
+
+    def [](name)
+      to_hash[name.to_sym]
+    end
+
+    def []=(name, value)
+      modifiable[name.to_sym] = value
     end
 
     def |(other)
