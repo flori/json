@@ -1,3 +1,4 @@
+$:.unshift '../../flott/lib'
 require 'flott'
 require 'json'
 include Flott
@@ -10,8 +11,8 @@ desc "Create the project documentation."
 task :doc do
   if File.directory?('doc')
     sh 'git rm -rf doc'
+    sh 'git commit -m "deleted documentation" doc'
   end
-  sh 'git commit -m "deleted documentation" doc'
   sh 'git checkout master'
   rm_rf 'doc'
   sh 'rake doc'
