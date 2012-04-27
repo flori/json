@@ -21,7 +21,7 @@ unless Array.method_defined?(:permutation)
   end
 end
 
-class TC_JSON < Test::Unit::TestCase
+class TestJSON < Test::Unit::TestCase
   include JSON
 
   def setup
