@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Florian Frank"]
-  s.date = "2012-04-19"
+  s.date = "2012-04-27"
   s.description = "This is a JSON implementation in pure Ruby."
   s.email = "flori@ping.de"
   s.extra_rdoc_files = ["README.rdoc"]
@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--title", "JSON implemention for ruby", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "json"
-  s.rubygems_version = "1.8.21"
+  s.rubygems_version = "1.8.23"
   s.summary = "JSON Implementation for Ruby"
   s.test_files = ["./tests/test_json_string_matching.rb", "./tests/test_json_fixtures.rb", "./tests/test_json_unicode.rb", "./tests/test_json_addition.rb", "./tests/test_json_generate.rb", "./tests/test_json_encoding.rb", "./tests/test_json.rb"]
 
