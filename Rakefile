@@ -15,7 +15,7 @@ task :doc do
   end
   sh 'git checkout master'
   rm_rf 'doc'
-  sh 'rake doc'
+  sh 'bundle exec rake doc'
   sh 'git checkout gh-pages'
   sh 'git add doc'
   sh 'git commit -m "generated documentation" doc'
