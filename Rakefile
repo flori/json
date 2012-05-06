@@ -120,9 +120,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.extensions = FileList['ext/**/extconf.rb']
 
-    s.require_path = EXT_ROOT_DIR
-    s.require_paths << 'ext'
-    s.require_paths << 'lib'
+    s.require_path = 'lib'
     s.add_development_dependency 'permutation'
     s.add_development_dependency 'sdoc'
 
