@@ -1,1 +1,1 @@
-generator.o: generator.c generator.h $(srcdir)/../fbuffer/fbuffer.h
+parser.o: parser.c parser.h $(srcdir)/../fbuffer/fbuffer.h
