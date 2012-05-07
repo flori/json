@@ -1,3 +1,5 @@
+2012-04-28 (1.7.1)
+  * Some small fixes for building
 2012-04-28 (1.7.0)
   * Add JSON::GenericObject for method access to objects transmitted via JSON.
 2012-04-27 (1.6.7)
