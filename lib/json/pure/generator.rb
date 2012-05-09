@@ -41,7 +41,6 @@ module JSON
   if defined?(::Encoding)
     def utf8_to_json(string) # :nodoc:
       string = string.dup
-      string << '' # XXX workaround: avoid buffer sharing
       string.force_encoding(::Encoding::ASCII_8BIT)
       string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
       string.force_encoding(::Encoding::UTF_8)
@@ -50,9 +49,8 @@ module JSON
 
     def utf8_to_json_ascii(string) # :nodoc:
       string = string.dup
-      string << '' # XXX workaround: avoid buffer sharing
       string.force_encoding(::Encoding::ASCII_8BIT)
-      string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub!(/["\\\x0-\x1f]/n) { MAP[$&] }
       string.gsub!(/(
                       (?:
                         [\xc2-\xdf][\x80-\xbf]    |
@@ -63,16 +61,18 @@ module JSON
                     )/nx) { |c|
                       c.size == 1 and raise GeneratorError, "invalid utf8 byte: '#{c}'"
                       s = JSON.iconv('utf-16be', 'utf-8', c).unpack('H*')[0]
+                      s.force_encoding(::Encoding::ASCII_8BIT)
                       s.gsub!(/.{4}/n, '\\\\u\&')
+                      s.force_encoding(::Encoding::UTF_8)
                     }
       string.force_encoding(::Encoding::UTF_8)
       string
     rescue => e
-      raise GeneratorError, "Caught #{e.class}: #{e}"
+      raise GeneratorError.wrap(e)
     end
   else
     def utf8_to_json(string) # :nodoc:
-      string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub(/["\\\x0-\x1f]/n) { MAP[$&] }
     end
 
     def utf8_to_json_ascii(string) # :nodoc:
@@ -91,7 +91,7 @@ module JSON
       }
       string
     rescue => e
-      raise GeneratorError, "Caught #{e.class}: #{e}"
+      raise GeneratorError.wrap(e)
     end
   end
   module_function :utf8_to_json, :utf8_to_json_ascii
