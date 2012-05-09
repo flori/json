@@ -212,6 +212,10 @@ public class GeneratorState extends RubyObject {
             throw Utils.newException(context, Utils.M_GENERATOR_ERROR,
                     "only generation of JSON objects or arrays allowed");
         }
+        RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
+        if (info.encodingsSupported()) {
+            result.force_encoding(context, info.utf8.get());
+        }
         return result;
     }
 
