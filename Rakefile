@@ -343,6 +343,11 @@ else
     rm_rf EXT_PARSER_SRC
   end
 
+  desc "Update the tags file"
+  task :tags do
+    system 'ctags', *Dir['**/*.{rb,c,h,java}']
+  end
+
   file EXT_PARSER_SRC => RAGEL_PATH do
     cd EXT_PARSER_DIR do
       if RAGEL_CODEGEN == 'ragel'
