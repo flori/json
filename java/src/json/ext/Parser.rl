@@ -647,6 +647,10 @@ public class Parser extends RubyObject {
             }
 
             if (cs >= JSON_string_first_final && result != null) {
+                RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
+                if (info.encodingsSupported() && result instanceof RubyString) {
+                  ((RubyString)result).force_encoding(context, info.utf8.get());
+                }
                 res.update(result, p + 1);
             } else {
                 res.update(null, p + 1);
