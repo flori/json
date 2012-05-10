@@ -1477,6 +1477,10 @@ case 5:
             }
 
             if (cs >= JSON_string_first_final && result != null) {
+                RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
+                if (info.encodingsSupported() && result instanceof RubyString) {
+                  ((RubyString)result).force_encoding(context, info.utf8.get());
+                }
                 res.update(result, p + 1);
             } else {
                 res.update(null, p + 1);
@@ -1484,7 +1488,7 @@ case 5:
         }
 
         
-// line 1488 "Parser.java"
+// line 1492 "Parser.java"
 private static byte[] init__JSON_array_actions_0()
 {
 	return new byte [] {
@@ -1597,7 +1601,7 @@ static final int JSON_array_error = 0;
 static final int JSON_array_en_main = 1;
 
 
-// line 693 "Parser.rl"
+// line 697 "Parser.rl"
 
 
         void parseArray(ParserResult res, int p, int pe) {
@@ -1617,14 +1621,14 @@ static final int JSON_array_en_main = 1;
             }
 
             
-// line 1623 "Parser.java"
+// line 1625 "Parser.java"
 	{
 	cs = JSON_array_start;
 	}
 
-// line 714 "Parser.rl"
+// line 716 "Parser.rl"
             
-// line 1630 "Parser.java"
+// line 1632 "Parser.java"
 	{
 	int _klen;
 	int _trans = 0;
@@ -1705,7 +1709,7 @@ case 1:
 			switch ( _JSON_array_actions[_acts++] )
 			{
 	case 0:
-// line 662 "Parser.rl"
+// line 666 "Parser.rl"
 	{
                 parseValue(res, p, pe);
                 if (res.result == null) {
@@ -1722,13 +1726,13 @@ case 1:
             }
 	break;
 	case 1:
-// line 677 "Parser.rl"
+// line 681 "Parser.rl"
 	{
                 p--;
                 { p += 1; _goto_targ = 5; if (true)  continue _goto;}
             }
 	break;
-// line 1734 "Parser.java"
+// line 1736 "Parser.java"
 			}
 		}
 	}
@@ -1748,7 +1752,7 @@ case 5:
 	break; }
 	}
 
-// line 715 "Parser.rl"
+// line 717 "Parser.rl"
 
             if (cs >= JSON_array_first_final) {
                 res.update(result, p + 1);
@@ -1758,7 +1762,7 @@ case 5:
         }
 
         
-// line 1764 "Parser.java"
+// line 1766 "Parser.java"
 private static byte[] init__JSON_object_actions_0()
 {
 	return new byte [] {
@@ -1881,7 +1885,7 @@ static final int JSON_object_error = 0;
 static final int JSON_object_en_main = 1;
 
 
-// line 774 "Parser.rl"
+// line 776 "Parser.rl"
 
 
         void parseObject(ParserResult res, int p, int pe) {
@@ -1906,14 +1910,14 @@ static final int JSON_object_en_main = 1;
             }
 
             
-// line 1912 "Parser.java"
+// line 1914 "Parser.java"
 	{
 	cs = JSON_object_start;
 	}
 
-// line 798 "Parser.rl"
+// line 800 "Parser.rl"
             
-// line 1919 "Parser.java"
+// line 1921 "Parser.java"
 	{
 	int _klen;
 	int _trans = 0;
@@ -1994,7 +1998,7 @@ case 1:
 			switch ( _JSON_object_actions[_acts++] )
 			{
 	case 0:
-// line 729 "Parser.rl"
+// line 731 "Parser.rl"
 	{
                 parseValue(res, p, pe);
                 if (res.result == null) {
@@ -2011,7 +2015,7 @@ case 1:
             }
 	break;
 	case 1:
-// line 744 "Parser.rl"
+// line 746 "Parser.rl"
 	{
                 parseString(res, p, pe);
                 if (res.result == null) {
@@ -2031,13 +2035,13 @@ case 1:
             }
 	break;
 	case 2:
-// line 762 "Parser.rl"
+// line 764 "Parser.rl"
 	{
                 p--;
                 { p += 1; _goto_targ = 5; if (true)  continue _goto;}
             }
 	break;
-// line 2043 "Parser.java"
+// line 2045 "Parser.java"
 			}
 		}
 	}
@@ -2057,7 +2061,7 @@ case 5:
 	break; }
 	}
 
-// line 799 "Parser.rl"
+// line 801 "Parser.rl"
 
             if (cs < JSON_object_first_final) {
                 res.update(null, p + 1);
@@ -2090,7 +2094,7 @@ case 5:
         }
 
         
-// line 2096 "Parser.java"
+// line 2098 "Parser.java"
 private static byte[] init__JSON_actions_0()
 {
 	return new byte [] {
@@ -2194,7 +2198,7 @@ static final int JSON_error = 0;
 static final int JSON_en_main = 1;
 
 
-// line 864 "Parser.rl"
+// line 866 "Parser.rl"
 
 
         public IRubyObject parseStrict() {
@@ -2204,16 +2208,16 @@ static final int JSON_en_main = 1;
             ParserResult res = new ParserResult();
 
             
-// line 2210 "Parser.java"
+// line 2212 "Parser.java"
 	{
 	cs = JSON_start;
 	}
 
-// line 873 "Parser.rl"
+// line 875 "Parser.rl"
             p = byteList.begin();
             pe = p + byteList.length();
             
-// line 2219 "Parser.java"
+// line 2221 "Parser.java"
 	{
 	int _klen;
 	int _trans = 0;
@@ -2294,7 +2298,7 @@ case 1:
 			switch ( _JSON_actions[_acts++] )
 			{
 	case 0:
-// line 836 "Parser.rl"
+// line 838 "Parser.rl"
 	{
                 currentNesting = 1;
                 parseObject(res, p, pe);
@@ -2308,7 +2312,7 @@ case 1:
             }
 	break;
 	case 1:
-// line 848 "Parser.rl"
+// line 850 "Parser.rl"
 	{
                 currentNesting = 1;
                 parseArray(res, p, pe);
@@ -2321,7 +2325,7 @@ case 1:
                 }
             }
 	break;
-// line 2327 "Parser.java"
+// line 2329 "Parser.java"
 			}
 		}
 	}
@@ -2341,7 +2345,7 @@ case 5:
 	break; }
 	}
 
-// line 876 "Parser.rl"
+// line 878 "Parser.rl"
 
             if (cs >= JSON_first_final && p == pe) {
                 return result;
@@ -2351,7 +2355,7 @@ case 5:
         }
 
         
-// line 2357 "Parser.java"
+// line 2359 "Parser.java"
 private static byte[] init__JSON_quirks_mode_actions_0()
 {
 	return new byte [] {
@@ -2454,7 +2458,7 @@ static final int JSON_quirks_mode_error = 0;
 static final int JSON_quirks_mode_en_main = 1;
 
 
-// line 904 "Parser.rl"
+// line 906 "Parser.rl"
 
 
         public IRubyObject parseQuirksMode() {
@@ -2464,16 +2468,16 @@ static final int JSON_quirks_mode_en_main = 1;
             ParserResult res = new ParserResult();
 
             
-// line 2470 "Parser.java"
+// line 2472 "Parser.java"
 	{
 	cs = JSON_quirks_mode_start;
 	}
 
-// line 913 "Parser.rl"
+// line 915 "Parser.rl"
             p = byteList.begin();
             pe = p + byteList.length();
             
-// line 2479 "Parser.java"
+// line 2481 "Parser.java"
 	{
 	int _klen;
 	int _trans = 0;
@@ -2554,7 +2558,7 @@ case 1:
 			switch ( _JSON_quirks_mode_actions[_acts++] )
 			{
 	case 0:
-// line 890 "Parser.rl"
+// line 892 "Parser.rl"
 	{
                 parseValue(res, p, pe);
                 if (res.result == null) {
@@ -2566,7 +2570,7 @@ case 1:
                 }
             }
 	break;
-// line 2572 "Parser.java"
+// line 2574 "Parser.java"
 			}
 		}
 	}
@@ -2586,7 +2590,7 @@ case 5:
 	break; }
 	}
 
-// line 916 "Parser.rl"
+// line 918 "Parser.rl"
 
             if (cs >= JSON_quirks_mode_first_final && p == pe) {
                 return result;

@@ -167,9 +167,16 @@ public final class Generator {
         }
 
         RubyString generateNew(Session session, T object) {
+            RubyString result;
             ByteList buffer = new ByteList(guessSize(session, object));
             generate(session, object, buffer);
-            return RubyString.newString(session.getRuntime(), buffer);
+            result = RubyString.newString(session.getRuntime(), buffer);
+            ThreadContext context = session.getContext();
+            RuntimeInfo info = session.getInfo();
+            if (info.encodingsSupported()) {
+                result.force_encoding(context, info.utf8.get());
+            }
+            return result;
         }
 
         abstract void generate(Session session, T object, ByteList buffer);
