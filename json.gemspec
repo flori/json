@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "json"
-  s.version = "1.7.1"
+  s.version = "1.7.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Florian Frank"]
-  s.date = "2012-05-09"
+  s.date = "2012-05-11"
   s.description = "This is a JSON implementation as a Ruby extension in C."
   s.email = "flori@ping.de"
   s.extensions = ["ext/json/ext/parser/extconf.rb", "ext/json/ext/generator/extconf.rb"]
