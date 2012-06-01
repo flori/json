@@ -68,7 +68,7 @@ static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
 #ifdef HAVE_RUBY_ENCODING_H
 static VALUE CEncoding_ASCII_8BIT, CEncoding_UTF_8, CEncoding_UTF_16BE,
     CEncoding_UTF_16LE, CEncoding_UTF_32BE, CEncoding_UTF_32LE;
-static ID i_encoding, i_encode;
+static ID i_encoding, i_encode, i_valid_encoding_p;
 #else
 static ID i_iconv;
 #endif
@@ -537,8 +537,7 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
 }
 
 /*
- * Document-class: JSON::Ext::Parser
- *
+ * Document-class: JSON::Ext::Parser *
  * This is the JSON parser implemented as a C extension. It can be configured
  * to be used by setting
  *
@@ -548,7 +547,7 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
  *
  */
 
-static VALUE convert_encoding(VALUE source)
+static VALUE convert_encoding(VALUE source, VALUE encoding)
 {
     char *ptr = RSTRING_PTR(source);
     long len = RSTRING_LEN(source);
@@ -556,34 +555,31 @@ static VALUE convert_encoding(VALUE source)
         rb_raise(eParserError, "A JSON text must at least contain two octets!");
     }
 #ifdef HAVE_RUBY_ENCODING_H
-    {
-        VALUE encoding = rb_funcall(source, i_encoding, 0);
-        if (encoding == CEncoding_ASCII_8BIT) {
-            if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32BE);
-            } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16BE);
-            } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32LE);
-            } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16LE);
-            } else {
-                source = rb_str_dup(source);
-                FORCE_UTF8(source);
-            }
+    if (encoding == CEncoding_ASCII_8BIT) {
+        if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
+            source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32BE);
+        } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
+            source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16BE);
+        } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
+            source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32LE);
+        } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
+            source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16LE);
         } else {
-            source = rb_funcall(source, i_encode, 1, CEncoding_UTF_8);
+            source = rb_str_dup(source);
+            FORCE_UTF8(source);
         }
+    } else {
+        source = rb_funcall(source, i_encode, 1, CEncoding_UTF_8);
     }
 #else
     if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32be"), source);
+        source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32be"), source);
     } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16be"), source);
+        source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16be"), source);
     } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32le"), source);
+        source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32le"), source);
     } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16le"), source);
+        source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16le"), source);
     }
 #endif
     return source;
@@ -618,6 +614,7 @@ static VALUE convert_encoding(VALUE source)
 static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 {
     VALUE source, opts;
+    VALUE encoding = Qnil;
     GET_PARSER_INIT;
 
     if (json->Vsource) {
@@ -701,8 +698,16 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->array_class = Qnil;
     }
     source = rb_convert_type(source, T_STRING, "String", "to_str");
+    source = StringValue(source);
+#ifdef HAVE_RUBY_ENCODING_H
+    encoding = rb_funcall(source, i_encoding, 0);
+    if (encoding == CEncoding_UTF_8 &&
+        !RTEST(rb_funcall(source, i_valid_encoding_p, 0))) {
+      rb_raise(rb_eArgError, "invalid byte sequence in UTF-8");
+    }
+#endif
     if (!json->quirks_mode) {
-      source = convert_encoding(StringValue(source));
+      source = convert_encoding(source, encoding);
     }
     json->current_nesting = 0;
     StringValue(source);
@@ -913,6 +918,7 @@ void Init_parser()
     CEncoding_ASCII_8BIT = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("ascii-8bit"));
     i_encoding = rb_intern("encoding");
     i_encode = rb_intern("encode");
+    i_valid_encoding_p = rb_intern("valid_encoding?");
 #else
     i_iconv = rb_intern("iconv");
 #endif

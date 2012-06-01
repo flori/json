@@ -65,7 +65,7 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
 static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *result);
 static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd);
 static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *result);
-static VALUE convert_encoding(VALUE source);
+static VALUE convert_encoding(VALUE source, VALUE encoding);
 static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self);
 static VALUE cParser_parse(VALUE self);
 static JSON_Parser *JSON_allocate();

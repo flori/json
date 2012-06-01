@@ -69,4 +69,11 @@ class TestJSONUnicode < Test::Unit::TestCase
     end
     assert_equal "\302\200", JSON.parse('["\u0080"]').first
   end
+
+  def test_parsing_invalid_utf8
+    assert_raise ArgumentError do
+      JSON.parse "[\"\xCE\"]", :quirks_mode => true
+      JSON.parse "[\"\xCE\"]"
+    end
+  end
 end
