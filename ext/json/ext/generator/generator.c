@@ -273,7 +273,18 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
                     escape_len = 2;
                     break;
                 default:
-                    end++;
+                    {
+                        unsigned short clen = trailingBytesForUTF8[c] + 1;
+                        if (end + clen > len) {
+                            rb_raise(rb_path2class("JSON::GeneratorError"),
+                                    "partial character in source, but hit end");
+                        }
+                        if (!isLegalUTF8((UTF8 *) p, clen)) {
+                            rb_raise(rb_path2class("JSON::GeneratorError"),
+                                    "source sequence is illegal/malformed utf-8");
+                        }
+                        end += clen;
+                    }
                     continue;
                     break;
             }
