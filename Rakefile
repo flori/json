@@ -196,11 +196,18 @@ end
 if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   if ENV.key?('JAVA_HOME')
     warn " *** JAVA_HOME was set to #{ENV['JAVA_HOME'].inspect}"
-  else File.directory?(local_java = '/usr/local/java/jdk')
+  elsif File.directory?(local_java = '/usr/local/java/jdk') ||
+    File.directory?(local_java = '/usr/lib/jvm/java-6-openjdk')
+  then
     ENV['JAVA_HOME'] = local_java
+  end
+  if ENV['JAVA_HOME']
     warn " *** JAVA_HOME is set to #{ENV['JAVA_HOME'].inspect}"
     ENV['PATH'] = ENV['PATH'].split(/:/).unshift(java_path = "#{ENV['JAVA_HOME']}/bin") * ':'
     warn " *** java binaries are assumed to be in #{java_path.inspect}"
+  else
+    warn " *** JAVA_HOME was not set or could not be guessed!"
+    exit 1
   end
 
   file JAVA_PARSER_SRC => JAVA_RAGEL_PATH do
