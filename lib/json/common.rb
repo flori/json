@@ -355,7 +355,7 @@ module JSON
   end
   self.dump_default_options = {
     :max_nesting => false,
-    :allow_nan   => true,
+    :allow_nan   => false,
     :quirks_mode => true,
   }
 
