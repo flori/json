@@ -133,6 +133,7 @@ module JSON
         # * *allow_nan*: true if NaN, Infinity, and -Infinity should be
         #   generated, otherwise an exception is thrown, if these values are
         #   encountered. This options defaults to false.
+        # * *replace_nan*: XXX
         # * *quirks_mode*: Enables quirks_mode for parser, that is for example
         #   generating single JSON values instead of documents is possible.
         def initialize(opts = {})
@@ -142,6 +143,7 @@ module JSON
           @object_nl             = ''
           @array_nl              = ''
           @allow_nan             = false
+          @replace_nan           = false
           @ascii_only            = false
           @quirks_mode           = false
           @buffer_initial_length = 1024
@@ -206,6 +208,11 @@ module JSON
           @allow_nan
         end
 
+        # XXX
+        def replace_nan?
+          @replace_nan
+        end
+
         # Returns true, if only ASCII characters should be generated. Otherwise
         # returns false.
         def ascii_only?
@@ -226,6 +233,7 @@ module JSON
           @object_nl      = opts[:object_nl] if opts.key?(:object_nl)
           @array_nl       = opts[:array_nl] if opts.key?(:array_nl)
           @allow_nan      = !!opts[:allow_nan] if opts.key?(:allow_nan)
+          @replace_nan    = opts[:replace_nan] if opts.key?(:replace_nan)
           @ascii_only     = opts[:ascii_only] if opts.key?(:ascii_only)
           @depth          = opts[:depth] || 0
           @quirks_mode    = opts[:quirks_mode] if opts.key?(:quirks_mode)
@@ -244,7 +252,12 @@ module JSON
         # passed to the configure method.
         def to_h
           result = {}
-          for iv in %w[indent space space_before object_nl array_nl allow_nan max_nesting ascii_only quirks_mode buffer_initial_length depth]
+          attributes = %w[
+            indent space space_before object_nl array_nl allow_nan
+            replace_nan max_nesting ascii_only quirks_mode buffer_initial_length
+            depth
+          ]
+          for iv in attributes
             result[iv.intern] = instance_variable_get("@#{iv}")
           end
           result
@@ -371,12 +384,16 @@ module JSON
             when infinite?
               if state.allow_nan?
                 to_s
+              elsif state.replace_nan?
+                'null'
               else
                 raise GeneratorError, "#{self} not allowed in JSON"
               end
             when nan?
               if state.allow_nan?
                 to_s
+              elsif state.replace_nan?
+                'null'
               else
                 raise GeneratorError, "#{self} not allowed in JSON"
               end

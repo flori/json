@@ -124,6 +124,7 @@ EOT
     state = PRETTY_STATE_PROTOTYPE.dup
     assert_equal({
       :allow_nan             => false,
+      :replace_nan           => false,
       :array_nl              => "\n",
       :ascii_only            => false,
       :buffer_initial_length => 1024,
@@ -141,6 +142,7 @@ EOT
     state = SAFE_STATE_PROTOTYPE.dup
     assert_equal({
       :allow_nan             => false,
+      :replace_nan           => false,
       :array_nl              => "",
       :ascii_only            => false,
       :buffer_initial_length => 1024,
@@ -158,6 +160,7 @@ EOT
     state = FAST_STATE_PROTOTYPE.dup
     assert_equal({
       :allow_nan             => false,
+      :replace_nan           => false,
       :array_nl              => "",
       :ascii_only            => false,
       :buffer_initial_length => 1024,
@@ -247,5 +250,17 @@ EOT
       # forking to avoid modifying core class of a parent process and
       # introducing race conditions of tests are run in parallel
     end
+  end
+
+  def test_json_infinite_float
+    assert_raise(JSON::GeneratorError) { JSON.generate([ JSON::NaN ]) }
+    assert_raise(JSON::GeneratorError) { JSON.generate([ JSON::Infinity ]) }
+    assert_raise(JSON::GeneratorError) { JSON.generate([ JSON::MinusInfinity ]) }
+    assert_equal '[NaN]', JSON.generate([ JSON::NaN ], :allow_nan => true)
+    assert_equal '[Infinity]', JSON.generate([ JSON::Infinity ], :allow_nan => true)
+    assert_equal '[-Infinity]', JSON.generate([ JSON::MinusInfinity ], :allow_nan => true)
+    assert_equal '[null]', JSON.generate([ JSON::NaN ], :replace_nan => true)
+    assert_equal '[null]', JSON.generate([ JSON::Infinity ], :replace_nan => true)
+    assert_equal '[null]', JSON.generate([ JSON::MinusInfinity ], :replace_nan => true)
   end
 end
