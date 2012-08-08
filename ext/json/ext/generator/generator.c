@@ -13,9 +13,9 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
              i_SAFE_STATE_PROTOTYPE;
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
-          i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
-          i_quirks_mode, i_pack, i_unpack, i_create_id, i_extend, i_key_p,
-          i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
+          i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_replace_nan,
+          i_ascii_only, i_quirks_mode, i_pack, i_unpack, i_create_id, i_extend,
+          i_key_p, i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
           i_buffer_initial_length, i_dup;
 
 /*
@@ -591,6 +591,8 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_allow_nan));
     state->allow_nan = RTEST(tmp);
+    tmp = rb_hash_aref(opts, ID2SYM(i_replace_nan));
+    state->replace_nan = RTEST(tmp);
     tmp = rb_hash_aref(opts, ID2SYM(i_ascii_only));
     state->ascii_only = RTEST(tmp);
     tmp = rb_hash_aref(opts, ID2SYM(i_quirks_mode));
@@ -614,6 +616,7 @@ static VALUE cState_to_h(VALUE self)
     rb_hash_aset(result, ID2SYM(i_object_nl), rb_str_new(state->object_nl, state->object_nl_len));
     rb_hash_aset(result, ID2SYM(i_array_nl), rb_str_new(state->array_nl, state->array_nl_len));
     rb_hash_aset(result, ID2SYM(i_allow_nan), state->allow_nan ? Qtrue : Qfalse);
+    rb_hash_aset(result, ID2SYM(i_replace_nan), state->replace_nan ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_ascii_only), state->ascii_only ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_quirks_mode), state->quirks_mode ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_max_nesting), LONG2FIX(state->max_nesting));
@@ -767,15 +770,19 @@ static void generate_json_bignum(FBuffer *buffer, VALUE Vstate, JSON_Generator_S
 static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
 {
     double value = RFLOAT_VALUE(obj);
-    char allow_nan = state->allow_nan;
     VALUE tmp = rb_funcall(obj, i_to_s, 0);
-    if (!allow_nan) {
-        if (isinf(value)) {
-            fbuffer_free(buffer);
-            rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
-        } else if (isnan(value)) {
-            fbuffer_free(buffer);
-            rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
+    if (!state->allow_nan) {
+        if (state->replace_nan) {
+            fbuffer_append(buffer, "null", 4);
+            return;
+        } else {
+            if (isinf(value)) {
+                fbuffer_free(buffer);
+                rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
+            } else if (isnan(value)) {
+                fbuffer_free(buffer);
+                rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
+            }
         }
     }
     fbuffer_append_str(buffer, tmp);
@@ -899,6 +906,7 @@ static VALUE cState_generate(VALUE self, VALUE obj)
  * * *allow_nan*: true if NaN, Infinity, and -Infinity should be
  *   generated, otherwise an exception is thrown, if these values are
  *   encountered. This options defaults to false.
+ *  * *replace_nan*: XXX
  * * *quirks_mode*: Enables quirks_mode for parser, that is for example
  *   generating single JSON values instead of documents is possible.
  * * *buffer_initial_length*: sets the initial length of the generator's
@@ -1195,6 +1203,19 @@ static VALUE cState_allow_nan_p(VALUE self)
 }
 
 /*
+ * call-seq: replace_nan?
+ *
+ * Returns true, if NaN, Infinity, and -Infinity should be generated, otherwise
+ * returns false.
+ */
+static VALUE cState_replace_nan_p(VALUE self)
+{
+    GET_STATE(self);
+    return state->replace_nan ? Qtrue : Qfalse;
+}
+
+
+/*
  * call-seq: ascii_only?
  *
  * Returns true, if NaN, Infinity, and -Infinity should be generated, otherwise
@@ -1316,6 +1337,7 @@ void Init_generator()
     rb_define_method(cState, "max_nesting=", cState_max_nesting_set, 1);
     rb_define_method(cState, "check_circular?", cState_check_circular_p, 0);
     rb_define_method(cState, "allow_nan?", cState_allow_nan_p, 0);
+    rb_define_method(cState, "replace_nan?", cState_replace_nan_p, 0);
     rb_define_method(cState, "ascii_only?", cState_ascii_only_p, 0);
     rb_define_method(cState, "quirks_mode?", cState_quirks_mode_p, 0);
     rb_define_method(cState, "quirks_mode", cState_quirks_mode_p, 0);
@@ -1368,6 +1390,7 @@ void Init_generator()
     i_array_nl = rb_intern("array_nl");
     i_max_nesting = rb_intern("max_nesting");
     i_allow_nan = rb_intern("allow_nan");
+    i_replace_nan = rb_intern("replace_nan");
     i_ascii_only = rb_intern("ascii_only");
     i_quirks_mode = rb_intern("quirks_mode");
     i_depth = rb_intern("depth");

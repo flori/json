@@ -86,6 +86,7 @@ typedef struct JSON_Generator_StateStruct {
     FBuffer *object_delim2;
     long max_nesting;
     char allow_nan;
+    char replace_nan;
     char ascii_only;
     char quirks_mode;
     long depth;
@@ -154,6 +155,7 @@ static VALUE cState_array_nl_set(VALUE self, VALUE array_nl);
 static VALUE cState_max_nesting(VALUE self);
 static VALUE cState_max_nesting_set(VALUE self, VALUE depth);
 static VALUE cState_allow_nan_p(VALUE self);
+static VALUE cState_replace_nan_p(VALUE self);
 static VALUE cState_ascii_only_p(VALUE self);
 static VALUE cState_depth(VALUE self);
 static VALUE cState_depth_set(VALUE self, VALUE depth);
