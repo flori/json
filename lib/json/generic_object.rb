@@ -1,7 +1,7 @@
 require 'ostruct'
 
 module JSON
-  class LightObject < OpenStruct
+  class GenericObject < OpenStruct
     class << self
       alias [] new
 
@@ -17,11 +17,11 @@ module JSON
     end
 
     def [](name)
-      to_hash[name.to_sym]
+      table[name.to_sym]
     end
 
     def []=(name, value)
-      modifiable[name.to_sym] = value
+      __send__ "#{name}=", value
     end
 
     def |(other)
@@ -29,17 +29,11 @@ module JSON
     end
 
     def as_json(*)
-      to_hash | { JSON.create_id => self.class.name }
+      { JSON.create_id => self.class.name }.merge to_hash
     end
 
     def to_json(*a)
       as_json.to_json(*a)
-    end
-
-    def method_missing(*a, &b)
-      to_hash.__send__(*a, &b)
-    rescue NoMethodError
-      super
     end
   end
 end
