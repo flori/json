@@ -1,3 +1,5 @@
+2012-05-12 (1.7.3)
+  * Work around Rubinius encoding issues using iconv for conversion instead.
 2012-05-11 (1.7.2)
   * Fix some encoding issues, that cause problems for  the pure and the
     extension variant in jruby 1.9 mode.

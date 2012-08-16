@@ -405,7 +405,10 @@ module JSON
   end
 
   # Shortuct for iconv.
-  if ::String.method_defined?(:encode)
+  if ::String.method_defined?(:encode) &&
+    # XXX Rubinius doesn't support ruby 1.9 encoding yet
+    defined?(RUBY_ENGINE) && RUBY_ENGINE != 'rbx'
+  then
     # Encodes string using Ruby's _String.encode_
     def self.iconv(to, from, string)
       string.encode(to, from)
