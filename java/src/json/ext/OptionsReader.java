@@ -102,13 +102,7 @@ final class OptionsReader {
         IRubyObject value = get(key);
 
         if (value == null || value.isNil()) return defaultValue;
-
-        if (value instanceof RubyClass &&
-                ((RubyClass)value).getAllocator() == defaultValue.getAllocator()) {
-            return (RubyClass)value;
-        }
-        throw runtime.newTypeError(key + " option must be a subclass of "
-                                   + defaultValue);
+        return (RubyClass)value;
     }
 
     public RubyHash getHash(String key) {
