@@ -6,10 +6,10 @@ gemspec :name => 'json'
 gemspec :name => 'json_pure'
 gemspec :name => 'json-java'
 
-group :development do
+group :development, :test do
   gem 'simplecov', :platform => :mri_19
 end
 
 group :test do
-  gem 'test-unit', :platform => :mri_19
+  gem 'test-unit', '2.4.7', :platform => :mri_19
 end

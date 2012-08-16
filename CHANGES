@@ -1,3 +1,10 @@
+2012-02-11 (1.6.6)
+  * Propagate src encoding to values made from it (fixes 1.9 mode converting
+    everything to ascii-8bit; harmless for 1.8 mode too) (Thomas E. Enebo
+    <tom.enebo@gmail.com>), should fix
+    https://github.com/flori/json/issues#issue/119.
+  * Fix https://github.com/flori/json/issues#issue/124 Thx to Jason Hutchens.
+  * Fix https://github.com/flori/json/issues#issue/117
 2012-01-15 (1.6.5)
   * Vit Ondruch <v.ondruch@tiscali.cz> reported a bug that shows up when using
     optimisation under GCC 4.7. Thx to him, Bohuslav Kabrda

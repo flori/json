@@ -4,21 +4,27 @@ rescue LoadError
 end
 
 require 'rbconfig'
-begin
-  include RbConfig
-rescue NameError
-  include Config
-end
-
+include\
+  begin
+    RbConfig
+  rescue NameError
+    Config
+  end
 
 require 'rake/clean'
-CLOBBER.include Dir['benchmarks/data/*.{dat,log}'], 'doc', 'Gemfile.lock'
+CLOBBER.include 'doc', 'Gemfile.lock'
 CLEAN.include FileList['diagrams/*.*'], 'doc', 'coverage', 'tmp',
   FileList["ext/**/{Makefile,mkmf.log}"], 'build', 'dist', FileList['**/*.rbc'],
   FileList["{ext,lib}/**/*.{so,bundle,#{CONFIG['DLEXT']},o,obj,pdb,lib,manifest,exp,def,jar,class,dSYM}"],
   FileList['java/src/**/*.class']
 
-MAKE = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
+require 'rake/testtask'
+class UndocumentedTestTask < Rake::TestTask
+  def desc(*) end
+end
+
+MAKE   = ENV['MAKE']   || %w[gmake make].find { |c| system(c, '-v') }
+BUNDLE = ENV['BUNDLE'] || %w[bundle].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
 PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
@@ -44,19 +50,9 @@ JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
 RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| system(c, '-v') }
 RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| system(c, '-v') }
 
-def myruby(*args, &block)
-  @myruby ||= File.join(CONFIG['bindir'], CONFIG['ruby_install_name'])
-  options = (Hash === args.last) ? args.pop : {}
-  if args.length > 1 then
-    sh(*([@myruby] + args + [options]), &block)
-  else
-    sh("#{@myruby} #{args.first}", options, &block)
-  end
-end
-
 desc "Installing library (pure)"
 task :install_pure => :version do
-  myruby 'install.rb'
+  ruby 'install.rb'
 end
 
 task :install_ext_really do
@@ -75,11 +71,7 @@ desc "Installing library (extension)"
 task :install_ext => [ :compile, :install_pure, :install_ext_really ]
 
 desc "Installing library (extension)"
-if RUBY_PLATFORM =~ /java/
-  task :install => :install_pure
-else
-  task :install => :install_ext
-end
+task :install => :install_ext
 
 if defined?(Gem) and defined?(Gem::PackageTask)
   spec_pure = Gem::Specification.new do |s|
@@ -92,7 +84,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'permutation'
-    s.add_development_dependency 'bullshit'
     s.add_development_dependency 'sdoc'
     s.add_development_dependency 'rake', '~>0.9.2'
 
@@ -133,7 +124,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.require_paths << 'ext'
     s.require_paths << 'lib'
     s.add_development_dependency 'permutation'
-    s.add_development_dependency 'bullshit'
     s.add_development_dependency 'sdoc'
 
     s.extra_rdoc_files << 'README.rdoc'
@@ -182,18 +172,26 @@ EOT
 end
 
 desc "Testing library (pure ruby)"
-task :test_pure => :clean do
-  ENV['JSON'] = 'pure'
-  ENV['RUBYOPT'] = "-Ilib #{ENV['RUBYOPT']}"
-  myruby '-S', 'testrb', *Dir['./tests/test_*.rb']
+task :test_pure => [ :clean, :do_test_pure ]
+
+UndocumentedTestTask.new do |t|
+  t.name = 'do_test_pure'
+  t.libs << 'lib'
+  t.test_files = FileList['tests/test_*.rb']
+  t.verbose = true
+  t.options = '-v'
 end
 
 desc "Testing library (pure ruby and extension)"
-task :test => [ :test_pure, :test_ext ]
+task :test do
+  sh "env JSON=pure #{BUNDLE} exec rake test_pure" or exit 1
+  sh "env JSON=ext #{BUNDLE} exec rake test_ext"  or exit 1
+end
 
 namespace :gems do
+  desc 'Install all development gems'
   task :install do
-    sh 'bundle'
+    sh "#{BUNDLE}"
   end
 end
 
@@ -250,9 +248,14 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   end
 
   desc "Testing library (jruby)"
-  task :test_ext => :create_jar do
-    ENV['JSON'] = 'ext'
-    myruby '-S', 'testrb', '-Ilib', *Dir['./tests/test_*.rb']
+  task :test_ext => [ :create_jar, :do_test_ext ]
+
+  UndocumentedTestTask.new do |t|
+    t.name = 'do_test_ext'
+    t.libs << 'lib'
+    t.test_files = FileList['tests/test_*.rb']
+    t.verbose = true
+    t.options = '-v'
   end
 
   file JRUBY_PARSER_JAR => :compile do
@@ -304,7 +307,7 @@ else
 
   file EXT_PARSER_DL => EXT_PARSER_SRC do
     cd EXT_PARSER_DIR do
-      myruby 'extconf.rb'
+      ruby 'extconf.rb'
       sh MAKE
     end
     cp "#{EXT_PARSER_DIR}/parser.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
@@ -312,35 +315,22 @@ else
 
   file EXT_GENERATOR_DL => EXT_GENERATOR_SRC do
     cd EXT_GENERATOR_DIR do
-      myruby 'extconf.rb'
+      ruby 'extconf.rb'
       sh MAKE
     end
     cp "#{EXT_GENERATOR_DIR}/generator.#{CONFIG['DLEXT']}", EXT_ROOT_DIR
   end
 
   desc "Testing library (extension)"
-  task :test_ext => :compile do
-    ENV['JSON'] = 'ext'
-    ENV['RUBYOPT'] = "-Iext:lib #{ENV['RUBYOPT']}"
-    myruby '-S', 'testrb', *Dir['./tests/test_*.rb']
-  end
+  task :test_ext => [ :compile, :do_test_ext ]
 
-  desc "Benchmarking parser"
-  task :benchmark_parser do
-    ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
-    myruby 'benchmarks/parser_benchmark.rb'
-    myruby 'benchmarks/parser2_benchmark.rb'
+  UndocumentedTestTask.new do |t|
+    t.name = 'do_test_ext'
+    t.libs << 'ext' << 'lib'
+    t.test_files = FileList['tests/test_*.rb']
+    t.verbose = true
+    t.options = '-v'
   end
-
-  desc "Benchmarking generator"
-  task :benchmark_generator do
-    ENV['RUBYOPT'] = "-Ilib:ext #{ENV['RUBYOPT']}"
-    myruby 'benchmarks/generator_benchmark.rb'
-    myruby 'benchmarks/generator2_benchmark.rb'
-  end
-
-  desc "Benchmarking library"
-  task :benchmark => [ :benchmark_parser, :benchmark_generator ]
 
   desc "Create RDOC documentation"
   task :doc => [ :version, EXT_PARSER_SRC ] do

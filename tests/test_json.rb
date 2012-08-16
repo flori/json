@@ -314,7 +314,7 @@ class TC_JSON < Test::Unit::TestCase
     assert res.item_set?
   end
 
-  def test_generation_of_core_subclasses_with_new_to_json
+  def test_generate_core_subclasses_with_new_to_json
     obj = SubHash2["foo" => SubHash2["bar" => true]]
     obj_json = JSON(obj)
     obj_again = JSON(obj_json)
@@ -325,12 +325,12 @@ class TC_JSON < Test::Unit::TestCase
     assert_equal ["foo"], JSON(JSON(SubArray2["foo"]))
   end
 
-  def test_generation_of_core_subclasses_with_default_to_json
+  def test_generate_core_subclasses_with_default_to_json
     assert_equal '{"foo":"bar"}', JSON(SubHash["foo" => "bar"])
     assert_equal '["foo"]', JSON(SubArray["foo"])
   end
 
-  def test_generation_of_core_subclasses
+  def test_generate_of_core_subclasses
     obj = SubHash["foo" => SubHash["bar" => true]]
     obj_json = JSON(obj)
     obj_again = JSON(obj_json)

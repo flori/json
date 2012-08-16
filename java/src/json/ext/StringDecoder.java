@@ -31,6 +31,7 @@ final class StringDecoder extends ByteListTranscoder {
 
     ByteList decode(ByteList src, int start, int end) {
         ByteList out = new ByteList(end - start);
+        out.setEncoding(src.getEncoding());
         init(src, start, end, out);
         while (hasNext()) {
             handleChar(readUtf8Char());

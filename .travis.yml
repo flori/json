@@ -6,10 +6,11 @@ rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
-  - rbx
-  - rbx-2.0
+  - rbx-18mode
+  - rbx-19mode
   - ree
-  - jruby
+  - jruby-18mode
+  - jruby-19mode
   - ruby-head
 
 script: "bundle exec rake"
