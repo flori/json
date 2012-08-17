@@ -239,9 +239,14 @@ public final class Generator {
 
                 if (Double.isInfinite(value) || Double.isNaN(value)) {
                     if (!session.getState().allowNaN()) {
-                        throw Utils.newException(session.getContext(),
-                                Utils.M_GENERATOR_ERROR,
-                                object + " not allowed in JSON");
+                        if (session.getState().replaceNaN()) {
+                            buffer.append("null".getBytes());
+                            return;
+                        } else {
+                            throw Utils.newException(session.getContext(),
+                                    Utils.M_GENERATOR_ERROR,
+                                    object + " not allowed in JSON");
+                        }
                     }
                 }
                 buffer.append(((RubyString)object.to_s()).getByteList());
