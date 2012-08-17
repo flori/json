@@ -11,10 +11,12 @@ rvm:
   - ree
   - jruby-18mode
   - jruby-19mode
-  - jruby-1.7.0.preview2
+  - jruby-1.7.0.preview2-18mode
+  - jruby-1.7.0.preview2-19mode
   - ruby-head
 matrix:
   allow_failures:
-      - rvm: jruby-1.7.0.preview2
+      - rvm: jruby-1.7.0.preview2-18mode
+      - rvm: jruby-1.7.0.preview2-19mode
 
 script: "bundle exec rake"
