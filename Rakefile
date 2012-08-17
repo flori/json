@@ -23,6 +23,10 @@ class UndocumentedTestTask < Rake::TestTask
   def desc(*) end
 end
 
+def skip_sdoc(src)
+  src.gsub(/^.*sdoc.*/) { |s| s + ' if RUBY_VERSION > "1.8.6"' }
+end
+
 MAKE   = ENV['MAKE']   || %w[gmake make].find { |c| system(c, '-v') }
 BUNDLE = ENV['BUNDLE'] || %w[bundle].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
@@ -84,7 +88,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'permutation'
-    s.add_development_dependency 'sdoc'
+    s.add_development_dependency 'sdoc', '~> 0.3.16'
     s.add_development_dependency 'rake', '~>0.9.2'
 
     s.extra_rdoc_files << 'README.rdoc'
@@ -101,7 +105,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
   desc 'Creates a json_pure.gemspec file'
   task :gemspec_pure => :version do
     File.open('json_pure.gemspec', 'w') do |gemspec|
-      gemspec.write spec_pure.to_ruby
+      gemspec.write skip_sdoc(spec_pure.to_ruby)
     end
   end
 
@@ -122,7 +126,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'permutation'
-    s.add_development_dependency 'sdoc'
+    s.add_development_dependency 'sdoc', '~> 0.3.16'
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
@@ -138,7 +142,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
   desc 'Creates a json.gemspec file'
   task :gemspec_ext => :version do
     File.open('json.gemspec', 'w') do |gemspec|
-      gemspec.write spec_ext.to_ruby
+      gemspec.write skip_sdoc(spec_ext.to_ruby)
     end
   end
 

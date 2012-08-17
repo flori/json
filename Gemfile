@@ -12,5 +12,5 @@ group :development, :test do
 end
 
 group :test do
-  gem 'test-unit', '2.4.7', :platform => :mri_19
+  gem 'test-unit', '~> 2.5', :platform => :mri_19
 end
