@@ -13,10 +13,14 @@ rvm:
   - jruby-19mode
   - jruby-1.7.0.preview2-18mode
   - jruby-1.7.0.preview2-19mode
+  - jruby-head-18mode
+  - jruby-head-19mode
   - ruby-head
 matrix:
   allow_failures:
       - rvm: jruby-1.7.0.preview2-18mode
       - rvm: jruby-1.7.0.preview2-19mode
+      - rvm: jruby-head-18mode
+      - rvm: jruby-head-19mode
 
 script: "bundle exec rake"
