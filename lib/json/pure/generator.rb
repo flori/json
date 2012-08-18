@@ -210,7 +210,7 @@ module JSON
 
         # XXX
         def replace_nan?
-          @replace_nan
+          !!@replace_nan
         end
 
         # Returns true, if only ASCII characters should be generated. Otherwise
@@ -281,6 +281,20 @@ module JSON
         # Return the value returned by method +name+.
         def [](name)
           __send__ name
+        end
+
+        def handle_not_a_number(value)
+          if @allow_nan
+            value.to_s
+          elsif @replace_nan
+            if @replace_nan.respond_to?(:call)
+              @replace_nan.call(value)
+            else
+              'null'
+            end
+          else
+            raise GeneratorError, "#{value} not allowed in JSON"
+          end
         end
       end
 
@@ -380,23 +394,8 @@ module JSON
           # Returns a JSON string representation for this Float number.
           def to_json(state = nil, *)
             state = State.from_state(state)
-            case
-            when infinite?
-              if state.allow_nan?
-                to_s
-              elsif state.replace_nan?
-                'null'
-              else
-                raise GeneratorError, "#{self} not allowed in JSON"
-              end
-            when nan?
-              if state.allow_nan?
-                to_s
-              elsif state.replace_nan?
-                'null'
-              else
-                raise GeneratorError, "#{self} not allowed in JSON"
-              end
+            if infinite? || nan?
+              state.handle_not_a_number(self)
             else
               to_s
             end

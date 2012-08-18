@@ -262,5 +262,8 @@ EOT
     assert_equal '[null]', JSON.generate([ JSON::NaN ], :replace_nan => true)
     assert_equal '[null]', JSON.generate([ JSON::Infinity ], :replace_nan => true)
     assert_equal '[null]', JSON.generate([ JSON::MinusInfinity ], :replace_nan => true)
+    assert_equal '["NaN"]', JSON.generate([ JSON::NaN ], :replace_nan => lambda { |x| x.to_s.inspect })
+    assert_equal '["Infinity"]', JSON.generate([ JSON::Infinity ], :replace_nan => lambda { |x| x.to_s.inspect })
+    assert_equal '["-Infinity"]', JSON.generate([ JSON::MinusInfinity ], :replace_nan => lambda { |x| x.to_s.inspect })
   end
 end
