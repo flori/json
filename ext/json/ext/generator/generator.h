@@ -65,7 +65,7 @@ typedef struct JSON_Generator_StateStruct {
     FBuffer *object_delim2;
     long max_nesting;
     char allow_nan;
-    char replace_nan;
+    VALUE replace_nan;
     char ascii_only;
     char quirks_mode;
     long depth;

@@ -15,8 +15,8 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_replace_nan,
           i_ascii_only, i_quirks_mode, i_pack, i_unpack, i_create_id, i_extend,
-          i_key_p, i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
-          i_buffer_initial_length, i_dup;
+          i_key_p, i_aref, i_send, i_match, i_respond_to_p, i_keys, i_depth,
+          i_buffer_initial_length, i_dup, i_call;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -495,10 +495,15 @@ static JSON_Generator_State *State_allocate()
     return state;
 }
 
+static void State_mark(JSON_Generator_State *state)
+{
+    rb_gc_mark_maybe(state->replace_nan);
+}
+
 static VALUE cState_s_allocate(VALUE klass)
 {
     JSON_Generator_State *state = State_allocate();
-    return Data_Wrap_Struct(klass, NULL, State_free, state);
+   return Data_Wrap_Struct(klass, State_mark, State_free, state);
 }
 
 /*
@@ -592,7 +597,11 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     tmp = rb_hash_aref(opts, ID2SYM(i_allow_nan));
     state->allow_nan = RTEST(tmp);
     tmp = rb_hash_aref(opts, ID2SYM(i_replace_nan));
-    state->replace_nan = RTEST(tmp);
+    if (RTEST(tmp)) {
+        state->replace_nan = tmp;
+    } else {
+        state->replace_nan = Qfalse;
+    }
     tmp = rb_hash_aref(opts, ID2SYM(i_ascii_only));
     state->ascii_only = RTEST(tmp);
     tmp = rb_hash_aref(opts, ID2SYM(i_quirks_mode));
@@ -616,7 +625,7 @@ static VALUE cState_to_h(VALUE self)
     rb_hash_aset(result, ID2SYM(i_object_nl), rb_str_new(state->object_nl, state->object_nl_len));
     rb_hash_aset(result, ID2SYM(i_array_nl), rb_str_new(state->array_nl, state->array_nl_len));
     rb_hash_aset(result, ID2SYM(i_allow_nan), state->allow_nan ? Qtrue : Qfalse);
-    rb_hash_aset(result, ID2SYM(i_replace_nan), state->replace_nan ? Qtrue : Qfalse);
+    rb_hash_aset(result, ID2SYM(i_replace_nan), state->replace_nan);
     rb_hash_aset(result, ID2SYM(i_ascii_only), state->ascii_only ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_quirks_mode), state->quirks_mode ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_max_nesting), LONG2FIX(state->max_nesting));
@@ -767,22 +776,28 @@ static void generate_json_bignum(FBuffer *buffer, VALUE Vstate, JSON_Generator_S
     fbuffer_append_str(buffer, tmp);
 }
 
+static void generate_json_float_handle_not_a_number(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj, VALUE tmp)
+{
+    if (RTEST(state->replace_nan)) {
+        if (rb_respond_to(state->replace_nan, i_call)) {
+            fbuffer_append_str(buffer, rb_funcall(state->replace_nan, i_call, 1, obj));
+        } else {
+            fbuffer_append(buffer, "null", 4);
+        }
+    } else {
+        fbuffer_free(buffer);
+        rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
+    }
+}
+
 static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
 {
     double value = RFLOAT_VALUE(obj);
     VALUE tmp = rb_funcall(obj, i_to_s, 0);
     if (!state->allow_nan) {
-        if (state->replace_nan) {
-            fbuffer_append(buffer, "null", 4);
+        if (isinf(value) || isnan(value)) {
+            generate_json_float_handle_not_a_number(buffer, Vstate, state, obj, tmp);
             return;
-        } else {
-            if (isinf(value)) {
-                fbuffer_free(buffer);
-                rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
-            } else if (isnan(value)) {
-                fbuffer_free(buffer);
-                rb_raise(eGeneratorError, "%u: %s not allowed in JSON", __LINE__, StringValueCStr(tmp));
-            }
         }
     }
     fbuffer_append_str(buffer, tmp);
@@ -919,7 +934,11 @@ static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
     state->max_nesting = 19;
     state->buffer_initial_length = FBUFFER_INITIAL_LENGTH_DEFAULT;
     rb_scan_args(argc, argv, "01", &opts);
-    if (!NIL_P(opts)) cState_configure(self, opts);
+    if (NIL_P(opts)) {
+        state->replace_nan = Qfalse;
+    } else {
+        cState_configure(self, opts);
+    }
     return self;
 }
 
@@ -1211,7 +1230,7 @@ static VALUE cState_allow_nan_p(VALUE self)
 static VALUE cState_replace_nan_p(VALUE self)
 {
     GET_STATE(self);
-    return state->replace_nan ? Qtrue : Qfalse;
+    return RTEST(state->replace_nan) ? Qtrue : Qfalse;
 }
 
 
@@ -1402,10 +1421,11 @@ void Init_generator()
     i_key_p = rb_intern("key?");
     i_aref = rb_intern("[]");
     i_send = rb_intern("__send__");
-    i_respond_to_p = rb_intern("respond_to?");
     i_match = rb_intern("match");
+    i_respond_to_p = rb_intern("respond_to?");
     i_keys = rb_intern("keys");
     i_dup = rb_intern("dup");
+    i_call = rb_intern("call");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     i_encoding = rb_intern("encoding");

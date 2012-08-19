@@ -233,7 +233,7 @@ module JSON
           @object_nl      = opts[:object_nl] if opts.key?(:object_nl)
           @array_nl       = opts[:array_nl] if opts.key?(:array_nl)
           @allow_nan      = !!opts[:allow_nan] if opts.key?(:allow_nan)
-          @replace_nan    = opts[:replace_nan] if opts.key?(:replace_nan)
+          @replace_nan    = opts[:replace_nan] || false
           @ascii_only     = opts[:ascii_only] if opts.key?(:ascii_only)
           @depth          = opts[:depth] || 0
           @quirks_mode    = opts[:quirks_mode] if opts.key?(:quirks_mode)
