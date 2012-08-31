@@ -239,8 +239,14 @@ public final class Generator {
 
                 if (Double.isInfinite(value) || Double.isNaN(value)) {
                     if (!session.getState().allowNaN()) {
-                        if (session.getState().replaceNaN()) {
-                            buffer.append("null".getBytes());
+                        IRubyObject replaceNaN = session.getState().replaceNaN();
+                        if (replaceNaN.isTrue()) {
+                            if (replaceNaN.respondsTo("call")) {
+                                buffer.append(replaceNaN.callMethod(
+                                            session.getContext(), "call", object).toString().getBytes());
+                            } else {
+                                buffer.append("null".getBytes());
+                            }
                             return;
                         } else {
                             throw Utils.newException(session.getContext(),

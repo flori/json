@@ -1356,6 +1356,8 @@ void Init_generator()
     rb_define_method(cState, "max_nesting=", cState_max_nesting_set, 1);
     rb_define_method(cState, "check_circular?", cState_check_circular_p, 0);
     rb_define_method(cState, "allow_nan?", cState_allow_nan_p, 0);
+    //rb_define_method(cState, "replace_nan", cState_replace_nan_get, 0);
+    //rb_define_method(cState, "replace_nan=", cState_replace_nan_set, 0);
     rb_define_method(cState, "replace_nan?", cState_replace_nan_p, 0);
     rb_define_method(cState, "ascii_only?", cState_ascii_only_p, 0);
     rb_define_method(cState, "quirks_mode?", cState_quirks_mode_p, 0);

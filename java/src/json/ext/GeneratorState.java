@@ -74,8 +74,7 @@ public class GeneratorState extends RubyObject {
     /**
      * XXX
      */
-    private boolean replaceNaN = DEFAULT_REPLACE_NAN;
-    static final boolean DEFAULT_REPLACE_NAN = false;
+    private IRubyObject replaceNaN;
     /**
      * If set to <code>true</code> all JSON documents generated do not contain
      * any other characters than ASCII characters.
@@ -108,6 +107,7 @@ public class GeneratorState extends RubyObject {
 
     public GeneratorState(Ruby runtime, RubyClass metaClass) {
         super(runtime, metaClass);
+        replaceNaN = runtime.getNil();
     }
 
     /**
@@ -122,7 +122,7 @@ public class GeneratorState extends RubyObject {
      *                   ({@link RubyClass} <code>State</code>)
      * @param opts The object to use as a base for the new <code>State</code>
      * @param block The block passed to the method
-     * @return A <code>GeneratorState</code> as determined above
+     * @return A <code>Generat34786869orState</code> as determined above
      */
     @JRubyMethod(meta=true)
     public static IRubyObject from_state(ThreadContext context,
@@ -384,14 +384,26 @@ public class GeneratorState extends RubyObject {
         return context.getRuntime().newBoolean(allowNaN);
     }
 
-    public boolean replaceNaN() {
+    @JRubyMethod(name="replace_nan=")
+    public IRubyObject replace_nan_set(IRubyObject replace_nan) {
+        replaceNaN = replace_nan;
+        return replaceNaN;
+    }
+
+    public IRubyObject replaceNaN() {
+        return replaceNaN;
+    }
+
+    @JRubyMethod(name="replace_nan")
+    public IRubyObject replace_nan_get(ThreadContext context) {
         return replaceNaN;
     }
 
     @JRubyMethod(name="replace_nan?")
     public RubyBoolean replace_nan_p(ThreadContext context) {
-        return context.getRuntime().newBoolean(replaceNaN);
+        return context.getRuntime().newBoolean(!replaceNaN.isNil());
     }
+
 
     public boolean asciiOnly() {
         return asciiOnly;
@@ -483,7 +495,7 @@ public class GeneratorState extends RubyObject {
 
         maxNesting = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
-        replaceNaN = opts.getBool("replace_nan", DEFAULT_REPLACE_NAN);
+        replaceNaN = opts.get("replace_nan", context.getRuntime().getFalse());
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
         quirksMode = opts.getBool("quirks_mode", DEFAULT_QUIRKS_MODE);
         bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
@@ -511,7 +523,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("object_nl"), object_nl_get(context));
         result.op_aset(context, runtime.newSymbol("array_nl"), array_nl_get(context));
         result.op_aset(context, runtime.newSymbol("allow_nan"), allow_nan_p(context));
-        result.op_aset(context, runtime.newSymbol("replace_nan"), replace_nan_p(context));
+        result.op_aset(context, runtime.newSymbol("replace_nan"), replace_nan_get(context));
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
         result.op_aset(context, runtime.newSymbol("quirks_mode"), quirks_mode_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));

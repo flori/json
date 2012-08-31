@@ -208,10 +208,14 @@ module JSON
           @allow_nan
         end
 
+        attr_writer :allow_nan # XXX
+
         # XXX
         def replace_nan?
           !!@replace_nan
         end
+
+        attr_accessor :replace_nan
 
         # Returns true, if only ASCII characters should be generated. Otherwise
         # returns false.

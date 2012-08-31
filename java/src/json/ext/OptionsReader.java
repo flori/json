@@ -50,6 +50,15 @@ final class OptionsReader {
         return opts == null ? null : opts.fastARef(runtime.newSymbol(key));
     }
 
+    IRubyObject get(String key, IRubyObject defaultValue) {
+        if (opts == null) {
+            return defaultValue;
+        } else {
+            IRubyObject value = opts.fastARef(runtime.newSymbol(key));
+            return value.isNil() ? defaultValue : value;
+        }
+    }
+
     boolean getBool(String key, boolean defaultValue) {
         IRubyObject value = get(key);
         return value == null ? defaultValue : value.isTrue();
