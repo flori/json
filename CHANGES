@@ -1,3 +1,5 @@
+2012-08-17 (1.7.5)
+  * Fix compilation of extension on older rubies.
 2012-07-26 (1.7.4)
   * Fix compilation problem on AIX, see https://github.com/flori/json/issues/142
 2012-05-12 (1.7.3)
