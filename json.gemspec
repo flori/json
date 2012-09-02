@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "json-maglev-"
+  s.name = "json"
   s.version = "1.7.4"
   s.version = "1.7.5"
 
