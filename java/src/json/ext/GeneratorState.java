@@ -262,6 +262,19 @@ public class GeneratorState extends RubyObject {
         String name = vName.asJavaString();
         if (getMetaClass().isMethodBound(name, true)) {
             return send(context, vName, Block.NULL_BLOCK);
+        } else {
+            return getInstanceVariables().getInstanceVariable("@" + name);
+        }
+    }
+
+    @JRubyMethod(name="[]=", required=2)
+    public IRubyObject op_aset(ThreadContext context, IRubyObject vName, IRubyObject value) {
+        String name = vName.asJavaString();
+        String nameWriter = name + "=";
+        if (getMetaClass().isMethodBound(nameWriter, true)) {
+            return send(context, context.getRuntime().newString(nameWriter), value, Block.NULL_BLOCK);
+        } else {
+            getInstanceVariables().setInstanceVariable("@" + name, value);
         }
         return context.getRuntime().getNil();
     }
@@ -480,9 +493,9 @@ public class GeneratorState extends RubyObject {
      *
      * <p>Returns the configuration instance variables as a hash, that can be
      * passed to the configure method.
-     * @return
+     * @return the hash
      */
-    @JRubyMethod
+    @JRubyMethod(alias = "to_hash")
     public RubyHash to_h(ThreadContext context) {
         Ruby runtime = context.getRuntime();
         RubyHash result = RubyHash.newHash(runtime);
@@ -498,6 +511,9 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));
+        for (String name: getInstanceVariableNameList()) {
+            result.op_aset(context, runtime.newSymbol(name.substring(1)), getInstanceVariables().getInstanceVariable(name));
+        }
         return result;
     }
 

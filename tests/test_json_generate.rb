@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# -*- coding: utf-8 -*-
+# encoding: utf-8
 
 require 'test/unit'
 require File.join(File.dirname(__FILE__), 'setup_variant')
@@ -227,7 +227,7 @@ EOT
     GC.stress = stress
   end if GC.respond_to?(:stress=)
 
-  def test_configure_using_merge
+  def test_configure_using_configure_and_merge
     numbered_state = {
       :indent       => "1",
       :space        => '2',
@@ -252,22 +252,6 @@ EOT
   end
 
   if defined?(JSON::Ext::Generator)
-    [:merge, :configure].each do |method|
-      define_method "test_configure_using_#{method}" do
-        state = JSON::Ext::Generator::State.new
-        state.send method, :indent => "1",
-          :space => '2',
-          :space_before => '3',
-          :object_nl => '4',
-          :array_nl => '5'
-        assert_equal '1', state.indent
-        assert_equal '2', state.space
-        assert_equal '3', state.space_before
-        assert_equal '4', state.object_nl
-        assert_equal '5', state.array_nl
-      end
-    end
-
     def test_broken_bignum # [ruby-core:38867]
       pid = fork do
         Bignum.class_eval do
@@ -287,5 +271,29 @@ EOT
       # forking to avoid modifying core class of a parent process and
       # introducing race conditions of tests are run in parallel
     end
+  end
+
+  def test_hash_likeness_set_symbol
+    state = JSON.state.new
+    assert_equal nil, state[:foo]
+    assert_equal nil, state['foo']
+    state[:foo] = :bar
+    assert_equal :bar, state[:foo]
+    assert_equal :bar, state['foo']
+    state_hash = state.to_hash
+    assert_kind_of Hash, state_hash
+    assert_equal :bar, state_hash[:foo]
+  end
+
+  def test_hash_likeness_set_string
+    state = JSON.state.new
+    assert_equal nil, state[:foo]
+    assert_equal nil, state['foo']
+    state['foo'] = :bar
+    assert_equal :bar, state[:foo]
+    assert_equal :bar, state['foo']
+    state_hash = state.to_hash
+    assert_kind_of Hash, state_hash
+    assert_equal :bar, state_hash[:foo]
   end
 end

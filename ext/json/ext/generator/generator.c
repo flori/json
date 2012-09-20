@@ -598,6 +598,18 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     return self;
 }
 
+static void set_state_ivars(VALUE hash, VALUE state)
+{
+    VALUE ivars = rb_obj_instance_variables(state);
+    int i = 0;
+    for (i = 0; i < RARRAY_LEN(ivars); i++) {
+        VALUE key = rb_funcall(rb_ary_entry(ivars, i), i_to_s, 0);
+        long key_len = RSTRING_LEN(key);
+        VALUE value = rb_iv_get(state, StringValueCStr(key));
+        rb_hash_aset(hash, rb_str_intern(rb_str_substr(key, 1, key_len - 1)), value);
+    }
+}
+
 /*
  * call-seq: to_h
  *
@@ -608,6 +620,7 @@ static VALUE cState_to_h(VALUE self)
 {
     VALUE result = rb_hash_new();
     GET_STATE(self);
+    set_state_ivars(result, self);
     rb_hash_aset(result, ID2SYM(i_indent), rb_str_new(state->indent, state->indent_len));
     rb_hash_aset(result, ID2SYM(i_space), rb_str_new(state->space, state->space_len));
     rb_hash_aset(result, ID2SYM(i_space_before), rb_str_new(state->space_before, state->space_before_len));
@@ -629,11 +642,31 @@ static VALUE cState_to_h(VALUE self)
 */
 static VALUE cState_aref(VALUE self, VALUE name)
 {
+    name = rb_funcall(name, i_to_s, 0);
     if (RTEST(rb_funcall(self, i_respond_to_p, 1, name))) {
         return rb_funcall(self, i_send, 1, name);
     } else {
-        return Qnil;
+        return rb_ivar_get(self, rb_intern_str(rb_str_concat(rb_str_new2("@"), name)));
     }
+}
+
+/*
+* call-seq: []=(name, value)
+*
+* Set the attribute name to value.
+*/
+static VALUE cState_aset(VALUE self, VALUE name, VALUE value)
+{
+    VALUE name_writer;
+
+    name = rb_funcall(name, i_to_s, 0);
+    name_writer = rb_str_cat2(rb_str_dup(name), "=");
+    if (RTEST(rb_funcall(self, i_respond_to_p, 1, name_writer))) {
+        return rb_funcall(self, i_send, 2, name_writer, value);
+    } else {
+        rb_ivar_set(self, rb_intern_str(rb_str_concat(rb_str_new2("@"), name)), value);
+    }
+    return Qnil;
 }
 
 static void generate_json_object(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
@@ -1326,7 +1359,9 @@ void Init_generator()
     rb_define_method(cState, "configure", cState_configure, 1);
     rb_define_alias(cState, "merge", "configure");
     rb_define_method(cState, "to_h", cState_to_h, 0);
+    rb_define_alias(cState, "to_hash", "to_h");
     rb_define_method(cState, "[]", cState_aref, 1);
+    rb_define_method(cState, "[]=", cState_aset, 2);
     rb_define_method(cState, "generate", cState_generate, 1);
 
     mGeneratorMethods = rb_define_module_under(mGenerator, "GeneratorMethods");
