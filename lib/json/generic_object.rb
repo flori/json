@@ -11,16 +11,19 @@ module JSON
         self[data]
       end
 
-      def from_hashes(hash)
-        result = new
-        hash.to_hash.each do |key, value|
-          if value.respond_to?(:to_hash)
-            result[key] = from_hashes(value)
-          else
-            result[key] = value
+      def from_hash(object)
+        case
+        when object.respond_to?(:to_hash)
+          result = new
+          object.to_hash.each do |key, value|
+            result[key] = from_hash(value)
           end
+          result
+        when object.respond_to?(:to_ary)
+          object.to_ary.map { |a| from_hash(a) }
+        else
+          object
         end
-        result
       end
     end
 
