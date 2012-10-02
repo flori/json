@@ -13,5 +13,8 @@ rvm:
   - jruby-18mode
   - jruby-19mode
   - ruby-head
+matrix:
+  allow_failures:
+    - rvm: 1.8.6
 
 script: "bundle exec rake"
