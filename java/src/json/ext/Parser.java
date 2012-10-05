@@ -58,7 +58,7 @@ public class Parser extends RubyObject {
     private RubyClass arrayClass;
     private RubyHash match_string;
 
-    private static final int DEFAULT_MAX_NESTING = 19;
+    private static final int DEFAULT_MAX_NESTING = 100;
 
     private static final ByteList JSON_MINUS_INFINITY = new ByteList(ByteList.plain("-Infinity"));
     // constant names in the JSON module containing those values

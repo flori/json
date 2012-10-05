@@ -56,7 +56,7 @@ module JSON
       # keys:
       # * *max_nesting*: The maximum depth of nesting allowed in the parsed data
       #   structures. Disable depth checking with :max_nesting => false|nil|0,
-      #   it defaults to 19.
+      #   it defaults to 100.
       # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
       #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
       #   to false.
@@ -76,8 +76,8 @@ module JSON
           source = convert_encoding source
         end
         super source
-        if !opts.key?(:max_nesting) # defaults to 19
-          @max_nesting = 19
+        if !opts.key?(:max_nesting) # defaults to 100
+          @max_nesting = 100
         elsif opts[:max_nesting]
           @max_nesting = opts[:max_nesting]
         else

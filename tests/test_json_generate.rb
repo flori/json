@@ -130,7 +130,7 @@ EOT
       :quirks_mode           => false,
       :depth                 => 0,
       :indent                => "  ",
-      :max_nesting           => 19,
+      :max_nesting           => 100,
       :object_nl             => "\n",
       :space                 => " ",
       :space_before          => "",
@@ -147,7 +147,7 @@ EOT
       :quirks_mode           => false,
       :depth                 => 0,
       :indent                => "",
-      :max_nesting           => 19,
+      :max_nesting           => 100,
       :object_nl             => "",
       :space                 => "",
       :space_before          => "",
@@ -200,7 +200,7 @@ EOT
     s = JSON.state.new
     assert_equal 0, s.depth
     assert_raises(JSON::NestingError) { ary.to_json(s) }
-    assert_equal 19, s.depth
+    assert_equal 100, s.depth
   end
 
   def test_buffer_initial_length

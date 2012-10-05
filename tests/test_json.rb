@@ -446,12 +446,12 @@ EOT
     assert_raises(JSON::NestingError) { JSON.parse '[[]]', :max_nesting => 1 }
     assert_raises(JSON::NestingError) { JSON.parser.new('[[]]', :max_nesting => 1).parse }
     assert_equal [[]], JSON.parse('[[]]', :max_nesting => 2)
-    too_deep = '[[[[[[[[[[[[[[[[[[[["Too deep"]]]]]]]]]]]]]]]]]]]]'
+    too_deep = '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["Too deep"]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
     too_deep_ary = eval too_deep
     assert_raises(JSON::NestingError) { JSON.parse too_deep }
     assert_raises(JSON::NestingError) { JSON.parser.new(too_deep).parse }
-    assert_raises(JSON::NestingError) { JSON.parse too_deep, :max_nesting => 19 }
-    ok = JSON.parse too_deep, :max_nesting => 20
+    assert_raises(JSON::NestingError) { JSON.parse too_deep, :max_nesting => 100 }
+    ok = JSON.parse too_deep, :max_nesting => 101
     assert_equal too_deep_ary, ok
     ok = JSON.parse too_deep, :max_nesting => nil
     assert_equal too_deep_ary, ok
@@ -462,8 +462,8 @@ EOT
     assert_raises(JSON::NestingError) { JSON.generate [[]], :max_nesting => 1 }
     assert_equal '[[]]', JSON.generate([[]], :max_nesting => 2)
     assert_raises(JSON::NestingError) { JSON.generate too_deep_ary }
-    assert_raises(JSON::NestingError) { JSON.generate too_deep_ary, :max_nesting => 19 }
-    ok = JSON.generate too_deep_ary, :max_nesting => 20
+    assert_raises(JSON::NestingError) { JSON.generate too_deep_ary, :max_nesting => 100 }
+    ok = JSON.generate too_deep_ary, :max_nesting => 101
     assert_equal too_deep, ok
     ok = JSON.generate too_deep_ary, :max_nesting => nil
     assert_equal too_deep, ok
@@ -494,18 +494,18 @@ EOT
   end
 
   def test_dump
-    too_deep = '[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]'
+    too_deep = '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
     assert_equal too_deep, JSON.dump(eval(too_deep))
     assert_kind_of String, Marshal.dump(eval(too_deep))
-    assert_raises(ArgumentError) { JSON.dump(eval(too_deep), 19) }
-    assert_raises(ArgumentError) { Marshal.dump(eval(too_deep), 19) }
-    assert_equal too_deep, JSON.dump(eval(too_deep), 20)
-    assert_kind_of String, Marshal.dump(eval(too_deep), 20)
+    assert_raises(ArgumentError) { JSON.dump(eval(too_deep), 100) }
+    assert_raises(ArgumentError) { Marshal.dump(eval(too_deep), 100) }
+    assert_equal too_deep, JSON.dump(eval(too_deep), 101)
+    assert_kind_of String, Marshal.dump(eval(too_deep), 101)
     output = StringIO.new
     JSON.dump(eval(too_deep), output)
     assert_equal too_deep, output.string
     output = StringIO.new
-    JSON.dump(eval(too_deep), output, 20)
+    JSON.dump(eval(too_deep), output, 101)
     assert_equal too_deep, output.string
   end
 
