@@ -229,8 +229,8 @@ module JSON
           @ascii_only     = opts[:ascii_only] if opts.key?(:ascii_only)
           @depth          = opts[:depth] || 0
           @quirks_mode    = opts[:quirks_mode] if opts.key?(:quirks_mode)
-          if !opts.key?(:max_nesting) # defaults to 19
-            @max_nesting = 19
+          if !opts.key?(:max_nesting) # defaults to 100
+            @max_nesting = 100
           elsif opts[:max_nesting]
             @max_nesting = opts[:max_nesting]
           else

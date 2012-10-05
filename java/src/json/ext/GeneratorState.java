@@ -62,7 +62,7 @@ public class GeneratorState extends RubyObject {
      * <code>0</code> means disabled.
      */
     private int maxNesting = DEFAULT_MAX_NESTING;
-    static final int DEFAULT_MAX_NESTING = 19;
+    static final int DEFAULT_MAX_NESTING = 100;
     /**
      * Whether special float values (<code>NaN</code>, <code>Infinity</code>,
      * <code>-Infinity</code>) are accepted.

@@ -139,7 +139,7 @@ module JSON
   # keys:
   # * *max_nesting*: The maximum depth of nesting allowed in the parsed data
   #   structures. Disable depth checking with :max_nesting => false. It defaults
-  #   to 19.
+  #   to 100.
   # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
   #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
   #   to false.
@@ -199,7 +199,7 @@ module JSON
   #   encountered. This options defaults to false.
   # * *max_nesting*: The maximum depth of nesting allowed in the data
   #   structures from which JSON is to be generated. Disable depth checking
-  #   with :max_nesting => false, it defaults to 19.
+  #   with :max_nesting => false, it defaults to 100.
   #
   # See also the fast_generate for the fastest creation method with the least
   # amount of sanity checks, and the pretty_generate method for some

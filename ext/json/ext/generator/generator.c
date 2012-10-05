@@ -558,7 +558,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
         state->object_nl_len = len;
     }
     tmp = ID2SYM(i_max_nesting);
-    state->max_nesting = 19;
+    state->max_nesting = 100;
     if (option_given_p(opts, tmp)) {
         VALUE max_nesting = rb_hash_aref(opts, tmp);
         if (RTEST(max_nesting)) {
@@ -908,7 +908,7 @@ static VALUE cState_initialize(int argc, VALUE *argv, VALUE self)
 {
     VALUE opts;
     GET_STATE(self);
-    state->max_nesting = 19;
+    state->max_nesting = 100;
     state->buffer_initial_length = FBUFFER_INITIAL_LENGTH_DEFAULT;
     rb_scan_args(argc, argv, "01", &opts);
     if (!NIL_P(opts)) cState_configure(self, opts);
