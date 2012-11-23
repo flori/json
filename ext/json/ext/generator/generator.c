@@ -522,7 +522,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
         unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
-        state->indent = fstrndup(RSTRING_PTR(tmp), len);
+        state->indent = fstrndup(RSTRING_PTR(tmp), len + 1);
         state->indent_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space));
@@ -530,7 +530,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
         unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
-        state->space = fstrndup(RSTRING_PTR(tmp), len);
+        state->space = fstrndup(RSTRING_PTR(tmp), len + 1);
         state->space_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_space_before));
@@ -538,7 +538,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
         unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
-        state->space_before = fstrndup(RSTRING_PTR(tmp), len);
+        state->space_before = fstrndup(RSTRING_PTR(tmp), len + 1);
         state->space_before_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_array_nl));
@@ -546,7 +546,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
         unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
-        state->array_nl = fstrndup(RSTRING_PTR(tmp), len);
+        state->array_nl = fstrndup(RSTRING_PTR(tmp), len + 1);
         state->array_nl_len = len;
     }
     tmp = rb_hash_aref(opts, ID2SYM(i_object_nl));
@@ -554,7 +554,7 @@ static VALUE cState_configure(VALUE self, VALUE opts)
         unsigned long len;
         Check_Type(tmp, T_STRING);
         len = RSTRING_LEN(tmp);
-        state->object_nl = fstrndup(RSTRING_PTR(tmp), len);
+        state->object_nl = fstrndup(RSTRING_PTR(tmp), len + 1);
         state->object_nl_len = len;
     }
     tmp = ID2SYM(i_max_nesting);

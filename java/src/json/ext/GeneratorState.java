@@ -445,7 +445,7 @@ public class GeneratorState extends RubyObject {
      * @param vOpts The options hash
      * @return The receiver
      */
-    @JRubyMethod
+  @JRubyMethod(alias = "merge")
     public IRubyObject configure(ThreadContext context, IRubyObject vOpts) {
         OptionsReader opts = new OptionsReader(context, vOpts);
 
