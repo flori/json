@@ -252,6 +252,22 @@ EOT
   end
 
   if defined?(JSON::Ext::Generator)
+    [:merge, :configure].each do |method|
+      define_method "test_configure_using_#{method}" do
+        state = JSON::Ext::Generator::State.new
+        state.send method, :indent => "1",
+          :space => '2',
+          :space_before => '3',
+          :object_nl => '4',
+          :array_nl => '5'
+        assert_equal '1', state.indent
+        assert_equal '2', state.space
+        assert_equal '3', state.space_before
+        assert_equal '4', state.object_nl
+        assert_equal '5', state.array_nl
+      end
+    end
+
     def test_broken_bignum # [ruby-core:38867]
       pid = fork do
         Bignum.class_eval do
