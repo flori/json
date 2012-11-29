@@ -227,6 +227,30 @@ EOT
     GC.stress = stress
   end if GC.respond_to?(:stress=)
 
+  def test_configure_using_merge
+    numbered_state = {
+      :indent       => "1",
+      :space        => '2',
+      :space_before => '3',
+      :object_nl    => '4',
+      :array_nl     => '5'
+    }
+    state1 = JSON.state.new
+    state1.merge(numbered_state)
+    assert_equal '1', state1.indent
+    assert_equal '2', state1.space
+    assert_equal '3', state1.space_before
+    assert_equal '4', state1.object_nl
+    assert_equal '5', state1.array_nl
+    state2 = JSON.state.new
+    state2.configure(numbered_state)
+    assert_equal '1', state2.indent
+    assert_equal '2', state2.space
+    assert_equal '3', state2.space_before
+    assert_equal '4', state2.object_nl
+    assert_equal '5', state2.array_nl
+  end
+
   if defined?(JSON::Ext::Generator)
     def test_broken_bignum # [ruby-core:38867]
       pid = fork do
