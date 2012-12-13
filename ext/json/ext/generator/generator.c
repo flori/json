@@ -629,7 +629,6 @@ static VALUE cState_to_h(VALUE self)
 */
 static VALUE cState_aref(VALUE self, VALUE name)
 {
-    GET_STATE(self);
     if (RTEST(rb_funcall(self, i_respond_to_p, 1, name))) {
         return rb_funcall(self, i_send, 1, name);
     } else {
