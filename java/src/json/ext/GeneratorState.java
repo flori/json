@@ -263,7 +263,8 @@ public class GeneratorState extends RubyObject {
         if (getMetaClass().isMethodBound(name, true)) {
             return send(context, vName, Block.NULL_BLOCK);
         } else {
-            return getInstanceVariables().getInstanceVariable("@" + name);
+            IRubyObject value = getInstanceVariables().getInstanceVariable("@" + name);
+            return value == null ? context.nil : value;
         }
     }
 
