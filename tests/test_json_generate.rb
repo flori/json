@@ -276,6 +276,7 @@ EOT
   def test_hash_likeness_set_symbol
     state = JSON.state.new
     assert_equal nil, state[:foo]
+    assert_equal nil.class, state[:foo].class
     assert_equal nil, state['foo']
     state[:foo] = :bar
     assert_equal :bar, state[:foo]
