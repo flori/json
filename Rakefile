@@ -88,7 +88,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'permutation'
-    s.add_development_dependency 'sdoc', '~> 0.3.16'
+    s.add_development_dependency 'sdoc', '~>0.3.16'
     s.add_development_dependency 'rake', '~>0.9.2'
 
     s.extra_rdoc_files << 'README.rdoc'
@@ -99,7 +99,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
     s.homepage = "http://flori.github.com/#{PKG_NAME}"
-    s.rubyforge_project = "json"
+    s.license = 'Ruby'
   end
 
   desc 'Creates a json_pure.gemspec file'
@@ -126,7 +126,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'permutation'
-    s.add_development_dependency 'sdoc', '~> 0.3.16'
+    s.add_development_dependency 'sdoc', '~>0.3.16'
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
@@ -136,7 +136,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
     s.homepage = "http://flori.github.com/#{PKG_NAME}"
-    s.rubyforge_project = "json"
+    s.license = 'Ruby'
   end
 
   desc 'Creates a json.gemspec file'
