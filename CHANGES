@@ -1,5 +1,7 @@
 2013-02-04 (1.7.7)
   * Remove useless assert in fbuffer implementation.
+  * Apply patch attached to https://github.com/flori/json/issues#issue/155
+    provided by John Shahid <jvshahid@gmail.com>, Thx!
   * Add license information to rubygems spec data, reported by Jordi Massaguer Pla <jmassaguerpla@suse.de>.
   * Improve documentation, thx to Zachary Scott <zachary@zacharyscott.net>.
 2012-11-29 (1.7.6)
