@@ -1,3 +1,7 @@
+2013-02-04 (1.7.7)
+  * Remove useless assert in fbuffer implementation.
+  * Add license information to rubygems spec data, reported by Jordi Massaguer Pla <jmassaguerpla@suse.de>.
+  * Improve documentation, thx to Zachary Scott <zachary@zacharyscott.net>.
 2012-11-29 (1.7.6)
   * Add GeneratorState#merge alias for JRuby, fix state accessor methods. Thx to
    jvshahid@github.
