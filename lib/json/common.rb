@@ -293,21 +293,28 @@ module JSON
     attr_accessor :load_default_options
   end
   self.load_default_options = {
-    :max_nesting => false,
-    :allow_nan   => true,
-    :quirks_mode => true,
+    :max_nesting      => false,
+    :allow_nan        => true,
+    :quirks_mode      => true,
+    :create_additions => true,
   }
 
   # Load a ruby data structure from a JSON _source_ and return it. A source can
   # either be a string-like object, an IO-like object, or an object responding
   # to the read method. If _proc_ was given, it will be called with any nested
-  # Ruby object as an argument recursively in depth first order. The default
-  # options for the parser can be changed via the load_default_options method.
+  # Ruby object as an argument recursively in depth first order. To modify the
+  # default options pass in the optional _options_ argument as well.
+  #
+  # BEWARE: This method is meant to serialise data from trusted user input,
+  # like from your own database server or clients under your control, it could
+  # be dangerous to allow untrusted users to pass JSON sources into it. The
+  # default options for the parser can be changed via the load_default_options
+  # method.
   #
   # This method is part of the implementation of the load/dump interface of
   # Marshal and YAML.
-  def load(source, proc = nil)
-    opts = load_default_options
+  def load(source, proc = nil, options = {})
+    opts = load_default_options.merge options
     if source.respond_to? :to_str
       source = source.to_str
     elsif source.respond_to? :to_io

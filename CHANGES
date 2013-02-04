@@ -1,3 +1,8 @@
+2013-02-04 (1.6.8)
+  * Security fix for JSON create_additions default value. It should not be
+    possible to create additions unless
+    explicitely requested by setting the create_additions argument to true or
+    using the JSON.load/dump interface.
 2012-04-27 (1.6.7)
   * Fix possible crash when trying to parse nil value.
 2012-02-11 (1.6.6)

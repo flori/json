@@ -1680,7 +1680,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             if (option_given_p(opts, tmp)) {
                 json->create_additions = RTEST(rb_hash_aref(opts, tmp));
             } else {
-                json->create_additions = 1;
+                json->create_additions = 0;
             }
             tmp = ID2SYM(i_create_id);
             if (option_given_p(opts, tmp)) {
