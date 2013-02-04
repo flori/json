@@ -63,9 +63,9 @@ module JSON
       # * *symbolize_names*: If set to true, returns symbols for the names
       #   (keys) in a JSON object. Otherwise strings are returned, which is also
       #   the default.
-      # * *create_additions*: If set to false, the Parser doesn't create
-      #   additions even if a matchin class and create_id was found. This option
-      #   defaults to true.
+      # * *create_additions*: If set to true, the Parser creates
+      #   additions when if a matching class and create_id was found. This
+      #   option defaults to false.
       # * *object_class*: Defaults to Hash
       # * *array_class*: Defaults to Array
       # * *quirks_mode*: Enables quirks_mode for parser, that is for example
@@ -88,7 +88,7 @@ module JSON
         if opts.key?(:create_additions)
           @create_additions = !!opts[:create_additions]
         else
-          @create_additions = true
+          @create_additions = false
         end
         @create_id = @create_additions ? JSON.create_id : nil
         @object_class = opts[:object_class] || Hash

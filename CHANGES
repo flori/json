@@ -1,3 +1,10 @@
+2013-02-04 (1.5.5)
+  * Security fix for JSON create_additions default value. It should not be
+    possible to create additions unless
+    explicitely requested by setting the create_additions argument to true or
+    using the JSON.load/dump interface.
+  * Backport change that corrects Time serialisation/deserialisation on some
+    platforms.
 2011-08-31 (1.5.4)
   * Fix memory leak when used from multiple JRuby. (Patch by
     jfirebaugh@github).
