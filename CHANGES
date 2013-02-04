@@ -1,4 +1,12 @@
 2013-02-04 (1.7.7)
+  * Security fix for JSON create_additions default value and
+    JSON::GenericObject. It should not be possible to create additions unless
+    explicitely requested by setting the create_additions argument to true or
+    using the JSON.load/dump interface. If JSON::GenericObject is supposed to
+    be automatically deserialised, this has to be explicitely enabled by
+    setting
+      JSON::GenericObject.json_createble = true
+    as well.
   * Remove useless assert in fbuffer implementation.
   * Apply patch attached to https://github.com/flori/json/issues#issue/155
     provided by John Shahid <jvshahid@gmail.com>, Thx!

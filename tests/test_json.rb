@@ -329,12 +329,12 @@ class TestJSON < Test::Unit::TestCase
   def test_generate_core_subclasses_with_new_to_json
     obj = SubHash2["foo" => SubHash2["bar" => true]]
     obj_json = JSON(obj)
-    obj_again = JSON(obj_json)
+    obj_again = JSON.parse(obj_json, :create_additions => true)
     assert_kind_of SubHash2, obj_again
     assert_kind_of SubHash2, obj_again['foo']
     assert obj_again['foo']['bar']
     assert_equal obj, obj_again
-    assert_equal ["foo"], JSON(JSON(SubArray2["foo"]))
+    assert_equal ["foo"], JSON(JSON(SubArray2["foo"]), :create_additions => true)
   end
 
   def test_generate_core_subclasses_with_default_to_json
@@ -491,6 +491,12 @@ EOT
     assert_equal @hash, JSON.load(stringio)
     assert_equal nil, JSON.load(nil)
     assert_equal nil, JSON.load('')
+  end
+
+  def test_load_with_options
+    small_hash  = JSON("foo" => 'bar')
+    symbol_hash = { :foo => 'bar' }
+    assert_equal symbol_hash, JSON.load(small_hash, nil, :symbolize_names => true)
   end
 
   def test_dump

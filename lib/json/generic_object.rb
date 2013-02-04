@@ -5,6 +5,12 @@ module JSON
     class << self
       alias [] new
 
+      def json_creatable?
+        @json_creatable
+      end
+
+      attr_writer :json_creatable
+
       def json_create(data)
         data = data.dup
         data.delete JSON.create_id
@@ -26,6 +32,7 @@ module JSON
         end
       end
     end
+    self.json_creatable = false
 
     def to_hash
       table
