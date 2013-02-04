@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "json"
   s.rubygems_version = "1.8.24"
   s.summary = "JSON Implementation for Ruby"
+  s.license = "Ruby"
   s.test_files = ["./tests/test_json_string_matching.rb", "./tests/test_json_fixtures.rb", "./tests/test_json_unicode.rb", "./tests/test_json_addition.rb", "./tests/test_json_generate.rb", "./tests/test_json_encoding.rb", "./tests/test_json_generic_object.rb", "./tests/test_json.rb"]
 
   if s.respond_to? :specification_version then
