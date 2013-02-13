@@ -5,7 +5,7 @@
     using the JSON.load/dump interface. If JSON::GenericObject is supposed to
     be automatically deserialised, this has to be explicitely enabled by
     setting
-      JSON::GenericObject.json_createble = true
+      JSON::GenericObject.json_creatable = true
     as well.
   * Remove useless assert in fbuffer implementation.
   * Apply patch attached to https://github.com/flori/json/issues#issue/155
