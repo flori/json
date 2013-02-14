@@ -70,6 +70,13 @@ module JSON
     rescue => e
       raise GeneratorError.wrap(e)
     end
+
+    def valid_utf8?(string)
+      encoding = string.encoding
+      (encoding == Encoding::UTF_8 || encoding == Encoding::ASCII) &&
+        string.valid_encoding?
+    end
+    module_function :valid_utf8?
   else
     def utf8_to_json(string) # :nodoc:
       string.gsub(/["\\\x0-\x1f]/n) { MAP[$&] }
@@ -93,8 +100,22 @@ module JSON
     rescue => e
       raise GeneratorError.wrap(e)
     end
+
+    def valid_utf8?(string)
+      string =~
+         /\A( [\x09\x0A\x0D\x20-\x7E]         # ASCII
+         | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+         |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+         | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+         |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+         |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+         | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+         |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+        )*\z/x
+    end
   end
-  module_function :utf8_to_json, :utf8_to_json_ascii
+  module_function :utf8_to_json, :utf8_to_json_ascii, :valid_utf8?
+
 
   module Pure
     module Generator
@@ -270,6 +291,8 @@ module JSON
         # GeneratorError exception.
         def generate(obj)
           result = obj.to_json(self)
+          JSON.valid_utf8?(result) or raise GeneratorError,
+            "source sequence #{result.inspect} is illegal/malformed utf-8"
           unless @quirks_mode
             unless result =~ /\A\s*\[/ && result =~ /\]\s*\Z/ ||
               result =~ /\A\s*\{/ && result =~ /\}\s*\Z/

@@ -313,4 +313,10 @@ EOT
     assert_kind_of Hash, state_hash
     assert_equal :bar, state_hash[:foo]
   end
+
+  def test_json_generate
+    assert_raise JSON::GeneratorError do
+      assert_equal true, JSON.generate(["\xea"])
+    end
+  end
 end
