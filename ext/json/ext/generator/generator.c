@@ -511,11 +511,8 @@ static VALUE cState_configure(VALUE self, VALUE opts)
 {
     VALUE tmp;
     GET_STATE(self);
-    tmp = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
+    tmp = rb_check_convert_type(opts, T_HASH, "Hash", "to_hash");
     if (NIL_P(tmp)) tmp = rb_convert_type(opts, T_HASH, "Hash", "to_h");
-    if (NIL_P(tmp)) {
-        rb_raise(rb_eArgError, "opts has to be hash like or convertable into a hash");
-    }
     opts = tmp;
     tmp = rb_hash_aref(opts, ID2SYM(i_indent));
     if (RTEST(tmp)) {

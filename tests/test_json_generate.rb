@@ -251,6 +251,22 @@ EOT
     assert_equal '5', state2.array_nl
   end
 
+  def test_configure_hash_conversion
+    state = JSON.state.new
+    state.configure(:indent => '1')
+    assert_equal '1', state.indent
+    state = JSON.state.new
+    foo = 'foo'
+    assert_raise(TypeError) do
+      state.configure(foo)
+    end
+    def foo.to_h
+      { :indent => '2' }
+    end
+    state.configure(foo)
+    assert_equal '2', state.indent
+  end
+
   if defined?(JSON::Ext::Generator)
     def test_broken_bignum # [ruby-core:38867]
       pid = fork do

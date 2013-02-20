@@ -220,6 +220,13 @@ module JSON
         # Configure this State instance with the Hash _opts_, and return
         # itself.
         def configure(opts)
+          if opts.respond_to?(:to_hash)
+            opts = opts.to_hash
+          elsif opts.respond_to?(:to_h)
+            opts = opts.to_h
+          else
+            raise TypeError, "can't convert #{opts.class} into Hash"
+          end
           for key, value in opts
             instance_variable_set "@#{key}", value
           end

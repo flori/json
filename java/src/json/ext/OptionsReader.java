@@ -24,13 +24,14 @@ final class OptionsReader {
     OptionsReader(ThreadContext context, IRubyObject vOpts) {
         this.context = context;
         this.runtime = context.getRuntime();
-
         if (vOpts == null || vOpts.isNil()) {
             opts = null;
         } else if (vOpts.respondsTo("to_hash")) {
             opts = vOpts.convertToHash();
-        } else {
+        } else if (vOpts.respondsTo("to_h")) {
             opts = vOpts.callMethod(context, "to_h").convertToHash();
+        } else {
+            opts = vOpts.convertToHash(); /* Should just raise the correct TypeError */
         }
     }
 
