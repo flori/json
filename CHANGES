@@ -1,3 +1,6 @@
+2013-02-21 (1.7.8)
+  * Fix https://github.com/flori/json/issues/162 reported by Marc-Andre
+    Lafortune <github_rocks@marc-andre.ca>. Thanks!
 2013-02-04 (1.7.7)
   * Security fix for JSON create_additions default value and
     JSON::GenericObject. It should not be possible to create additions unless
