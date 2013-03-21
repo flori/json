@@ -1,13 +1,9 @@
 require 'mkmf'
 
-unless $CFLAGS.gsub!(/ -O[\dsz]?/, ' -O3')
-  $CFLAGS << ' -O3'
-end
+$CFLAGS << ' -O3'
 if CONFIG['CC'] =~ /gcc/
   $CFLAGS << ' -Wall'
-  if $DEBUG && !$CFLAGS.gsub!(/ -O[\dsz]?/, ' -O0 -ggdb')
-    $CFLAGS << ' -O0 -ggdb'
-  end
+  $CFLAGS << ' -O0 -ggdb' if $DEBUG
 end
 
 create_makefile 'json/ext/parser'
