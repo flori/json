@@ -61,7 +61,7 @@ class TestJSONGenericObject < Test::Unit::TestCase
     assert_equal "world", converting.hello
 
     json = JSON::GenericObject.dump(JSON::GenericObject[:hello => 'world'])
-    assert_equal json, '{"json_class":"JSON::GenericObject","hello":"world"}'
+    assert_equal JSON(json), JSON('{"json_class":"JSON::GenericObject","hello":"world"}')
   end
 
   private
