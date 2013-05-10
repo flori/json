@@ -52,11 +52,16 @@ class TestJSONGenericObject < Test::Unit::TestCase
   def test_json_generic_object_load
     empty = JSON::GenericObject.load(nil)
     assert_kind_of JSON::GenericObject, empty
-    simple = JSON::GenericObject.load('{ "hello": "world" }')
+    simple_json = '{"json_class":"JSON::GenericObject","hello":"world"}'
+    simple = JSON::GenericObject.load(simple_json)
     assert_kind_of JSON::GenericObject, simple
     assert_equal "world", simple.hello
+    converting = JSON::GenericObject.load('{ "hello": "world" }')
+    assert_kind_of JSON::GenericObject, converting
+    assert_equal "world", converting.hello
+
     json = JSON::GenericObject.dump(JSON::GenericObject[:hello => 'world'])
-    assert_equal json, '{ "hello": "world" }'
+    assert_equal json, '{"json_class":"JSON::GenericObject","hello":"world"}'
   end
 
   private
