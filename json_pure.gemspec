@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "json_pure"
-  s.version = "1.7.8"
+  s.version = "1.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Florian Frank"]
-  s.date = "2013-05-10"
+  s.date = "2013-05-13"
   s.description = "This is a JSON implementation in pure Ruby."
   s.email = "flori@ping.de"
   s.extra_rdoc_files = ["README.rdoc"]
