@@ -1,6 +1,13 @@
-2013-02-21 (1.7.8)
+2013-05-13 (1.8.0)
   * Fix https://github.com/flori/json/issues/162 reported by Marc-Andre
     Lafortune <github_rocks@marc-andre.ca>. Thanks!
+  * Applied patches by Yui NARUSE <naruse@airemix.jp> to suppress warning with
+    -Wchar-subscripts and better validate UTF-8 strings.
+  * Applied patch by ginriki@github to remove unnecessary if.
+  * Add load/dump interface to JSON::GenericObject to make
+        serialize :some_attribute, JSON::GenericObject
+    work in Rails active models for convenient SomeModel#some_attribute.foo.bar
+    access to serialised JSON data.
 2013-02-04 (1.7.7)
   * Security fix for JSON create_additions default value and
     JSON::GenericObject. It should not be possible to create additions unless
