@@ -17,6 +17,7 @@ import org.jruby.RubyModule;
 import org.jruby.RubyNumeric;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
+import org.jruby.RubyProc;
 import org.jruby.anno.JRubyMethod;
 import org.jruby.exceptions.JumpException;
 import org.jruby.exceptions.RaiseException;
@@ -47,7 +48,7 @@ public class Parser extends RubyObject {
     private final RuntimeInfo info;
     private RubyString vSource;
     private RubyString createId;
-    private boolean createAdditions;
+    private RubyObject createAdditions;
     private int maxNesting;
     private boolean allowNaN;
     private boolean symbolizeNames;
@@ -164,7 +165,7 @@ public class Parser extends RubyObject {
         this.symbolizeNames  = opts.getBool("symbolize_names", false);
         this.quirksMode      = opts.getBool("quirks_mode", false);
         this.createId        = opts.getString("create_id", getCreateId(context));
-        this.createAdditions = opts.getBool("create_additions", false);
+        this.createAdditions = opts.getObject("create_additions", runtime.getFalse());
         this.objectClass     = opts.getClass("object_class", runtime.getHash());
         this.arrayClass      = opts.getClass("array_class", runtime.getArray());
         this.match_string    = opts.getHash("match_string");
@@ -621,7 +622,7 @@ public class Parser extends RubyObject {
             int memo = p;
             %% write exec;
 
-            if (parser.createAdditions) {
+            if (!parser.createAdditions.equals(context.getRuntime().getFalse())) {
                 RubyHash match_string = parser.match_string;
                 if (match_string != null) {
                     final IRubyObject[] memoArray = { result, null };
@@ -807,7 +808,7 @@ public class Parser extends RubyObject {
             IRubyObject returnedResult = result;
 
             // attempt to de-serialize object
-            if (parser.createAdditions) {
+            if (!parser.createAdditions.equals(context.getRuntime().getFalse())) {
                 IRubyObject vKlassName;
                 if (objectDefault) {
                     vKlassName = ((RubyHash)result).op_aref(context, parser.createId);
@@ -816,10 +817,18 @@ public class Parser extends RubyObject {
                 }
 
                 if (!vKlassName.isNil()) {
-                    // might throw ArgumentError, we let it propagate
-                    IRubyObject klass = parser.info.jsonModule.get().
-                            callMethod(context, "deep_const_get", vKlassName);
-                    if (klass.respondsTo("json_creatable?") &&
+                    IRubyObject klass = null;
+                    if(parser.createAdditions instanceof RubyProc){
+                      klass = ((RubyProc)parser.createAdditions).
+                                 call(context, new IRubyObject[]{vKlassName});
+                    }else{
+                      // might throw ArgumentError, we let it propagate
+                      klass = parser.info.jsonModule.get().
+                                callMethod(context, "deep_const_get", vKlassName);
+                    }
+
+                    if (klass != null &&
+                        klass.respondsTo("json_creatable?") &&
                         klass.callMethod(context, "json_creatable?").isTrue()) {
 
                         returnedResult = klass.callMethod(context, "json_create", result);

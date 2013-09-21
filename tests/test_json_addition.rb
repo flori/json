@@ -101,6 +101,15 @@ class TestJSONAddition < Test::Unit::TestCase
     )
   end
 
+  def test_extended_json_custom_matcher
+    a = A.new(666)
+    assert A.json_creatable?
+    json = generate(a)
+    a_again = JSON.parse(json, :create_additions => proc { |e| A2 })
+    assert_kind_of A2, a_again
+    assert_equal a, a_again
+  end
+
   def test_extended_json_fail1
     b = B.new
     assert !B.json_creatable?

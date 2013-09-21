@@ -11,6 +11,7 @@ import org.jruby.RubyClass;
 import org.jruby.RubyHash;
 import org.jruby.RubyNumeric;
 import org.jruby.RubyString;
+import org.jruby.RubyObject;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.ByteList;
@@ -110,5 +111,12 @@ final class OptionsReader {
         IRubyObject value = get(key);
         if (value == null || value.isNil()) return new RubyHash(runtime);
         return (RubyHash) value;
+    }
+
+    RubyObject getObject(String key, RubyObject defaultValue) {
+        IRubyObject value = get(key);
+
+        if (value == null || value.isNil()) return defaultValue;
+        return (RubyObject)value;
     }
 }
