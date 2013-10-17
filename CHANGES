@@ -1,3 +1,5 @@
+2013-05-13 (1.8.1)
+  * Remove Rubinius exception since transcoding should be working now.
 2013-05-13 (1.8.0)
   * Fix https://github.com/flori/json/issues/162 reported by Marc-Andre
     Lafortune <github_rocks@marc-andre.ca>. Thanks!
