@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.licenses = ["Ruby"]
   s.rdoc_options = ["--title", "JSON implemention for ruby", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "2.1.4"
+  s.rubygems_version = "2.1.9"
   s.summary = "JSON Implementation for Ruby"
   s.test_files = ["./tests/test_json.rb", "./tests/test_json_addition.rb", "./tests/test_json_encoding.rb", "./tests/test_json_fixtures.rb", "./tests/test_json_generate.rb", "./tests/test_json_generic_object.rb", "./tests/test_json_string_matching.rb", "./tests/test_json_unicode.rb"]
 
