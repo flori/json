@@ -64,7 +64,7 @@ module JSON
       #   (keys) in a JSON object. Otherwise strings are returned, which is also
       #   the default.
       # * *create_additions*: If set to true, the Parser creates
-      #   additions when if a matching class and create_id was found. This
+      #   additions when a matching class and create_id are found. This
       #   option defaults to false.
       # * *object_class*: Defaults to Hash
       # * *array_class*: Defaults to Array
