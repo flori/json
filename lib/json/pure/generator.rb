@@ -408,6 +408,11 @@ module JSON
           end
         end
 
+        module Fixnum
+          # Returns a JSON string representation for this Fixnum.
+          def to_json(*) to_s end
+        end
+
         module Integer
           # Returns a JSON string representation for this Integer number.
           def to_json(*) to_s end
