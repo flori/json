@@ -248,7 +248,7 @@ module JSON
           else
             raise TypeError, "can't convert #{opts.class} into Hash"
           end
-          for key, value in opts
+          opts.each do |key, value|
             instance_variable_set "@#{key}", value
           end
           @indent                = opts[:indent] if opts.key?(:indent)
@@ -277,7 +277,7 @@ module JSON
         # passed to the configure method.
         def to_h
           result = {}
-          for iv in instance_variables
+          instance_variables.each do |iv|
             iv = iv.to_s[1..-1]
             result[iv.to_sym] = self[iv]
           end
@@ -349,21 +349,15 @@ module JSON
           end
 
           def json_transform(state)
-            delim = ','
-            delim << state.object_nl
-            result = '{'
-            result << state.object_nl
+            delim = ",#{state.object_nl}"
+            result = "{#{state.object_nl}"
             depth = state.depth += 1
             first = true
             indent = !state.object_nl.empty?
-            each { |key,value|
+            each { |key, value|
               result << delim unless first
               result << state.indent * depth if indent
-              result << key.to_s.to_json(state)
-              result << state.space_before
-              result << ':'
-              result << state.space
-              result << value.to_json(state)
+              result = "#{result}#{key.to_s.to_json(state)}#{state.space_before}:#{state.space}#{value.to_json(state)}"
               first = false
             }
             depth = state.depth -= 1
