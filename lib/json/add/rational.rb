@@ -4,9 +4,8 @@ end
 defined?(::Rational) or require 'rational'
 
 class Rational
-
-  # Deserializes JSON string by converting numerator value <tt>n</tt>, denominator
-  # value <tt>d</tt>, to a Rational object.
+  # Deserializes JSON string by converting numerator value <tt>n</tt>,
+  # denominator value <tt>d</tt>, to a Rational object.
   def self.json_create(object)
     Rational(object['n'], object['d'])
   end
@@ -15,9 +14,9 @@ class Rational
   # object.
   def as_json(*)
     {
-        JSON.create_id => self.class.name,
-        'n'            => numerator,
-        'd'            => denominator,
+      JSON.create_id => self.class.name,
+      'n'            => numerator,
+      'd'            => denominator,
     }
   end
 
