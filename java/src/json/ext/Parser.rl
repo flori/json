@@ -128,7 +128,7 @@ public class Parser extends RubyObject {
      * 
      * <dt><code>:create_additions</code>
      * <dd>If set to <code>false</code>, the Parser doesn't create additions
-     * even if a matchin class and <code>create_id</code> was found. This option
+     * even if a matching class and <code>create_id</code> was found. This option
      * defaults to <code>true</code>.
      *
      * <dt><code>:object_class</code>
