@@ -8,4 +8,3 @@ gemspec :name => 'json-java'
 
 gem 'utils'
 gem 'test-unit'
-gem 'debugger', :platform => :mri_19
