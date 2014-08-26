@@ -264,6 +264,35 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
             }
         } else {
             switch (c) {
+                case 0xE2:
+                    {
+                        unsigned char c2 = (unsigned char) *(p+1);
+                        unsigned char c3 = (unsigned char) *(p+2);
+                        unsigned short clen = trailingBytesForUTF8[c] + 1;
+                        if(c2 == 0x80 && (c3 >= 0xA8 && c3 <= 0xA9)){
+                            buf[2] = '2', buf[3] = '0', buf[4] = '2';
+                            buf[5] = (c3 == 0xA8 ? '8' : '9');
+                            escape = buf;
+                            escape_len = 6;
+                            fbuffer_append(buffer, ptr + start, end - start);
+                            fbuffer_append(buffer, escape, escape_len);
+                            end = end + 3;
+                            start = end;
+                            escape = NULL;
+                        }else{
+                            if (end + clen > len) {
+                                rb_raise(rb_path2class("JSON::GeneratorError"),
+                                        "partial character in source, but hit end");
+                            }
+                            if (!isLegalUTF8((UTF8 *) p, clen)) {
+                                rb_raise(rb_path2class("JSON::GeneratorError"),
+                                        "source sequence is illegal/malformed utf-8");
+                            }
+                            end += clen;
+                        }
+                        continue;
+                        break;
+                    }
                 case '\\':
                     escape = "\\\\";
                     escape_len = 2;
