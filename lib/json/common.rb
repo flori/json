@@ -390,7 +390,7 @@ module JSON
       end
     end
     opts = JSON.dump_default_options
-    limit and opts.update(:max_nesting => limit)
+    opts = opts.merge(:max_nesting => limit) if limit
     result = generate(obj, opts)
     if anIO
       anIO.write result
