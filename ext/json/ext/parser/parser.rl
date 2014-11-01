@@ -79,7 +79,7 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_quirks_mode,
           i_object_class, i_array_class, i_key_p, i_deep_const_get, i_match,
-          i_match_string, i_aset, i_aref, i_leftshift;
+          i_match_string, i_aset, i_aref, i_leftshift, i_standards_mode;
 
 %%{
     machine JSON_common;
@@ -223,7 +223,7 @@ static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *resu
 
     action parse_number {
         char *np;
-        if(pe > fpc + 9 - json->quirks_mode && !strncmp(MinusInfinity, fpc, 9)) {
+        if(pe > fpc + 9 - ((json->quirks_mode || json->standards_mode) ? 1 : 0) && !strncmp(MinusInfinity, fpc, 9)) {
             if (json->allow_nan) {
                 *result = CMinusInfinity;
                 fexec p + 10;
@@ -548,11 +548,11 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
  *
  */
 
-static VALUE convert_encoding(VALUE source)
+static VALUE convert_encoding2(VALUE source, int allow_values)
 {
     char *ptr = RSTRING_PTR(source);
     long len = RSTRING_LEN(source);
-    if (len < 2) {
+    if (len < 2 && !allow_values) {
         rb_raise(eParserError, "A JSON text must at least contain two octets!");
     }
 #ifdef HAVE_RUBY_ENCODING_H
@@ -587,6 +587,11 @@ static VALUE convert_encoding(VALUE source)
     }
 #endif
     return source;
+}
+
+static VALUE convert_encoding(VALUE source)
+{
+  return convert_encoding2(source, Qfalse);
 }
 
 /*
@@ -660,6 +665,12 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             } else {
                 json->quirks_mode = 0;
             }
+            tmp = ID2SYM(i_standards_mode);
+            if (option_given_p(opts, tmp)) {
+                json->standards_mode = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
+            } else {
+                json->standards_mode = 0;
+            }
             tmp = ID2SYM(i_create_additions);
             if (option_given_p(opts, tmp)) {
                 json->create_additions = RTEST(rb_hash_aref(opts, tmp));
@@ -702,7 +713,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     }
     source = rb_convert_type(source, T_STRING, "String", "to_str");
     if (!json->quirks_mode) {
-      source = convert_encoding(StringValue(source));
+      source = convert_encoding2(StringValue(source), json->standards_mode);
     }
     json->current_nesting = 0;
     StringValue(source);
@@ -761,7 +772,7 @@ static VALUE cParser_parse_strict(VALUE self)
 
 
 %%{
-    machine JSON_quirks_mode;
+    machine JSON_text;
 
     write data;
 
@@ -777,7 +788,7 @@ static VALUE cParser_parse_strict(VALUE self)
             ) ignore*;
 }%%
 
-static VALUE cParser_parse_quirks_mode(VALUE self)
+static VALUE cParser_parse_json_text(VALUE self)
 {
     char *p, *pe;
     int cs = EVIL;
@@ -789,7 +800,7 @@ static VALUE cParser_parse_quirks_mode(VALUE self)
     pe = p + json->len;
     %% write exec;
 
-    if (cs >= JSON_quirks_mode_first_final && p == pe) {
+    if (cs >= JSON_text_first_final && p == pe) {
         return result;
     } else {
         rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
@@ -807,8 +818,8 @@ static VALUE cParser_parse(VALUE self)
 {
   GET_PARSER;
 
-  if (json->quirks_mode) {
-    return cParser_parse_quirks_mode(self);
+  if (json->quirks_mode || json->standards_mode) {
+    return cParser_parse_json_text(self);
   } else {
     return cParser_parse_strict(self);
   }
@@ -867,6 +878,16 @@ static VALUE cParser_quirks_mode_p(VALUE self)
     return json->quirks_mode ? Qtrue : Qfalse;
 }
 
+/*
+ * call-seq: standards_mode?()
+ *
+ * Returns a true, if this parser is in standards_mode, false otherwise.
+ */
+static VALUE cParser_standards_mode_p(VALUE self)
+{
+    GET_PARSER;
+    return json->standards_mode ? Qtrue : Qfalse;
+}
 
 void Init_parser()
 {
@@ -881,6 +902,7 @@ void Init_parser()
     rb_define_method(cParser, "parse", cParser_parse, 0);
     rb_define_method(cParser, "source", cParser_source, 0);
     rb_define_method(cParser, "quirks_mode?", cParser_quirks_mode_p, 0);
+    rb_define_method(cParser, "standards_mode?", cParser_standards_mode_p, 0);
 
     CNaN = rb_const_get(mJSON, rb_intern("NaN"));
     CInfinity = rb_const_get(mJSON, rb_intern("Infinity"));
@@ -895,6 +917,7 @@ void Init_parser()
     i_allow_nan = rb_intern("allow_nan");
     i_symbolize_names = rb_intern("symbolize_names");
     i_quirks_mode = rb_intern("quirks_mode");
+    i_standards_mode = rb_intern("standards_mode");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
     i_match = rb_intern("match");

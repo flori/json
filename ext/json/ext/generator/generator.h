@@ -74,6 +74,7 @@ typedef struct JSON_Generator_StateStruct {
     char allow_nan;
     char ascii_only;
     char quirks_mode;
+    char standards_mode;
     long depth;
     long buffer_initial_length;
 } JSON_Generator_State;
