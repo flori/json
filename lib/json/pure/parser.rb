@@ -70,6 +70,8 @@ module JSON
       # * *array_class*: Defaults to Array
       # * *quirks_mode*: Enables quirks_mode for parser, that is for example
       #   parsing single JSON values instead of documents is possible.
+      # * *standards_mode*: Enables JSON parsing according to rfc7159 (rather
+      #   than rfc4627 which is the default)
       def initialize(source, opts = {})
         opts ||= {}
         unless @quirks_mode = opts[:quirks_mode]
@@ -94,12 +96,17 @@ module JSON
         @object_class = opts[:object_class] || Hash
         @array_class  = opts[:array_class] || Array
         @match_string = opts[:match_string]
+        @standards_mode = opts[:standards_mode]
       end
 
       alias source string
 
       def quirks_mode?
         !!@quirks_mode
+      end
+
+      def standards_mode?
+        !!@standards_mode
       end
 
       def reset
@@ -112,7 +119,7 @@ module JSON
       def parse
         reset
         obj = nil
-        if @quirks_mode
+        if @quirks_mode || @standards_mode
           while !eos? && skip(IGNORE)
           end
           if eos?
