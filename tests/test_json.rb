@@ -107,9 +107,9 @@ class TestJSON < Test::Unit::TestCase
   end
 
   def test_parse_json_primitive_values
-    assert_raise(JSON::ParserError) { JSON.parse('') }
+    assert_raise(JSON::EncodingError) { JSON.parse('') }
     assert_raise(JSON::ParserError) { JSON.parse('', :quirks_mode => true) }
-    assert_raise(JSON::ParserError) { JSON.parse('', :standards_mode => true) }
+    assert_raise(JSON::EncodingError) { JSON.parse('', :standards_mode => true) }
     assert_raise(TypeError) { JSON::Parser.new(nil).parse }
     assert_raise(TypeError) { JSON::Parser.new(nil, :quirks_mode => true).parse }
     assert_raise(TypeError) { JSON::Parser.new(nil, :standards_mode => true).parse }
@@ -143,7 +143,7 @@ class TestJSON < Test::Unit::TestCase
     assert_raise(JSON::ParserError) { JSON.parse('23') }
     assert_equal 23, JSON.parse('23', :quirks_mode => true)
     assert_equal 23, JSON.parse('23', :standards_mode => true)
-    assert_raise(JSON::ParserError) { JSON.parse('1') }
+    assert_raise(JSON::EncodingError) { JSON.parse('1') }
     assert_equal 1, JSON.parse('1', :quirks_mode => true)
     assert_equal 1, JSON.parse('1', :standards_mode => true)
     assert_raise(JSON::ParserError) { JSON.parse('3.141') }

@@ -73,7 +73,7 @@ static ID i_encoding, i_encode;
 static ID i_iconv;
 #endif
 
-static VALUE mJSON, mExt, cParser, eParserError, eNestingError;
+static VALUE mJSON, mExt, cParser, eParserError, eNestingError, eEncodingError;
 static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
@@ -552,8 +552,10 @@ static VALUE convert_encoding2(VALUE source, int allow_values)
 {
     char *ptr = RSTRING_PTR(source);
     long len = RSTRING_LEN(source);
-    if (len < 2 && !allow_values) {
-        rb_raise(eParserError, "A JSON text must at least contain two octets!");
+    if (allow_values) {
+        if (len < 1) rb_raise(eEncodingError, "A JSON text must at least contain one octet!");
+    } else {
+        if (len < 2) rb_raise(eEncodingError, "A JSON text must at least contain two octets!");
     }
 #ifdef HAVE_RUBY_ENCODING_H
     {
@@ -897,6 +899,7 @@ void Init_parser()
     cParser = rb_define_class_under(mExt, "Parser", rb_cObject);
     eParserError = rb_path2class("JSON::ParserError");
     eNestingError = rb_path2class("JSON::NestingError");
+    eEncodingError = rb_path2class("JSON::EncodingError");
     rb_define_alloc_func(cParser, cJSON_parser_s_allocate);
     rb_define_method(cParser, "initialize", cParser_initialize, -1);
     rb_define_method(cParser, "parse", cParser_parse, 0);

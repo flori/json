@@ -74,6 +74,7 @@ module JSON
       #   than rfc4627 which is the default)
       def initialize(source, opts = {})
         opts ||= {}
+        @standards_mode = opts[:standards_mode]
         unless @quirks_mode = opts[:quirks_mode]
           source = convert_encoding source
         end
@@ -96,7 +97,6 @@ module JSON
         @object_class = opts[:object_class] || Hash
         @array_class  = opts[:array_class] || Array
         @match_string = opts[:match_string]
-        @standards_mode = opts[:standards_mode]
       end
 
       alias source string
@@ -157,6 +157,11 @@ module JSON
           source = source.to_str
         else
           raise TypeError, "#{source.inspect} is not like a string"
+        end
+        if @standards_mode
+          raise EncodingError, "A JSON text must at least contain one octet!" if source.length < 1
+        else
+          raise EncodingError, "A JSON text must at least contain two octets!" if source.length < 2
         end
         if defined?(::Encoding)
           if source.encoding == ::Encoding::ASCII_8BIT

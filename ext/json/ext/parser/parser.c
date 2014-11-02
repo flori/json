@@ -75,7 +75,7 @@ static ID i_encoding, i_encode;
 static ID i_iconv;
 #endif
 
-static VALUE mJSON, mExt, cParser, eParserError, eNestingError;
+static VALUE mJSON, mExt, cParser, eParserError, eNestingError, eEncodingError;
 static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
@@ -1568,8 +1568,10 @@ static VALUE convert_encoding2(VALUE source, int allow_values)
 {
     char *ptr = RSTRING_PTR(source);
     long len = RSTRING_LEN(source);
-    if (len < 2 && !allow_values) {
-        rb_raise(eParserError, "A JSON text must at least contain two octets!");
+    if (allow_values) {
+        if (len < 1) rb_raise(eEncodingError, "A JSON text must at least contain one octet!");
+    } else {
+        if (len < 2) rb_raise(eEncodingError, "A JSON text must at least contain two octets!");
     }
 #ifdef HAVE_RUBY_ENCODING_H
     {
@@ -1740,7 +1742,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1744 "parser.c"
+#line 1746 "parser.c"
 static const int JSON_start = 1;
 static const int JSON_first_final = 10;
 static const int JSON_error = 0;
@@ -1748,7 +1750,7 @@ static const int JSON_error = 0;
 static const int JSON_en_main = 1;
 
 
-#line 751 "parser.rl"
+#line 753 "parser.rl"
 
 
 static VALUE cParser_parse_strict(VALUE self)
@@ -1759,16 +1761,16 @@ static VALUE cParser_parse_strict(VALUE self)
     GET_PARSER;
 
 
-#line 1763 "parser.c"
+#line 1765 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 761 "parser.rl"
+#line 763 "parser.rl"
     p = json->source;
     pe = p + json->len;
 
-#line 1772 "parser.c"
+#line 1774 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1824,7 +1826,7 @@ case 5:
 		goto st1;
 	goto st5;
 tr3:
-#line 740 "parser.rl"
+#line 742 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1833,7 +1835,7 @@ tr3:
     }
 	goto st10;
 tr4:
-#line 733 "parser.rl"
+#line 735 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1845,7 +1847,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1849 "parser.c"
+#line 1851 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1902,7 +1904,7 @@ case 9:
 	_out: {}
 	}
 
-#line 764 "parser.rl"
+#line 766 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;
@@ -1914,7 +1916,7 @@ case 9:
 
 
 
-#line 1918 "parser.c"
+#line 1920 "parser.c"
 static const int JSON_text_start = 1;
 static const int JSON_text_first_final = 10;
 static const int JSON_text_error = 0;
@@ -1922,7 +1924,7 @@ static const int JSON_text_error = 0;
 static const int JSON_text_en_main = 1;
 
 
-#line 789 "parser.rl"
+#line 791 "parser.rl"
 
 
 static VALUE cParser_parse_json_text(VALUE self)
@@ -1933,16 +1935,16 @@ static VALUE cParser_parse_json_text(VALUE self)
     GET_PARSER;
 
 
-#line 1937 "parser.c"
+#line 1939 "parser.c"
 	{
 	cs = JSON_text_start;
 	}
 
-#line 799 "parser.rl"
+#line 801 "parser.rl"
     p = json->source;
     pe = p + json->len;
 
-#line 1946 "parser.c"
+#line 1948 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1976,7 +1978,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 781 "parser.rl"
+#line 783 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1986,7 +1988,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1990 "parser.c"
+#line 1992 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -2075,7 +2077,7 @@ case 9:
 	_out: {}
 	}
 
-#line 802 "parser.rl"
+#line 804 "parser.rl"
 
     if (cs >= JSON_text_first_final && p == pe) {
         return result;
@@ -2174,6 +2176,7 @@ void Init_parser()
     cParser = rb_define_class_under(mExt, "Parser", rb_cObject);
     eParserError = rb_path2class("JSON::ParserError");
     eNestingError = rb_path2class("JSON::NestingError");
+    eEncodingError = rb_path2class("JSON::EncodingError");
     rb_define_alloc_func(cParser, cJSON_parser_s_allocate);
     rb_define_method(cParser, "initialize", cParser_initialize, -1);
     rb_define_method(cParser, "parse", cParser_parse, 0);

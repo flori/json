@@ -114,6 +114,9 @@ module JSON
   # This exception is raised if a parser error occurs.
   class ParserError < JSONError; end
 
+  # This exception is raised if the data cannot be encoded into the correct format
+  class EncodingError < ParserError; end
+
   # This exception is raised if the nesting of parsed data structures is too
   # deep.
   class NestingError < ParserError; end
