@@ -24,6 +24,7 @@ import org.jruby.util.ByteList;
 final class Utils {
     public static final String M_GENERATOR_ERROR = "GeneratorError";
     public static final String M_NESTING_ERROR = "NestingError";
+    public static final String M_ENCODING_ERROR = "EncodingError";
     public static final String M_PARSER_ERROR = "ParserError";
 
     private Utils() {

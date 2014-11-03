@@ -52,6 +52,7 @@ public class Parser extends RubyObject {
     private boolean allowNaN;
     private boolean symbolizeNames;
     private boolean quirksMode;
+    private boolean standardsMode;
     private RubyClass objectClass;
     private RubyClass arrayClass;
     private RubyHash match_string;
@@ -125,7 +126,11 @@ public class Parser extends RubyObject {
      * <dt><code>:quirks_mode?</code>
      * <dd>If set to <code>true</code>, if the parse is in quirks_mode, false
      * otherwise.
-     * 
+     *
+     * <dt><code>:standards_mode?</code>
+     * <dd>If set to <code>true</code>, if the parse is in rfc7159 standards_mode,
+     * false otherwise.
+     *
      * <dt><code>:create_additions</code>
      * <dd>If set to <code>false</code>, the Parser doesn't create additions
      * even if a matching class and <code>create_id</code> was found. This option
@@ -163,6 +168,7 @@ public class Parser extends RubyObject {
         this.allowNaN        = opts.getBool("allow_nan", false);
         this.symbolizeNames  = opts.getBool("symbolize_names", false);
         this.quirksMode      = opts.getBool("quirks_mode", false);
+        this.standardsMode   = opts.getBool("standards_mode", false);
         this.createId        = opts.getString("create_id", getCreateId(context));
         this.createAdditions = opts.getBool("create_additions", false);
         this.objectClass     = opts.getClass("object_class", runtime.getHash());
@@ -183,9 +189,16 @@ public class Parser extends RubyObject {
     private RubyString convertEncoding(ThreadContext context, RubyString source) {
         ByteList bl = source.getByteList();
         int len = bl.length();
-        if (len < 2) {
-            throw Utils.newException(context, Utils.M_PARSER_ERROR,
-                "A JSON text must at least contain two octets!");
+        if (this.standardsMode) {
+            if (len < 1) {
+                throw Utils.newException(context, Utils.M_ENCODING_ERROR,
+                    "A JSON text must at least contain one octet!");
+            }
+        } else {
+            if (len < 2) {
+                throw Utils.newException(context, Utils.M_ENCODING_ERROR,
+                    "A JSON text must at least contain two octets!");
+            }
         }
 
         if (info.encodingsSupported()) {
@@ -269,6 +282,17 @@ public class Parser extends RubyObject {
     @JRubyMethod(name = "quirks_mode?")
     public IRubyObject quirks_mode_p(ThreadContext context) {
         return context.getRuntime().newBoolean(quirksMode);
+    }
+
+    /**
+     * <code>Parser#standards_mode?()</code>
+     *
+     * <p>If set to <code>true</code>, if the parse is in rfc7159 standards_mode,
+     * false otherwise.
+     */
+    @JRubyMethod(name = "standards_mode?")
+    public IRubyObject standards_mode_p(ThreadContext context) {
+        return context.getRuntime().newBoolean(standardsMode);
     }
 
     public RubyString checkAndGetSource() {
@@ -392,7 +416,7 @@ public class Parser extends RubyObject {
                 }
             }
             action parse_number {
-                if (pe > fpc + 9 - (parser.quirksMode ? 1 : 0) &&
+                if (pe > fpc + 9 - ((parser.quirksMode || parser.standardsMode) ? 1 : 0) &&
                     absSubSequence(fpc, fpc + 9).equals(JSON_MINUS_INFINITY)) {
 
                     if (parser.allowNaN) {
@@ -884,7 +908,7 @@ public class Parser extends RubyObject {
         }
 
         %%{
-            machine JSON_quirks_mode;
+            machine JSON_text;
             include JSON_common;
 
             write data;
@@ -905,7 +929,7 @@ public class Parser extends RubyObject {
                     ignore*;
         }%%
 
-        public IRubyObject parseQuirksMode() {
+        public IRubyObject parseJsonText() {
             int cs = EVIL;
             int p, pe;
             IRubyObject result = null;
@@ -916,7 +940,7 @@ public class Parser extends RubyObject {
             pe = p + byteList.length();
             %% write exec;
 
-            if (cs >= JSON_quirks_mode_first_final && p == pe) {
+            if (cs >= JSON_text_first_final && p == pe) {
                 return result;
             } else {
                 throw unexpectedToken(p, pe);
@@ -924,8 +948,8 @@ public class Parser extends RubyObject {
         }
 
         public IRubyObject parse() {
-          if (parser.quirksMode) {
-            return parseQuirksMode();
+          if (parser.quirksMode || parser.standardsMode) {
+            return parseJsonText();
           } else {
             return parseStrict();
           }
