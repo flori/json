@@ -86,7 +86,11 @@ module JSON
         @allow_nan = !!opts[:allow_nan]
         @symbolize_names = !!opts[:symbolize_names]
         if opts.key?(:create_additions)
-          @create_additions = !!opts[:create_additions]
+          if opts[:create_additions].is_a?(Proc)
+            @create_additions = opts[:create_additions]
+          else
+            @create_additions = !!opts[:create_additions]
+          end
         else
           @create_additions = false
         end
@@ -341,7 +345,12 @@ module JSON
               raise ParserError, "expected next name, value pair in object at '#{peek(20)}'!"
             end
             if @create_additions and klassname = result[@create_id]
-              klass = JSON.deep_const_get klassname
+              klass = nil
+              if @create_additions.is_a?(Proc)
+                klass = @create_additions.call klassname
+              else
+                klass = JSON.deep_const_get klassname
+              end
               break unless klass and klass.json_creatable?
               result = klass.json_create(result)
             end

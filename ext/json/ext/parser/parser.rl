@@ -79,7 +79,7 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_quirks_mode,
           i_object_class, i_array_class, i_key_p, i_deep_const_get, i_match,
-          i_match_string, i_aset, i_aref, i_leftshift;
+          i_match_string, i_aset, i_aref, i_leftshift, i_call;
 
 %%{
     machine JSON_common;
@@ -174,7 +174,12 @@ static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *resu
               klassname = rb_funcall(*result, i_aref, 1, json->create_id);
             }
             if (!NIL_P(klassname)) {
-                VALUE klass = rb_funcall(mJSON, i_deep_const_get, 1, klassname);
+                VALUE klass = NULL;
+                if(rb_class_of(json->create_additions) == rb_cProc)
+                  klass = rb_funcall(json->create_additions, i_call, 1, klassname);
+                else
+                  klass = rb_funcall(mJSON, i_deep_const_get, 1, klassname);
+
                 if (RTEST(rb_funcall(klass, i_json_creatable_p, 0))) {
                     *result = rb_funcall(klass, i_json_create, 1, *result);
                 }
@@ -662,7 +667,12 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             }
             tmp = ID2SYM(i_create_additions);
             if (option_given_p(opts, tmp)) {
-                json->create_additions = RTEST(rb_hash_aref(opts, tmp));
+                VALUE create_additions = rb_hash_aref(opts, tmp);
+                if (rb_class_of(create_additions) == rb_cProc){
+                  json->create_additions = create_additions;
+                }else{
+                  json->create_additions = RTEST(create_additions);
+                }
             } else {
                 json->create_additions = 0;
             }
@@ -904,6 +914,7 @@ void Init_parser()
     i_aset = rb_intern("[]=");
     i_aref = rb_intern("[]");
     i_leftshift = rb_intern("<<");
+    i_call = rb_intern("call");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     CEncoding_UTF_16BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16be"));
