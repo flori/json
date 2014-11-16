@@ -78,8 +78,9 @@ static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_quirks_mode,
-          i_object_class, i_array_class, i_key_p, i_deep_const_get, i_match,
-          i_match_string, i_aset, i_aref, i_leftshift;
+          i_object_class, i_array_class, i_decimal_class, i_key_p,
+          i_deep_const_get, i_match, i_match_string, i_aset, i_aref,
+          i_leftshift, i_new;
 
 %%{
     machine JSON_common;
@@ -341,7 +342,14 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
         fbuffer_clear(json->fbuffer);
         fbuffer_append(json->fbuffer, json->memo, len);
         fbuffer_append_char(json->fbuffer, '\0');
-        *result = rb_float_new(rb_cstr_to_dbl(FBUFFER_PTR(json->fbuffer), 1));
+        if (NIL_P(json->decimal_class)) {
+          *result = rb_float_new(rb_cstr_to_dbl(FBUFFER_PTR(json->fbuffer), 1));
+        }
+        else {
+          VALUE text;
+          text = rb_str_new2(FBUFFER_PTR(json->fbuffer));
+          *result = rb_funcall(json->decimal_class, i_new, 1, text);
+        }
         return p + 1;
     } else {
         return NULL;
@@ -684,6 +692,12 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             } else {
                 json->array_class = Qnil;
             }
+            tmp = ID2SYM(i_decimal_class);
+            if (option_given_p(opts, tmp)) {
+                json->decimal_class = rb_hash_aref(opts, tmp);
+            } else {
+                json->decimal_class = Qnil;
+            }
             tmp = ID2SYM(i_match_string);
             if (option_given_p(opts, tmp)) {
                 VALUE match_string = rb_hash_aref(opts, tmp);
@@ -699,6 +713,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->create_id = rb_funcall(mJSON, i_create_id, 0);
         json->object_class = Qnil;
         json->array_class = Qnil;
+        json->decimal_class = Qnil;
     }
     source = rb_convert_type(source, T_STRING, "String", "to_str");
     if (!json->quirks_mode) {
@@ -829,6 +844,7 @@ static void JSON_mark(JSON_Parser *json)
     rb_gc_mark_maybe(json->create_id);
     rb_gc_mark_maybe(json->object_class);
     rb_gc_mark_maybe(json->array_class);
+    rb_gc_mark_maybe(json->decimal_class);
     rb_gc_mark_maybe(json->match_string);
 }
 
@@ -897,6 +913,7 @@ void Init_parser()
     i_quirks_mode = rb_intern("quirks_mode");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
+    i_decimal_class = rb_intern("decimal_class");
     i_match = rb_intern("match");
     i_match_string = rb_intern("match_string");
     i_key_p = rb_intern("key?");
@@ -904,6 +921,7 @@ void Init_parser()
     i_aset = rb_intern("[]=");
     i_aref = rb_intern("[]");
     i_leftshift = rb_intern("<<");
+    i_new = rb_intern("new");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
     CEncoding_UTF_16BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16be"));

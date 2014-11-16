@@ -68,6 +68,9 @@ module JSON
       #   option defaults to false.
       # * *object_class*: Defaults to Hash
       # * *array_class*: Defaults to Array
+      # * *decimal_class*: Specifies which class to use instead of the default
+      #    (Float) when parsing decimal numbers. This class must accept a single
+      #    string argument in its constructor.
       # * *quirks_mode*: Enables quirks_mode for parser, that is for example
       #   parsing single JSON values instead of documents is possible.
       def initialize(source, opts = {})
@@ -93,6 +96,7 @@ module JSON
         @create_id = @create_additions ? JSON.create_id : nil
         @object_class = opts[:object_class] || Hash
         @array_class  = opts[:array_class] || Array
+        @decimal_class = opts[:decimal_class]
         @match_string = opts[:match_string]
       end
 
@@ -245,7 +249,7 @@ module JSON
       def parse_value
         case
         when scan(FLOAT)
-          Float(self[1])
+          @decimal_class && @decimal_class.new(self[1]) || Float(self[1])
         when scan(INTEGER)
           Integer(self[1])
         when scan(TRUE)
