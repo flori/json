@@ -41,6 +41,7 @@ typedef struct JSON_ParserStruct {
     int quirks_mode;
     VALUE object_class;
     VALUE array_class;
+    VALUE decimal_class;
     int create_additions;
     VALUE match_string;
     FBuffer *fbuffer;

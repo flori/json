@@ -54,6 +54,7 @@ public class Parser extends RubyObject {
     private boolean quirksMode;
     private RubyClass objectClass;
     private RubyClass arrayClass;
+    private RubyClass decimalClass;
     private RubyHash match_string;
 
     private static final int DEFAULT_MAX_NESTING = 100;
@@ -137,6 +138,11 @@ public class Parser extends RubyObject {
      * <dt><code>:array_class</code>
      * <dd>Defaults to Array.
      *
+     * <dt><code>:decimal_class</code>
+     * <dd>Specifies which class to use instead of the default (Float) when
+     * parsing decimal numbers. This class must accept a single string argument
+     * in its constructor.
+     *
      * <dt><code>:quirks_mode</code>
      * <dd>Enables quirks_mode for parser, that is for example parsing single
      * JSON values instead of documents is possible.
@@ -167,6 +173,7 @@ public class Parser extends RubyObject {
         this.createAdditions = opts.getBool("create_additions", false);
         this.objectClass     = opts.getClass("object_class", runtime.getHash());
         this.arrayClass      = opts.getClass("array_class", runtime.getArray());
+        this.decimalClass    = opts.getClass("decimal_class", null);
         this.match_string    = opts.getHash("match_string");
 
         this.vSource = args[0].convertToString();
@@ -555,7 +562,9 @@ public class Parser extends RubyObject {
                 res.update(null, p);
                 return;
             }
-            RubyFloat number = createFloat(p, new_p);
+            IRubyObject number = parser.decimalClass == null ?
+                createFloat(p, new_p) : createCustomDecimal(p, new_p);
+
             res.update(number, new_p + 1);
             return;
         }
@@ -578,6 +587,13 @@ public class Parser extends RubyObject {
             Ruby runtime = getRuntime();
             ByteList num = absSubSequence(p, new_p);
             return RubyFloat.newFloat(runtime, dc.parse(num, true, runtime.is1_9()));
+        }
+        
+        IRubyObject createCustomDecimal(int p, int new_p) {
+            Ruby runtime = getRuntime();
+            ByteList num = absSubSequence(p, new_p);
+            IRubyObject numString = runtime.newString(num.toString());
+            return parser.decimalClass.callMethod(context, "new", numString);
         }
 
         %%{

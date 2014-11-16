@@ -6,6 +6,7 @@ require File.join(File.dirname(__FILE__), 'setup_variant')
 require 'stringio'
 require 'tempfile'
 require 'ostruct'
+require 'bigdecimal'
 
 unless Array.method_defined?(:permutation)
   begin
@@ -287,6 +288,14 @@ class TestJSON < Test::Unit::TestCase
     end
   end
 
+  class CustomDecimal < Object
+    attr_reader :str_value
+
+    def initialize(str_value)
+      @str_value = str_value
+    end
+  end
+
   class SubOpenStruct < OpenStruct
     def [](k)
       __send__(k)
@@ -314,6 +323,21 @@ class TestJSON < Test::Unit::TestCase
     assert_equal "bar", res.foo
     assert_equal(SubOpenStruct, res.class)
     assert res.item_set?
+  end
+
+  def test_parse_floats_custom_decimal_class
+    json_string = '[3.1412, 100200300400500.01]'
+    res = parse(json_string)
+    assert_equal Float(3.1412), res.first
+    res = parse(json_string, :decimal_class => BigDecimal)
+    assert_equal BigDecimal, res.first.class
+    assert_equal BigDecimal.new('100200300400500.01'), res.last
+    res = parse(json_string, :decimal_class => CustomDecimal)
+    assert_equal(CustomDecimal, res.first.class)
+    assert_equal '3.1412', res.first.str_value
+    assert parse('[NaN]', :decimal_class => BigDecimal, :allow_nan => true).first.nan?
+    assert_equal +1, parse('[Infinity]', :decimal_class => BigDecimal, :allow_nan => true).first.infinite?
+    assert_equal -1, parse('[-Infinity]', :decimal_class => BigDecimal, :allow_nan => true).first.infinite?
   end
 
   def test_parse_generic_object
