@@ -74,7 +74,7 @@ EOT
   end
 
   def test_generate_custom
-    state = State.new(space_before: " ", space: "   ", indent:"<i>", object_nl: "\n", array_nl: "<a_nl>")
+    state = State.new(:space_before => " ", :space => "   ", :indent => "<i>", :object_nl => "\n", :array_nl => "<a_nl>")
     json = generate({1=>{2=>3,4=>[5,6]}}, state)
     assert_equal(<<'EOT'.chomp, json)
 {
