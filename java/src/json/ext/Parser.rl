@@ -246,7 +246,7 @@ public class Parser extends RubyObject {
      */
     @JRubyMethod
     public IRubyObject parse(ThreadContext context) {
-        return new ParserSession(this, context).parse();
+        return new ParserSession(this, context, info).parse();
     }
 
     /**
@@ -302,6 +302,7 @@ public class Parser extends RubyObject {
     private static class ParserSession {
         private final Parser parser;
         private final ThreadContext context;
+        private final RuntimeInfo info;
         private final ByteList byteList;
         private final ByteList view;
         private final byte[] data;
@@ -313,9 +314,10 @@ public class Parser extends RubyObject {
         // no idea about the origins of this value, ask Flori ;)
         private static final int EVIL = 0x666;
 
-        private ParserSession(Parser parser, ThreadContext context) {
+        private ParserSession(Parser parser, ThreadContext context, RuntimeInfo info) {
             this.parser = parser;
             this.context = context;
+            this.info = info;
             this.byteList = parser.checkAndGetSource().getByteList();
             this.data = byteList.unsafeBytes();
             this.view = new ByteList(data, false);
@@ -646,8 +648,7 @@ public class Parser extends RubyObject {
                 }
             }
 
-            if (cs >= JSON_string_first_final && result != null) {
-                RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
+            if (cs >= JSON_string_first_final && result != null) {                
                 if (info.encodingsSupported() && result instanceof RubyString) {
                   ((RubyString)result).force_encoding(context, info.utf8.get());
                 }
