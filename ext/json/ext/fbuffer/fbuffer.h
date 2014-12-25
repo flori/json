@@ -25,6 +25,15 @@
 #define RSTRING_LEN(string) RSTRING(string)->len
 #endif
 
+#ifdef PRIsVALUE
+# define RB_OBJ_CLASSNAME(obj) rb_obj_class(obj)
+# define RB_OBJ_STRING(obj) (obj)
+#else
+# define PRIsVALUE "s"
+# define RB_OBJ_CLASSNAME(obj) rb_obj_classname(obj)
+# define RB_OBJ_STRING(obj) StringValueCStr(obj)
+#endif
+
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
 #define FORCE_UTF8(obj) rb_enc_associate((obj), rb_utf8_encoding())
@@ -172,7 +181,7 @@ static FBuffer *fbuffer_dup(FBuffer *fb)
 
 static VALUE fbuffer_to_s(FBuffer *fb)
 {
-    VALUE result = rb_str_new(FBUFFER_PAIR(fb));
+    VALUE result = rb_str_new(FBUFFER_PTR(fb), FBUFFER_LEN(fb));
     fbuffer_free(fb);
     FORCE_UTF8(result);
     return result;

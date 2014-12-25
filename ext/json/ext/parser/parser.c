@@ -89,11 +89,11 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
 
 
 #line 92 "parser.c"
-static const int JSON_object_start = 1;
-static const int JSON_object_first_final = 27;
-static const int JSON_object_error = 0;
+enum {JSON_object_start = 1};
+enum {JSON_object_first_final = 27};
+enum {JSON_object_error = 0};
 
-static const int JSON_object_en_main = 1;
+enum {JSON_object_en_main = 1};
 
 
 #line 151 "parser.rl"
@@ -467,11 +467,11 @@ case 26:
 
 
 #line 470 "parser.c"
-static const int JSON_value_start = 1;
-static const int JSON_value_first_final = 21;
-static const int JSON_value_error = 0;
+enum {JSON_value_start = 1};
+enum {JSON_value_first_final = 21};
+enum {JSON_value_error = 0};
 
-static const int JSON_value_en_main = 1;
+enum {JSON_value_en_main = 1};
 
 
 #line 271 "parser.rl"
@@ -776,11 +776,11 @@ case 20:
 
 
 #line 779 "parser.c"
-static const int JSON_integer_start = 1;
-static const int JSON_integer_first_final = 3;
-static const int JSON_integer_error = 0;
+enum {JSON_integer_start = 1};
+enum {JSON_integer_first_final = 3};
+enum {JSON_integer_error = 0};
 
-static const int JSON_integer_en_main = 1;
+enum {JSON_integer_en_main = 1};
 
 
 #line 295 "parser.rl"
@@ -875,11 +875,11 @@ case 5:
 
 
 #line 878 "parser.c"
-static const int JSON_float_start = 1;
-static const int JSON_float_first_final = 8;
-static const int JSON_float_error = 0;
+enum {JSON_float_start = 1};
+enum {JSON_float_first_final = 8};
+enum {JSON_float_error = 0};
 
-static const int JSON_float_en_main = 1;
+enum {JSON_float_en_main = 1};
 
 
 #line 329 "parser.rl"
@@ -1041,11 +1041,11 @@ case 7:
 
 
 #line 1044 "parser.c"
-static const int JSON_array_start = 1;
-static const int JSON_array_first_final = 17;
-static const int JSON_array_error = 0;
+enum {JSON_array_start = 1};
+enum {JSON_array_first_final = 17};
+enum {JSON_array_error = 0};
 
-static const int JSON_array_en_main = 1;
+enum {JSON_array_en_main = 1};
 
 
 #line 381 "parser.rl"
@@ -1373,11 +1373,11 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 
 
 #line 1376 "parser.c"
-static const int JSON_string_start = 1;
-static const int JSON_string_first_final = 8;
-static const int JSON_string_error = 0;
+enum {JSON_string_start = 1};
+enum {JSON_string_first_final = 8};
+enum {JSON_string_error = 0};
 
-static const int JSON_string_en_main = 1;
+enum {JSON_string_en_main = 1};
 
 
 #line 494 "parser.rl"
@@ -1626,8 +1626,8 @@ static VALUE convert_encoding(VALUE source)
  *   (keys) in a JSON object. Otherwise strings are returned, which is also
  *   the default.
  * * *create_additions*: If set to false, the Parser doesn't create
- *   additions even if a matching class and create_id was found. This option
- *   defaults to false.
+ *   additions even if a matchin class and create_id was found. This option
+ *   defaults to true.
  * * *object_class*: Defaults to Hash
  * * *array_class*: Defaults to Array
  */
@@ -1730,11 +1730,11 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 
 
 #line 1733 "parser.c"
-static const int JSON_start = 1;
-static const int JSON_first_final = 10;
-static const int JSON_error = 0;
+enum {JSON_start = 1};
+enum {JSON_first_final = 10};
+enum {JSON_error = 0};
 
-static const int JSON_en_main = 1;
+enum {JSON_en_main = 1};
 
 
 #line 740 "parser.rl"
@@ -1904,11 +1904,11 @@ case 9:
 
 
 #line 1907 "parser.c"
-static const int JSON_quirks_mode_start = 1;
-static const int JSON_quirks_mode_first_final = 10;
-static const int JSON_quirks_mode_error = 0;
+enum {JSON_quirks_mode_start = 1};
+enum {JSON_quirks_mode_first_final = 10};
+enum {JSON_quirks_mode_error = 0};
 
-static const int JSON_quirks_mode_en_main = 1;
+enum {JSON_quirks_mode_en_main = 1};
 
 
 #line 778 "parser.rl"
@@ -2092,7 +2092,7 @@ static VALUE cParser_parse(VALUE self)
 }
 
 
-static JSON_Parser *JSON_allocate()
+static JSON_Parser *JSON_allocate(void)
 {
     JSON_Parser *json = ALLOC(JSON_Parser);
     MEMZERO(json, JSON_Parser, 1);
@@ -2100,8 +2100,9 @@ static JSON_Parser *JSON_allocate()
     return json;
 }
 
-static void JSON_mark(JSON_Parser *json)
+static void JSON_mark(void *ptr)
 {
+    JSON_Parser *json = ptr;
     rb_gc_mark_maybe(json->Vsource);
     rb_gc_mark_maybe(json->create_id);
     rb_gc_mark_maybe(json->object_class);
@@ -2109,16 +2110,30 @@ static void JSON_mark(JSON_Parser *json)
     rb_gc_mark_maybe(json->match_string);
 }
 
-static void JSON_free(JSON_Parser *json)
+static void JSON_free(void *ptr)
 {
+    JSON_Parser *json = ptr;
     fbuffer_free(json->fbuffer);
     ruby_xfree(json);
 }
 
+static size_t JSON_memsize(const void *ptr)
+{
+    const JSON_Parser *json = ptr;
+    return sizeof(*json) + FBUFFER_CAPA(json->fbuffer);
+}
+
+static const rb_data_type_t JSON_Parser_type = {
+    "JSON/Parser",
+    {JSON_mark, JSON_free, JSON_memsize,},
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY,
+};
+
 static VALUE cJSON_parser_s_allocate(VALUE klass)
 {
     JSON_Parser *json = JSON_allocate();
-    return Data_Wrap_Struct(klass, JSON_mark, JSON_free, json);
+    return TypedData_Wrap_Struct(klass, &JSON_Parser_type, json);
 }
 
 /*
@@ -2145,7 +2160,7 @@ static VALUE cParser_quirks_mode_p(VALUE self)
 }
 
 
-void Init_parser()
+void Init_parser(void)
 {
     rb_require("json/common");
     mJSON = rb_define_module("JSON");
