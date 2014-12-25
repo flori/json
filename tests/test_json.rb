@@ -517,7 +517,7 @@ EOT
 
   def test_dump_should_modify_defaults
     max_nesting = JSON.dump_default_options[:max_nesting]
-    JSON.dump([], StringIO.new, 10)
+    JSON.dump([], StringIO.new, 101)
     assert_equal max_nesting, JSON.dump_default_options[:max_nesting]
   end
 
