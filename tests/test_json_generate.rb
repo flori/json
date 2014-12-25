@@ -215,16 +215,16 @@ EOT
   end
 
   def test_gc
-    bignum_too_long_to_embed_as_string = 1234567890123456789012345
-    expect = bignum_too_long_to_embed_as_string.to_s
-    stress, GC.stress = GC.stress, true
+    assert_in_out_err(%w[-rjson --disable-gems], <<-EOS, [], [])
+      bignum_too_long_to_embed_as_string = 1234567890123456789012345
+      expect = bignum_too_long_to_embed_as_string.to_s
+      GC.stress = true
 
-    10.times do |i|
-      tmp = bignum_too_long_to_embed_as_string.to_json
-      assert_equal expect, tmp
-    end
-  ensure
-    GC.stress = stress
+      10.times do |i|
+        tmp = bignum_too_long_to_embed_as_string.to_json
+        raise "'\#{expect}' is expected, but '\#{tmp}'" unless tmp == expect
+      end
+    EOS
   end if GC.respond_to?(:stress=)
 
   def test_configure_using_configure_and_merge

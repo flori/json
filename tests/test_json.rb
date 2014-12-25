@@ -491,6 +491,8 @@ EOT
     assert_equal @hash, JSON.load(stringio)
     assert_equal nil, JSON.load(nil)
     assert_equal nil, JSON.load('')
+  ensure
+    tempfile.close!
   end
 
   def test_load_with_options
@@ -513,12 +515,6 @@ EOT
     output = StringIO.new
     JSON.dump(eval(too_deep), output, 101)
     assert_equal too_deep, output.string
-  end
-
-  def test_dump_should_modify_defaults
-    max_nesting = JSON.dump_default_options[:max_nesting]
-    JSON.dump([], StringIO.new, 101)
-    assert_equal max_nesting, JSON.dump_default_options[:max_nesting]
   end
 
   def test_big_integers
