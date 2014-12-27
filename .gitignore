@@ -12,3 +12,5 @@ Gemfile.lock
 .rbx
 .AppleDouble
 .DS_Store
+*/**/Makefile
+*/**/*.o
