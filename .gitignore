@@ -1,4 +1,5 @@
 .*.sw[pon]
+*.bundle
 coverage
 tags
 pkg
@@ -11,3 +12,5 @@ Gemfile.lock
 .rbx
 .AppleDouble
 .DS_Store
+*/**/Makefile
+*/**/*.o
