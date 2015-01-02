@@ -75,13 +75,13 @@ static ID i_encoding, i_encode;
 static ID i_iconv;
 #endif
 
-static VALUE mJSON, mExt, cParser, eParserError, eNestingError;
+static VALUE mJSON, mExt, cParser, eParserError, eNestingError, eEncodingError;
 static VALUE CNaN, CInfinity, CMinusInfinity;
 
 static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_chr, i_max_nesting, i_allow_nan, i_symbolize_names, i_quirks_mode,
           i_object_class, i_array_class, i_key_p, i_deep_const_get, i_match,
-          i_match_string, i_aset, i_aref, i_leftshift;
+          i_match_string, i_aset, i_aref, i_leftshift, i_standards_mode;
 
 
 #line 110 "parser.rl"
@@ -524,7 +524,7 @@ tr2:
 #line 224 "parser.rl"
 	{
         char *np;
-        if(pe > p + 9 - json->quirks_mode && !strncmp(MinusInfinity, p, 9)) {
+        if(pe > p + 9 - ((json->quirks_mode || json->standards_mode) ? 1 : 0) && !strncmp(MinusInfinity, p, 9)) {
             if (json->allow_nan) {
                 *result = CMinusInfinity;
                 {p = (( p + 10))-1;}
@@ -1564,12 +1564,14 @@ case 7:
  *
  */
 
-static VALUE convert_encoding(VALUE source)
+static VALUE convert_encoding2(VALUE source, int allow_values)
 {
     char *ptr = RSTRING_PTR(source);
     long len = RSTRING_LEN(source);
-    if (len < 2) {
-        rb_raise(eParserError, "A JSON text must at least contain two octets!");
+    if (allow_values) {
+        if (len < 1) rb_raise(eEncodingError, "A JSON text must at least contain one octet!");
+    } else {
+        if (len < 2) rb_raise(eEncodingError, "A JSON text must at least contain two octets!");
     }
 #ifdef HAVE_RUBY_ENCODING_H
     {
@@ -1605,6 +1607,11 @@ static VALUE convert_encoding(VALUE source)
     return source;
 }
 
+static VALUE convert_encoding(VALUE source)
+{
+  return convert_encoding2(source, Qfalse);
+}
+
 /*
  * call-seq: new(source, opts => {})
  *
@@ -1627,7 +1634,7 @@ static VALUE convert_encoding(VALUE source)
  *   the default.
  * * *create_additions*: If set to false, the Parser doesn't create
  *   additions even if a matching class and create_id was found. This option
- *   defaults to false.
+ *   defaults to true.
  * * *object_class*: Defaults to Hash
  * * *array_class*: Defaults to Array
  */
@@ -1676,6 +1683,12 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             } else {
                 json->quirks_mode = 0;
             }
+            tmp = ID2SYM(i_standards_mode);
+            if (option_given_p(opts, tmp)) {
+                json->standards_mode = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
+            } else {
+                json->standards_mode = 0;
+            }
             tmp = ID2SYM(i_create_additions);
             if (option_given_p(opts, tmp)) {
                 json->create_additions = RTEST(rb_hash_aref(opts, tmp));
@@ -1718,7 +1731,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     }
     source = rb_convert_type(source, T_STRING, "String", "to_str");
     if (!json->quirks_mode) {
-      source = convert_encoding(StringValue(source));
+      source = convert_encoding2(StringValue(source), json->standards_mode);
     }
     json->current_nesting = 0;
     StringValue(source);
@@ -1729,7 +1742,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1733 "parser.c"
+#line 1746 "parser.c"
 static const int JSON_start = 1;
 static const int JSON_first_final = 10;
 static const int JSON_error = 0;
@@ -1737,7 +1750,7 @@ static const int JSON_error = 0;
 static const int JSON_en_main = 1;
 
 
-#line 740 "parser.rl"
+#line 753 "parser.rl"
 
 
 static VALUE cParser_parse_strict(VALUE self)
@@ -1748,16 +1761,16 @@ static VALUE cParser_parse_strict(VALUE self)
     GET_PARSER;
 
 
-#line 1752 "parser.c"
+#line 1765 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 750 "parser.rl"
+#line 763 "parser.rl"
     p = json->source;
     pe = p + json->len;
 
-#line 1761 "parser.c"
+#line 1774 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1813,7 +1826,7 @@ case 5:
 		goto st1;
 	goto st5;
 tr3:
-#line 729 "parser.rl"
+#line 742 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1822,7 +1835,7 @@ tr3:
     }
 	goto st10;
 tr4:
-#line 722 "parser.rl"
+#line 735 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1834,7 +1847,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1838 "parser.c"
+#line 1851 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1891,7 +1904,7 @@ case 9:
 	_out: {}
 	}
 
-#line 753 "parser.rl"
+#line 766 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;
@@ -1903,18 +1916,18 @@ case 9:
 
 
 
-#line 1907 "parser.c"
-static const int JSON_quirks_mode_start = 1;
-static const int JSON_quirks_mode_first_final = 10;
-static const int JSON_quirks_mode_error = 0;
+#line 1920 "parser.c"
+static const int JSON_text_start = 1;
+static const int JSON_text_first_final = 10;
+static const int JSON_text_error = 0;
 
-static const int JSON_quirks_mode_en_main = 1;
-
-
-#line 778 "parser.rl"
+static const int JSON_text_en_main = 1;
 
 
-static VALUE cParser_parse_quirks_mode(VALUE self)
+#line 791 "parser.rl"
+
+
+static VALUE cParser_parse_json_text(VALUE self)
 {
     char *p, *pe;
     int cs = EVIL;
@@ -1922,16 +1935,16 @@ static VALUE cParser_parse_quirks_mode(VALUE self)
     GET_PARSER;
 
 
-#line 1926 "parser.c"
+#line 1939 "parser.c"
 	{
-	cs = JSON_quirks_mode_start;
+	cs = JSON_text_start;
 	}
 
-#line 788 "parser.rl"
+#line 801 "parser.rl"
     p = json->source;
     pe = p + json->len;
 
-#line 1935 "parser.c"
+#line 1948 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1965,7 +1978,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 770 "parser.rl"
+#line 783 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1975,7 +1988,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1979 "parser.c"
+#line 1992 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -2064,9 +2077,9 @@ case 9:
 	_out: {}
 	}
 
-#line 791 "parser.rl"
+#line 804 "parser.rl"
 
-    if (cs >= JSON_quirks_mode_first_final && p == pe) {
+    if (cs >= JSON_text_first_final && p == pe) {
         return result;
     } else {
         rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
@@ -2084,8 +2097,8 @@ static VALUE cParser_parse(VALUE self)
 {
   GET_PARSER;
 
-  if (json->quirks_mode) {
-    return cParser_parse_quirks_mode(self);
+  if (json->quirks_mode || json->standards_mode) {
+    return cParser_parse_json_text(self);
   } else {
     return cParser_parse_strict(self);
   }
@@ -2144,6 +2157,16 @@ static VALUE cParser_quirks_mode_p(VALUE self)
     return json->quirks_mode ? Qtrue : Qfalse;
 }
 
+/*
+ * call-seq: standards_mode?()
+ *
+ * Returns a true, if this parser is in standards_mode, false otherwise.
+ */
+static VALUE cParser_standards_mode_p(VALUE self)
+{
+    GET_PARSER;
+    return json->standards_mode ? Qtrue : Qfalse;
+}
 
 void Init_parser()
 {
@@ -2153,11 +2176,13 @@ void Init_parser()
     cParser = rb_define_class_under(mExt, "Parser", rb_cObject);
     eParserError = rb_path2class("JSON::ParserError");
     eNestingError = rb_path2class("JSON::NestingError");
+    eEncodingError = rb_path2class("JSON::EncodingError");
     rb_define_alloc_func(cParser, cJSON_parser_s_allocate);
     rb_define_method(cParser, "initialize", cParser_initialize, -1);
     rb_define_method(cParser, "parse", cParser_parse, 0);
     rb_define_method(cParser, "source", cParser_source, 0);
     rb_define_method(cParser, "quirks_mode?", cParser_quirks_mode_p, 0);
+    rb_define_method(cParser, "standards_mode?", cParser_standards_mode_p, 0);
 
     CNaN = rb_const_get(mJSON, rb_intern("NaN"));
     CInfinity = rb_const_get(mJSON, rb_intern("Infinity"));
@@ -2172,6 +2197,7 @@ void Init_parser()
     i_allow_nan = rb_intern("allow_nan");
     i_symbolize_names = rb_intern("symbolize_names");
     i_quirks_mode = rb_intern("quirks_mode");
+    i_standards_mode = rb_intern("standards_mode");
     i_object_class = rb_intern("object_class");
     i_array_class = rb_intern("array_class");
     i_match = rb_intern("match");

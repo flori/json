@@ -53,6 +53,7 @@ EOT
     assert_equal({"1"=>2}, parsed_json)
     assert_raise(GeneratorError) { generate(666) }
     assert_equal '666', generate(666, :quirks_mode => true)
+    assert_equal '666', generate(666, :standards_mode => true)
   end
 
   def test_generate_pretty
@@ -71,6 +72,7 @@ EOT
     assert_equal({"1"=>2}, parsed_json)
     assert_raise(GeneratorError) { pretty_generate(666) }
     assert_equal '666', pretty_generate(666, :quirks_mode => true)
+    assert_equal '666', pretty_generate(666, :standards_mode => true)
   end
 
   def test_fast_generate
@@ -84,6 +86,7 @@ EOT
     assert_equal({"1"=>2}, parsed_json)
     assert_raise(GeneratorError) { fast_generate(666) }
     assert_equal '666', fast_generate(666, :quirks_mode => true)
+    assert_equal '666', fast_generate(666, :standards_mode => true)
   end
 
   def test_own_state
@@ -99,6 +102,9 @@ EOT
     assert_raise(GeneratorError) { generate(666, state) }
     state.quirks_mode = true
     assert state.quirks_mode?
+    assert_equal '666', generate(666, state)
+    state.standards_mode = true
+    assert state.standards_mode?
     assert_equal '666', generate(666, state)
   end
 
@@ -128,6 +134,7 @@ EOT
       :ascii_only            => false,
       :buffer_initial_length => 1024,
       :quirks_mode           => false,
+      :standards_mode        => false,
       :depth                 => 0,
       :indent                => "  ",
       :max_nesting           => 100,
@@ -145,6 +152,7 @@ EOT
       :ascii_only            => false,
       :buffer_initial_length => 1024,
       :quirks_mode           => false,
+      :standards_mode        => false,
       :depth                 => 0,
       :indent                => "",
       :max_nesting           => 100,
@@ -162,6 +170,7 @@ EOT
       :ascii_only            => false,
       :buffer_initial_length => 1024,
       :quirks_mode           => false,
+      :standards_mode        => false,
       :depth                 => 0,
       :indent                => "",
       :max_nesting           => 0,

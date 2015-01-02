@@ -84,6 +84,11 @@ public class GeneratorState extends RubyObject {
     private boolean quirksMode = DEFAULT_QUIRKS_MODE;
     static final boolean DEFAULT_QUIRKS_MODE = false;
     /**
+     * If set to <code>true</code> JSON is parsed according to rfc7159.
+     */
+    private boolean standardsMode = DEFAULT_STANDARDS_MODE;
+    static final boolean DEFAULT_STANDARDS_MODE = false;
+    /**
      * The initial buffer length of this state. (This isn't really used on all
      * non-C implementations.)
      */
@@ -195,6 +200,7 @@ public class GeneratorState extends RubyObject {
         this.allowNaN = orig.allowNaN;
         this.asciiOnly = orig.asciiOnly;
         this.quirksMode = orig.quirksMode;
+        this.standardsMode = orig.standardsMode;
         this.bufferInitialLength = orig.bufferInitialLength;
         this.depth = orig.depth;
         return this;
@@ -208,7 +214,7 @@ public class GeneratorState extends RubyObject {
     @JRubyMethod
     public IRubyObject generate(ThreadContext context, IRubyObject obj) {
         RubyString result = Generator.generateJson(context, obj, this);
-        if (!quirksMode && !objectOrArrayLiteral(result)) {
+        if (!quirksMode && !standardsMode && !objectOrArrayLiteral(result)) {
             throw Utils.newException(context, Utils.M_GENERATOR_ERROR,
                     "only generation of JSON objects or arrays allowed");
         }
@@ -410,6 +416,27 @@ public class GeneratorState extends RubyObject {
         return quirks_mode.getRuntime().newBoolean(quirksMode);
     }
 
+    @JRubyMethod(name="quirks_mode?")
+    public RubyBoolean quirks_mode_p(ThreadContext context) {
+        return context.getRuntime().newBoolean(quirksMode);
+    }
+
+    @JRubyMethod(name="standards_mode")
+    public RubyBoolean standards_mode_get(ThreadContext context) {
+        return context.getRuntime().newBoolean(standardsMode);
+    }
+
+    @JRubyMethod(name="standards_mode=")
+    public IRubyObject standards_mode_set(IRubyObject standards_mode) {
+        standardsMode = standards_mode.isTrue();
+        return standards_mode.getRuntime().newBoolean(standardsMode);
+    }
+
+    @JRubyMethod(name="standards_mode?")
+    public RubyBoolean standards_mode_p(ThreadContext context) {
+        return context.getRuntime().newBoolean(standardsMode);
+    }
+
     @JRubyMethod(name="buffer_initial_length")
     public RubyInteger buffer_initial_length_get(ThreadContext context) {
         return context.getRuntime().newFixnum(bufferInitialLength);
@@ -420,11 +447,6 @@ public class GeneratorState extends RubyObject {
         int newLength = RubyNumeric.fix2int(buffer_initial_length);
         if (newLength > 0) bufferInitialLength = newLength;
         return buffer_initial_length;
-    }
-
-    @JRubyMethod(name="quirks_mode?")
-    public RubyBoolean quirks_mode_p(ThreadContext context) {
-        return context.getRuntime().newBoolean(quirksMode);
     }
 
     public int getDepth() {
@@ -482,6 +504,7 @@ public class GeneratorState extends RubyObject {
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
         quirksMode = opts.getBool("quirks_mode", DEFAULT_QUIRKS_MODE);
+        standardsMode = opts.getBool("standards_mode", DEFAULT_STANDARDS_MODE);
         bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
 
         depth = opts.getInt("depth", 0);
@@ -509,6 +532,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("allow_nan"), allow_nan_p(context));
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
         result.op_aset(context, runtime.newSymbol("quirks_mode"), quirks_mode_p(context));
+        result.op_aset(context, runtime.newSymbol("standards_mode"), standards_mode_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));

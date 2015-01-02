@@ -156,6 +156,8 @@ module JSON
         #   encountered. This options defaults to false.
         # * *quirks_mode*: Enables quirks_mode for parser, that is for example
         #   generating single JSON values instead of documents is possible.
+        # * *standards_mode*: Enables JSON parsing according to rfc7159 (rather
+        #   than rfc4627 which is the default)
         def initialize(opts = {})
           @indent                = ''
           @space                 = ''
@@ -165,6 +167,7 @@ module JSON
           @allow_nan             = false
           @ascii_only            = false
           @quirks_mode           = false
+          @standards_mode        = false
           @buffer_initial_length = 1024
           configure opts
         end
@@ -193,6 +196,10 @@ module JSON
         # If this attribute is set to true, quirks mode is enabled, otherwise
         # it's disabled.
         attr_accessor :quirks_mode
+
+        # This attribute is true if rfc 7159 standards mode is enabled,
+        # otherwise it's disabled
+        attr_accessor :standards_mode
 
         # :stopdoc:
         attr_reader :buffer_initial_length
@@ -238,6 +245,11 @@ module JSON
           @quirks_mode
         end
 
+        # Returns true, if rfc7159 standards mode is enabled. Otherwise returns false.
+        def standards_mode?
+          @standards_mode
+        end
+
         # Configure this State instance with the Hash _opts_, and return
         # itself.
         def configure(opts)
@@ -260,6 +272,7 @@ module JSON
           @ascii_only            = opts[:ascii_only] if opts.key?(:ascii_only)
           @depth                 = opts[:depth] || 0
           @quirks_mode           = opts[:quirks_mode] if opts.key?(:quirks_mode)
+          @standards_mode        = opts[:standards_mode] if opts.key?(:standards_mode)
           @buffer_initial_length ||= opts[:buffer_initial_length]
 
           if !opts.key?(:max_nesting) # defaults to 100
@@ -293,7 +306,7 @@ module JSON
           result = obj.to_json(self)
           JSON.valid_utf8?(result) or raise GeneratorError,
             "source sequence #{result.inspect} is illegal/malformed utf-8"
-          unless @quirks_mode
+          unless @quirks_mode || @standards_mode
             unless result =~ /\A\s*\[/ && result =~ /\]\s*\Z/ ||
               result =~ /\A\s*\{/ && result =~ /\}\s*\Z/
             then

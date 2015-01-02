@@ -39,6 +39,7 @@ typedef struct JSON_ParserStruct {
     int parsing_name;
     int symbolize_names;
     int quirks_mode;
+    int standards_mode;
     VALUE object_class;
     VALUE array_class;
     int create_additions;

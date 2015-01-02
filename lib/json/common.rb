@@ -114,6 +114,9 @@ module JSON
   # This exception is raised if a parser error occurs.
   class ParserError < JSONError; end
 
+  # This exception is raised if the data cannot be encoded into the correct format
+  class EncodingError < ParserError; end
+
   # This exception is raised if the nesting of parsed data structures is too
   # deep.
   class NestingError < ParserError; end
@@ -296,12 +299,14 @@ module JSON
     #  :max_nesting: false
     #  :allow_nan:   true
     #  :quirks_mode: true
+    #  :standards_mode: false
     attr_accessor :load_default_options
   end
   self.load_default_options = {
     :max_nesting      => false,
     :allow_nan        => true,
     :quirks_mode      => true,
+    :standards_mode   => false,
     :create_additions => true,
   }
 
@@ -358,12 +363,14 @@ module JSON
     #  :max_nesting: false
     #  :allow_nan:   true
     #  :quirks_mode: true
+    #  :standards_mode: false
     attr_accessor :dump_default_options
   end
   self.dump_default_options = {
     :max_nesting => false,
     :allow_nan   => true,
     :quirks_mode => true,
+    :standards_mode => false,
   }
 
   # Dumps _obj_ as a JSON string, i.e. calls generate on the object and returns

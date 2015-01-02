@@ -70,8 +70,11 @@ module JSON
       # * *array_class*: Defaults to Array
       # * *quirks_mode*: Enables quirks_mode for parser, that is for example
       #   parsing single JSON values instead of documents is possible.
+      # * *standards_mode*: Enables JSON parsing according to rfc7159 (rather
+      #   than rfc4627 which is the default)
       def initialize(source, opts = {})
         opts ||= {}
+        @standards_mode = opts[:standards_mode]
         unless @quirks_mode = opts[:quirks_mode]
           source = convert_encoding source
         end
@@ -102,6 +105,10 @@ module JSON
         !!@quirks_mode
       end
 
+      def standards_mode?
+        !!@standards_mode
+      end
+
       def reset
         super
         @current_nesting = 0
@@ -112,7 +119,7 @@ module JSON
       def parse
         reset
         obj = nil
-        if @quirks_mode
+        if @quirks_mode || @standards_mode
           while !eos? && skip(IGNORE)
           end
           if eos?
@@ -150,6 +157,11 @@ module JSON
           source = source.to_str
         else
           raise TypeError, "#{source.inspect} is not like a string"
+        end
+        if @standards_mode
+          raise EncodingError, "A JSON text must at least contain one octet!" if source.length < 1
+        else
+          raise EncodingError, "A JSON text must at least contain two octets!" if source.length < 2
         end
         if defined?(::Encoding)
           if source.encoding == ::Encoding::ASCII_8BIT
