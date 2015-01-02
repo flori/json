@@ -73,6 +73,12 @@ static void JSON_mark(void *json);
 static void JSON_free(void *json);
 static VALUE cJSON_parser_s_allocate(VALUE klass);
 static VALUE cParser_source(VALUE self);
+#ifdef TypedData_Wrap_Struct
 static const rb_data_type_t JSON_Parser_type;
+#define NEW_TYPEDDATA_WRAPPER 1
+#else
+#define TypedData_Wrap_Struct(klass, ignore, json) Data_Wrap_Struct(klass, JSON_mark, JSON_free, json)
+#define TypedData_Get_Struct(self, JSON_Parser, ignore, json) Data_Get_Struct(self, JSON_Parser, json)
+#endif
 
 #endif

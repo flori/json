@@ -2123,6 +2123,7 @@ static size_t JSON_memsize(const void *ptr)
     return sizeof(*json) + FBUFFER_CAPA(json->fbuffer);
 }
 
+#ifdef NEW_TYPEDDATA_WRAPPER
 static const rb_data_type_t JSON_Parser_type = {
     "JSON/Parser",
     {JSON_mark, JSON_free, JSON_memsize,},
@@ -2131,6 +2132,7 @@ static const rb_data_type_t JSON_Parser_type = {
     RUBY_TYPED_FREE_IMMEDIATELY,
 #endif
 };
+#endif
 
 static VALUE cJSON_parser_s_allocate(VALUE klass)
 {

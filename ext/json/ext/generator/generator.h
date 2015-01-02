@@ -147,6 +147,12 @@ static VALUE cState_ascii_only_p(VALUE self);
 static VALUE cState_depth(VALUE self);
 static VALUE cState_depth_set(VALUE self, VALUE depth);
 static FBuffer *cState_prepare_buffer(VALUE self);
+#ifdef TypedData_Wrap_Struct
 static const rb_data_type_t JSON_Generator_State_type;
+#define NEW_TYPEDDATA_WRAPPER 1
+#else
+#define TypedData_Wrap_Struct(klass, ignore, json) Data_Wrap_Struct(klass, NULL, State_free, json)
+#define TypedData_Get_Struct(self, JSON_Generator_State, ignore, json) Data_Get_Struct(self, JSON_Generator_State, json)
+#endif
 
 #endif

@@ -515,6 +515,7 @@ static size_t State_memsize(const void *ptr)
     return size;
 }
 
+#ifdef NEW_TYPEDDATA_WRAPPER
 static const rb_data_type_t JSON_Generator_State_type = {
     "JSON/Generator/State",
     {NULL, State_free, State_memsize,},
@@ -523,6 +524,7 @@ static const rb_data_type_t JSON_Generator_State_type = {
     RUBY_TYPED_FREE_IMMEDIATELY,
 #endif
 };
+#endif
 
 static JSON_Generator_State *State_allocate(void)
 {
