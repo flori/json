@@ -1,3 +1,12 @@
+2015-01-08 (1.8.2)
+  * Some performance improvements by Vipul A M <vipulnsward@gmail.com>.
+  * Fix by Jason R. Clark <jclark@newrelic.com> to avoid mutation of
+    JSON.dump_default_options.
+  * More tests by Michael Mac-Vicar <mmacvicar@gmail.com> and fixing
+    space_before accessor in generator.
+  * Performance on Jruby improvemed by Ben Browning <bbrownin@redhat.com>.
+  * Some fixes to be compatible with the new Ruby 2.2 by Zachary Scott <e@zzak.io>
+    and SHIBATA Hiroshi <hsbt@ruby-lang.org>.
 2013-05-13 (1.8.1)
   * Remove Rubinius exception since transcoding should be working now.
 2013-05-13 (1.8.0)
