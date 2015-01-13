@@ -2094,8 +2094,7 @@ static VALUE cParser_parse(VALUE self)
 
 static JSON_Parser *JSON_allocate(void)
 {
-    JSON_Parser *json = ALLOC(JSON_Parser);
-    MEMZERO(json, JSON_Parser, 1);
+    JSON_Parser *json = ZALLOC(JSON_Parser);
     json->fbuffer = fbuffer_alloc(0);
     return json;
 }

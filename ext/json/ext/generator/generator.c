@@ -528,8 +528,7 @@ static const rb_data_type_t JSON_Generator_State_type = {
 
 static JSON_Generator_State *State_allocate(void)
 {
-    JSON_Generator_State *state = ALLOC(JSON_Generator_State);
-    MEMZERO(state, JSON_Generator_State, 1);
+    JSON_Generator_State *state = ZALLOC(JSON_Generator_State);
     return state;
 }
 
