@@ -34,6 +34,7 @@ module JSON
     "\x1f" => '\u001f',
     '"'   =>  '\"',
     '\\'  =>  '\\\\',
+    '/'  =>  '\\/',
   } # :nodoc:
 
   # Convert a UTF8 encoded Ruby string _string_ to a JSON string, encoded with
@@ -42,7 +43,7 @@ module JSON
     def utf8_to_json(string) # :nodoc:
       string = string.dup
       string.force_encoding(::Encoding::ASCII_8BIT)
-      string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub!(/[\/"\\\x0-\x1f]/) { MAP[$&] }
       string.force_encoding(::Encoding::UTF_8)
       string
     end
@@ -50,7 +51,7 @@ module JSON
     def utf8_to_json_ascii(string) # :nodoc:
       string = string.dup
       string.force_encoding(::Encoding::ASCII_8BIT)
-      string.gsub!(/["\\\x0-\x1f]/n) { MAP[$&] }
+      string.gsub!(/[\/"\\\x0-\x1f]/n) { MAP[$&] }
       string.gsub!(/(
                       (?:
                         [\xc2-\xdf][\x80-\xbf]    |
@@ -79,11 +80,11 @@ module JSON
     module_function :valid_utf8?
   else
     def utf8_to_json(string) # :nodoc:
-      string.gsub(/["\\\x0-\x1f]/n) { MAP[$&] }
+      string.gsub(/[\/"\\\x0-\x1f]/n) { MAP[$&] }
     end
 
     def utf8_to_json_ascii(string) # :nodoc:
-      string = string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
+      string = string.gsub(/[\/"\\\x0-\x1f]/) { MAP[$&] }
       string.gsub!(/(
                       (?:
                         [\xc2-\xdf][\x80-\xbf]    |

@@ -171,6 +171,9 @@ static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
                         case '\\':
                             fbuffer_append(buffer, "\\\\", 2);
                             break;
+                        case '/':
+                            fbuffer_append(buffer, "\\/", 2);
+                            break;
                         case '"':
                             fbuffer_append(buffer, "\\\"", 2);
                             break;
@@ -266,6 +269,10 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string)
             switch (c) {
                 case '\\':
                     escape = "\\\\";
+                    escape_len = 2;
+                    break;
+                case '/':
+                    escape = "\\/";
                     escape_len = 2;
                     break;
                 case '"':

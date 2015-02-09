@@ -409,10 +409,10 @@ EOT
     assert_equal json, JSON.generate(data)
     assert_equal data, JSON.parse(json)
     #
-    json = '["/"]'
-    data = JSON.parse(json)
-    assert_equal ['/'], data
+    data = [ '/' ]
+    json = '["\/"]'
     assert_equal json, JSON.generate(data)
+    assert_equal data, JSON.parse(json)
     #
     json = '["\""]'
     data = JSON.parse(json)
