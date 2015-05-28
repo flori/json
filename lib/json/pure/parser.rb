@@ -143,6 +143,12 @@ module JSON
         obj
       end
 
+      if defined?(::Encoding)
+        def peek(*)
+          super.force_encoding(::Encoding::UTF_8)
+        end
+      end
+
       private
 
       def convert_encoding(source)
