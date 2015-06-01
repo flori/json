@@ -1,3 +1,5 @@
+2015-06-01 (1.8.3)
+  * Fix potential memory leak, thx to nobu.
 2015-01-08 (1.8.2)
   * Some performance improvements by Vipul A M <vipulnsward@gmail.com>.
   * Fix by Jason R. Clark <jclark@newrelic.com> to avoid mutation of
