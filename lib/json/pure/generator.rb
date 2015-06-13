@@ -286,8 +286,9 @@ module JSON
 
         alias to_hash to_h
 
-        # Generates a valid JSON document from object +obj+ and returns the
-        # result. If no valid JSON document can be created this method raises a
+        # Generates a valid JSON document from object +obj+ and
+        # returns the result. If no valid JSON document can be
+        # created this method raises a
         # GeneratorError exception.
         def generate(obj)
           result = obj.to_json(self)

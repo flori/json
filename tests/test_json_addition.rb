@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 # -*- coding:utf-8 -*-
 
-require 'test/unit'
-require File.join(File.dirname(__FILE__), 'setup_variant')
+require 'test_helper'
 require 'json/add/core'
 require 'json/add/complex'
 require 'json/add/rational'

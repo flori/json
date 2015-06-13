@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require 'test/unit'
-require File.join(File.dirname(__FILE__), 'setup_variant')
+require 'test_helper'
 require 'stringio'
 require 'tempfile'
 require 'ostruct'

@@ -178,7 +178,7 @@ task :test_pure => [ :clean, :do_test_pure ]
 
 UndocumentedTestTask.new do |t|
   t.name = 'do_test_pure'
-  t.libs << 'lib'
+  t.libs << 'lib' << 'tests'
   t.test_files = FileList['tests/test_*.rb']
   t.verbose = true
   t.options = '-v'
@@ -261,7 +261,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
-    t.libs << 'lib'
+    t.libs << 'lib' << 'tests'
     t.test_files = FileList['tests/test_*.rb']
     t.verbose = true
     t.options = '-v'
@@ -335,7 +335,7 @@ else
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
-    t.libs << 'ext' << 'lib'
+    t.libs << 'ext' << 'lib' << 'tests'
     t.test_files = FileList['tests/test_*.rb']
     t.verbose = true
     t.options = '-v'
