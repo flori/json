@@ -294,13 +294,6 @@ module JSON
           result = obj.to_json(self)
           JSON.valid_utf8?(result) or raise GeneratorError,
             "source sequence #{result.inspect} is illegal/malformed utf-8"
-          unless @quirks_mode
-            unless result =~ /\A\s*\[/ && result =~ /\]\s*\Z/ ||
-              result =~ /\A\s*\{/ && result =~ /\}\s*\Z/
-            then
-              raise GeneratorError, "only generation of JSON objects or arrays allowed"
-            end
-          end
           result
         end
 

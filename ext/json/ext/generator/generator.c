@@ -915,21 +915,6 @@ static VALUE cState_partial_generate(VALUE self, VALUE obj)
 }
 
 /*
- * This function returns true if string is either a JSON array or JSON object.
- * It might suffer from false positives, e. g. syntactically incorrect JSON in
- * the string or certain UTF-8 characters on the right hand side.
- */
-static int isArrayOrObject(VALUE string)
-{
-    long string_len = RSTRING_LEN(string);
-    char *p = RSTRING_PTR(string), *q = p + string_len - 1;
-    if (string_len < 2) return 0;
-    for (; p < q && isspace((unsigned char)*p); p++);
-    for (; q > p && isspace((unsigned char)*q); q--);
-    return (*p == '[' && *q == ']') || (*p == '{' && *q == '}');
-}
-
-/*
  * call-seq: generate(obj)
  *
  * Generates a valid JSON document from object +obj+ and returns the
@@ -940,9 +925,6 @@ static VALUE cState_generate(VALUE self, VALUE obj)
 {
     VALUE result = cState_partial_generate(self, obj);
     GET_STATE(self);
-    if (!state->quirks_mode && !isArrayOrObject(result)) {
-        rb_raise(eGeneratorError, "only generation of JSON objects or arrays allowed");
-    }
     return result;
 }
 

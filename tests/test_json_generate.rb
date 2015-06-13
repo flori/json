@@ -50,8 +50,7 @@ EOT
     assert_equal('{"1":2}', json)
     parsed_json = parse(json)
     assert_equal({"1"=>2}, parsed_json)
-    assert_raise(GeneratorError) { generate(666) }
-    assert_equal '666', generate(666, :quirks_mode => true)
+    assert_equal '666', generate(666)
   end
 
   def test_generate_pretty
@@ -68,8 +67,7 @@ EOT
 EOT
     parsed_json = parse(json)
     assert_equal({"1"=>2}, parsed_json)
-    assert_raise(GeneratorError) { pretty_generate(666) }
-    assert_equal '666', pretty_generate(666, :quirks_mode => true)
+    assert_equal '666', pretty_generate(666)
   end
 
   def test_generate_custom
@@ -94,8 +92,7 @@ EOT
     assert_equal('{"1":2}', json)
     parsed_json = parse(json)
     assert_equal({"1"=>2}, parsed_json)
-    assert_raise(GeneratorError) { fast_generate(666) }
-    assert_equal '666', fast_generate(666, :quirks_mode => true)
+    assert_equal '666', fast_generate(666)
   end
 
   def test_own_state
@@ -108,9 +105,6 @@ EOT
     assert_equal('{"1":2}', json)
     parsed_json = parse(json)
     assert_equal({"1"=>2}, parsed_json)
-    assert_raise(GeneratorError) { generate(666, state) }
-    state.quirks_mode = true
-    assert state.quirks_mode?
     assert_equal '666', generate(666, state)
   end
 

@@ -208,43 +208,11 @@ public class GeneratorState extends RubyObject {
     @JRubyMethod
     public IRubyObject generate(ThreadContext context, IRubyObject obj) {
         RubyString result = Generator.generateJson(context, obj, this);
-        if (!quirksMode && !objectOrArrayLiteral(result)) {
-            throw Utils.newException(context, Utils.M_GENERATOR_ERROR,
-                    "only generation of JSON objects or arrays allowed");
-        }
         RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
         if (info.encodingsSupported()) {
             result.force_encoding(context, info.utf8.get());
         }
         return result;
-    }
-
-    /**
-     * Ensures the given string is in the form "[...]" or "{...}", being
-     * possibly surrounded by white space.
-     * The string's encoding must be ASCII-compatible.
-     * @param value
-     * @return
-     */
-    private static boolean objectOrArrayLiteral(RubyString value) {
-        ByteList bl = value.getByteList();
-        int len = bl.length();
-
-        for (int pos = 0; pos < len - 1; pos++) {
-            int b = bl.get(pos);
-            if (Character.isWhitespace(b)) continue;
-
-            // match the opening brace
-            switch (b) {
-            case '[':
-                return matchClosingBrace(bl, pos, len, ']');
-            case '{':
-                return matchClosingBrace(bl, pos, len, '}');
-            default:
-                return false;
-            }
-        }
-        return false;
     }
 
     private static boolean matchClosingBrace(ByteList bl, int pos, int len,
