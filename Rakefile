@@ -87,7 +87,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.files = PKG_FILES
 
     s.require_path = 'lib'
-    s.add_development_dependency 'permutation'
     s.add_development_dependency 'sdoc', '~>0.3.16'
     s.add_development_dependency 'rake', '~>0.9.2'
 
@@ -125,7 +124,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.extensions = FileList['ext/**/extconf.rb']
 
     s.require_path = 'lib'
-    s.add_development_dependency 'permutation'
     s.add_development_dependency 'sdoc', '~>0.3.16'
 
     s.extra_rdoc_files << 'README.rdoc'
@@ -173,8 +171,12 @@ EOT
   end
 end
 
+task :check_env do
+  ENV.key?('JSON') or fail "JSON env var is required"
+end
+
 desc "Testing library (pure ruby)"
-task :test_pure => [ :clean, :do_test_pure ]
+task :test_pure => [ :clean, :check_env, :do_test_pure ]
 
 UndocumentedTestTask.new do |t|
   t.name = 'do_test_pure'
@@ -257,7 +259,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   end
 
   desc "Testing library (jruby)"
-  task :test_ext => [ :create_jar, :do_test_ext ]
+  task :test_ext => [ :create_jar, :check_env, :do_test_ext ]
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
@@ -331,7 +333,7 @@ else
   end
 
   desc "Testing library (extension)"
-  task :test_ext => [ :compile, :do_test_ext ]
+  task :test_ext => [ :compile, :check_env, :do_test_ext ]
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'

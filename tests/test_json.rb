@@ -6,20 +6,6 @@ require 'stringio'
 require 'tempfile'
 require 'ostruct'
 
-unless Array.method_defined?(:permutation)
-  begin
-    require 'enumerator'
-    require 'permutation'
-    class Array
-      def permutation
-        Permutation.for(self).to_enum.map { |x| x.project }
-      end
-    end
-  rescue LoadError
-    warn "Skipping permutation tests."
-  end
-end
-
 class TestJSON < Test::Unit::TestCase
   include JSON
 
