@@ -68,9 +68,9 @@ static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
 }
 
 #ifdef HAVE_RUBY_ENCODING_H
-static VALUE CEncoding_ASCII_8BIT, CEncoding_UTF_8, CEncoding_UTF_16BE,
-    CEncoding_UTF_16LE, CEncoding_UTF_32BE, CEncoding_UTF_32LE;
-static ID i_encoding, i_encode;
+static VALUE CEncoding_UTF_8;
+
+static ID i_encode;
 #else
 static ID i_iconv;
 #endif
@@ -89,11 +89,11 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
 
 
 #line 92 "parser.c"
-enum {JSON_object_start = 1};
-enum {JSON_object_first_final = 27};
-enum {JSON_object_error = 0};
+static const int JSON_object_start = 1;
+static const int JSON_object_first_final = 27;
+static const int JSON_object_error = 0;
 
-enum {JSON_object_en_main = 1};
+static const int JSON_object_en_main = 1;
 
 
 #line 151 "parser.rl"
@@ -467,11 +467,11 @@ case 26:
 
 
 #line 470 "parser.c"
-enum {JSON_value_start = 1};
-enum {JSON_value_first_final = 21};
-enum {JSON_value_error = 0};
+static const int JSON_value_start = 1;
+static const int JSON_value_first_final = 21;
+static const int JSON_value_error = 0;
 
-enum {JSON_value_en_main = 1};
+static const int JSON_value_en_main = 1;
 
 
 #line 271 "parser.rl"
@@ -776,11 +776,11 @@ case 20:
 
 
 #line 779 "parser.c"
-enum {JSON_integer_start = 1};
-enum {JSON_integer_first_final = 3};
-enum {JSON_integer_error = 0};
+static const int JSON_integer_start = 1;
+static const int JSON_integer_first_final = 3;
+static const int JSON_integer_error = 0;
 
-enum {JSON_integer_en_main = 1};
+static const int JSON_integer_en_main = 1;
 
 
 #line 295 "parser.rl"
@@ -875,11 +875,11 @@ case 5:
 
 
 #line 878 "parser.c"
-enum {JSON_float_start = 1};
-enum {JSON_float_first_final = 8};
-enum {JSON_float_error = 0};
+static const int JSON_float_start = 1;
+static const int JSON_float_first_final = 8;
+static const int JSON_float_error = 0;
 
-enum {JSON_float_en_main = 1};
+static const int JSON_float_en_main = 1;
 
 
 #line 329 "parser.rl"
@@ -1041,11 +1041,11 @@ case 7:
 
 
 #line 1044 "parser.c"
-enum {JSON_array_start = 1};
-enum {JSON_array_first_final = 17};
-enum {JSON_array_error = 0};
+static const int JSON_array_start = 1;
+static const int JSON_array_first_final = 17;
+static const int JSON_array_error = 0;
 
-enum {JSON_array_en_main = 1};
+static const int JSON_array_en_main = 1;
 
 
 #line 381 "parser.rl"
@@ -1373,11 +1373,11 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 
 
 #line 1376 "parser.c"
-enum {JSON_string_start = 1};
-enum {JSON_string_first_final = 8};
-enum {JSON_string_error = 0};
+static const int JSON_string_start = 1;
+static const int JSON_string_first_final = 8;
+static const int JSON_string_error = 0;
 
-enum {JSON_string_en_main = 1};
+static const int JSON_string_en_main = 1;
 
 
 #line 494 "parser.rl"
@@ -1568,38 +1568,9 @@ static VALUE convert_encoding(VALUE source)
 {
     char *ptr = RSTRING_PTR(source);
     long len = RSTRING_LEN(source);
-    if (len < 2) {
-        rb_raise(eParserError, "A JSON text must at least contain two octets!");
-    }
 #ifdef HAVE_RUBY_ENCODING_H
     {
-        VALUE encoding = rb_funcall(source, i_encoding, 0);
-        if (encoding == CEncoding_ASCII_8BIT) {
-            if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32BE);
-            } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16BE);
-            } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_32LE);
-            } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
-                source = rb_funcall(source, i_encode, 2, CEncoding_UTF_8, CEncoding_UTF_16LE);
-            } else {
-                source = rb_str_dup(source);
-                FORCE_UTF8(source);
-            }
-        } else {
-            source = rb_funcall(source, i_encode, 1, CEncoding_UTF_8);
-        }
-    }
-#else
-    if (len >= 4 &&  ptr[0] == 0 && ptr[1] == 0 && ptr[2] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32be"), source);
-    } else if (len >= 4 && ptr[0] == 0 && ptr[2] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16be"), source);
-    } else if (len >= 4 && ptr[1] == 0 && ptr[2] == 0 && ptr[3] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-32le"), source);
-    } else if (len >= 4 && ptr[1] == 0 && ptr[3] == 0) {
-      source = rb_funcall(mJSON, i_iconv, 3, rb_str_new2("utf-8"), rb_str_new2("utf-16le"), source);
+        source = rb_funcall(source, i_encode, 1, CEncoding_UTF_8);
     }
 #endif
     return source;
@@ -1729,15 +1700,15 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1733 "parser.c"
-enum {JSON_start = 1};
-enum {JSON_first_final = 10};
-enum {JSON_error = 0};
+#line 1704 "parser.c"
+static const int JSON_start = 1;
+static const int JSON_first_final = 10;
+static const int JSON_error = 0;
 
-enum {JSON_en_main = 1};
+static const int JSON_en_main = 1;
 
 
-#line 740 "parser.rl"
+#line 711 "parser.rl"
 
 
 static VALUE cParser_parse_strict(VALUE self)
@@ -1748,16 +1719,16 @@ static VALUE cParser_parse_strict(VALUE self)
     GET_PARSER;
 
 
-#line 1752 "parser.c"
+#line 1723 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 750 "parser.rl"
+#line 721 "parser.rl"
     p = json->source;
     pe = p + json->len;
 
-#line 1761 "parser.c"
+#line 1732 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1813,7 +1784,7 @@ case 5:
 		goto st1;
 	goto st5;
 tr3:
-#line 729 "parser.rl"
+#line 700 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1822,7 +1793,7 @@ tr3:
     }
 	goto st10;
 tr4:
-#line 722 "parser.rl"
+#line 693 "parser.rl"
 	{
         char *np;
         json->current_nesting = 1;
@@ -1834,7 +1805,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1838 "parser.c"
+#line 1809 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1891,7 +1862,7 @@ case 9:
 	_out: {}
 	}
 
-#line 753 "parser.rl"
+#line 724 "parser.rl"
 
     if (cs >= JSON_first_final && p == pe) {
         return result;
@@ -1903,15 +1874,15 @@ case 9:
 
 
 
-#line 1907 "parser.c"
-enum {JSON_quirks_mode_start = 1};
-enum {JSON_quirks_mode_first_final = 10};
-enum {JSON_quirks_mode_error = 0};
+#line 1878 "parser.c"
+static const int JSON_quirks_mode_start = 1;
+static const int JSON_quirks_mode_first_final = 10;
+static const int JSON_quirks_mode_error = 0;
 
-enum {JSON_quirks_mode_en_main = 1};
+static const int JSON_quirks_mode_en_main = 1;
 
 
-#line 778 "parser.rl"
+#line 749 "parser.rl"
 
 
 static VALUE cParser_parse_quirks_mode(VALUE self)
@@ -1922,16 +1893,16 @@ static VALUE cParser_parse_quirks_mode(VALUE self)
     GET_PARSER;
 
 
-#line 1926 "parser.c"
+#line 1897 "parser.c"
 	{
 	cs = JSON_quirks_mode_start;
 	}
 
-#line 788 "parser.rl"
+#line 759 "parser.rl"
     p = json->source;
     pe = p + json->len;
 
-#line 1935 "parser.c"
+#line 1906 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1965,7 +1936,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 770 "parser.rl"
+#line 741 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1975,7 +1946,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1979 "parser.c"
+#line 1950 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -2064,7 +2035,7 @@ case 9:
 	_out: {}
 	}
 
-#line 791 "parser.rl"
+#line 762 "parser.rl"
 
     if (cs >= JSON_quirks_mode_first_final && p == pe) {
         return result;
@@ -2195,12 +2166,6 @@ void Init_parser(void)
     i_leftshift = rb_intern("<<");
 #ifdef HAVE_RUBY_ENCODING_H
     CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
-    CEncoding_UTF_16BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16be"));
-    CEncoding_UTF_16LE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-16le"));
-    CEncoding_UTF_32BE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-32be"));
-    CEncoding_UTF_32LE = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-32le"));
-    CEncoding_ASCII_8BIT = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("ascii-8bit"));
-    i_encoding = rb_intern("encoding");
     i_encode = rb_intern("encode");
 #else
     i_iconv = rb_intern("iconv");
