@@ -2,7 +2,7 @@ require 'test_helper'
 require 'stringio'
 require 'tempfile'
 
-class JSONParserTest < Test::Unit::TestCase
+class JSONCommonInterfaceTest < Test::Unit::TestCase
   include JSON
 
   def setup
@@ -19,7 +19,6 @@ class JSONParserTest < Test::Unit::TestCase
     @json = '{"a":2,"b":3.141,"c":"c","d":[1,"b",3.14],"e":{"foo":"bar"},'\
       '"g":"\\"\\u0000\\u001f","h":1.0E3,"i":1.0E-3}'
   end
-
 
   def test_index
   end
