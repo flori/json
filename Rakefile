@@ -23,10 +23,6 @@ class UndocumentedTestTask < Rake::TestTask
   def desc(*) end
 end
 
-def skip_sdoc(src)
-  src.gsub(/^.*sdoc.*/) { |s| s + ' if RUBY_VERSION > "1.8.6"' }
-end
-
 MAKE   = ENV['MAKE']   || %w[gmake make].find { |c| system(c, '-v') }
 BUNDLE = ENV['BUNDLE'] || %w[bundle].find { |c| system(c, '-v') }
 PKG_NAME          = 'json'
@@ -87,13 +83,11 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.files = PKG_FILES
 
     s.require_path = 'lib'
-    s.add_development_dependency 'sdoc', '~>0.3.16'
-    s.add_development_dependency 'rake', '~>0.9.2'
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for ruby' << '--main' << 'README.rdoc'
-    s.test_files.concat Dir['./tests/test_*.rb']
+    s.test_files.concat Dir['./tests/*_test.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -104,7 +98,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
   desc 'Creates a json_pure.gemspec file'
   task :gemspec_pure => :version do
     File.open('json_pure.gemspec', 'w') do |gemspec|
-      gemspec.write skip_sdoc(spec_pure.to_ruby)
+      gemspec.write spec_pure.to_ruby
     end
   end
 
@@ -124,12 +118,11 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.extensions = FileList['ext/**/extconf.rb']
 
     s.require_path = 'lib'
-    s.add_development_dependency 'sdoc', '~>0.3.16'
 
     s.extra_rdoc_files << 'README.rdoc'
     s.rdoc_options <<
       '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.rdoc'
-    s.test_files.concat Dir['./tests/test_*.rb']
+    s.test_files.concat Dir['./tests/*_test.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -140,7 +133,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
   desc 'Creates a json.gemspec file'
   task :gemspec_ext => :version do
     File.open('json.gemspec', 'w') do |gemspec|
-      gemspec.write skip_sdoc(spec_ext.to_ruby)
+      gemspec.write spec_ext.to_ruby
     end
   end
 
@@ -181,7 +174,7 @@ task :test_pure => [ :clean, :check_env, :do_test_pure ]
 UndocumentedTestTask.new do |t|
   t.name = 'do_test_pure'
   t.libs << 'lib' << 'tests'
-  t.test_files = FileList['tests/test_*.rb']
+  t.test_files = FileList['tests/*_test.rb']
   t.verbose = true
   t.options = '-v'
 end
@@ -264,7 +257,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
     t.libs << 'lib' << 'tests'
-    t.test_files = FileList['tests/test_*.rb']
+    t.test_files = FileList['tests/*_test.rb']
     t.verbose = true
     t.options = '-v'
   end
@@ -338,14 +331,14 @@ else
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
     t.libs << 'ext' << 'lib' << 'tests'
-    t.test_files = FileList['tests/test_*.rb']
+    t.test_files = FileList['tests/*_test.rb']
     t.verbose = true
     t.options = '-v'
   end
 
   desc "Create RDOC documentation"
   task :doc => [ :version, EXT_PARSER_SRC ] do
-    sh "sdoc -o doc -t '#{PKG_TITLE}' -m README.rdoc README.rdoc lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
+    sh "rdoc -o doc -t '#{PKG_TITLE}' -m README.rdoc README.rdoc lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
   end
 
   desc "Generate parser with ragel"

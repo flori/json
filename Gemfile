@@ -6,6 +6,7 @@ gemspec :name => 'json'
 gemspec :name => 'json_pure'
 gemspec :name => 'json-java'
 
-gem 'utils'
+gem 'rake'
+gem 'rdoc'
 gem 'test-unit'
 gem 'byebug', :platform => :mri
