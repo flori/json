@@ -1,11 +1,8 @@
-#!/usr/bin/env ruby
-# encoding: utf-8
-
 require 'test_helper'
 
-class TestJSONFixtures < Test::Unit::TestCase
+class JSONFixturesTest < Test::Unit::TestCase
   def setup
-    fixtures = File.join(File.dirname(__FILE__), 'fixtures/*.json')
+    fixtures = File.join(File.dirname(__FILE__), 'fixtures/{fail,pass}.json')
     passed, failed = Dir[fixtures].partition { |f| f['pass'] }
     @passed = passed.inject([]) { |a, f| a << [ f, File.read(f) ] }.sort
     @failed = failed.inject([]) { |a, f| a << [ f, File.read(f) ] }.sort

@@ -48,7 +48,7 @@ module JSON
         )+
       )mx
 
-      UNPARSED = Object.new
+        UNPARSED = Object.new.freeze
 
       # Creates a new JSON::Pure::Parser instance for the string _source_.
       #
@@ -107,39 +107,21 @@ module JSON
         @current_nesting = 0
       end
 
-      # Parses the current JSON string _source_ and returns the complete data
-      # structure as a result.
+      # Parses the current JSON string _source_ and returns the
+      # complete data structure as a result.
       def parse
         reset
         obj = nil
-        if @quirks_mode
-          while !eos? && skip(IGNORE)
-          end
-          if eos?
-            raise ParserError, "source did not contain any JSON!"
-          else
-            obj = parse_value
-            obj == UNPARSED and raise ParserError, "source did not contain any JSON!"
-          end
+        while !eos? && skip(IGNORE) do end
+        if eos?
+          raise ParserError, "source is not valid JSON!"
         else
-          until eos?
-            case
-            when scan(OBJECT_OPEN)
-              obj and raise ParserError, "source '#{peek(20)}' not in JSON!"
-              @current_nesting = 1
-              obj = parse_object
-            when scan(ARRAY_OPEN)
-              obj and raise ParserError, "source '#{peek(20)}' not in JSON!"
-              @current_nesting = 1
-              obj = parse_array
-            when skip(IGNORE)
-              ;
-            else
-              raise ParserError, "source '#{peek(20)}' not in JSON!"
-            end
-          end
-          obj or raise ParserError, "source did not contain any JSON!"
+          obj = parse_value
+          UNPARSED.equal?(obj) and raise ParserError,
+            "source is not valid JSON!"
         end
+        while !eos? && skip(IGNORE) do end
+        eos? or raise ParserError, "source is not valid JSON!"
         obj
       end
 
@@ -149,7 +131,8 @@ module JSON
         if source.respond_to?(:to_str)
           source = source.to_str
         else
-          raise TypeError, "#{source.inspect} is not like a string"
+          raise TypeError,
+            "#{source.inspect} is not like a string"
         end
         if defined?(::Encoding)
           source = source.encode(::Encoding::UTF_8)
@@ -222,7 +205,7 @@ module JSON
           false
         when scan(NULL)
           nil
-        when (string = parse_string) != UNPARSED
+        when !UNPARSED.equal?(string = parse_string)
           string
         when scan(ARRAY_OPEN)
           @current_nesting += 1
@@ -252,7 +235,7 @@ module JSON
         delim = false
         until eos?
           case
-          when (value = parse_value) != UNPARSED
+          when !UNPARSED.equal?(value = parse_value)
             delim = false
             result << value
             skip(IGNORE)
@@ -284,13 +267,13 @@ module JSON
         delim = false
         until eos?
           case
-          when (string = parse_string) != UNPARSED
+          when !UNPARSED.equal?(string = parse_string)
             skip(IGNORE)
             unless scan(PAIR_DELIMITER)
               raise ParserError, "expected ':' in object at '#{peek(20)}'!"
             end
             skip(IGNORE)
-            unless (value = parse_value).equal? UNPARSED
+            unless UNPARSED.equal?(value = parse_value)
               result[@symbolize_names ? string.to_sym : string] = value
               delim = false
               skip(IGNORE)

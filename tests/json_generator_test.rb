@@ -1,9 +1,6 @@
-#!/usr/bin/env ruby
-# encoding: utf-8
-
 require 'test_helper'
 
-class TestJSONGenerate < Test::Unit::TestCase
+class JSONGeneratorTest < Test::Unit::TestCase
   include JSON
 
   def setup
@@ -41,9 +38,9 @@ EOT
 
   def test_generate
     json = generate(@hash)
-    assert_equal(JSON.parse(@json2), JSON.parse(json))
+    assert_equal(parse(@json2), parse(json))
     json = JSON[@hash]
-    assert_equal(JSON.parse(@json2), JSON.parse(json))
+    assert_equal(parse(@json2), parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
     json = generate({1=>2})
@@ -55,8 +52,9 @@ EOT
 
   def test_generate_pretty
     json = pretty_generate(@hash)
-    # hashes aren't (insertion) ordered on every ruby implementation assert_equal(@json3, json)
-    assert_equal(JSON.parse(@json3), JSON.parse(json))
+    # hashes aren't (insertion) ordered on every ruby implementation
+    # assert_equal(@json3, json)
+    assert_equal(parse(@json3), parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
     json = pretty_generate({1=>2})
@@ -85,7 +83,7 @@ EOT
 
   def test_fast_generate
     json = fast_generate(@hash)
-    assert_equal(JSON.parse(@json2), JSON.parse(json))
+    assert_equal(parse(@json2), parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
     json = fast_generate({1=>2})
@@ -98,7 +96,7 @@ EOT
   def test_own_state
     state = State.new
     json = generate(@hash, state)
-    assert_equal(JSON.parse(@json2), JSON.parse(json))
+    assert_equal(parse(@json2), parse(json))
     parsed_json = parse(json)
     assert_equal(@hash, parsed_json)
     json = generate({1=>2}, state)
@@ -198,7 +196,7 @@ EOT
   def test_depth
     ary = []; ary << ary
     assert_equal 0, JSON::SAFE_STATE_PROTOTYPE.depth
-    assert_raises(JSON::NestingError) { JSON.generate(ary) }
+    assert_raises(JSON::NestingError) { generate(ary) }
     assert_equal 0, JSON::SAFE_STATE_PROTOTYPE.depth
     assert_equal 0, JSON::PRETTY_STATE_PROTOTYPE.depth
     assert_raises(JSON::NestingError) { JSON.pretty_generate(ary) }
@@ -324,7 +322,44 @@ EOT
 
   def test_json_generate
     assert_raise JSON::GeneratorError do
-      assert_equal true, JSON.generate(["\xea"])
+      assert_equal true, generate(["\xea"])
     end
+  end
+
+  def test_nesting
+    too_deep = '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["Too deep"]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+    too_deep_ary = eval too_deep
+    assert_raises(JSON::NestingError) { generate too_deep_ary }
+    assert_raises(JSON::NestingError) { generate too_deep_ary, :max_nesting => 100 }
+    ok = generate too_deep_ary, :max_nesting => 101
+    assert_equal too_deep, ok
+    ok = generate too_deep_ary, :max_nesting => nil
+    assert_equal too_deep, ok
+    ok = generate too_deep_ary, :max_nesting => false
+    assert_equal too_deep, ok
+    ok = generate too_deep_ary, :max_nesting => 0
+    assert_equal too_deep, ok
+  end
+
+  def test_backslash
+    data = [ '\\.(?i:gif|jpe?g|png)$' ]
+    json = '["\\\\.(?i:gif|jpe?g|png)$"]'
+    assert_equal json, generate(data)
+    #
+    data = [ '\\"' ]
+    json = '["\\\\\""]'
+    assert_equal json, generate(data)
+    #
+    data = [ '/' ]
+    json = '["/"]'
+    assert_equal json, generate(data)
+    #
+    data = ['"']
+    json = '["\""]'
+    assert_equal json, generate(data)
+    #
+    data = ["'"]
+    json = '["\\\'"]'
+    assert_equal '["\'"]', generate(data)
   end
 end

@@ -1,9 +1,6 @@
-#!/usr/bin/env ruby
-# encoding: utf-8
-
 require 'test_helper'
 
-class TestJSONGenericObject < Test::Unit::TestCase
+class JSONGenericObjectTest < Test::Unit::TestCase
   include JSON
 
   def setup
@@ -26,11 +23,20 @@ class TestJSONGenericObject < Test::Unit::TestCase
   end
 
   def test_parse_json
-    assert_kind_of Hash, JSON('{ "json_class": "JSON::GenericObject", "a": 1, "b": 2 }', :create_additions => true)
+    assert_kind_of Hash,
+      JSON(
+        '{ "json_class": "JSON::GenericObject", "a": 1, "b": 2 }',
+        :create_additions => true
+      )
     switch_json_creatable do
-      assert_equal @go, l = JSON('{ "json_class": "JSON::GenericObject", "a": 1, "b": 2 }', :create_additions => true)
+      assert_equal @go, l =
+        JSON(
+          '{ "json_class": "JSON::GenericObject", "a": 1, "b": 2 }',
+             :create_additions => true
+        )
       assert_equal 1, l.a
-      assert_equal @go, l = JSON('{ "a": 1, "b": 2 }', :object_class => GenericObject)
+      assert_equal @go,
+        l = JSON('{ "a": 1, "b": 2 }', :object_class => GenericObject)
       assert_equal 1, l.a
       assert_equal GenericObject[:a => GenericObject[:b => 2]],
         l = JSON('{ "a": { "b": 2 } }', :object_class => GenericObject)

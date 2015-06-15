@@ -3,12 +3,12 @@ require 'json/generic_object'
 
 module JSON
   class << self
-    # If _object_ is string-like, parse the string and return the parsed result
-    # as a Ruby data structure. Otherwise generate a JSON text from the Ruby
-    # data structure object and return it.
+    # If _object_ is string-like, parse the string and return the parsed
+    # result as a Ruby data structure. Otherwise generate a JSON text from the
+    # Ruby data structure object and return it.
     #
-    # The _opts_ argument is passed through to generate/parse respectively. See
-    # generate and parse for their documentation.
+    # The _opts_ argument is passed through to generate/parse respectively.
+    # See generate and parse for their documentation.
     def [](object, opts = {})
       if object.respond_to? :to_str
         JSON.parse(object.to_str, opts)
@@ -138,8 +138,8 @@ module JSON
   # _opts_ can have the following
   # keys:
   # * *max_nesting*: The maximum depth of nesting allowed in the parsed data
-  #   structures. Disable depth checking with :max_nesting => false. It defaults
-  #   to 100.
+  #   structures. Disable depth checking with :max_nesting => false. It
+  #   defaults to 100.
   # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
   #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
   #   to false.
@@ -161,9 +161,9 @@ module JSON
   #
   # _opts_ can have the following keys:
   # * *max_nesting*: The maximum depth of nesting allowed in the parsed data
-  #   structures. Enable depth checking with :max_nesting => anInteger. The parse!
-  #   methods defaults to not doing max depth checking: This can be dangerous
-  #   if someone wants to fill up your stack.
+  #   structures. Enable depth checking with :max_nesting => anInteger. The
+  #   parse! methods defaults to not doing max depth checking: This can be
+  #   dangerous if someone wants to fill up your stack.
   # * *allow_nan*: If set to true, allow NaN, Infinity, and -Infinity in
   #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
   #   to true.
