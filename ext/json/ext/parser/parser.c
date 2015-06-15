@@ -1681,8 +1681,9 @@ static VALUE convert_encoding(VALUE source)
  *   defiance of RFC 4627 to be parsed by the Parser. This option defaults to
  *   false.
  * * *symbolize_names*: If set to true, returns symbols for the names
- *   (keys) in a JSON object. Otherwise strings are returned, which is also
- *   the default.
+ *   (keys) in a JSON object. Otherwise strings are returned, which is
+ *   also the default. It's not possible to use this option in
+ *   conjunction with the *create_additions* option.
  * * *create_additions*: If set to false, the Parser doesn't create
  *   additions even if a matching class and create_id was found. This option
  *   defaults to false.
@@ -1733,6 +1734,11 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             } else {
                 json->create_additions = 0;
             }
+            if (json->symbolize_names && json->create_additions) {
+              rb_raise(rb_eArgError,
+                "options :symbolize_names and :create_additions cannot be "
+                " used in conjunction");
+            }
             tmp = ID2SYM(i_create_id);
             if (option_given_p(opts, tmp)) {
                 json->create_id = rb_hash_aref(opts, tmp);
@@ -1778,7 +1784,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1782 "parser.c"
+#line 1788 "parser.c"
 static const int JSON_start = 1;
 static const int JSON_first_final = 10;
 static const int JSON_error = 0;
@@ -1786,7 +1792,7 @@ static const int JSON_error = 0;
 static const int JSON_en_main = 1;
 
 
-#line 690 "parser.rl"
+#line 696 "parser.rl"
 
 
 /*
@@ -1803,16 +1809,16 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
-#line 1807 "parser.c"
+#line 1813 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 706 "parser.rl"
+#line 712 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
-#line 1816 "parser.c"
+#line 1822 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1846,7 +1852,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 682 "parser.rl"
+#line 688 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1856,7 +1862,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1860 "parser.c"
+#line 1866 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1945,7 +1951,7 @@ case 9:
 	_out: {}
 	}
 
-#line 709 "parser.rl"
+#line 715 "parser.rl"
 
   if (cs >= JSON_first_final && p == pe) {
     return result;

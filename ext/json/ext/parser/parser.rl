@@ -576,8 +576,9 @@ static VALUE convert_encoding(VALUE source)
  *   defiance of RFC 4627 to be parsed by the Parser. This option defaults to
  *   false.
  * * *symbolize_names*: If set to true, returns symbols for the names
- *   (keys) in a JSON object. Otherwise strings are returned, which is also
- *   the default.
+ *   (keys) in a JSON object. Otherwise strings are returned, which is
+ *   also the default. It's not possible to use this option in
+ *   conjunction with the *create_additions* option.
  * * *create_additions*: If set to false, the Parser doesn't create
  *   additions even if a matching class and create_id was found. This option
  *   defaults to false.
@@ -627,6 +628,11 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 json->create_additions = RTEST(rb_hash_aref(opts, tmp));
             } else {
                 json->create_additions = 0;
+            }
+            if (json->symbolize_names && json->create_additions) {
+              rb_raise(rb_eArgError,
+                "options :symbolize_names and :create_additions cannot be "
+                " used in conjunction");
             }
             tmp = ID2SYM(i_create_id);
             if (option_given_p(opts, tmp)) {

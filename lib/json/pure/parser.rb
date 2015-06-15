@@ -61,8 +61,9 @@ module JSON
       #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
       #   to false.
       # * *symbolize_names*: If set to true, returns symbols for the names
-      #   (keys) in a JSON object. Otherwise strings are returned, which is also
-      #   the default.
+      #   (keys) in a JSON object. Otherwise strings are returned, which is
+      #   also the default. It's not possible to use this option in
+      #   conjunction with the *create_additions* option.
       # * *create_additions*: If set to true, the Parser creates
       #   additions when if a matching class and create_id was found. This
       #   option defaults to false.
@@ -90,6 +91,9 @@ module JSON
         else
           @create_additions = false
         end
+        @symbolize_names && @create_additions and raise ArgumentError,
+          'options :symbolize_names and :create_additions cannot be used '\
+          'in conjunction'
         @create_id = @create_additions ? JSON.create_id : nil
         @object_class = opts[:object_class] || Hash
         @array_class  = opts[:array_class] || Array

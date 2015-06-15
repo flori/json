@@ -67,10 +67,8 @@ class JSONParserTest < Test::Unit::TestCase
   end
 
   def test_load_with_options
-    small_hash  = JSON("foo" => 'bar')
-    symbol_hash = { :foo => 'bar' }
-    assert_equal symbol_hash,
-      JSON.load(small_hash, nil, :symbolize_names => true)
+    json  = '{ "foo": NaN }'
+    assert JSON.load(json, nil, :allow_nan => true)['foo'].nan?
   end
 
   def test_dump

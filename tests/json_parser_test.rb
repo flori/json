@@ -183,6 +183,9 @@ class JSONParserTest < Test::Unit::TestCase
       parse('{"foo":"bar", "baz":"quux"}'))
     assert_equal({ :foo => "bar", :baz => "quux" },
       parse('{"foo":"bar", "baz":"quux"}', :symbolize_names => true))
+    assert_raise(ArgumentError) do
+      parse('{}', :symbolize_names => true, :create_additions => true)
+    end
   end
 
   def test_parse_comments
