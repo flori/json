@@ -343,9 +343,7 @@ Florian Frank <mailto:flori@ping.de>
 
 == License
 
-Ruby License, see the COPYING file included in the source distribution. The
-Ruby License includes the GNU General Public License (GPL), Version 2, so see
-the file GPL as well.
+Ruby License, see https://www.ruby-lang.org/en/about/license.txt.
 
 == Download
 
