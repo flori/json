@@ -35,6 +35,10 @@ module JSON
     '"'   =>  '\"',
     '\\'  =>  '\\\\',
   } # :nodoc:
+  MAP2 = {
+    "\u2028" => '\\u2028',
+    "\u2029" => '\\u2029'
+  }
 
   # Convert a UTF8 encoded Ruby string _string_ to a JSON string, encoded with
   # UTF16 big endian characters as \u????, and return it.
@@ -44,7 +48,10 @@ module JSON
       string.force_encoding(::Encoding::ASCII_8BIT)
       string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
       string.force_encoding(::Encoding::UTF_8)
+      string.gsub!(/[\u2028-\u2029]/) { MAP2[$&] }
       string
+    rescue => e
+      raise GeneratorError.wrap(e)
     end
 
     def utf8_to_json_ascii(string) # :nodoc:
@@ -79,11 +86,11 @@ module JSON
     module_function :valid_utf8?
   else
     def utf8_to_json(string) # :nodoc:
-      string.gsub(/["\\\x0-\x1f]/n) { MAP[$&] }
+      string.gsub(/["\\\x0-\x1f]/n) { MAP[$&] }.gsub(/[\u2028-\u2029]/) { MAP2[$&] }
     end
 
     def utf8_to_json_ascii(string) # :nodoc:
-      string = string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
+      string = string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }.gsub(/[\u2028-\u2029]/) { MAP2[$&] }
       string.gsub!(/(
                       (?:
                         [\xc2-\xdf][\x80-\xbf]    |

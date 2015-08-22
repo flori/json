@@ -46,6 +46,8 @@ class TestJSONUnicode < Test::Unit::TestCase
     json = '["\ud840\udc01"]'
     assert_equal json, JSON.generate(utf8, :ascii_only => true)
     assert_equal utf8, JSON.parse(json)
+    assert_equal "\"\\u2028\"", "\u2028".to_json
+    assert_equal "\"\\u2029\"", "\u2029".to_json
   end
 
   def test_chars
