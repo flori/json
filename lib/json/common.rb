@@ -96,11 +96,11 @@ module JSON
   end
   self.create_id = 'json_class'
 
-  NaN           = 0.0/0
+  NaN           = 0.0/0 unless defined? NaN
 
-  Infinity      = 1.0/0
+  Infinity      = 1.0/0 unless defined? Infinity
 
-  MinusInfinity = -Infinity
+  MinusInfinity = -Infinity unless defined? MinusInfinity
 
   # The base exception for JSON errors.
   class JSONError < StandardError
@@ -125,7 +125,7 @@ module JSON
   # This exception is raised if a generator or unparser error occurs.
   class GeneratorError < JSONError; end
   # For backwards compatibility
-  UnparserError = GeneratorError
+  UnparserError = GeneratorError unless defined? UnparserError
 
   # This exception is raised if the required unicode support is missing on the
   # system. Usually this means that the iconv library is not installed.
