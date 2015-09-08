@@ -117,7 +117,7 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
 
     action parse_value {
         VALUE v = Qnil;
-        char *np = JSON_parse_value(json, fpc, pe, &v);
+        char *np = JSON_parse_value(json, fpc, pe, &v, current_nesting);
         if (np == NULL) {
             fhold; fbreak;
         } else {
@@ -150,14 +150,14 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
     ) @exit;
 }%%
 
-static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *result)
+static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting)
 {
     int cs = EVIL;
     VALUE last_name = Qnil;
     VALUE object_class = json->object_class;
 
-    if (json->max_nesting && json->current_nesting > json->max_nesting) {
-        rb_raise(eNestingError, "nesting of %d is too deep", json->current_nesting);
+    if (json->max_nesting && current_nesting > json->max_nesting) {
+        rb_raise(eNestingError, "nesting of %d is too deep", current_nesting);
     }
 
     *result = NIL_P(object_class) ? rb_hash_new() : rb_class_new_instance(0, 0, object_class);
@@ -241,17 +241,13 @@ static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *resu
 
     action parse_array {
         char *np;
-        json->current_nesting++;
-        np = JSON_parse_array(json, fpc, pe, result);
-        json->current_nesting--;
+        np = JSON_parse_array(json, fpc, pe, result, current_nesting + 1);
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
     action parse_object {
         char *np;
-        json->current_nesting++;
-        np =  JSON_parse_object(json, fpc, pe, result);
-        json->current_nesting--;
+        np =  JSON_parse_object(json, fpc, pe, result, current_nesting + 1);
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
@@ -270,7 +266,7 @@ main := (
         ) %*exit;
 }%%
 
-static char *JSON_parse_value(JSON_Parser *json, char *p, char *pe, VALUE *result)
+static char *JSON_parse_value(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting)
 {
     int cs = EVIL;
 
@@ -357,7 +353,7 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
 
     action parse_value {
         VALUE v = Qnil;
-        char *np = JSON_parse_value(json, fpc, pe, &v);
+        char *np = JSON_parse_value(json, fpc, pe, &v, current_nesting);
         if (np == NULL) {
             fhold; fbreak;
         } else {
@@ -380,13 +376,13 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
           end_array @exit;
 }%%
 
-static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *result)
+static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting)
 {
     int cs = EVIL;
     VALUE array_class = json->array_class;
 
-    if (json->max_nesting && json->current_nesting > json->max_nesting) {
-        rb_raise(eNestingError, "nesting of %d is too deep", json->current_nesting);
+    if (json->max_nesting && current_nesting > json->max_nesting) {
+        rb_raise(eNestingError, "nesting of %d is too deep", current_nesting);
     }
     *result = NIL_P(array_class) ? rb_ary_new() : rb_class_new_instance(0, 0, array_class);
 
@@ -704,7 +700,6 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     if (!json->quirks_mode) {
       source = convert_encoding(StringValue(source));
     }
-    json->current_nesting = 0;
     StringValue(source);
     json->len = RSTRING_LEN(source);
     json->source = RSTRING_PTR(source);;
@@ -721,15 +716,13 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 
     action parse_object {
         char *np;
-        json->current_nesting = 1;
-        np = JSON_parse_object(json, fpc, pe, &result);
+        np = JSON_parse_object(json, fpc, pe, &result, 1);
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
     action parse_array {
         char *np;
-        json->current_nesting = 1;
-        np = JSON_parse_array(json, fpc, pe, &result);
+        np = JSON_parse_array(json, fpc, pe, &result, 1);
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
@@ -768,7 +761,7 @@ static VALUE cParser_parse_strict(VALUE self)
     include JSON_common;
 
     action parse_value {
-        char *np = JSON_parse_value(json, fpc, pe, &result);
+        char *np = JSON_parse_value(json, fpc, pe, &result, current_nesting);
         if (np == NULL) { fhold; fbreak; } else fexec np;
     }
 
@@ -782,6 +775,7 @@ static VALUE cParser_parse_quirks_mode(VALUE self)
     char *p, *pe;
     int cs = EVIL;
     VALUE result = Qnil;
+    int current_nesting = 1;
     GET_PARSER;
 
     %% write init;
