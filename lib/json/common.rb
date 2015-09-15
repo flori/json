@@ -358,12 +358,14 @@ module JSON
     #  :max_nesting: false
     #  :allow_nan:   true
     #  :quirks_mode: true
+    #  :escape_slash: true
     attr_accessor :dump_default_options
   end
   self.dump_default_options = {
     :max_nesting => false,
     :allow_nan   => true,
     :quirks_mode => true,
+    :escape_slash => true,
   }
 
   # Dumps _obj_ as a JSON string, i.e. calls generate on the object and returns
@@ -443,7 +445,7 @@ module ::Kernel
   # one line.
   def j(*objs)
     objs.each do |obj|
-      puts JSON::generate(obj, :allow_nan => true, :max_nesting => false)
+      puts JSON::generate(obj, :allow_nan => true, :max_nesting => false, :escape_slash => true)
     end
     nil
   end
@@ -452,7 +454,7 @@ module ::Kernel
   # indentation and over many lines.
   def jj(*objs)
     objs.each do |obj|
-      puts JSON::pretty_generate(obj, :allow_nan => true, :max_nesting => false)
+      puts JSON::pretty_generate(obj, :allow_nan => true, :max_nesting => false, :escape_slash => true)
     end
     nil
   end

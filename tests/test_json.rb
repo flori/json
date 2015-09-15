@@ -410,8 +410,13 @@ EOT
     assert_equal data, JSON.parse(json)
     #
     data = [ '/' ]
-    json = '["\/"]'
+    json = '["/"]'
     assert_equal json, JSON.generate(data)
+    assert_equal data, JSON.parse(json)
+    #
+    data = [ '/' ]
+    json = '["\/"]'
+    assert_equal json, JSON.generate(data, :escape_slash => true)
     assert_equal data, JSON.parse(json)
     #
     json = '["\""]'

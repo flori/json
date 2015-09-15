@@ -10,7 +10,7 @@ import org.jruby.util.ByteList;
  * and throws a GeneratorError if any problem is found.
  */
 final class StringEncoder extends ByteListTranscoder {
-    private final boolean asciiOnly;
+    private final boolean asciiOnly, escapeSlash;
 
     // Escaped characters will reuse this array, to avoid new allocations
     // or appending them byte-by-byte
@@ -32,9 +32,10 @@ final class StringEncoder extends ByteListTranscoder {
             new byte[] {'0', '1', '2', '3', '4', '5', '6', '7',
                         '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-    StringEncoder(ThreadContext context, boolean asciiOnly) {
+    StringEncoder(ThreadContext context, boolean asciiOnly, boolean escapeSlash) {
         super(context);
         this.asciiOnly = asciiOnly;
+        this.escapeSlash = escapeSlash;
     }
 
     void encode(ByteList src, ByteList out) {
@@ -50,7 +51,6 @@ final class StringEncoder extends ByteListTranscoder {
     private void handleChar(int c) {
         switch (c) {
         case '"':
-        case '/':
         case '\\':
             escapeChar((char)c);
             break;
@@ -69,6 +69,11 @@ final class StringEncoder extends ByteListTranscoder {
         case '\b':
             escapeChar('b');
             break;
+        case '/':
+            if(escapeSlash) {
+                escapeChar((char)c);
+                break;
+            }
         default:
             if (c >= 0x20 && c <= 0x7f ||
                     (c >= 0x80 && !asciiOnly)) {

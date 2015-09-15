@@ -40,18 +40,20 @@ module JSON
   # Convert a UTF8 encoded Ruby string _string_ to a JSON string, encoded with
   # UTF16 big endian characters as \u????, and return it.
   if defined?(::Encoding)
-    def utf8_to_json(string) # :nodoc:
+    def utf8_to_json(string, escape_slash = true) # :nodoc:
       string = string.dup
       string.force_encoding(::Encoding::ASCII_8BIT)
-      string.gsub!(/[\/"\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub!('/') { MAP[$&] } if escape_slash
       string.force_encoding(::Encoding::UTF_8)
       string
     end
 
-    def utf8_to_json_ascii(string) # :nodoc:
+    def utf8_to_json_ascii(string, escape_slash = true) # :nodoc:
       string = string.dup
       string.force_encoding(::Encoding::ASCII_8BIT)
-      string.gsub!(/[\/"\\\x0-\x1f]/n) { MAP[$&] }
+      string.gsub!(/["\\\x0-\x1f]/n) { MAP[$&] }
+      string.gsub!('/') { MAP[$&] } if escape_slash
       string.gsub!(/(
                       (?:
                         [\xc2-\xdf][\x80-\xbf]    |
@@ -79,12 +81,15 @@ module JSON
     end
     module_function :valid_utf8?
   else
-    def utf8_to_json(string) # :nodoc:
-      string.gsub(/[\/"\\\x0-\x1f]/n) { MAP[$&] }
+    def utf8_to_json(string, escape_slash = true) # :nodoc:
+      string = string.gsub(/["\\\x0-\x1f]/n) { MAP[$&] }
+      string.gsub!('/') { MAP[$&] } if escape_slash
+      string
     end
 
-    def utf8_to_json_ascii(string) # :nodoc:
+    def utf8_to_json_ascii(string, escape_slash = true) # :nodoc:
       string = string.gsub(/[\/"\\\x0-\x1f]/) { MAP[$&] }
+      string.gsub!('/') { MAP[$&] } if escape_slash
       string.gsub!(/(
                       (?:
                         [\xc2-\xdf][\x80-\xbf]    |
@@ -167,6 +172,7 @@ module JSON
           @ascii_only            = false
           @quirks_mode           = false
           @buffer_initial_length = 1024
+          @escape_slash          = false
           configure opts
         end
 
@@ -197,6 +203,10 @@ module JSON
 
         # :stopdoc:
         attr_reader :buffer_initial_length
+
+        # If this attribute is set to true, forward slashes will be escaped in
+        # all json strings.
+        attr_accessor :escape_slash
 
         def buffer_initial_length=(length)
           if length > 0
@@ -239,6 +249,11 @@ module JSON
           @quirks_mode
         end
 
+        # Returns true, if forward slashes are escaped. Otherwise returns false.
+        def escape_slash?
+          @escape_slash
+        end
+
         # Configure this State instance with the Hash _opts_, and return
         # itself.
         def configure(opts)
@@ -262,6 +277,7 @@ module JSON
           @depth                 = opts[:depth] || 0
           @quirks_mode           = opts[:quirks_mode] if opts.key?(:quirks_mode)
           @buffer_initial_length ||= opts[:buffer_initial_length]
+          @escape_slash          = !!opts[:escape_slash] if opts.key?(:escape_slash)
 
           if !opts.key?(:max_nesting) # defaults to 100
             @max_nesting = 100
@@ -450,9 +466,9 @@ module JSON
                 string = encode(::Encoding::UTF_8)
               end
               if state.ascii_only?
-                '"' << JSON.utf8_to_json_ascii(string) << '"'
+                '"' << JSON.utf8_to_json_ascii(string, state.escape_slash) << '"'
               else
-                '"' << JSON.utf8_to_json(string) << '"'
+                '"' << JSON.utf8_to_json(string, state.escape_slash) << '"'
               end
             end
           else
@@ -462,9 +478,9 @@ module JSON
             def to_json(state = nil, *args)
               state = State.from_state(state)
               if state.ascii_only?
-                '"' << JSON.utf8_to_json_ascii(self) << '"'
+                '"' << JSON.utf8_to_json_ascii(self, state.escape_slash) << '"'
               else
-                '"' << JSON.utf8_to_json(self) << '"'
+                '"' << JSON.utf8_to_json(self, state.escape_slash) << '"'
               end
             end
           end
