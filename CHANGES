@@ -1,4 +1,4 @@
-2015-09-11 (1.8.4)
+2015-09-11 (1.8.5)
   * There were still some mentions of dual GPL licensing in the source, but JSON
     has just the Ruby license that itself includes an explicit dual-licensing
     clause that allows covered software to be distributed under the terms of
@@ -6,6 +6,7 @@
     however a GPL compatible license according to the Free Software Foundation.
     I changed these mentions to be consistent with the Ruby license setting in
     the gemspec files which were already correct now.
+---------- (1.8.4) Skipped.
 2015-06-01 (1.8.3)
   * Fix potential memory leak, thx to nobu.
 2015-01-08 (1.8.2)
