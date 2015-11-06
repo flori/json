@@ -1,6 +1,6 @@
-= JSON implementation for Ruby {<img src="https://secure.travis-ci.org/flori/json.png" />}[http://travis-ci.org/flori/json]
+# JSON implementation for Ruby {<img src="https://secure.travis-ci.org/flori/json.png" />}[http://travis-ci.org/flori/json]
 
-== Description
+## Description
 
 This is a implementation of the JSON specification according to RFC 4627
 http://www.ietf.org/rfc/rfc4627.txt . Starting from version 1.0.0 on there
@@ -14,14 +14,14 @@ will be two variants available:
   http://www.complang.org/ragel/ .
 
 Both variants of the JSON generator generate UTF-8 character sequences by
-default. If an :ascii_only option with a true value is given, they escape all
+default. If an :ascii\_only option with a true value is given, they escape all
 non-ASCII and control characters with \uXXXX escape sequences, and support
 UTF-16 surrogate pairs in order to be able to generate the whole range of
 unicode code points.
 
 All strings, that are to be encoded as JSON strings, should be UTF-8 byte
 sequences on the Ruby side. To encode raw binary strings, that aren't UTF-8
-encoded, please use the to_json_raw_object method of String (which produces
+encoded, please use the to\_json\_raw\_object method of String (which produces
 an object, that contains a byte array) and decode the result on the receiving
 endpoint.
 
@@ -32,7 +32,7 @@ String#encoding set. If a document string has ASCII-8BIT as an encoding the
 parser attempts to figure out which of the UTF encodings from above it is and
 trys to parse it.
 
-== Installation
+## Installation
 
 It's recommended to use the extension variant of JSON, because it's faster than
 the pure ruby variant. If you cannot build it on your system, you can settle
@@ -63,18 +63,18 @@ with:
 
   # gem install json_pure
 
-== Compiling the extensions yourself
+## Compiling the extensions yourself
 
 If you want to create the parser.c file from its parser.rl file or draw nice
 graphviz images of the state machines, you need ragel from:
 http://www.complang.org/ragel/
 
-== Usage
+## Usage
 
 To use JSON you can
   require 'json'
 to load the installed variant (either the extension 'json' or the pure
-variant 'json_pure'). If you have installed the extension variant, you can
+variant 'json\_pure'). If you have installed the extension variant, you can
 pick either the extension variant or the pure variant by typing
   require 'json/ext'
 or
@@ -87,8 +87,8 @@ Now you can parse a JSON document into a ruby data structure by calling
 If you want to generate a JSON document from a ruby data structure call
   JSON.generate(data)
 
-You can also use the pretty_generate method (which formats the output more
-verbosely and nicely) or fast_generate (which doesn't do any of the security
+You can also use the pretty\_generate method (which formats the output more
+verbosely and nicely) or fast\_generate (which doesn't do any of the security
 checks generate performs, e. g. nesting deepness checks).
 
 To create a valid JSON document you have to make sure, that the output is
@@ -123,7 +123,7 @@ To get the best compatibility to rails' JSON implementation, you can
 Both of the additions attempt to require 'json' (like above) first, if it has
 not been required yet.
 
-== More Examples
+## More Examples
 
 To create a JSON document from a ruby data structure, you can call
 JSON.generate like that:
@@ -140,11 +140,11 @@ JSON.parse on it:
 Note, that the range from the original data structure is a simple
 string now. The reason for this is, that JSON doesn't support ranges
 or arbitrary classes. In this case the json library falls back to call
-Object#to_json, which is the same as #to_s.to_json.
+Object#to\_json, which is the same as #to\_s.to\_json.
 
 It's possible to add JSON support serialization to arbitrary classes by
-simply implementing a more specialized version of the #to_json method, that
-should return a JSON object (a hash converted to JSON with #to_json) like
+simply implementing a more specialized version of the #to\_json method, that
+should return a JSON object (a hash converted to JSON with #to\_json) like
 this (don't forget the *a for all the arguments):
 
  class Range
@@ -156,15 +156,15 @@ this (don't forget the *a for all the arguments):
    end
  end
 
-The hash key 'json_class' is the class, that will be asked to deserialise the
+The hash key 'json\_class' is the class, that will be asked to deserialise the
 JSON representation later. In this case it's 'Range', but any namespace of
 the form 'A::B' or '::A::B' will do. All other keys are arbitrary and can be
 used to store the necessary data to configure the object to be deserialised.
 
-If a the key 'json_class' is found in a JSON object, the JSON parser checks
-if the given class responds to the json_create class method. If so, it is
+If a the key 'json\_class' is found in a JSON object, the JSON parser checks
+if the given class responds to the json\_create class method. If so, it is
 called with the JSON object converted to a Ruby hash. So a range can
-be deserialised by implementing Range.json_create like this:
+be deserialised by implementing Range.json\_create like this:
 
  class Range
    def self.json_create(o)
@@ -182,7 +182,7 @@ Now it possible to serialise/deserialise ranges as well:
 JSON.generate always creates the shortest possible string representation of a
 ruby data structure in one line. This is good for data storage or network
 protocols, but not so good for humans to read. Fortunately there's also
-JSON.pretty_generate (or JSON.pretty_generate) that creates a more readable
+JSON.pretty\_generate (or JSON.pretty\_generate) that creates a more readable
 output:
 
  puts JSON.pretty_generate([1, 2, {"a"=>3.141}, false, true, nil, 4..10])
@@ -206,14 +206,14 @@ output:
  ]
 
 There are also the methods Kernel#j for generate, and Kernel#jj for
-pretty_generate output to the console, that work analogous to Core Ruby's p and
+pretty\_generate output to the console, that work analogous to Core Ruby's p and
 the pp library's pp methods.
 
 The script tools/server.rb contains a small example if you want to test, how
 receiving a JSON object from a webrick server in your browser with the
 javasript prototype library http://www.prototypejs.org works.
 
-== Speed Comparisons
+## Speed Comparisons
 
 I have created some benchmark results (see the benchmarks/data-p4-3Ghz
 subdir of the package) for the JSON-parser to estimate the speed up in the C
@@ -292,10 +292,10 @@ speed:
 
 In the table above 1-3 are JSON::Ext::Generator methods. 4, 6, and 7 are
 JSON::Pure::Generator methods and 5 is the Rails JSON generator. It is now a
-bit faster than the generator_safe and generator_pretty methods of the pure
+bit faster than the generator\_safe and generator\_pretty methods of the pure
 variant but slower than the others.
 
-To achieve the fastest JSON document output, you can use the fast_generate
+To achieve the fastest JSON document output, you can use the fast\_generate
 method. Beware, that this will disable the checking for circular Ruby data
 structures, which may cause JSON to go into an infinite loop.
 
@@ -326,15 +326,15 @@ Here are the median comparisons for completeness' sake:
             calls/sec (  time) ->    speed  covers
             secs/call
 
-== Author
+## Author
 
 Florian Frank <mailto:flori@ping.de>
 
-== License
+## License
 
 Ruby License, see https://www.ruby-lang.org/en/about/license.txt.
 
-== Download
+## Download
 
 The latest version of this library can be downloaded at
 

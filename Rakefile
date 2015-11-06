@@ -86,9 +86,9 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.add_development_dependency 'permutation'
     s.add_development_dependency 'rake'
 
-    s.extra_rdoc_files << 'README.rdoc'
+    s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
-      '--title' <<  'JSON implemention for ruby' << '--main' << 'README.rdoc'
+      '--title' <<  'JSON implemention for ruby' << '--main' << 'README.md'
     s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
@@ -122,9 +122,9 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.require_path = 'lib'
     s.add_development_dependency 'permutation'
 
-    s.extra_rdoc_files << 'README.rdoc'
+    s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
-      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.rdoc'
+      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.md'
     s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
