@@ -222,6 +222,7 @@ static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string)
             unicode_escape_to_buffer(buffer, buf, (UTF16)((ch & halfMask) + UNI_SUR_LOW_START));
         }
     }
+    RB_GC_GUARD(string);
 }
 
 /* Converts string to a JSON string in FBuffer buffer, where only the
