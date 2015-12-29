@@ -25,12 +25,10 @@ encoded, please use the to_json_raw_object method of String (which produces
 an object, that contains a byte array) and decode the result on the receiving
 endpoint.
 
-The JSON parsers can parse UTF-8, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE
-JSON documents under Ruby 1.8. Under Ruby 1.9 they take advantage of Ruby's
-M17n features and can parse all documents which have the correct
-String#encoding set. If a document string has ASCII-8BIT as an encoding the
-parser attempts to figure out which of the UTF encodings from above it is and
-trys to parse it.
+The JSON parsers take advantage of Ruby's M17n features and can parse all
+documents which have the correct String#encoding set. If a document string has
+ASCII-8BIT as an encoding the parser attempts to figure out which of the UTF
+encodings from above it is and tries to parse it.
 
 == Installation
 
