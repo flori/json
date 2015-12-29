@@ -1,3 +1,5 @@
+2015-12-30
+  * Officially require ruby >= 2.0
 2015-06-01 (1.8.3)
   * Fix potential memory leak, thx to nobu.
 2015-01-08 (1.8.2)
