@@ -342,7 +342,7 @@ EOT
       undef to_json
     end
     assert_nothing_raised(SystemStackError) do
-      assert_equal '[""]', JSON.generate([s.new])
+      assert_equal '["foo"]', JSON.generate([s.new('foo')])
     end
   end
 end
