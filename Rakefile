@@ -83,7 +83,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.files = PKG_FILES
 
     s.require_path = 'lib'
-    s.add_development_dependency 'permutation'
     s.add_development_dependency 'rake'
 
     s.extra_rdoc_files << 'README.md'
@@ -120,7 +119,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.extensions = FileList['ext/**/extconf.rb']
 
     s.require_path = 'lib'
-    s.add_development_dependency 'permutation'
 
     s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<

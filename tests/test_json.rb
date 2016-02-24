@@ -7,20 +7,6 @@ require 'stringio'
 require 'tempfile'
 require 'ostruct'
 
-unless Array.method_defined?(:permutation)
-  begin
-    require 'enumerator'
-    require 'permutation'
-    class Array
-      def permutation
-        Permutation.for(self).to_enum.map { |x| x.project }
-      end
-    end
-  rescue LoadError
-    warn "Skipping permutation tests."
-  end
-end
-
 class TestJSON < Test::Unit::TestCase
   include JSON
 
@@ -144,26 +130,6 @@ class TestJSON < Test::Unit::TestCase
     assert_raise(JSON::ParserError) { JSON.parse('-Infinity', :allow_nan => true) }
     assert JSON.parse('-Infinity', :quirks_mode => true, :allow_nan => true).infinite?
     assert_raise(JSON::ParserError) { JSON.parse('[ 1, ]', :quirks_mode => true) }
-  end
-
-  if Array.method_defined?(:permutation)
-    def test_parse_more_complex_arrays
-      a = [ nil, false, true, "foßbar", [ "n€st€d", true ], { "nested" => true, "n€ßt€ð2" => {} }]
-      a.permutation.each do |perm|
-        json = pretty_generate(perm)
-        assert_equal perm, parse(json)
-      end
-    end
-
-    def test_parse_complex_objects
-      a = [ nil, false, true, "foßbar", [ "n€st€d", true ], { "nested" => true, "n€ßt€ð2" => {} }]
-      a.permutation.each do |perm|
-        s = "a"
-        orig_obj = perm.inject({}) { |h, x| h[s.dup] = x; s = s.succ; h }
-        json = pretty_generate(orig_obj)
-        assert_equal orig_obj, parse(json)
-      end
-    end
   end
 
   def test_parse_arrays
