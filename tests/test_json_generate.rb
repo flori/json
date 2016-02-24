@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# frozen_string_literal: false
 
 require 'test/unit'
 require File.join(File.dirname(__FILE__), 'setup_variant')
@@ -332,6 +333,29 @@ EOT
   def test_json_generate
     assert_raise JSON::GeneratorError do
       assert_equal true, JSON.generate(["\xea"])
+    end
+  end
+
+  def test_string_subclass
+    s = Class.new(String) do
+      def to_s; self; end
+      undef to_json
+    end
+    assert_nothing_raised(SystemStackError) do
+      assert_equal '[""]', JSON.generate([s.new])
+    end
+  end
+
+  if EnvUtil.gc_stress_to_class?
+    def assert_no_memory_leak(code, *rest, **opt)
+      code = "8.times {20_000.times {begin #{code}; rescue NoMemoryError; end}; GC.start}"
+      super(["-rjson/ext/generator"],
+            "GC.add_stress_to_class(JSON::Ext::Generator::State); "\
+            "#{code}", code, *rest, rss: true, limit: 1.1, **opt)
+    end
+
+    def test_no_memory_leak_allocate
+      assert_no_memory_leak("JSON::Ext::Generator::State.allocate")
     end
   end
 end
