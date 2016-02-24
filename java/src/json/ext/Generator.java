@@ -427,11 +427,14 @@ public final class Generator {
         new Handler<IRubyObject>() {
             @Override
             RubyString generateNew(Session session, IRubyObject object) {
-                IRubyObject result =
-                    object.callMethod(session.getContext(), "to_json",
-                          new IRubyObject[] {session.getState()});
-                if (result instanceof RubyString) return (RubyString)result;
-                throw session.getRuntime().newTypeError("to_json must return a String");
+                if (object.respondsTo("to_json")) {
+                    IRubyObject result = object.callMethod(session.getContext(), "to_json",
+                              new IRubyObject[] {session.getState()});
+                    if (result instanceof RubyString) return (RubyString)result;
+                    throw session.getRuntime().newTypeError("to_json must return a String");
+                } else {
+                    return OBJECT_HANDLER.generateNew(session, object);
+                }
             }
 
             @Override
