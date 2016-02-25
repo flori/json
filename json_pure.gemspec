@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Florian Frank"]
-  s.date = "2016-02-24"
+  s.date = "2016-02-25"
   s.description = "This is a JSON implementation in pure Ruby."
   s.email = "flori@ping.de"
   s.extra_rdoc_files = ["README.md"]
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://flori.github.com/json"
   s.licenses = ["Ruby"]
   s.rdoc_options = ["--title", "JSON implemention for ruby", "--main", "README.md"]
-  s.rubygems_version = "2.5.1"
+  s.rubygems_version = "2.5.0"
   s.summary = "JSON Implementation for Ruby"
   s.test_files = ["./tests/test_json.rb", "./tests/test_json_addition.rb", "./tests/test_json_encoding.rb", "./tests/test_json_fixtures.rb", "./tests/test_json_generate.rb", "./tests/test_json_generic_object.rb", "./tests/test_json_string_matching.rb", "./tests/test_json_unicode.rb"]
 
@@ -25,10 +25,13 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rake>, [">= 0"])
+      s.add_development_dependency(%q<test-unit>, [">= 0"])
     else
       s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<test-unit>, [">= 0"])
     end
   else
     s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<test-unit>, [">= 0"])
   end
 end
