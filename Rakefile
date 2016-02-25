@@ -84,7 +84,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'rake'
-    s.add_development_dependency 'test-unit', '~> 2.0'
+    s.add_development_dependency 'test-unit'
 
     s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
@@ -121,7 +121,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'rake'
-    s.add_development_dependency 'test-unit', '~> 2.0'
+    s.add_development_dependency 'test-unit'
 
     s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
