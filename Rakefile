@@ -83,11 +83,12 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.files = PKG_FILES
 
     s.require_path = 'lib'
+    s.add_development_dependency 'rake'
 
-    s.extra_rdoc_files << 'README.rdoc'
+    s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
-      '--title' <<  'JSON implemention for ruby' << '--main' << 'README.rdoc'
-    s.test_files.concat Dir['./tests/*_test.rb']
+      '--title' <<  'JSON implemention for ruby' << '--main' << 'README.md'
+    s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -119,10 +120,10 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
 
-    s.extra_rdoc_files << 'README.rdoc'
+    s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
-      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.rdoc'
-    s.test_files.concat Dir['./tests/*_test.rb']
+      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.md'
+    s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
@@ -334,11 +335,6 @@ else
     t.test_files = FileList['tests/*_test.rb']
     t.verbose = true
     t.options = '-v'
-  end
-
-  desc "Create RDOC documentation"
-  task :doc => [ :version, EXT_PARSER_SRC ] do
-    sh "rdoc -o doc -t '#{PKG_TITLE}' -m README.rdoc README.rdoc lib/json.rb #{FileList['lib/json/**/*.rb']} #{EXT_PARSER_SRC} #{EXT_GENERATOR_SRC}"
   end
 
   desc "Generate parser with ragel"

@@ -1,3 +1,7 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+# frozen_string_literal: false
+
 require 'test_helper'
 
 class JSONGeneratorTest < Test::Unit::TestCase
@@ -361,5 +365,16 @@ EOT
     data = ["'"]
     json = '["\\\'"]'
     assert_equal '["\'"]', generate(data)
+  end
+
+  def test_string_subclass
+    s = Class.new(String) do
+      def to_s; self; end
+      undef to_json
+    end
+    assert_nothing_raised(SystemStackError) do
+      assert_equal '["foo"]', JSON.generate([s.new('foo')])
+    end
+
   end
 end

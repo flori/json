@@ -11,16 +11,17 @@ rvm:
   - 2.1
   - 2.2.1
   - 2.2.2
+  - 2.2.3
   - 2.2
+  - 2.3.0
   - ree
-  - rbx-2
-  - jruby-18mode
-  - jruby-19mode
   - ruby-head
 matrix:
+  include:
+    - rvm: jruby
+      env: JRUBY_OPTS="--2.0"
   allow_failures:
     - rvm: rbx-2
     - rvm: ruby-head
 script: "bundle exec rake"
-
 sudo: false

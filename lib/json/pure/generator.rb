@@ -357,7 +357,11 @@ module JSON
               result << state.space_before
               result << ':'
               result << state.space
-              result << value.to_json(state)
+              if value.respond_to?(:to_json)
+                result << value.to_json(state)
+              else
+                result << %{"#{String(value)}"}
+              end
               first = false
             }
             depth = state.depth -= 1
@@ -392,7 +396,11 @@ module JSON
             each { |value|
               result << delim unless first
               result << state.indent * depth if indent
-              result << value.to_json(state)
+              if value.respond_to?(:to_json)
+                result << value.to_json(state)
+              else
+                result << %{"#{String(value)}"}
+              end
               first = false
             }
             depth = state.depth -= 1
