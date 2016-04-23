@@ -695,7 +695,6 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->object_class = Qnil;
         json->array_class = Qnil;
     }
-    source = rb_convert_type(source, T_STRING, "String", "to_str");
     source = convert_encoding(StringValue(source));
     json->current_nesting = 0;
     StringValue(source);

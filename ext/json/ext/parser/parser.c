@@ -1842,7 +1842,6 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->object_class = Qnil;
         json->array_class = Qnil;
     }
-    source = rb_convert_type(source, T_STRING, "String", "to_str");
     source = convert_encoding(StringValue(source));
     json->current_nesting = 0;
     StringValue(source);
@@ -1853,6 +1852,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
+<<<<<<< 949543418c0888d7deba00a93e08b7f56637ce9b
 <<<<<<< dad1dad53ad48946bf2a8de60b8fb419e1180bf0
 #line 1813 "parser.c"
 static const int JSON_start = 1;
@@ -1860,6 +1860,9 @@ static const int JSON_first_final = 10;
 static const int JSON_error = 0;
 =======
 #line 1788 "parser.c"
+=======
+#line 1787 "parser.c"
+>>>>>>> Remove unnecessary conversion
 enum {JSON_start = 1};
 enum {JSON_first_final = 10};
 enum {JSON_error = 0};
@@ -1868,7 +1871,11 @@ enum {JSON_error = 0};
 enum {JSON_en_main = 1};
 
 
+<<<<<<< 949543418c0888d7deba00a93e08b7f56637ce9b
 #line 721 "parser.rl"
+=======
+#line 695 "parser.rl"
+>>>>>>> Remove unnecessary conversion
 
 
 /*
@@ -1885,16 +1892,28 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
+<<<<<<< 949543418c0888d7deba00a93e08b7f56637ce9b
 #line 1838 "parser.c"
+=======
+#line 1812 "parser.c"
+>>>>>>> Remove unnecessary conversion
 	{
 	cs = JSON_start;
 	}
 
+<<<<<<< 949543418c0888d7deba00a93e08b7f56637ce9b
 #line 737 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
 #line 1847 "parser.c"
+=======
+#line 711 "parser.rl"
+  p = json->source;
+  pe = p + json->len;
+
+#line 1821 "parser.c"
+>>>>>>> Remove unnecessary conversion
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1928,7 +1947,11 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
+<<<<<<< 949543418c0888d7deba00a93e08b7f56637ce9b
 #line 713 "parser.rl"
+=======
+#line 687 "parser.rl"
+>>>>>>> Remove unnecessary conversion
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1938,7 +1961,11 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
+<<<<<<< 949543418c0888d7deba00a93e08b7f56637ce9b
 #line 1891 "parser.c"
+=======
+#line 1865 "parser.c"
+>>>>>>> Remove unnecessary conversion
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -2027,7 +2054,11 @@ case 9:
 	_out: {}
 	}
 
+<<<<<<< 949543418c0888d7deba00a93e08b7f56637ce9b
 #line 740 "parser.rl"
+=======
+#line 714 "parser.rl"
+>>>>>>> Remove unnecessary conversion
 
   if (cs >= JSON_first_final && p == pe) {
     return result;
