@@ -1,3 +1,4 @@
+#frozen_string_literal: false
 require 'test_helper'
 
 class JSONFixturesTest < Test::Unit::TestCase
@@ -22,7 +23,7 @@ class JSONFixturesTest < Test::Unit::TestCase
 
   def test_failing
     for name, source in @failed
-      assert_raises(JSON::ParserError, JSON::NestingError,
+      assert_raise(JSON::ParserError, JSON::NestingError,
         "Did not fail for fixture '#{name}': #{source.inspect}") do
         JSON.parse(source)
       end
