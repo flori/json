@@ -38,7 +38,7 @@ class JSONEncodingTest < Test::Unit::TestCase
     else
       # XXX checking of correct utf8 data is not as strict (yet?) without
       # :ascii_only
-      assert_raises(JSON::GeneratorError) do
+      assert_raise(JSON::GeneratorError) do
         JSON.generate(@utf_16_data, :ascii_only => true)
       end
     end
