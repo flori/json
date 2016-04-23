@@ -742,7 +742,7 @@ static VALUE cParser_parse(VALUE self)
   if (cs >= JSON_first_final && p == pe) {
     return result;
   } else {
-    rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+    rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p);
     return Qnil;
   }
 }

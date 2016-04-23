@@ -1810,7 +1810,11 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
+<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 1814 "parser.c"
+=======
+#line 1801 "parser.c"
+>>>>>>> Exception encoding
 enum {JSON_start = 1};
 enum {JSON_first_final = 10};
 enum {JSON_error = 0};
@@ -1818,7 +1822,11 @@ enum {JSON_error = 0};
 enum {JSON_en_main = 1};
 
 
+<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 722 "parser.rl"
+=======
+#line 709 "parser.rl"
+>>>>>>> Exception encoding
 
 
 /*
@@ -1835,16 +1843,28 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
+<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 1839 "parser.c"
+=======
+#line 1826 "parser.c"
+>>>>>>> Exception encoding
 	{
 	cs = JSON_start;
 	}
 
+<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 738 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
 #line 1848 "parser.c"
+=======
+#line 725 "parser.rl"
+  p = json->source;
+  pe = p + json->len;
+
+#line 1835 "parser.c"
+>>>>>>> Exception encoding
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1878,7 +1898,11 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
+<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 714 "parser.rl"
+=======
+#line 701 "parser.rl"
+>>>>>>> Exception encoding
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1888,7 +1912,11 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
+<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 1892 "parser.c"
+=======
+#line 1879 "parser.c"
+>>>>>>> Exception encoding
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1977,12 +2005,16 @@ case 9:
 	_out: {}
 	}
 
+<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 741 "parser.rl"
+=======
+#line 728 "parser.rl"
+>>>>>>> Exception encoding
 
   if (cs >= JSON_first_final && p == pe) {
     return result;
   } else {
-    rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+    rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p);
     return Qnil;
   }
 }
