@@ -108,7 +108,7 @@ class JSONAdditionTest < Test::Unit::TestCase
     c = C.new
     assert !C.json_creatable?
     json = generate(c)
-    assert_raises(ArgumentError, NameError) { parse(json, :create_additions => true) }
+    assert_raise(ArgumentError, NameError) { parse(json, :create_additions => true) }
   end
 
   def test_raw_strings
@@ -147,7 +147,7 @@ class JSONAdditionTest < Test::Unit::TestCase
     assert_equal s, JSON(JSON(s), :create_additions => true)
     struct = Struct.new :foo, :bar
     s = struct.new 4711, 'foot'
-    assert_raises(JSONError) { JSON(s) }
+    assert_raise(JSONError) { JSON(s) }
     begin
       raise TypeError, "test me"
     rescue TypeError => e

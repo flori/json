@@ -52,7 +52,7 @@ class JSONParserTest < Test::Unit::TestCase
     assert_equal({ "a" => nil }, parse('{"a":null}'))
     assert_equal({ "a" => false }, parse('{   "a"  :  false  }  '))
     assert_equal({ "a" => false }, parse('{"a":false}'))
-    assert_raises(JSON::ParserError) { parse('{false}') }
+    assert_raise(JSON::ParserError) { parse('{false}') }
     assert_equal({ "a" => true }, parse('{"a":true}'))
     assert_equal({ "a" => true }, parse('  { "a" :  true  }   '))
     assert_equal({ "a" => -23 }, parse('  {  "a"  :  -23  }  '))
@@ -64,10 +64,10 @@ class JSONParserTest < Test::Unit::TestCase
   end
 
   def test_parse_numbers
-    assert_raises(JSON::ParserError) { parse('+23.2') }
-    assert_raises(JSON::ParserError) { parse('+23') }
-    assert_raises(JSON::ParserError) { parse('.23') }
-    assert_raises(JSON::ParserError) { parse('023') }
+    assert_raise(JSON::ParserError) { parse('+23.2') }
+    assert_raise(JSON::ParserError) { parse('+23') }
+    assert_raise(JSON::ParserError) { parse('.23') }
+    assert_raise(JSON::ParserError) { parse('023') }
     assert_equal 23, parse('23')
     assert_equal -23, parse('-23')
     assert_equal_float 3.141, parse('3.141')
@@ -78,11 +78,11 @@ class JSONParserTest < Test::Unit::TestCase
     assert_equal_float 3.141, parse('3141.0E-3')
     assert_equal_float -3.141, parse('-3141.0e-3')
     assert_equal_float -3.141, parse('-3141e-3')
-    assert_raises(ParserError) { parse('NaN') }
+    assert_raise(ParserError) { parse('NaN') }
     assert parse('NaN', :allow_nan => true).nan?
-    assert_raises(ParserError) { parse('Infinity') }
+    assert_raise(ParserError) { parse('Infinity') }
     assert_equal 1.0/0, parse('Infinity', :allow_nan => true)
-    assert_raises(ParserError) { parse('-Infinity') }
+    assert_raise(ParserError) { parse('-Infinity') }
     assert_equal -1.0/0, parse('-Infinity', :allow_nan => true)
   end
 
@@ -165,19 +165,19 @@ class JSONParserTest < Test::Unit::TestCase
   end
 
   def test_some_wrong_inputs
-    assert_raises(ParserError) { parse('[] bla') }
-    assert_raises(ParserError) { parse('[] 1') }
-    assert_raises(ParserError) { parse('[] []') }
-    assert_raises(ParserError) { parse('[] {}') }
-    assert_raises(ParserError) { parse('{} []') }
-    assert_raises(ParserError) { parse('{} {}') }
-    assert_raises(ParserError) { parse('[NULL]') }
-    assert_raises(ParserError) { parse('[FALSE]') }
-    assert_raises(ParserError) { parse('[TRUE]') }
-    assert_raises(ParserError) { parse('[07]    ') }
-    assert_raises(ParserError) { parse('[0a]') }
-    assert_raises(ParserError) { parse('[1.]') }
-    assert_raises(ParserError) { parse('     ') }
+    assert_raise(ParserError) { parse('[] bla') }
+    assert_raise(ParserError) { parse('[] 1') }
+    assert_raise(ParserError) { parse('[] []') }
+    assert_raise(ParserError) { parse('[] {}') }
+    assert_raise(ParserError) { parse('{} []') }
+    assert_raise(ParserError) { parse('{} {}') }
+    assert_raise(ParserError) { parse('[NULL]') }
+    assert_raise(ParserError) { parse('[FALSE]') }
+    assert_raise(ParserError) { parse('[TRUE]') }
+    assert_raise(ParserError) { parse('[07]    ') }
+    assert_raise(ParserError) { parse('[0a]') }
+    assert_raise(ParserError) { parse('[1.]') }
+    assert_raise(ParserError) { parse('     ') }
   end
 
   def test_symbolize_names
@@ -212,7 +212,7 @@ EOT
                     *  comment */
 }
 EOT
-    assert_raises(ParserError) { parse(json) }
+    assert_raise(ParserError) { parse(json) }
     json = <<EOT
 {
   "key1":"value1"  /* multi line
@@ -221,7 +221,7 @@ EOT
                    and again, throw an Error */
 }
 EOT
-    assert_raises(ParserError) { parse(json) }
+    assert_raise(ParserError) { parse(json) }
     json = <<EOT
 {
   "key1":"value1"  /*/*/
@@ -233,8 +233,8 @@ EOT
   def test_nesting
     too_deep = '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["Too deep"]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
     too_deep_ary = eval too_deep
-    assert_raises(JSON::NestingError) { parse too_deep }
-    assert_raises(JSON::NestingError) { parse too_deep, :max_nesting => 100 }
+    assert_raise(JSON::NestingError) { parse too_deep }
+    assert_raise(JSON::NestingError) { parse too_deep, :max_nesting => 100 }
     ok = parse too_deep, :max_nesting => 101
     assert_equal too_deep_ary, ok
     ok = parse too_deep, :max_nesting => nil
