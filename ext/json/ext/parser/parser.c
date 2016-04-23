@@ -1773,7 +1773,6 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->object_class = Qnil;
         json->array_class = Qnil;
     }
-    source = rb_convert_type(source, T_STRING, "String", "to_str");
     source = convert_encoding(StringValue(source));
     json->current_nesting = 0;
     StringValue(source);
@@ -1784,7 +1783,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1788 "parser.c"
+#line 1787 "parser.c"
 enum {JSON_start = 1};
 enum {JSON_first_final = 10};
 enum {JSON_error = 0};
@@ -1792,7 +1791,7 @@ enum {JSON_error = 0};
 enum {JSON_en_main = 1};
 
 
-#line 696 "parser.rl"
+#line 695 "parser.rl"
 
 
 /*
@@ -1809,16 +1808,16 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
-#line 1813 "parser.c"
+#line 1812 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 712 "parser.rl"
+#line 711 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
-#line 1822 "parser.c"
+#line 1821 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1852,7 +1851,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 688 "parser.rl"
+#line 687 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1862,7 +1861,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1866 "parser.c"
+#line 1865 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1951,7 +1950,7 @@ case 9:
 	_out: {}
 	}
 
-#line 715 "parser.rl"
+#line 714 "parser.rl"
 
   if (cs >= JSON_first_final && p == pe) {
     return result;
