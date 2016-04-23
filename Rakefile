@@ -361,6 +361,7 @@ else
         sh "ragel -x parser.rl | #{RAGEL_CODEGEN} -G2"
       end
       src = File.read("parser.c").gsub(/[ \t]+$/, '')
+      src.gsub!(/^static const int (JSON_.*=.*);$/, 'enum {\1};')
       File.open("parser.c", "w") {|f| f.print src}
     end
   end
