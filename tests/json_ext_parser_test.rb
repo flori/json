@@ -1,3 +1,4 @@
+#frozen_string_literal: false
 require 'test_helper'
 
 class JSONExtParserTest < Test::Unit::TestCase

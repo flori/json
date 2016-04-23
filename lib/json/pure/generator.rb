@@ -1,3 +1,4 @@
+#frozen_string_literal: false
 module JSON
   MAP = {
     "\x0" => '\u0000',
