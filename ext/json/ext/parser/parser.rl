@@ -65,14 +65,6 @@ static int convert_UTF32_to_UTF8(char *buf, UTF32 ch)
     return len;
 }
 
-#ifdef HAVE_RUBY_ENCODING_H
-static VALUE CEncoding_UTF_8;
-
-static ID i_encode;
-#else
-static ID i_iconv;
-#endif
-
 static VALUE mJSON, mExt, cParser, eParserError, eNestingError;
 static VALUE CNaN, CInfinity, CMinusInfinity;
 
@@ -552,7 +544,7 @@ static VALUE convert_encoding(VALUE source)
 {
 #ifdef HAVE_RUBY_ENCODING_H
     {
-        source = rb_funcall(source, i_encode, 1, CEncoding_UTF_8);
+        source = rb_str_conv_enc(source, NULL, rb_utf8_encoding());
     }
 #endif
     return source;
@@ -808,12 +800,6 @@ void Init_parser(void)
     i_aset = rb_intern("[]=");
     i_aref = rb_intern("[]");
     i_leftshift = rb_intern("<<");
-#ifdef HAVE_RUBY_ENCODING_H
-    CEncoding_UTF_8 = rb_funcall(rb_path2class("Encoding"), rb_intern("find"), 1, rb_str_new2("utf-8"));
-    i_encode = rb_intern("encode");
-#else
-    i_iconv = rb_intern("iconv");
-#endif
 }
 
 /*
