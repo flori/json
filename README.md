@@ -25,13 +25,6 @@ encoded, please use the to\_json\_raw\_object method of String (which produces
 an object, that contains a byte array) and decode the result on the receiving
 endpoint.
 
-The JSON parsers can parse UTF-8, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE
-JSON documents under Ruby 1.8. Under Ruby 1.9 they take advantage of Ruby's
-M17n features and can parse all documents which have the correct
-String#encoding set. If a document string has ASCII-8BIT as an encoding the
-parser attempts to figure out which of the UTF encodings from above it is and
-trys to parse it.
-
 ## Installation
 
 It's recommended to use the extension variant of JSON, because it's faster than
@@ -90,10 +83,6 @@ If you want to generate a JSON document from a ruby data structure call
 You can also use the pretty\_generate method (which formats the output more
 verbosely and nicely) or fast\_generate (which doesn't do any of the security
 checks generate performs, e. g. nesting deepness checks).
-
-To create a valid JSON document you have to make sure, that the output is
-embedded in either a JSON array [] or a JSON object {}. The easiest way to do
-this, is by putting your values in a Ruby Array or Hash instance.
 
 There are also the JSON and JSON[] methods which use parse on a String or
 generate a JSON document from an array or hash:
