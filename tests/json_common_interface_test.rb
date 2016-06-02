@@ -71,9 +71,9 @@ class JSONCommonInterfaceTest < Test::Unit::TestCase
   end
 
   def test_load_null
-    assert_equal nil, JSON.load(nil, nil, :allow_null => true)
-    assert_raises(TypeError) { JSON.load(nil, nil, :allow_null => false) }
-    assert_raises(JSON::ParserError) { JSON.load('', nil, :allow_null => false) }
+    assert_equal nil, JSON.load(nil, nil, :allow_blank => true)
+    assert_raises(TypeError) { JSON.load(nil, nil, :allow_blank => false) }
+    assert_raises(JSON::ParserError) { JSON.load('', nil, :allow_blank => false) }
   end
 
   def test_dump

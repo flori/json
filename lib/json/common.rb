@@ -295,13 +295,13 @@ module JSON
     # The global default options for the JSON.load method:
     #  :max_nesting: false
     #  :allow_nan:   true
-    #  :allow_null:  true
+    #  :allow_blank:  true
     attr_accessor :load_default_options
   end
   self.load_default_options = {
     :max_nesting      => false,
     :allow_nan        => true,
-    :allow_null       => true,
+    :allow_blank       => true,
     :create_additions => true,
   }
 
@@ -328,7 +328,7 @@ module JSON
     elsif source.respond_to?(:read)
       source = source.read
     end
-    if opts[:allow_null] && (source.nil? || source.empty?)
+    if opts[:allow_blank] && (source.nil? || source.empty?)
       source = 'null'
     end
     result = parse(source, opts)
@@ -357,7 +357,7 @@ module JSON
     # The global default options for the JSON.dump method:
     #  :max_nesting: false
     #  :allow_nan:   true
-    #  :allow_null: true
+    #  :allow_blank: true
     attr_accessor :dump_default_options
   end
   self.dump_default_options = {
