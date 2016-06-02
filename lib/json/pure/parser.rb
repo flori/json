@@ -69,13 +69,9 @@ module JSON
       #   option defaults to false.
       # * *object_class*: Defaults to Hash
       # * *array_class*: Defaults to Array
-      # * *quirks_mode*: Enables quirks_mode for parser, that is for example
-      #   parsing single JSON values instead of documents is possible.
       def initialize(source, opts = {})
         opts ||= {}
-        unless @quirks_mode = opts[:quirks_mode]
-          source = convert_encoding source
-        end
+        source = convert_encoding source
         super source
         if !opts.key?(:max_nesting) # defaults to 100
           @max_nesting = 100
@@ -101,10 +97,6 @@ module JSON
       end
 
       alias source string
-
-      def quirks_mode?
-        !!@quirks_mode
-      end
 
       def reset
         super
@@ -138,10 +130,8 @@ module JSON
           raise TypeError,
             "#{source.inspect} is not like a string"
         end
-        if defined?(::Encoding)
-          source = source.encode(::Encoding::UTF_8)
-          source.force_encoding(::Encoding::ASCII_8BIT)
-        end
+        source = source.encode(::Encoding::UTF_8)
+        source.force_encoding(::Encoding::ASCII_8BIT)
         source
       end
 

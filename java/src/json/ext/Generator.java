@@ -172,9 +172,7 @@ public final class Generator {
             result = RubyString.newString(session.getRuntime(), buffer);
             ThreadContext context = session.getContext();
             RuntimeInfo info = session.getInfo();
-            if (info.encodingsSupported()) {
-                result.force_encoding(context, info.utf8.get());
-            }
+            result.force_encoding(context, info.utf8.get());
             return result;
         }
 
@@ -381,8 +379,7 @@ public final class Generator {
                 RuntimeInfo info = session.getInfo();
                 RubyString src;
 
-                if (info.encodingsSupported() &&
-                        object.encoding(session.getContext()) != info.utf8.get()) {
+                if (object.encoding(session.getContext()) != info.utf8.get()) {
                     src = (RubyString)object.encode(session.getContext(),
                                                     info.utf8.get());
                 } else {

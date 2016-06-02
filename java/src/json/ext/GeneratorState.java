@@ -208,9 +208,7 @@ public class GeneratorState extends RubyObject {
     public IRubyObject generate(ThreadContext context, IRubyObject obj) {
         RubyString result = Generator.generateJson(context, obj, this);
         RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
-        if (info.encodingsSupported()) {
-            result.force_encoding(context, info.utf8.get());
-        }
+        result.force_encoding(context, info.utf8.get());
         return result;
     }
 
@@ -412,7 +410,7 @@ public class GeneratorState extends RubyObject {
     private ByteList prepareByteList(ThreadContext context, IRubyObject value) {
         RubyString str = value.convertToString();
         RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
-        if (info.encodingsSupported() && str.encoding(context) != info.utf8.get()) {
+        if (str.encoding(context) != info.utf8.get()) {
             str = (RubyString)str.encode(context, info.utf8.get());
         }
         return str.getByteList().dup();

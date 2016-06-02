@@ -137,7 +137,7 @@ class JSONParserTest < Test::Unit::TestCase
     assert parse('NaN', :allow_nan => true).nan?
     assert parse('Infinity', :allow_nan => true).infinite?
     assert parse('-Infinity', :allow_nan => true).infinite?
-    assert_raise(JSON::ParserError) { parse('[ 1, ]', :quirks_mode => true) }
+    assert_raise(JSON::ParserError) { parse('[ 1, ]') }
   end
 
   def test_parse_some_strings

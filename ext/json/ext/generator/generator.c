@@ -14,7 +14,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
-          i_quirks_mode, i_pack, i_unpack, i_create_id, i_extend, i_key_p,
+          i_pack, i_unpack, i_create_id, i_extend, i_key_p,
           i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
           i_buffer_initial_length, i_dup;
 
@@ -622,8 +622,6 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     state->allow_nan = RTEST(tmp);
     tmp = rb_hash_aref(opts, ID2SYM(i_ascii_only));
     state->ascii_only = RTEST(tmp);
-    tmp = rb_hash_aref(opts, ID2SYM(i_quirks_mode));
-    state->quirks_mode = RTEST(tmp);
     return self;
 }
 
@@ -657,7 +655,6 @@ static VALUE cState_to_h(VALUE self)
     rb_hash_aset(result, ID2SYM(i_array_nl), rb_str_new(state->array_nl, state->array_nl_len));
     rb_hash_aset(result, ID2SYM(i_allow_nan), state->allow_nan ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_ascii_only), state->ascii_only ? Qtrue : Qfalse);
-    rb_hash_aset(result, ID2SYM(i_quirks_mode), state->quirks_mode ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_max_nesting), LONG2FIX(state->max_nesting));
     rb_hash_aset(result, ID2SYM(i_depth), LONG2FIX(state->depth));
     rb_hash_aset(result, ID2SYM(i_buffer_initial_length), LONG2FIX(state->buffer_initial_length));
@@ -943,8 +940,6 @@ static VALUE cState_generate(VALUE self, VALUE obj)
  * * *allow_nan*: true if NaN, Infinity, and -Infinity should be
  *   generated, otherwise an exception is thrown, if these values are
  *   encountered. This options defaults to false.
- * * *quirks_mode*: Enables quirks_mode for parser, that is for example
- *   generating single JSON values instead of documents is possible.
  * * *buffer_initial_length*: sets the initial length of the generator's
  *   internal buffer.
  */
@@ -1252,29 +1247,6 @@ static VALUE cState_ascii_only_p(VALUE self)
 }
 
 /*
- * call-seq: quirks_mode?
- *
- * Returns true, if quirks mode is enabled. Otherwise returns false.
- */
-static VALUE cState_quirks_mode_p(VALUE self)
-{
-    GET_STATE(self);
-    return state->quirks_mode ? Qtrue : Qfalse;
-}
-
-/*
- * call-seq: quirks_mode=(enable)
- *
- * If set to true, enables the quirks_mode mode.
- */
-static VALUE cState_quirks_mode_set(VALUE self, VALUE enable)
-{
-    GET_STATE(self);
-    state->quirks_mode = RTEST(enable);
-    return Qnil;
-}
-
-/*
  * call-seq: depth
  *
  * This integer returns the current depth of data structure nesting.
@@ -1362,9 +1334,6 @@ void Init_generator(void)
     rb_define_method(cState, "check_circular?", cState_check_circular_p, 0);
     rb_define_method(cState, "allow_nan?", cState_allow_nan_p, 0);
     rb_define_method(cState, "ascii_only?", cState_ascii_only_p, 0);
-    rb_define_method(cState, "quirks_mode?", cState_quirks_mode_p, 0);
-    rb_define_method(cState, "quirks_mode", cState_quirks_mode_p, 0);
-    rb_define_method(cState, "quirks_mode=", cState_quirks_mode_set, 1);
     rb_define_method(cState, "depth", cState_depth, 0);
     rb_define_method(cState, "depth=", cState_depth_set, 1);
     rb_define_method(cState, "buffer_initial_length", cState_buffer_initial_length, 0);
@@ -1416,7 +1385,6 @@ void Init_generator(void)
     i_max_nesting = rb_intern("max_nesting");
     i_allow_nan = rb_intern("allow_nan");
     i_ascii_only = rb_intern("ascii_only");
-    i_quirks_mode = rb_intern("quirks_mode");
     i_depth = rb_intern("depth");
     i_buffer_initial_length = rb_intern("buffer_initial_length");
     i_pack = rb_intern("pack");

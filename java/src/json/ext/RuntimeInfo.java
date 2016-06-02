@@ -90,10 +90,6 @@ final class RuntimeInfo {
         }
     }
 
-    public boolean encodingsSupported() {
-        return utf8 != null && utf8.get() != null;
-    }
-
     public RubyEncoding getEncoding(ThreadContext context, String name) {
         synchronized (encodings) {
             WeakReference<RubyEncoding> encoding = encodings.get(name);

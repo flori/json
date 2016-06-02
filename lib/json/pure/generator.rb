@@ -154,8 +154,6 @@ module JSON
         # * *allow_nan*: true if NaN, Infinity, and -Infinity should be
         #   generated, otherwise an exception is thrown, if these values are
         #   encountered. This options defaults to false.
-        # * *quirks_mode*: Enables quirks_mode for parser, that is for example
-        #   generating single JSON values instead of documents is possible.
         def initialize(opts = {})
           @indent                = ''
           @space                 = ''
@@ -164,7 +162,6 @@ module JSON
           @array_nl              = ''
           @allow_nan             = false
           @ascii_only            = false
-          @quirks_mode           = false
           @buffer_initial_length = 1024
           configure opts
         end
@@ -189,10 +186,6 @@ module JSON
         # This integer returns the maximum level of data structure nesting in
         # the generated JSON, max_nesting = 0 if no maximum is checked.
         attr_accessor :max_nesting
-
-        # If this attribute is set to true, quirks mode is enabled, otherwise
-        # it's disabled.
-        attr_accessor :quirks_mode
 
         # :stopdoc:
         attr_reader :buffer_initial_length
@@ -233,11 +226,6 @@ module JSON
           @ascii_only
         end
 
-        # Returns true, if quirks mode is enabled. Otherwise returns false.
-        def quirks_mode?
-          @quirks_mode
-        end
-
         # Configure this State instance with the Hash _opts_, and return
         # itself.
         def configure(opts)
@@ -259,7 +247,6 @@ module JSON
           @allow_nan             = !!opts[:allow_nan] if opts.key?(:allow_nan)
           @ascii_only            = opts[:ascii_only] if opts.key?(:ascii_only)
           @depth                 = opts[:depth] || 0
-          @quirks_mode           = opts[:quirks_mode] if opts.key?(:quirks_mode)
           @buffer_initial_length ||= opts[:buffer_initial_length]
 
           if !opts.key?(:max_nesting) # defaults to 100

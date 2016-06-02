@@ -70,6 +70,12 @@ class JSONCommonInterfaceTest < Test::Unit::TestCase
     assert JSON.load(json, nil, :allow_nan => true)['foo'].nan?
   end
 
+  def test_load_null
+    assert_equal nil, JSON.load(nil, nil, :allow_null => true)
+    assert_raises(TypeError) { JSON.load(nil, nil, :allow_null => false) }
+    assert_raises(JSON::ParserError) { JSON.load('', nil, :allow_null => false) }
+  end
+
   def test_dump
     too_deep = '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
     assert_equal too_deep, dump(eval(too_deep))
@@ -91,7 +97,6 @@ class JSONCommonInterfaceTest < Test::Unit::TestCase
     dump([], StringIO.new, 10)
     assert_equal max_nesting, JSON.dump_default_options[:max_nesting]
   end
-
 
   def test_JSON
   end
