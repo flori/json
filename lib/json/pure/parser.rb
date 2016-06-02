@@ -58,7 +58,7 @@ module JSON
       #   structures. Disable depth checking with :max_nesting => false|nil|0,
       #   it defaults to 100.
       # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
-      #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
+      #   defiance of RFC 7159 to be parsed by the Parser. This option defaults
       #   to false.
       # * *symbolize_names*: If set to true, returns symbols for the names
       #   (keys) in a JSON object. Otherwise strings are returned, which is

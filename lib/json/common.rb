@@ -141,7 +141,7 @@ module JSON
   #   structures. Disable depth checking with :max_nesting => false. It
   #   defaults to 100.
   # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
-  #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
+  #   defiance of RFC 7159 to be parsed by the Parser. This option defaults
   #   to false.
   # * *symbolize_names*: If set to true, returns symbols for the names
   #   (keys) in a JSON object. Otherwise strings are returned. Strings are
@@ -165,7 +165,7 @@ module JSON
   #   parse! methods defaults to not doing max depth checking: This can be
   #   dangerous if someone wants to fill up your stack.
   # * *allow_nan*: If set to true, allow NaN, Infinity, and -Infinity in
-  #   defiance of RFC 4627 to be parsed by the Parser. This option defaults
+  #   defiance of RFC 7159 to be parsed by the Parser. This option defaults
   #   to true.
   # * *create_additions*: If set to false, the Parser doesn't create
   #   additions even if a matching class and create_id was found. This option
@@ -402,27 +402,9 @@ module JSON
     raise ArgumentError, "exceed depth limit"
   end
 
-  # Swap consecutive bytes of _string_ in place.
-  def self.swap!(string) # :nodoc:
-    0.upto(string.size / 2) do |i|
-      break unless string[2 * i + 1]
-      string[2 * i], string[2 * i + 1] = string[2 * i + 1], string[2 * i]
-    end
-    string
-  end
-
-  # Shortcut for iconv.
-  if ::String.method_defined?(:encode)
-    # Encodes string using Ruby's _String.encode_
-    def self.iconv(to, from, string)
-      string.encode(to, from)
-    end
-  else
-    require 'iconv'
-    # Encodes string using _iconv_ library
-    def self.iconv(to, from, string)
-      Iconv.conv(to, from, string)
-    end
+  # Encodes string using Ruby's _String.encode_
+  def self.iconv(to, from, string)
+    string.encode(to, from)
   end
 
   if ::Object.method(:const_defined?).arity == 1
