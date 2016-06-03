@@ -1,7 +1,4 @@
 require 'test_helper'
-require 'stringio'
-require 'tempfile'
-require 'ostruct'
 
 class JSONExtParserTest < Test::Unit::TestCase
   if defined?(JSON::Ext::Parser)

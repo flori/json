@@ -372,6 +372,5 @@ EOT
     assert_nothing_raised(SystemStackError) do
       assert_equal '["foo"]', JSON.generate([s.new('foo')])
     end
-
   end
 end

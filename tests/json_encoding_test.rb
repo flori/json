@@ -34,15 +34,7 @@ class JSONEncodingTest < Test::Unit::TestCase
 
   def test_generate
     assert_equal @generated, JSON.generate(@parsed, :ascii_only => true)
-    if defined?(::Encoding)
-      assert_equal @generated, JSON.generate(@utf_16_data, :ascii_only => true)
-    else
-      # XXX checking of correct utf8 data is not as strict (yet?) without
-      # :ascii_only
-      assert_raises(JSON::GeneratorError) do
-        JSON.generate(@utf_16_data, :ascii_only => true)
-      end
-    end
+    assert_equal @generated, JSON.generate(@utf_16_data, :ascii_only => true)
   end
 
   def test_unicode

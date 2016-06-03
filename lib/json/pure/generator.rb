@@ -38,84 +38,44 @@ module JSON
 
   # Convert a UTF8 encoded Ruby string _string_ to a JSON string, encoded with
   # UTF16 big endian characters as \u????, and return it.
-  if defined?(::Encoding)
-    def utf8_to_json(string) # :nodoc:
-      string = string.dup
-      string.force_encoding(::Encoding::ASCII_8BIT)
-      string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
-      string.force_encoding(::Encoding::UTF_8)
-      string
-    end
+  def utf8_to_json(string) # :nodoc:
+    string = string.dup
+    string.force_encoding(::Encoding::ASCII_8BIT)
+    string.gsub!(/["\\\x0-\x1f]/) { MAP[$&] }
+    string.force_encoding(::Encoding::UTF_8)
+    string
+  end
 
-    def utf8_to_json_ascii(string) # :nodoc:
-      string = string.dup
-      string.force_encoding(::Encoding::ASCII_8BIT)
-      string.gsub!(/["\\\x0-\x1f]/n) { MAP[$&] }
-      string.gsub!(/(
-                      (?:
-                        [\xc2-\xdf][\x80-\xbf]    |
-                        [\xe0-\xef][\x80-\xbf]{2} |
-                        [\xf0-\xf4][\x80-\xbf]{3}
-                      )+ |
-                      [\x80-\xc1\xf5-\xff]       # invalid
-                    )/nx) { |c|
-                      c.size == 1 and raise GeneratorError, "invalid utf8 byte: '#{c}'"
-                      s = JSON.iconv('utf-16be', 'utf-8', c).unpack('H*')[0]
-                      s.force_encoding(::Encoding::ASCII_8BIT)
-                      s.gsub!(/.{4}/n, '\\\\u\&')
-                      s.force_encoding(::Encoding::UTF_8)
-                    }
-      string.force_encoding(::Encoding::UTF_8)
-      string
-    rescue => e
-      raise GeneratorError.wrap(e)
-    end
+  def utf8_to_json_ascii(string) # :nodoc:
+    string = string.dup
+    string.force_encoding(::Encoding::ASCII_8BIT)
+    string.gsub!(/["\\\x0-\x1f]/n) { MAP[$&] }
+    string.gsub!(/(
+      (?:
+       [\xc2-\xdf][\x80-\xbf]    |
+       [\xe0-\xef][\x80-\xbf]{2} |
+       [\xf0-\xf4][\x80-\xbf]{3}
+      )+ |
+      [\x80-\xc1\xf5-\xff]       # invalid
+    )/nx) { |c|
+      c.size == 1 and raise GeneratorError, "invalid utf8 byte: '#{c}'"
+      s = JSON.iconv('utf-16be', 'utf-8', c).unpack('H*')[0]
+      s.force_encoding(::Encoding::ASCII_8BIT)
+      s.gsub!(/.{4}/n, '\\\\u\&')
+      s.force_encoding(::Encoding::UTF_8)
+    }
+    string.force_encoding(::Encoding::UTF_8)
+    string
+  rescue => e
+    raise GeneratorError.wrap(e)
+  end
 
-    def valid_utf8?(string)
-      encoding = string.encoding
-      (encoding == Encoding::UTF_8 || encoding == Encoding::ASCII) &&
-        string.valid_encoding?
-    end
-    module_function :valid_utf8?
-  else
-    def utf8_to_json(string) # :nodoc:
-      string.gsub(/["\\\x0-\x1f]/n) { MAP[$&] }
-    end
-
-    def utf8_to_json_ascii(string) # :nodoc:
-      string = string.gsub(/["\\\x0-\x1f]/) { MAP[$&] }
-      string.gsub!(/(
-                      (?:
-                        [\xc2-\xdf][\x80-\xbf]    |
-                        [\xe0-\xef][\x80-\xbf]{2} |
-                        [\xf0-\xf4][\x80-\xbf]{3}
-                      )+ |
-                      [\x80-\xc1\xf5-\xff]       # invalid
-                    )/nx) { |c|
-        c.size == 1 and raise GeneratorError, "invalid utf8 byte: '#{c}'"
-        s = JSON.iconv('utf-16be', 'utf-8', c).unpack('H*')[0]
-        s.gsub!(/.{4}/n, '\\\\u\&')
-      }
-      string
-    rescue => e
-      raise GeneratorError.wrap(e)
-    end
-
-    def valid_utf8?(string)
-      string =~
-         /\A( [\x09\x0a\x0d\x20-\x7e]         # ASCII
-         | [\xc2-\xdf][\x80-\xbf]             # non-overlong 2-byte
-         |  \xe0[\xa0-\xbf][\x80-\xbf]        # excluding overlongs
-         | [\xe1-\xec\xee\xef][\x80-\xbf]{2}  # straight 3-byte
-         |  \xed[\x80-\x9f][\x80-\xbf]        # excluding surrogates
-         |  \xf0[\x90-\xbf][\x80-\xbf]{2}     # planes 1-3
-         | [\xf1-\xf3][\x80-\xbf]{3}          # planes 4-15
-         |  \xf4[\x80-\x8f][\x80-\xbf]{2}     # plane 16
-        )*\z/nx
-    end
+  def valid_utf8?(string)
+    encoding = string.encoding
+    (encoding == Encoding::UTF_8 || encoding == Encoding::ASCII) &&
+      string.valid_encoding?
   end
   module_function :utf8_to_json, :utf8_to_json_ascii, :valid_utf8?
-
 
   module Pure
     module Generator
@@ -426,34 +386,20 @@ module JSON
         end
 
         module String
-          if defined?(::Encoding)
-            # This string should be encoded with UTF-8 A call to this method
-            # returns a JSON string encoded with UTF16 big endian characters as
-            # \u????.
-            def to_json(state = nil, *args)
-              state = State.from_state(state)
-              if encoding == ::Encoding::UTF_8
-                string = self
-              else
-                string = encode(::Encoding::UTF_8)
-              end
-              if state.ascii_only?
-                '"' << JSON.utf8_to_json_ascii(string) << '"'
-              else
-                '"' << JSON.utf8_to_json(string) << '"'
-              end
+          # This string should be encoded with UTF-8 A call to this method
+          # returns a JSON string encoded with UTF16 big endian characters as
+          # \u????.
+          def to_json(state = nil, *args)
+            state = State.from_state(state)
+            if encoding == ::Encoding::UTF_8
+              string = self
+            else
+              string = encode(::Encoding::UTF_8)
             end
-          else
-            # This string should be encoded with UTF-8 A call to this method
-            # returns a JSON string encoded with UTF16 big endian characters as
-            # \u????.
-            def to_json(state = nil, *args)
-              state = State.from_state(state)
-              if state.ascii_only?
-                '"' << JSON.utf8_to_json_ascii(self) << '"'
-              else
-                '"' << JSON.utf8_to_json(self) << '"'
-              end
+            if state.ascii_only?
+              '"' << JSON.utf8_to_json_ascii(string) << '"'
+            else
+              '"' << JSON.utf8_to_json(string) << '"'
             end
           end
 
