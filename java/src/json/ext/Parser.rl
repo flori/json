@@ -177,7 +177,13 @@ public class Parser extends RubyObject {
      * Returns the source string if no conversion is needed.
      */
     private RubyString convertEncoding(ThreadContext context, RubyString source) {
-      return (RubyString)source.encode(context, info.utf8.get());
+      RubyEncoding encoding = (RubyEncoding)source.encoding(context);
+      if (encoding == info.ascii8bit.get()) {
+          source.force_encoding(context, info.utf8.get());
+      } else {
+        source = (RubyString) source.encode(context, info.utf8.get());
+      }
+      return source;
     }
 
     /**

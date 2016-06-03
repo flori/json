@@ -130,8 +130,10 @@ module JSON
           raise TypeError,
             "#{source.inspect} is not like a string"
         end
-        source = source.encode(::Encoding::UTF_8)
-        source.force_encoding(::Encoding::ASCII_8BIT)
+        if source.encoding != ::Encoding::ASCII_8BIT
+          source = source.encode(::Encoding::UTF_8)
+          source.force_encoding(::Encoding::ASCII_8BIT)
+        end
         source
       end
 

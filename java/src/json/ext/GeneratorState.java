@@ -364,17 +364,6 @@ public class GeneratorState extends RubyObject {
         return context.getRuntime().newBoolean(asciiOnly);
     }
 
-    @JRubyMethod(name="quirks_mode")
-    public RubyBoolean quirks_mode_get(ThreadContext context) {
-        return context.getRuntime().newBoolean(quirksMode);
-    }
-
-    @JRubyMethod(name="quirks_mode=")
-    public IRubyObject quirks_mode_set(IRubyObject quirks_mode) {
-        quirksMode = quirks_mode.isTrue();
-        return quirks_mode.getRuntime().newBoolean(quirksMode);
-    }
-
     @JRubyMethod(name="buffer_initial_length")
     public RubyInteger buffer_initial_length_get(ThreadContext context) {
         return context.getRuntime().newFixnum(bufferInitialLength);
@@ -385,11 +374,6 @@ public class GeneratorState extends RubyObject {
         int newLength = RubyNumeric.fix2int(buffer_initial_length);
         if (newLength > 0) bufferInitialLength = newLength;
         return buffer_initial_length;
-    }
-
-    @JRubyMethod(name="quirks_mode?")
-    public RubyBoolean quirks_mode_p(ThreadContext context) {
-        return context.getRuntime().newBoolean(quirksMode);
     }
 
     public int getDepth() {
@@ -446,7 +430,6 @@ public class GeneratorState extends RubyObject {
         maxNesting = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
-        quirksMode = opts.getBool("quirks_mode", DEFAULT_QUIRKS_MODE);
         bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
 
         depth = opts.getInt("depth", 0);
@@ -473,7 +456,6 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("array_nl"), array_nl_get(context));
         result.op_aset(context, runtime.newSymbol("allow_nan"), allow_nan_p(context));
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
-        result.op_aset(context, runtime.newSymbol("quirks_mode"), quirks_mode_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));
