@@ -24,7 +24,7 @@ module JSON
     # Set the JSON parser class _parser_ to be used by JSON.
     def parser=(parser) # :nodoc:
       @parser = parser
-      remove_const :Parser if JSON.const_defined_in?(self, :Parser)
+      remove_const :Parser if const_defined?(:Parser, true)
       const_set :Parser, parser
     end
 
@@ -35,8 +35,8 @@ module JSON
     def deep_const_get(path) # :nodoc:
       path.to_s.split(/::/).inject(Object) do |p, c|
         case
-        when c.empty?                     then p
-        when JSON.const_defined_in?(p, c) then p.const_get(c)
+        when c.empty?                  then p
+        when p.const_defined?(c, true) then p.const_get(c)
         else
           begin
             p.const_missing(c)
@@ -174,7 +174,7 @@ module JSON
     opts = {
       :max_nesting  => false,
       :allow_nan    => true
-    }.update(opts)
+    }.merge(opts)
     Parser.new(source, opts).parse
   end
 
@@ -404,16 +404,6 @@ module JSON
   # Encodes string using Ruby's _String.encode_
   def self.iconv(to, from, string)
     string.encode(to, from)
-  end
-
-  if ::Object.method(:const_defined?).arity == 1
-    def self.const_defined_in?(modul, constant)
-      modul.const_defined?(constant)
-    end
-  else
-    def self.const_defined_in?(modul, constant)
-      modul.const_defined?(constant, false)
-    end
   end
 end
 
