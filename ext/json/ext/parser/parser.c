@@ -1810,15 +1810,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-<<<<<<< 066bc5c70082f719951f398f4e20894571f8986c
-<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 1814 "parser.c"
-=======
-#line 1801 "parser.c"
->>>>>>> Exception encoding
-=======
-#line 1809 "parser.c"
->>>>>>> Optional hash in rb_scan_args
 enum {JSON_start = 1};
 enum {JSON_first_final = 10};
 enum {JSON_error = 0};
@@ -1826,15 +1818,7 @@ enum {JSON_error = 0};
 enum {JSON_en_main = 1};
 
 
-<<<<<<< 066bc5c70082f719951f398f4e20894571f8986c
-<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 722 "parser.rl"
-=======
-#line 709 "parser.rl"
->>>>>>> Exception encoding
-=======
-#line 717 "parser.rl"
->>>>>>> Optional hash in rb_scan_args
 
 
 /*
@@ -1851,40 +1835,16 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
-<<<<<<< 066bc5c70082f719951f398f4e20894571f8986c
-<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 1839 "parser.c"
-=======
-#line 1826 "parser.c"
->>>>>>> Exception encoding
-=======
-#line 1834 "parser.c"
->>>>>>> Optional hash in rb_scan_args
 	{
 	cs = JSON_start;
 	}
 
-<<<<<<< 066bc5c70082f719951f398f4e20894571f8986c
-<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 738 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
 #line 1848 "parser.c"
-=======
-#line 725 "parser.rl"
-  p = json->source;
-  pe = p + json->len;
-
-#line 1835 "parser.c"
->>>>>>> Exception encoding
-=======
-#line 733 "parser.rl"
-  p = json->source;
-  pe = p + json->len;
-
-#line 1843 "parser.c"
->>>>>>> Optional hash in rb_scan_args
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1918,15 +1878,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-<<<<<<< 066bc5c70082f719951f398f4e20894571f8986c
-<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 714 "parser.rl"
-=======
-#line 701 "parser.rl"
->>>>>>> Exception encoding
-=======
-#line 709 "parser.rl"
->>>>>>> Optional hash in rb_scan_args
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1936,15 +1888,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-<<<<<<< 066bc5c70082f719951f398f4e20894571f8986c
-<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 1892 "parser.c"
-=======
-#line 1879 "parser.c"
->>>>>>> Exception encoding
-=======
-#line 1887 "parser.c"
->>>>>>> Optional hash in rb_scan_args
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -2033,15 +1977,7 @@ case 9:
 	_out: {}
 	}
 
-<<<<<<< 066bc5c70082f719951f398f4e20894571f8986c
-<<<<<<< 2e06c964fceb550203659db23971459bc9d35054
 #line 741 "parser.rl"
-=======
-#line 728 "parser.rl"
->>>>>>> Exception encoding
-=======
-#line 736 "parser.rl"
->>>>>>> Optional hash in rb_scan_args
 
   if (cs >= JSON_first_final && p == pe) {
     return result;
