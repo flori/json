@@ -695,7 +695,6 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->object_class = Qnil;
         json->array_class = Qnil;
     }
-    source = rb_convert_type(source, T_STRING, "String", "to_str");
     source = convert_encoding(StringValue(source));
     json->current_nesting = 0;
     StringValue(source);
@@ -743,7 +742,7 @@ static VALUE cParser_parse(VALUE self)
   if (cs >= JSON_first_final && p == pe) {
     return result;
   } else {
-    rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+    rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p);
     return Qnil;
   }
 }

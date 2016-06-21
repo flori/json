@@ -1,3 +1,4 @@
+#frozen_string_literal: false
 require 'test_helper'
 require 'stringio'
 require 'tempfile'
@@ -100,8 +101,8 @@ class JSONCommonInterfaceTest < Test::Unit::TestCase
     too_deep = '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
     assert_equal too_deep, dump(eval(too_deep))
     assert_kind_of String, Marshal.dump(eval(too_deep))
-    assert_raises(ArgumentError) { dump(eval(too_deep), 100) }
-    assert_raises(ArgumentError) { Marshal.dump(eval(too_deep), 100) }
+    assert_raise(ArgumentError) { dump(eval(too_deep), 100) }
+    assert_raise(ArgumentError) { Marshal.dump(eval(too_deep), 100) }
     assert_equal too_deep, dump(eval(too_deep), 101)
     assert_kind_of String, Marshal.dump(eval(too_deep), 101)
     output = StringIO.new

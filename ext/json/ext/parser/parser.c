@@ -103,11 +103,11 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
 
 
 #line 106 "parser.c"
-static const int JSON_object_start = 1;
-static const int JSON_object_first_final = 27;
-static const int JSON_object_error = 0;
+enum {JSON_object_start = 1};
+enum {JSON_object_first_final = 27};
+enum {JSON_object_error = 0};
 
-static const int JSON_object_en_main = 1;
+enum {JSON_object_en_main = 1};
 
 
 #line 165 "parser.rl"
@@ -481,11 +481,11 @@ case 26:
 
 
 #line 484 "parser.c"
-static const int JSON_value_start = 1;
-static const int JSON_value_first_final = 29;
-static const int JSON_value_error = 0;
+enum {JSON_value_start = 1};
+enum {JSON_value_first_final = 29};
+enum {JSON_value_error = 0};
 
-static const int JSON_value_en_main = 1;
+enum {JSON_value_en_main = 1};
 
 
 #line 285 "parser.rl"
@@ -879,11 +879,11 @@ case 28:
 
 
 #line 882 "parser.c"
-static const int JSON_integer_start = 1;
-static const int JSON_integer_first_final = 3;
-static const int JSON_integer_error = 0;
+enum {JSON_integer_start = 1};
+enum {JSON_integer_first_final = 3};
+enum {JSON_integer_error = 0};
 
-static const int JSON_integer_en_main = 1;
+enum {JSON_integer_en_main = 1};
 
 
 #line 309 "parser.rl"
@@ -978,11 +978,11 @@ case 5:
 
 
 #line 981 "parser.c"
-static const int JSON_float_start = 1;
-static const int JSON_float_first_final = 8;
-static const int JSON_float_error = 0;
+enum {JSON_float_start = 1};
+enum {JSON_float_first_final = 8};
+enum {JSON_float_error = 0};
 
-static const int JSON_float_en_main = 1;
+enum {JSON_float_en_main = 1};
 
 
 #line 343 "parser.rl"
@@ -1144,11 +1144,11 @@ case 7:
 
 
 #line 1147 "parser.c"
-static const int JSON_array_start = 1;
-static const int JSON_array_first_final = 17;
-static const int JSON_array_error = 0;
+enum {JSON_array_start = 1};
+enum {JSON_array_first_final = 17};
+enum {JSON_array_error = 0};
 
-static const int JSON_array_en_main = 1;
+enum {JSON_array_en_main = 1};
 
 
 #line 395 "parser.rl"
@@ -1476,11 +1476,11 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 
 
 #line 1479 "parser.c"
-static const int JSON_string_start = 1;
-static const int JSON_string_first_final = 8;
-static const int JSON_string_error = 0;
+enum {JSON_string_start = 1};
+enum {JSON_string_first_final = 8};
+enum {JSON_string_error = 0};
 
-static const int JSON_string_en_main = 1;
+enum {JSON_string_en_main = 1};
 
 
 #line 508 "parser.rl"
@@ -1800,7 +1800,6 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
         json->object_class = Qnil;
         json->array_class = Qnil;
     }
-    source = rb_convert_type(source, T_STRING, "String", "to_str");
     source = convert_encoding(StringValue(source));
     json->current_nesting = 0;
     StringValue(source);
@@ -1811,15 +1810,15 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1813 "parser.c"
-static const int JSON_start = 1;
-static const int JSON_first_final = 10;
-static const int JSON_error = 0;
+#line 1814 "parser.c"
+enum {JSON_start = 1};
+enum {JSON_first_final = 10};
+enum {JSON_error = 0};
 
-static const int JSON_en_main = 1;
+enum {JSON_en_main = 1};
 
 
-#line 721 "parser.rl"
+#line 722 "parser.rl"
 
 
 /*
@@ -1836,16 +1835,16 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
-#line 1838 "parser.c"
+#line 1839 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 737 "parser.rl"
+#line 738 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
-#line 1847 "parser.c"
+#line 1848 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1879,7 +1878,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 713 "parser.rl"
+#line 714 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1889,7 +1888,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1891 "parser.c"
+#line 1892 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -1978,12 +1977,12 @@ case 9:
 	_out: {}
 	}
 
-#line 740 "parser.rl"
+#line 741 "parser.rl"
 
   if (cs >= JSON_first_final && p == pe) {
     return result;
   } else {
-    rb_raise(eParserError, "%u: unexpected token at '%s'", __LINE__, p);
+    rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p);
     return Qnil;
   }
 }
