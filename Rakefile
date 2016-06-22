@@ -157,6 +157,7 @@ task :version do
   puts m
   File.open(File.join('lib', 'json', 'version.rb'), 'w') do |v|
     v.puts <<EOT
+# frozen_string_literal: false
 module JSON
   # JSON version
   VERSION         = '#{PKG_VERSION}'

@@ -1,6 +1,5 @@
 # encoding: utf-8
 # frozen_string_literal: false
-
 require 'test_helper'
 require 'stringio'
 require 'tempfile'
