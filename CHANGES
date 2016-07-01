@@ -1,3 +1,6 @@
+2016-07-01 (2.0.1)
+  * Add RB_GC_GUARD to avoid possible GC problem via Pete Johns.
+  * Store current_nesting on stack by Aaron Patterson.
 2015-09-11 (2.0.0)
   * Now complies to newest JSON RFC 7159.
   * Implements compatibiliy to ruby 2.4 integer unification.
