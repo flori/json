@@ -1,4 +1,8 @@
-2015-09-11 (1.8.5)
+2015-09-11 (2.0.0)
+  * Now complies to newest JSON RFC 7159.
+  * Implements compatibiliy to ruby 2.4 integer unification.
+  * Drops support for old rubies whose life has ended, that is rubies < 2.0.
+    Also see https://www.ruby-lang.org/en/news/2014/07/01/eol-for-1-8-7-and-1-9-2/
   * There were still some mentions of dual GPL licensing in the source, but JSON
     has just the Ruby license that itself includes an explicit dual-licensing
     clause that allows covered software to be distributed under the terms of
@@ -6,7 +10,6 @@
     however a GPL compatible license according to the Free Software Foundation.
     I changed these mentions to be consistent with the Ruby license setting in
     the gemspec files which were already correct now.
----------- (1.8.4) Skipped.
 2015-06-01 (1.8.3)
   * Fix potential memory leak, thx to nobu.
 2015-01-08 (1.8.2)
