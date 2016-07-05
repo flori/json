@@ -3,8 +3,8 @@
 
 ## Description
 
-This is a implementation of the JSON specification according to RFC 4627
-http://www.ietf.org/rfc/rfc4627.txt . Starting from version 1.0.0 on there
+This is a implementation of the JSON specification according to RFC 7159
+http://www.ietf.org/rfc/rfc7159.txt . Starting from version 1.0.0 on there
 will be two variants available:
 
 * A pure ruby variant, that relies on the iconv and the stringscan
