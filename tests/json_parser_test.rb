@@ -40,6 +40,18 @@ class JSONParserTest < Test::Unit::TestCase
     assert_equal({ 'a' => 'b' }, parser.parse)
   end
 
+  def test_parse_values
+    assert_equal(nil,      parse('null'))
+    assert_equal(false,    parse('false'))
+    assert_equal(true,     parse('true'))
+    assert_equal(-23,      parse('-23'))
+    assert_equal(23,       parse('23'))
+    assert_in_delta(0.23,  parse('0.23'), 1e-2)
+    assert_in_delta(0.0,   parse('0e0'), 1e-2)
+    assert_equal("",       parse('""'))
+    assert_equal("foobar", parse('"foobar"'))
+  end
+
   def test_parse_simple_arrays
     assert_equal([],             parse('[]'))
     assert_equal([],             parse('  [  ] '))
@@ -276,7 +288,6 @@ EOT
     data = ["'"]
     assert_equal data, parse(json)
   end
-
 
   class SubArray < Array
     def <<(v)
