@@ -449,6 +449,13 @@ EOT
     assert_equal obj, obj_again
   end
 
+  def test_parsing_frozen_ascii8bit_string
+    assert_equal(
+      { 'foo' => 'bar' },
+      JSON('{ "foo": "bar" }'.force_encoding(Encoding::ASCII_8BIT).freeze)
+    )
+  end
+
   private
 
   def assert_equal_float(expected, actual, delta = 1e-2)

@@ -179,6 +179,9 @@ public class Parser extends RubyObject {
     private RubyString convertEncoding(ThreadContext context, RubyString source) {
       RubyEncoding encoding = (RubyEncoding)source.encoding(context);
       if (encoding == info.ascii8bit.get()) {
+          if (source.isFrozen()) {
+            source = (RubyString) source.dup();
+          }
           source.force_encoding(context, info.utf8.get());
       } else {
         source = (RubyString) source.encode(context, info.utf8.get());
