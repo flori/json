@@ -28,7 +28,7 @@
     `JSON.dump_default_options`.
   * More tests by Michael Mac-Vicar <mmacvicar@gmail.com> and fixing
     `space_before` accessor in generator.
-  * Performance on Jruby improvemed by Ben Browning <bbrownin@redhat.com>.
+  * Performance on Jruby improved by Ben Browning <bbrownin@redhat.com>.
   * Some fixes to be compatible with the new Ruby 2.2 by Zachary Scott <e@zzak.io>
     and SHIBATA Hiroshi <hsbt@ruby-lang.org>.
 
