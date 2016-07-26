@@ -1,5 +1,9 @@
 # Changes
 
+## 2016-07-26 (2.0.2)
+  * Specify `required_ruby_version` for json\_pure.
+  * Fix issue #295 failure when parsing frozen strings.
+
 ## 2016-07-01 (2.0.1)
   * Fix problem when requiring json\_pure and Parser constant was defiend top
     level.
