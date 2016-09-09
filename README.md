@@ -115,7 +115,7 @@ generate a JSON document from an array or hash:
 
 ```ruby
 document = JSON 'test'  => 23 # => "{\"test\":23}"
-document = JSON['test'] => 23 # => "{\"test\":23}"
+document = JSON['test' => 23] # => "{\"test\":23}"
 ```
 
 and
