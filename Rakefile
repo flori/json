@@ -200,13 +200,11 @@ namespace :gems do
 end
 
 if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
-  if ENV.key?('JAVA_HOME')
-    warn " *** JAVA_HOME was set to #{ENV['JAVA_HOME'].inspect}"
-  elsif File.directory?(local_java = '/usr/local/java/jdk') ||
-    File.directory?(local_java = '/usr/lib/jvm/java-6-openjdk')
-  then
-    ENV['JAVA_HOME'] = local_java
-  end
+  ENV['JAVA_HOME'] ||= [
+    '/usr/local/java/jdk',
+    '/usr/lib/jvm/java-6-openjdk',
+    '/Library/Java/Home',
+  ].find { |c| File.directory?(c) }
   if ENV['JAVA_HOME']
     warn " *** JAVA_HOME is set to #{ENV['JAVA_HOME'].inspect}"
     ENV['PATH'] = ENV['PATH'].split(/:/).unshift(java_path = "#{ENV['JAVA_HOME']}/bin") * ':'
