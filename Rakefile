@@ -251,13 +251,13 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
 
   desc "Package the jruby gem"
   task :jruby_gem => :create_jar do
-    sh 'gem build json-java.gemspec'
+    sh 'gem build java/json.gemspec'
     mkdir_p 'pkg'
     mv "json-#{PKG_VERSION}-java.gem", 'pkg'
   end
 
   desc "Testing library (jruby)"
-  task :test_ext => [ :create_jar, :check_env, :do_test_ext ]
+  task :test_ext => [ :check_env, :create_jar, :do_test_ext ]
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
@@ -331,7 +331,7 @@ else
   end
 
   desc "Testing library (extension)"
-  task :test_ext => [ :compile, :check_env, :do_test_ext ]
+  task :test_ext => [ :check_env, :compile, :do_test_ext ]
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'

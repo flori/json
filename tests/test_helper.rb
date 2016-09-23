@@ -1,5 +1,3 @@
-gem 'json', File.read('VERSION').chomp
-
 case ENV['JSON']
 when 'pure'
   $:.unshift 'lib'
