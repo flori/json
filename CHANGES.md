@@ -5,7 +5,7 @@
   * Fix issue #295 failure when parsing frozen strings.
 
 ## 2016-07-01 (2.0.1)
-  * Fix problem when requiring json\_pure and Parser constant was defiend top
+  * Fix problem when requiring json\_pure and Parser constant was defined top
     level.
   * Add `RB_GC_GUARD` to avoid possible GC problem via Pete Johns.
   * Store `current_nesting` on stack by Aaron Patterson.
