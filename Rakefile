@@ -95,6 +95,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.email = "flori@ping.de"
     s.homepage = "http://flori.github.com/#{PKG_NAME}"
     s.license = 'Ruby'
+    s.required_ruby_version = '~>2.0'
   end
 
   desc 'Creates a json_pure.gemspec file'
@@ -132,6 +133,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.email = "flori@ping.de"
     s.homepage = "http://flori.github.com/#{PKG_NAME}"
     s.license = 'Ruby'
+    s.required_ruby_version = '~>2.0'
   end
 
   desc 'Creates a json.gemspec file'

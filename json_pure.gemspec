@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://flori.github.com/json".freeze
   s.licenses = ["Ruby".freeze]
   s.rdoc_options = ["--title".freeze, "JSON implemention for ruby".freeze, "--main".freeze, "README.md".freeze]
+  s.required_ruby_version = Gem::Requirement.new("~> 2.0".freeze)
   s.rubygems_version = "2.6.8".freeze
   s.summary = "JSON Implementation for Ruby".freeze
   s.test_files = ["./tests/test_json.rb".freeze, "./tests/test_json_addition.rb".freeze, "./tests/test_json_encoding.rb".freeze, "./tests/test_json_fixtures.rb".freeze, "./tests/test_json_generate.rb".freeze, "./tests/test_json_generic_object.rb".freeze, "./tests/test_json_string_matching.rb".freeze, "./tests/test_json_unicode.rb".freeze]
