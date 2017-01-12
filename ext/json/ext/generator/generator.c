@@ -889,7 +889,7 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
         generate_json_true(buffer, Vstate, state, obj);
     } else if (FIXNUM_P(obj)) {
         generate_json_fixnum(buffer, Vstate, state, obj);
-    } else if (RB_TYPE_P(obj, T_BIGNUM)) {
+    } else if (rb_type(obj) == T_BIGNUM) {
         generate_json_bignum(buffer, Vstate, state, obj);
     } else if (klass == rb_cFloat) {
         generate_json_float(buffer, Vstate, state, obj);
