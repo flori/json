@@ -1,5 +1,5 @@
 
-#line 1 "ext/json/ext/parser/parser.rl"
+#line 1 "parser.rl"
 #include "../fbuffer/fbuffer.h"
 #include "parser.h"
 
@@ -99,93 +99,19 @@ static ID i_json_creatable_p, i_json_create, i_create_id, i_create_additions,
           i_leftshift, i_new;
 
 
-#line 125 "ext/json/ext/parser/parser.rl"
+#line 125 "parser.rl"
 
 
 
-#line 107 "ext/json/ext/parser/parser.c"
-static const char _JSON_object_actions[] = {
-	0, 1, 0, 1, 1, 1, 2
-};
+#line 107 "parser.c"
+enum {JSON_object_start = 1};
+enum {JSON_object_first_final = 27};
+enum {JSON_object_error = 0};
 
-static const char _JSON_object_key_offsets[] = {
-	0, 0, 1, 8, 14, 16, 17, 19, 
-	20, 36, 43, 49, 51, 52, 54, 55, 
-	57, 58, 60, 61, 63, 64, 66, 67, 
-	69, 70, 72, 73
-};
-
-static const char _JSON_object_trans_keys[] = {
-	123, 13, 32, 34, 47, 125, 9, 10, 
-	13, 32, 47, 58, 9, 10, 42, 47, 
-	42, 42, 47, 10, 13, 32, 34, 45, 
-	47, 73, 78, 91, 102, 110, 116, 123, 
-	9, 10, 48, 57, 13, 32, 44, 47, 
-	125, 9, 10, 13, 32, 34, 47, 9, 
-	10, 42, 47, 42, 42, 47, 10, 42, 
-	47, 42, 42, 47, 10, 42, 47, 42, 
-	42, 47, 10, 42, 47, 42, 42, 47, 
-	10, 0
-};
-
-static const char _JSON_object_single_lengths[] = {
-	0, 1, 5, 4, 2, 1, 2, 1, 
-	12, 5, 4, 2, 1, 2, 1, 2, 
-	1, 2, 1, 2, 1, 2, 1, 2, 
-	1, 2, 1, 0
-};
-
-static const char _JSON_object_range_lengths[] = {
-	0, 0, 1, 1, 0, 0, 0, 0, 
-	2, 1, 1, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0
-};
-
-static const char _JSON_object_index_offsets[] = {
-	0, 0, 2, 9, 15, 18, 20, 23, 
-	25, 40, 47, 53, 56, 58, 61, 63, 
-	66, 68, 71, 73, 76, 78, 81, 83, 
-	86, 88, 91, 93
-};
-
-static const char _JSON_object_indicies[] = {
-	0, 1, 0, 0, 2, 3, 4, 0, 
-	1, 5, 5, 6, 7, 5, 1, 8, 
-	9, 1, 10, 8, 10, 5, 8, 5, 
-	9, 7, 7, 11, 11, 12, 11, 11, 
-	11, 11, 11, 11, 11, 7, 11, 1, 
-	13, 13, 14, 15, 4, 13, 1, 14, 
-	14, 2, 16, 14, 1, 17, 18, 1, 
-	19, 17, 19, 14, 17, 14, 18, 20, 
-	21, 1, 22, 20, 22, 13, 20, 13, 
-	21, 23, 24, 1, 25, 23, 25, 7, 
-	23, 7, 24, 26, 27, 1, 28, 26, 
-	28, 0, 26, 0, 27, 1, 0
-};
-
-static const char _JSON_object_trans_targs[] = {
-	2, 0, 3, 23, 27, 3, 4, 8, 
-	5, 7, 6, 9, 19, 9, 10, 15, 
-	11, 12, 14, 13, 16, 18, 17, 20, 
-	22, 21, 24, 26, 25
-};
-
-static const char _JSON_object_trans_actions[] = {
-	0, 0, 3, 0, 5, 0, 0, 0, 
-	0, 0, 0, 1, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0
-};
-
-static const int JSON_object_start = 1;
-static const int JSON_object_first_final = 27;
-static const int JSON_object_error = 0;
-
-static const int JSON_object_en_main = 1;
+enum {JSON_object_en_main = 1};
 
 
-#line 166 "ext/json/ext/parser/parser.rl"
+#line 166 "parser.rl"
 
 
 static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting)
@@ -200,95 +126,128 @@ static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *resu
 
     *result = NIL_P(object_class) ? rb_hash_new() : rb_class_new_instance(0, 0, object_class);
 
-    
-#line 205 "ext/json/ext/parser/parser.c"
+
+#line 131 "parser.c"
 	{
 	cs = JSON_object_start;
 	}
 
-#line 181 "ext/json/ext/parser/parser.rl"
-    
-#line 212 "ext/json/ext/parser/parser.c"
-	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
+#line 181 "parser.rl"
 
+#line 138 "parser.c"
+	{
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _JSON_object_trans_keys + _JSON_object_key_offsets[cs];
-	_trans = _JSON_object_index_offsets[cs];
-
-	_klen = _JSON_object_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (unsigned int)(_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _JSON_object_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += (unsigned int)((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _JSON_object_indicies[_trans];
-	cs = _JSON_object_trans_targs[_trans];
-
-	if ( _JSON_object_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _JSON_object_actions + _JSON_object_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
-#line 133 "ext/json/ext/parser/parser.rl"
+case 1:
+	if ( (*p) == 123 )
+		goto st2;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 13: goto st2;
+		case 32: goto st2;
+		case 34: goto tr2;
+		case 47: goto st23;
+		case 125: goto tr4;
+	}
+	if ( 9 <= (*p) && (*p) <= 10 )
+		goto st2;
+	goto st0;
+tr2:
+#line 148 "parser.rl"
+	{
+        char *np;
+        json->parsing_name = 1;
+        np = JSON_parse_string(json, p, pe, &last_name);
+        json->parsing_name = 0;
+        if (np == NULL) { p--; {p++; cs = 3; goto _out;} } else {p = (( np))-1;}
+    }
+	goto st3;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+#line 179 "parser.c"
+	switch( (*p) ) {
+		case 13: goto st3;
+		case 32: goto st3;
+		case 47: goto st4;
+		case 58: goto st8;
+	}
+	if ( 9 <= (*p) && (*p) <= 10 )
+		goto st3;
+	goto st0;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	switch( (*p) ) {
+		case 42: goto st5;
+		case 47: goto st7;
+	}
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	if ( (*p) == 42 )
+		goto st6;
+	goto st5;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	switch( (*p) ) {
+		case 42: goto st6;
+		case 47: goto st3;
+	}
+	goto st5;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	if ( (*p) == 10 )
+		goto st3;
+	goto st7;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	switch( (*p) ) {
+		case 13: goto st8;
+		case 32: goto st8;
+		case 34: goto tr11;
+		case 45: goto tr11;
+		case 47: goto st19;
+		case 73: goto tr11;
+		case 78: goto tr11;
+		case 91: goto tr11;
+		case 102: goto tr11;
+		case 110: goto tr11;
+		case 116: goto tr11;
+		case 123: goto tr11;
+	}
+	if ( (*p) > 10 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto tr11;
+	} else if ( (*p) >= 9 )
+		goto st8;
+	goto st0;
+tr11:
+#line 133 "parser.rl"
 	{
         VALUE v = Qnil;
         char *np = JSON_parse_value(json, p, pe, &v, current_nesting);
         if (np == NULL) {
-            p--; {p++; goto _out; }
+            p--; {p++; cs = 9; goto _out;}
         } else {
             if (NIL_P(json->object_class)) {
                 rb_hash_aset(*result, last_name, v);
@@ -298,35 +257,206 @@ _match:
             {p = (( np))-1;}
         }
     }
-	break;
-	case 1:
-#line 148 "ext/json/ext/parser/parser.rl"
-	{
-        char *np;
-        json->parsing_name = 1;
-        np = JSON_parse_string(json, p, pe, &last_name);
-        json->parsing_name = 0;
-        if (np == NULL) { p--; {p++; goto _out; } } else {p = (( np))-1;}
-    }
-	break;
-	case 2:
-#line 156 "ext/json/ext/parser/parser.rl"
-	{ p--; {p++; goto _out; } }
-	break;
-#line 317 "ext/json/ext/parser/parser.c"
-		}
+	goto st9;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+#line 266 "parser.c"
+	switch( (*p) ) {
+		case 13: goto st9;
+		case 32: goto st9;
+		case 44: goto st10;
+		case 47: goto st15;
+		case 125: goto tr4;
 	}
+	if ( 9 <= (*p) && (*p) <= 10 )
+		goto st9;
+	goto st0;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	switch( (*p) ) {
+		case 13: goto st10;
+		case 32: goto st10;
+		case 34: goto tr2;
+		case 47: goto st11;
+	}
+	if ( 9 <= (*p) && (*p) <= 10 )
+		goto st10;
+	goto st0;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+	switch( (*p) ) {
+		case 42: goto st12;
+		case 47: goto st14;
+	}
+	goto st0;
+st12:
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+	if ( (*p) == 42 )
+		goto st13;
+	goto st12;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+	switch( (*p) ) {
+		case 42: goto st13;
+		case 47: goto st10;
+	}
+	goto st12;
+st14:
+	if ( ++p == pe )
+		goto _test_eof14;
+case 14:
+	if ( (*p) == 10 )
+		goto st10;
+	goto st14;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
+	switch( (*p) ) {
+		case 42: goto st16;
+		case 47: goto st18;
+	}
+	goto st0;
+st16:
+	if ( ++p == pe )
+		goto _test_eof16;
+case 16:
+	if ( (*p) == 42 )
+		goto st17;
+	goto st16;
+st17:
+	if ( ++p == pe )
+		goto _test_eof17;
+case 17:
+	switch( (*p) ) {
+		case 42: goto st17;
+		case 47: goto st9;
+	}
+	goto st16;
+st18:
+	if ( ++p == pe )
+		goto _test_eof18;
+case 18:
+	if ( (*p) == 10 )
+		goto st9;
+	goto st18;
+tr4:
+#line 156 "parser.rl"
+	{ p--; {p++; cs = 27; goto _out;} }
+	goto st27;
+st27:
+	if ( ++p == pe )
+		goto _test_eof27;
+case 27:
+#line 362 "parser.c"
+	goto st0;
+st19:
+	if ( ++p == pe )
+		goto _test_eof19;
+case 19:
+	switch( (*p) ) {
+		case 42: goto st20;
+		case 47: goto st22;
+	}
+	goto st0;
+st20:
+	if ( ++p == pe )
+		goto _test_eof20;
+case 20:
+	if ( (*p) == 42 )
+		goto st21;
+	goto st20;
+st21:
+	if ( ++p == pe )
+		goto _test_eof21;
+case 21:
+	switch( (*p) ) {
+		case 42: goto st21;
+		case 47: goto st8;
+	}
+	goto st20;
+st22:
+	if ( ++p == pe )
+		goto _test_eof22;
+case 22:
+	if ( (*p) == 10 )
+		goto st8;
+	goto st22;
+st23:
+	if ( ++p == pe )
+		goto _test_eof23;
+case 23:
+	switch( (*p) ) {
+		case 42: goto st24;
+		case 47: goto st26;
+	}
+	goto st0;
+st24:
+	if ( ++p == pe )
+		goto _test_eof24;
+case 24:
+	if ( (*p) == 42 )
+		goto st25;
+	goto st24;
+st25:
+	if ( ++p == pe )
+		goto _test_eof25;
+case 25:
+	switch( (*p) ) {
+		case 42: goto st25;
+		case 47: goto st2;
+	}
+	goto st24;
+st26:
+	if ( ++p == pe )
+		goto _test_eof26;
+case 26:
+	if ( (*p) == 10 )
+		goto st2;
+	goto st26;
+	}
+	_test_eof2: cs = 2; goto _test_eof;
+	_test_eof3: cs = 3; goto _test_eof;
+	_test_eof4: cs = 4; goto _test_eof;
+	_test_eof5: cs = 5; goto _test_eof;
+	_test_eof6: cs = 6; goto _test_eof;
+	_test_eof7: cs = 7; goto _test_eof;
+	_test_eof8: cs = 8; goto _test_eof;
+	_test_eof9: cs = 9; goto _test_eof;
+	_test_eof10: cs = 10; goto _test_eof;
+	_test_eof11: cs = 11; goto _test_eof;
+	_test_eof12: cs = 12; goto _test_eof;
+	_test_eof13: cs = 13; goto _test_eof;
+	_test_eof14: cs = 14; goto _test_eof;
+	_test_eof15: cs = 15; goto _test_eof;
+	_test_eof16: cs = 16; goto _test_eof;
+	_test_eof17: cs = 17; goto _test_eof;
+	_test_eof18: cs = 18; goto _test_eof;
+	_test_eof27: cs = 27; goto _test_eof;
+	_test_eof19: cs = 19; goto _test_eof;
+	_test_eof20: cs = 20; goto _test_eof;
+	_test_eof21: cs = 21; goto _test_eof;
+	_test_eof22: cs = 22; goto _test_eof;
+	_test_eof23: cs = 23; goto _test_eof;
+	_test_eof24: cs = 24; goto _test_eof;
+	_test_eof25: cs = 25; goto _test_eof;
+	_test_eof26: cs = 26; goto _test_eof;
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-#line 182 "ext/json/ext/parser/parser.rl"
+#line 182 "parser.rl"
 
     if (cs >= JSON_object_first_final) {
         if (json->create_additions) {
@@ -351,245 +481,78 @@ _again:
 
 
 
-#line 355 "ext/json/ext/parser/parser.c"
-static const char _JSON_value_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 1, 4, 1, 5, 1, 6, 1, 
-	7, 1, 8, 1, 9
-};
+#line 485 "parser.c"
+enum {JSON_value_start = 1};
+enum {JSON_value_first_final = 29};
+enum {JSON_value_error = 0};
 
-static const char _JSON_value_key_offsets[] = {
-	0, 0, 16, 18, 19, 21, 22, 24, 
-	25, 27, 28, 29, 30, 31, 32, 33, 
-	34, 35, 36, 37, 38, 39, 40, 41, 
-	42, 43, 44, 45, 46, 47
-};
-
-static const char _JSON_value_trans_keys[] = {
-	13, 32, 34, 45, 47, 73, 78, 91, 
-	102, 110, 116, 123, 9, 10, 48, 57, 
-	42, 47, 42, 42, 47, 10, 42, 47, 
-	42, 42, 47, 10, 110, 102, 105, 110, 
-	105, 116, 121, 97, 78, 97, 108, 115, 
-	101, 117, 108, 108, 114, 117, 101, 13, 
-	32, 47, 9, 10, 0
-};
-
-static const char _JSON_value_single_lengths[] = {
-	0, 12, 2, 1, 2, 1, 2, 1, 
-	2, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 3
-};
-
-static const char _JSON_value_range_lengths[] = {
-	0, 2, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 1
-};
-
-static const char _JSON_value_index_offsets[] = {
-	0, 0, 15, 18, 20, 23, 25, 28, 
-	30, 33, 35, 37, 39, 41, 43, 45, 
-	47, 49, 51, 53, 55, 57, 59, 61, 
-	63, 65, 67, 69, 71, 73
-};
-
-static const char _JSON_value_trans_targs[] = {
-	1, 1, 29, 29, 6, 10, 17, 29, 
-	19, 23, 26, 29, 1, 29, 0, 3, 
-	5, 0, 4, 3, 4, 29, 3, 29, 
-	5, 7, 9, 0, 8, 7, 8, 1, 
-	7, 1, 9, 11, 0, 12, 0, 13, 
-	0, 14, 0, 15, 0, 16, 0, 29, 
-	0, 18, 0, 29, 0, 20, 0, 21, 
-	0, 22, 0, 29, 0, 24, 0, 25, 
-	0, 29, 0, 27, 0, 28, 0, 29, 
-	0, 29, 29, 2, 29, 0, 0
-};
-
-static const char _JSON_value_trans_actions[] = {
-	0, 0, 11, 13, 0, 0, 0, 15, 
-	0, 0, 0, 17, 0, 13, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 9, 
-	0, 0, 0, 7, 0, 0, 0, 0, 
-	0, 0, 0, 3, 0, 0, 0, 0, 
-	0, 1, 0, 0, 0, 0, 0, 5, 
-	0, 0, 0, 0, 0, 0, 0
-};
-
-static const char _JSON_value_from_state_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 19
-};
-
-static const int JSON_value_start = 1;
-static const int JSON_value_first_final = 29;
-static const int JSON_value_error = 0;
-
-static const int JSON_value_en_main = 1;
+enum {JSON_value_en_main = 1};
 
 
-#line 282 "ext/json/ext/parser/parser.rl"
+#line 282 "parser.rl"
 
 
 static char *JSON_parse_value(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting)
 {
     int cs = EVIL;
 
-    
-#line 448 "ext/json/ext/parser/parser.c"
+
+#line 501 "parser.c"
 	{
 	cs = JSON_value_start;
 	}
 
-#line 289 "ext/json/ext/parser/parser.rl"
-    
-#line 455 "ext/json/ext/parser/parser.c"
-	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
+#line 289 "parser.rl"
 
+#line 508 "parser.c"
+	{
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_acts = _JSON_value_actions + _JSON_value_from_state_actions[cs];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 ) {
-		switch ( *_acts++ ) {
-	case 9:
-#line 269 "ext/json/ext/parser/parser.rl"
-	{ p--; {p++; goto _out; } }
-	break;
-#line 476 "ext/json/ext/parser/parser.c"
-		}
+	switch ( cs )
+	{
+st1:
+	if ( ++p == pe )
+		goto _test_eof1;
+case 1:
+	switch( (*p) ) {
+		case 13: goto st1;
+		case 32: goto st1;
+		case 34: goto tr2;
+		case 45: goto tr3;
+		case 47: goto st6;
+		case 73: goto st10;
+		case 78: goto st17;
+		case 91: goto tr7;
+		case 102: goto st19;
+		case 110: goto st23;
+		case 116: goto st26;
+		case 123: goto tr11;
 	}
-
-	_keys = _JSON_value_trans_keys + _JSON_value_key_offsets[cs];
-	_trans = _JSON_value_index_offsets[cs];
-
-	_klen = _JSON_value_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (unsigned int)(_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _JSON_value_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += (unsigned int)((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	cs = _JSON_value_trans_targs[_trans];
-
-	if ( _JSON_value_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _JSON_value_actions + _JSON_value_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
-	{
-		switch ( *_acts++ )
-		{
-	case 0:
-#line 211 "ext/json/ext/parser/parser.rl"
-	{
-        *result = Qnil;
-    }
-	break;
-	case 1:
-#line 214 "ext/json/ext/parser/parser.rl"
-	{
-        *result = Qfalse;
-    }
-	break;
-	case 2:
-#line 217 "ext/json/ext/parser/parser.rl"
-	{
-        *result = Qtrue;
-    }
-	break;
-	case 3:
-#line 220 "ext/json/ext/parser/parser.rl"
-	{
-        if (json->allow_nan) {
-            *result = CNaN;
-        } else {
-            rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p - 2);
-        }
-    }
-	break;
-	case 4:
-#line 227 "ext/json/ext/parser/parser.rl"
-	{
-        if (json->allow_nan) {
-            *result = CInfinity;
-        } else {
-            rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p - 8);
-        }
-    }
-	break;
-	case 5:
-#line 234 "ext/json/ext/parser/parser.rl"
+	if ( (*p) > 10 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto tr3;
+	} else if ( (*p) >= 9 )
+		goto st1;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+tr2:
+#line 234 "parser.rl"
 	{
         char *np = JSON_parse_string(json, p, pe, result);
-        if (np == NULL) { p--; {p++; goto _out; } } else {p = (( np))-1;}
+        if (np == NULL) { p--; {p++; cs = 29; goto _out;} } else {p = (( np))-1;}
     }
-	break;
-	case 6:
-#line 239 "ext/json/ext/parser/parser.rl"
+	goto st29;
+tr3:
+#line 239 "parser.rl"
 	{
         char *np;
         if(pe > p + 8 && !strncmp(MinusInfinity, p, 9)) {
             if (json->allow_nan) {
                 *result = CMinusInfinity;
                 {p = (( p + 10))-1;}
-                p--; {p++; goto _out; }
+                p--; {p++; cs = 29; goto _out;}
             } else {
                 rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p);
             }
@@ -598,39 +561,311 @@ _match:
         if (np != NULL) {p = (( np))-1;}
         np = JSON_parse_integer(json, p, pe, result);
         if (np != NULL) {p = (( np))-1;}
-        p--; {p++; goto _out; }
+        p--; {p++; cs = 29; goto _out;}
     }
-	break;
-	case 7:
-#line 257 "ext/json/ext/parser/parser.rl"
+	goto st29;
+tr7:
+#line 257 "parser.rl"
 	{
         char *np;
         np = JSON_parse_array(json, p, pe, result, current_nesting + 1);
-        if (np == NULL) { p--; {p++; goto _out; } } else {p = (( np))-1;}
+        if (np == NULL) { p--; {p++; cs = 29; goto _out;} } else {p = (( np))-1;}
     }
-	break;
-	case 8:
-#line 263 "ext/json/ext/parser/parser.rl"
+	goto st29;
+tr11:
+#line 263 "parser.rl"
 	{
         char *np;
         np =  JSON_parse_object(json, p, pe, result, current_nesting + 1);
-        if (np == NULL) { p--; {p++; goto _out; } } else {p = (( np))-1;}
+        if (np == NULL) { p--; {p++; cs = 29; goto _out;} } else {p = (( np))-1;}
     }
-	break;
-#line 621 "ext/json/ext/parser/parser.c"
-		}
+	goto st29;
+tr25:
+#line 227 "parser.rl"
+	{
+        if (json->allow_nan) {
+            *result = CInfinity;
+        } else {
+            rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p - 8);
+        }
+    }
+	goto st29;
+tr27:
+#line 220 "parser.rl"
+	{
+        if (json->allow_nan) {
+            *result = CNaN;
+        } else {
+            rb_enc_raise(EXC_ENCODING eParserError, "%u: unexpected token at '%s'", __LINE__, p - 2);
+        }
+    }
+	goto st29;
+tr31:
+#line 214 "parser.rl"
+	{
+        *result = Qfalse;
+    }
+	goto st29;
+tr34:
+#line 211 "parser.rl"
+	{
+        *result = Qnil;
+    }
+	goto st29;
+tr37:
+#line 217 "parser.rl"
+	{
+        *result = Qtrue;
+    }
+	goto st29;
+st29:
+	if ( ++p == pe )
+		goto _test_eof29;
+case 29:
+#line 269 "parser.rl"
+	{ p--; {p++; cs = 29; goto _out;} }
+#line 628 "parser.c"
+	switch( (*p) ) {
+		case 13: goto st29;
+		case 32: goto st29;
+		case 47: goto st2;
 	}
+	if ( 9 <= (*p) && (*p) <= 10 )
+		goto st29;
+	goto st0;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 42: goto st3;
+		case 47: goto st5;
+	}
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	if ( (*p) == 42 )
+		goto st4;
+	goto st3;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	switch( (*p) ) {
+		case 42: goto st4;
+		case 47: goto st29;
+	}
+	goto st3;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	if ( (*p) == 10 )
+		goto st29;
+	goto st5;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	switch( (*p) ) {
+		case 42: goto st7;
+		case 47: goto st9;
+	}
+	goto st0;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	if ( (*p) == 42 )
+		goto st8;
+	goto st7;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	switch( (*p) ) {
+		case 42: goto st8;
+		case 47: goto st1;
+	}
+	goto st7;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+	if ( (*p) == 10 )
+		goto st1;
+	goto st9;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	if ( (*p) == 110 )
+		goto st11;
+	goto st0;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+	if ( (*p) == 102 )
+		goto st12;
+	goto st0;
+st12:
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+	if ( (*p) == 105 )
+		goto st13;
+	goto st0;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+	if ( (*p) == 110 )
+		goto st14;
+	goto st0;
+st14:
+	if ( ++p == pe )
+		goto _test_eof14;
+case 14:
+	if ( (*p) == 105 )
+		goto st15;
+	goto st0;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
+	if ( (*p) == 116 )
+		goto st16;
+	goto st0;
+st16:
+	if ( ++p == pe )
+		goto _test_eof16;
+case 16:
+	if ( (*p) == 121 )
+		goto tr25;
+	goto st0;
+st17:
+	if ( ++p == pe )
+		goto _test_eof17;
+case 17:
+	if ( (*p) == 97 )
+		goto st18;
+	goto st0;
+st18:
+	if ( ++p == pe )
+		goto _test_eof18;
+case 18:
+	if ( (*p) == 78 )
+		goto tr27;
+	goto st0;
+st19:
+	if ( ++p == pe )
+		goto _test_eof19;
+case 19:
+	if ( (*p) == 97 )
+		goto st20;
+	goto st0;
+st20:
+	if ( ++p == pe )
+		goto _test_eof20;
+case 20:
+	if ( (*p) == 108 )
+		goto st21;
+	goto st0;
+st21:
+	if ( ++p == pe )
+		goto _test_eof21;
+case 21:
+	if ( (*p) == 115 )
+		goto st22;
+	goto st0;
+st22:
+	if ( ++p == pe )
+		goto _test_eof22;
+case 22:
+	if ( (*p) == 101 )
+		goto tr31;
+	goto st0;
+st23:
+	if ( ++p == pe )
+		goto _test_eof23;
+case 23:
+	if ( (*p) == 117 )
+		goto st24;
+	goto st0;
+st24:
+	if ( ++p == pe )
+		goto _test_eof24;
+case 24:
+	if ( (*p) == 108 )
+		goto st25;
+	goto st0;
+st25:
+	if ( ++p == pe )
+		goto _test_eof25;
+case 25:
+	if ( (*p) == 108 )
+		goto tr34;
+	goto st0;
+st26:
+	if ( ++p == pe )
+		goto _test_eof26;
+case 26:
+	if ( (*p) == 114 )
+		goto st27;
+	goto st0;
+st27:
+	if ( ++p == pe )
+		goto _test_eof27;
+case 27:
+	if ( (*p) == 117 )
+		goto st28;
+	goto st0;
+st28:
+	if ( ++p == pe )
+		goto _test_eof28;
+case 28:
+	if ( (*p) == 101 )
+		goto tr37;
+	goto st0;
+	}
+	_test_eof1: cs = 1; goto _test_eof;
+	_test_eof29: cs = 29; goto _test_eof;
+	_test_eof2: cs = 2; goto _test_eof;
+	_test_eof3: cs = 3; goto _test_eof;
+	_test_eof4: cs = 4; goto _test_eof;
+	_test_eof5: cs = 5; goto _test_eof;
+	_test_eof6: cs = 6; goto _test_eof;
+	_test_eof7: cs = 7; goto _test_eof;
+	_test_eof8: cs = 8; goto _test_eof;
+	_test_eof9: cs = 9; goto _test_eof;
+	_test_eof10: cs = 10; goto _test_eof;
+	_test_eof11: cs = 11; goto _test_eof;
+	_test_eof12: cs = 12; goto _test_eof;
+	_test_eof13: cs = 13; goto _test_eof;
+	_test_eof14: cs = 14; goto _test_eof;
+	_test_eof15: cs = 15; goto _test_eof;
+	_test_eof16: cs = 16; goto _test_eof;
+	_test_eof17: cs = 17; goto _test_eof;
+	_test_eof18: cs = 18; goto _test_eof;
+	_test_eof19: cs = 19; goto _test_eof;
+	_test_eof20: cs = 20; goto _test_eof;
+	_test_eof21: cs = 21; goto _test_eof;
+	_test_eof22: cs = 22; goto _test_eof;
+	_test_eof23: cs = 23; goto _test_eof;
+	_test_eof24: cs = 24; goto _test_eof;
+	_test_eof25: cs = 25; goto _test_eof;
+	_test_eof26: cs = 26; goto _test_eof;
+	_test_eof27: cs = 27; goto _test_eof;
+	_test_eof28: cs = 28; goto _test_eof;
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-#line 290 "ext/json/ext/parser/parser.rl"
+#line 290 "parser.rl"
 
     if (cs >= JSON_value_first_final) {
         return p;
@@ -640,160 +875,91 @@ _again:
 }
 
 
-#line 644 "ext/json/ext/parser/parser.c"
-static const char _JSON_integer_actions[] = {
-	0, 1, 0
-};
+#line 879 "parser.c"
+enum {JSON_integer_start = 1};
+enum {JSON_integer_first_final = 3};
+enum {JSON_integer_error = 0};
 
-static const char _JSON_integer_key_offsets[] = {
-	0, 0, 4, 7, 9, 9
-};
-
-static const char _JSON_integer_trans_keys[] = {
-	45, 48, 49, 57, 48, 49, 57, 48, 
-	57, 48, 57, 0
-};
-
-static const char _JSON_integer_single_lengths[] = {
-	0, 2, 1, 0, 0, 0
-};
-
-static const char _JSON_integer_range_lengths[] = {
-	0, 1, 1, 1, 0, 1
-};
-
-static const char _JSON_integer_index_offsets[] = {
-	0, 0, 4, 7, 9, 10
-};
-
-static const char _JSON_integer_indicies[] = {
-	0, 2, 3, 1, 2, 3, 1, 1, 
-	4, 1, 3, 4, 0
-};
-
-static const char _JSON_integer_trans_targs[] = {
-	2, 0, 3, 5, 4
-};
-
-static const char _JSON_integer_trans_actions[] = {
-	0, 0, 0, 0, 1
-};
-
-static const int JSON_integer_start = 1;
-static const int JSON_integer_first_final = 3;
-static const int JSON_integer_error = 0;
-
-static const int JSON_integer_en_main = 1;
+enum {JSON_integer_en_main = 1};
 
 
-#line 306 "ext/json/ext/parser/parser.rl"
+#line 306 "parser.rl"
 
 
 static char *JSON_parse_integer(JSON_Parser *json, char *p, char *pe, VALUE *result)
 {
     int cs = EVIL;
 
-    
-#line 698 "ext/json/ext/parser/parser.c"
+
+#line 895 "parser.c"
 	{
 	cs = JSON_integer_start;
 	}
 
-#line 313 "ext/json/ext/parser/parser.rl"
+#line 313 "parser.rl"
     json->memo = p;
-    
-#line 706 "ext/json/ext/parser/parser.c"
-	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
 
+#line 903 "parser.c"
+	{
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _JSON_integer_trans_keys + _JSON_integer_key_offsets[cs];
-	_trans = _JSON_integer_index_offsets[cs];
-
-	_klen = _JSON_integer_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (unsigned int)(_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _JSON_integer_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += (unsigned int)((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _JSON_integer_indicies[_trans];
-	cs = _JSON_integer_trans_targs[_trans];
-
-	if ( _JSON_integer_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _JSON_integer_actions + _JSON_integer_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
-#line 303 "ext/json/ext/parser/parser.rl"
-	{ p--; {p++; goto _out; } }
-	break;
-#line 784 "ext/json/ext/parser/parser.c"
-		}
+case 1:
+	switch( (*p) ) {
+		case 45: goto st2;
+		case 48: goto st3;
 	}
+	if ( 49 <= (*p) && (*p) <= 57 )
+		goto st5;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	if ( (*p) == 48 )
+		goto st3;
+	if ( 49 <= (*p) && (*p) <= 57 )
+		goto st5;
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st0;
+	goto tr4;
+tr4:
+#line 303 "parser.rl"
+	{ p--; {p++; cs = 4; goto _out;} }
+	goto st4;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+#line 944 "parser.c"
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st5;
+	goto tr4;
+	}
+	_test_eof2: cs = 2; goto _test_eof;
+	_test_eof3: cs = 3; goto _test_eof;
+	_test_eof4: cs = 4; goto _test_eof;
+	_test_eof5: cs = 5; goto _test_eof;
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-#line 315 "ext/json/ext/parser/parser.rl"
+#line 315 "parser.rl"
 
     if (cs >= JSON_integer_first_final) {
         long len = p - json->memo;
@@ -808,172 +974,157 @@ _again:
 }
 
 
-#line 812 "ext/json/ext/parser/parser.c"
-static const char _JSON_float_actions[] = {
-	0, 1, 0
-};
+#line 978 "parser.c"
+enum {JSON_float_start = 1};
+enum {JSON_float_first_final = 8};
+enum {JSON_float_error = 0};
 
-static const char _JSON_float_key_offsets[] = {
-	0, 0, 4, 7, 10, 12, 16, 18, 
-	23, 29, 29
-};
-
-static const char _JSON_float_trans_keys[] = {
-	45, 48, 49, 57, 48, 49, 57, 46, 
-	69, 101, 48, 57, 43, 45, 48, 57, 
-	48, 57, 46, 69, 101, 48, 57, 69, 
-	101, 45, 46, 48, 57, 69, 101, 45, 
-	46, 48, 57, 0
-};
-
-static const char _JSON_float_single_lengths[] = {
-	0, 2, 1, 3, 0, 2, 0, 3, 
-	2, 0, 2
-};
-
-static const char _JSON_float_range_lengths[] = {
-	0, 1, 1, 0, 1, 1, 1, 1, 
-	2, 0, 2
-};
-
-static const char _JSON_float_index_offsets[] = {
-	0, 0, 4, 7, 11, 13, 17, 19, 
-	24, 29, 30
-};
-
-static const char _JSON_float_indicies[] = {
-	0, 2, 3, 1, 2, 3, 1, 4, 
-	5, 5, 1, 6, 1, 7, 7, 8, 
-	1, 8, 1, 4, 5, 5, 3, 1, 
-	5, 5, 1, 6, 9, 1, 1, 1, 
-	1, 8, 9, 0
-};
-
-static const char _JSON_float_trans_targs[] = {
-	2, 0, 3, 7, 4, 5, 8, 6, 
-	10, 9
-};
-
-static const char _JSON_float_trans_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 1
-};
-
-static const int JSON_float_start = 1;
-static const int JSON_float_first_final = 8;
-static const int JSON_float_error = 0;
-
-static const int JSON_float_en_main = 1;
+enum {JSON_float_en_main = 1};
 
 
-#line 340 "ext/json/ext/parser/parser.rl"
+#line 340 "parser.rl"
 
 
 static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *result)
 {
     int cs = EVIL;
 
-    
-#line 878 "ext/json/ext/parser/parser.c"
+
+#line 994 "parser.c"
 	{
 	cs = JSON_float_start;
 	}
 
-#line 347 "ext/json/ext/parser/parser.rl"
+#line 347 "parser.rl"
     json->memo = p;
-    
-#line 886 "ext/json/ext/parser/parser.c"
-	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
 
+#line 1002 "parser.c"
+	{
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _JSON_float_trans_keys + _JSON_float_key_offsets[cs];
-	_trans = _JSON_float_index_offsets[cs];
-
-	_klen = _JSON_float_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (unsigned int)(_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _JSON_float_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += (unsigned int)((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _JSON_float_indicies[_trans];
-	cs = _JSON_float_trans_targs[_trans];
-
-	if ( _JSON_float_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _JSON_float_actions + _JSON_float_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
-#line 334 "ext/json/ext/parser/parser.rl"
-	{ p--; {p++; goto _out; } }
-	break;
-#line 964 "ext/json/ext/parser/parser.c"
-		}
+case 1:
+	switch( (*p) ) {
+		case 45: goto st2;
+		case 48: goto st3;
 	}
+	if ( 49 <= (*p) && (*p) <= 57 )
+		goto st7;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	if ( (*p) == 48 )
+		goto st3;
+	if ( 49 <= (*p) && (*p) <= 57 )
+		goto st7;
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	switch( (*p) ) {
+		case 46: goto st4;
+		case 69: goto st5;
+		case 101: goto st5;
+	}
+	goto st0;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st8;
+	goto st0;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	switch( (*p) ) {
+		case 69: goto st5;
+		case 101: goto st5;
+	}
+	if ( (*p) > 46 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st8;
+	} else if ( (*p) >= 45 )
+		goto st0;
+	goto tr9;
+tr9:
+#line 334 "parser.rl"
+	{ p--; {p++; cs = 9; goto _out;} }
+	goto st9;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+#line 1067 "parser.c"
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	switch( (*p) ) {
+		case 43: goto st6;
+		case 45: goto st6;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st10;
+	goto st0;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st10;
+	goto st0;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	switch( (*p) ) {
+		case 69: goto st0;
+		case 101: goto st0;
+	}
+	if ( (*p) > 46 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st10;
+	} else if ( (*p) >= 45 )
+		goto st0;
+	goto tr9;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	switch( (*p) ) {
+		case 46: goto st4;
+		case 69: goto st5;
+		case 101: goto st5;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st7;
+	goto st0;
+	}
+	_test_eof2: cs = 2; goto _test_eof;
+	_test_eof3: cs = 3; goto _test_eof;
+	_test_eof4: cs = 4; goto _test_eof;
+	_test_eof8: cs = 8; goto _test_eof;
+	_test_eof9: cs = 9; goto _test_eof;
+	_test_eof5: cs = 5; goto _test_eof;
+	_test_eof6: cs = 6; goto _test_eof;
+	_test_eof10: cs = 10; goto _test_eof;
+	_test_eof7: cs = 7; goto _test_eof;
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-#line 349 "ext/json/ext/parser/parser.rl"
+#line 349 "parser.rl"
 
     if (cs >= JSON_float_first_final) {
         long len = p - json->memo;
@@ -996,78 +1147,15 @@ _again:
 
 
 
-#line 1000 "ext/json/ext/parser/parser.c"
-static const char _JSON_array_actions[] = {
-	0, 1, 0, 1, 1
-};
+#line 1151 "parser.c"
+enum {JSON_array_start = 1};
+enum {JSON_array_first_final = 17};
+enum {JSON_array_error = 0};
 
-static const char _JSON_array_key_offsets[] = {
-	0, 0, 1, 18, 25, 41, 43, 44, 
-	46, 47, 49, 50, 52, 53, 55, 56, 
-	58, 59
-};
-
-static const char _JSON_array_trans_keys[] = {
-	91, 13, 32, 34, 45, 47, 73, 78, 
-	91, 93, 102, 110, 116, 123, 9, 10, 
-	48, 57, 13, 32, 44, 47, 93, 9, 
-	10, 13, 32, 34, 45, 47, 73, 78, 
-	91, 102, 110, 116, 123, 9, 10, 48, 
-	57, 42, 47, 42, 42, 47, 10, 42, 
-	47, 42, 42, 47, 10, 42, 47, 42, 
-	42, 47, 10, 0
-};
-
-static const char _JSON_array_single_lengths[] = {
-	0, 1, 13, 5, 12, 2, 1, 2, 
-	1, 2, 1, 2, 1, 2, 1, 2, 
-	1, 0
-};
-
-static const char _JSON_array_range_lengths[] = {
-	0, 0, 2, 1, 2, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0
-};
-
-static const char _JSON_array_index_offsets[] = {
-	0, 0, 2, 18, 25, 40, 43, 45, 
-	48, 50, 53, 55, 58, 60, 63, 65, 
-	68, 70
-};
-
-static const char _JSON_array_indicies[] = {
-	0, 1, 0, 0, 2, 2, 3, 2, 
-	2, 2, 4, 2, 2, 2, 2, 0, 
-	2, 1, 5, 5, 6, 7, 4, 5, 
-	1, 6, 6, 2, 2, 8, 2, 2, 
-	2, 2, 2, 2, 2, 6, 2, 1, 
-	9, 10, 1, 11, 9, 11, 6, 9, 
-	6, 10, 12, 13, 1, 14, 12, 14, 
-	5, 12, 5, 13, 15, 16, 1, 17, 
-	15, 17, 0, 15, 0, 16, 1, 0
-};
-
-static const char _JSON_array_trans_targs[] = {
-	2, 0, 3, 13, 17, 3, 4, 9, 
-	5, 6, 8, 7, 10, 12, 11, 14, 
-	16, 15
-};
-
-static const char _JSON_array_trans_actions[] = {
-	0, 0, 1, 0, 3, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0
-};
-
-static const int JSON_array_start = 1;
-static const int JSON_array_first_final = 17;
-static const int JSON_array_error = 0;
-
-static const int JSON_array_en_main = 1;
+enum {JSON_array_en_main = 1};
 
 
-#line 399 "ext/json/ext/parser/parser.rl"
+#line 399 "parser.rl"
 
 
 static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting)
@@ -1080,95 +1168,59 @@ static char *JSON_parse_array(JSON_Parser *json, char *p, char *pe, VALUE *resul
     }
     *result = NIL_P(array_class) ? rb_ary_new() : rb_class_new_instance(0, 0, array_class);
 
-    
-#line 1085 "ext/json/ext/parser/parser.c"
+
+#line 1173 "parser.c"
 	{
 	cs = JSON_array_start;
 	}
 
-#line 412 "ext/json/ext/parser/parser.rl"
-    
-#line 1092 "ext/json/ext/parser/parser.c"
-	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
+#line 412 "parser.rl"
 
+#line 1180 "parser.c"
+	{
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _JSON_array_trans_keys + _JSON_array_key_offsets[cs];
-	_trans = _JSON_array_index_offsets[cs];
-
-	_klen = _JSON_array_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (unsigned int)(_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _JSON_array_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += (unsigned int)((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _JSON_array_indicies[_trans];
-	cs = _JSON_array_trans_targs[_trans];
-
-	if ( _JSON_array_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _JSON_array_actions + _JSON_array_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
-#line 376 "ext/json/ext/parser/parser.rl"
+case 1:
+	if ( (*p) == 91 )
+		goto st2;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 13: goto st2;
+		case 32: goto st2;
+		case 34: goto tr2;
+		case 45: goto tr2;
+		case 47: goto st13;
+		case 73: goto tr2;
+		case 78: goto tr2;
+		case 91: goto tr2;
+		case 93: goto tr4;
+		case 102: goto tr2;
+		case 110: goto tr2;
+		case 116: goto tr2;
+		case 123: goto tr2;
+	}
+	if ( (*p) > 10 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto tr2;
+	} else if ( (*p) >= 9 )
+		goto st2;
+	goto st0;
+tr2:
+#line 376 "parser.rl"
 	{
         VALUE v = Qnil;
         char *np = JSON_parse_value(json, p, pe, &v, current_nesting);
         if (np == NULL) {
-            p--; {p++; goto _out; }
+            p--; {p++; cs = 3; goto _out;}
         } else {
             if (NIL_P(json->array_class)) {
                 rb_ary_push(*result, v);
@@ -1178,25 +1230,175 @@ _match:
             {p = (( np))-1;}
         }
     }
-	break;
-	case 1:
-#line 391 "ext/json/ext/parser/parser.rl"
-	{ p--; {p++; goto _out; } }
-	break;
-#line 1187 "ext/json/ext/parser/parser.c"
-		}
+	goto st3;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+#line 1239 "parser.c"
+	switch( (*p) ) {
+		case 13: goto st3;
+		case 32: goto st3;
+		case 44: goto st4;
+		case 47: goto st9;
+		case 93: goto tr4;
 	}
+	if ( 9 <= (*p) && (*p) <= 10 )
+		goto st3;
+	goto st0;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	switch( (*p) ) {
+		case 13: goto st4;
+		case 32: goto st4;
+		case 34: goto tr2;
+		case 45: goto tr2;
+		case 47: goto st5;
+		case 73: goto tr2;
+		case 78: goto tr2;
+		case 91: goto tr2;
+		case 102: goto tr2;
+		case 110: goto tr2;
+		case 116: goto tr2;
+		case 123: goto tr2;
+	}
+	if ( (*p) > 10 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto tr2;
+	} else if ( (*p) >= 9 )
+		goto st4;
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	switch( (*p) ) {
+		case 42: goto st6;
+		case 47: goto st8;
+	}
+	goto st0;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	if ( (*p) == 42 )
+		goto st7;
+	goto st6;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	switch( (*p) ) {
+		case 42: goto st7;
+		case 47: goto st4;
+	}
+	goto st6;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	if ( (*p) == 10 )
+		goto st4;
+	goto st8;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+	switch( (*p) ) {
+		case 42: goto st10;
+		case 47: goto st12;
+	}
+	goto st0;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	if ( (*p) == 42 )
+		goto st11;
+	goto st10;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+	switch( (*p) ) {
+		case 42: goto st11;
+		case 47: goto st3;
+	}
+	goto st10;
+st12:
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+	if ( (*p) == 10 )
+		goto st3;
+	goto st12;
+tr4:
+#line 391 "parser.rl"
+	{ p--; {p++; cs = 17; goto _out;} }
+	goto st17;
+st17:
+	if ( ++p == pe )
+		goto _test_eof17;
+case 17:
+#line 1346 "parser.c"
+	goto st0;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+	switch( (*p) ) {
+		case 42: goto st14;
+		case 47: goto st16;
+	}
+	goto st0;
+st14:
+	if ( ++p == pe )
+		goto _test_eof14;
+case 14:
+	if ( (*p) == 42 )
+		goto st15;
+	goto st14;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
+	switch( (*p) ) {
+		case 42: goto st15;
+		case 47: goto st2;
+	}
+	goto st14;
+st16:
+	if ( ++p == pe )
+		goto _test_eof16;
+case 16:
+	if ( (*p) == 10 )
+		goto st2;
+	goto st16;
+	}
+	_test_eof2: cs = 2; goto _test_eof;
+	_test_eof3: cs = 3; goto _test_eof;
+	_test_eof4: cs = 4; goto _test_eof;
+	_test_eof5: cs = 5; goto _test_eof;
+	_test_eof6: cs = 6; goto _test_eof;
+	_test_eof7: cs = 7; goto _test_eof;
+	_test_eof8: cs = 8; goto _test_eof;
+	_test_eof9: cs = 9; goto _test_eof;
+	_test_eof10: cs = 10; goto _test_eof;
+	_test_eof11: cs = 11; goto _test_eof;
+	_test_eof12: cs = 12; goto _test_eof;
+	_test_eof17: cs = 17; goto _test_eof;
+	_test_eof13: cs = 13; goto _test_eof;
+	_test_eof14: cs = 14; goto _test_eof;
+	_test_eof15: cs = 15; goto _test_eof;
+	_test_eof16: cs = 16; goto _test_eof;
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-#line 413 "ext/json/ext/parser/parser.rl"
+#line 413 "parser.rl"
 
     if(cs >= JSON_array_first_final) {
         return p + 1;
@@ -1277,62 +1479,15 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
 }
 
 
-#line 1281 "ext/json/ext/parser/parser.c"
-static const char _JSON_string_actions[] = {
-	0, 2, 0, 1
-};
+#line 1483 "parser.c"
+enum {JSON_string_start = 1};
+enum {JSON_string_first_final = 8};
+enum {JSON_string_error = 0};
 
-static const char _JSON_string_key_offsets[] = {
-	0, 0, 1, 5, 8, 14, 20, 26, 
-	32
-};
-
-static const char _JSON_string_trans_keys[] = {
-	34, 34, 92, 0, 31, 117, 0, 31, 
-	48, 57, 65, 70, 97, 102, 48, 57, 
-	65, 70, 97, 102, 48, 57, 65, 70, 
-	97, 102, 48, 57, 65, 70, 97, 102, 
-	0
-};
-
-static const char _JSON_string_single_lengths[] = {
-	0, 1, 2, 1, 0, 0, 0, 0, 
-	0
-};
-
-static const char _JSON_string_range_lengths[] = {
-	0, 0, 1, 1, 3, 3, 3, 3, 
-	0
-};
-
-static const char _JSON_string_index_offsets[] = {
-	0, 0, 2, 6, 9, 13, 17, 21, 
-	25
-};
-
-static const char _JSON_string_indicies[] = {
-	0, 1, 2, 3, 1, 0, 4, 1, 
-	0, 5, 5, 5, 1, 6, 6, 6, 
-	1, 7, 7, 7, 1, 0, 0, 0, 
-	1, 1, 0
-};
-
-static const char _JSON_string_trans_targs[] = {
-	2, 0, 8, 3, 4, 5, 6, 7
-};
-
-static const char _JSON_string_trans_actions[] = {
-	0, 0, 1, 0, 0, 0, 0, 0
-};
-
-static const int JSON_string_start = 1;
-static const int JSON_string_first_final = 8;
-static const int JSON_string_error = 0;
-
-static const int JSON_string_en_main = 1;
+enum {JSON_string_en_main = 1};
 
 
-#line 512 "ext/json/ext/parser/parser.rl"
+#line 512 "parser.rl"
 
 
 static int
@@ -1353,120 +1508,135 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
     VALUE match_string;
 
     *result = rb_str_buf_new(0);
-    
-#line 1358 "ext/json/ext/parser/parser.c"
+
+#line 1513 "parser.c"
 	{
 	cs = JSON_string_start;
 	}
 
-#line 533 "ext/json/ext/parser/parser.rl"
+#line 533 "parser.rl"
     json->memo = p;
-    
-#line 1366 "ext/json/ext/parser/parser.c"
-	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
 
+#line 1521 "parser.c"
+	{
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _JSON_string_trans_keys + _JSON_string_key_offsets[cs];
-	_trans = _JSON_string_index_offsets[cs];
-
-	_klen = _JSON_string_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (unsigned int)(_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _JSON_string_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += (unsigned int)((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _JSON_string_indicies[_trans];
-	cs = _JSON_string_trans_targs[_trans];
-
-	if ( _JSON_string_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _JSON_string_actions + _JSON_string_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
-#line 498 "ext/json/ext/parser/parser.rl"
+case 1:
+	if ( (*p) == 34 )
+		goto st2;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 34: goto tr2;
+		case 92: goto st3;
+	}
+	if ( 0 <= (*p) && (*p) <= 31 )
+		goto st0;
+	goto st2;
+tr2:
+#line 498 "parser.rl"
 	{
         *result = json_string_unescape(*result, json->memo + 1, p);
         if (NIL_P(*result)) {
             p--;
-            {p++; goto _out; }
+            {p++; cs = 8; goto _out;}
         } else {
             FORCE_UTF8(*result);
             {p = (( p + 1))-1;}
         }
     }
-	break;
-	case 1:
-#line 509 "ext/json/ext/parser/parser.rl"
-	{ p--; {p++; goto _out; } }
-	break;
-#line 1457 "ext/json/ext/parser/parser.c"
-		}
+#line 509 "parser.rl"
+	{ p--; {p++; cs = 8; goto _out;} }
+	goto st8;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+#line 1564 "parser.c"
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	if ( (*p) == 117 )
+		goto st4;
+	if ( 0 <= (*p) && (*p) <= 31 )
+		goto st0;
+	goto st2;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st5;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st5;
+	} else
+		goto st5;
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st6;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st6;
+	} else
+		goto st6;
+	goto st0;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st7;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st7;
+	} else
+		goto st7;
+	goto st0;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st2;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st2;
+	} else
+		goto st2;
+	goto st0;
 	}
+	_test_eof2: cs = 2; goto _test_eof;
+	_test_eof8: cs = 8; goto _test_eof;
+	_test_eof3: cs = 3; goto _test_eof;
+	_test_eof4: cs = 4; goto _test_eof;
+	_test_eof5: cs = 5; goto _test_eof;
+	_test_eof6: cs = 6; goto _test_eof;
+	_test_eof7: cs = 7; goto _test_eof;
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-#line 535 "ext/json/ext/parser/parser.rl"
+#line 535 "parser.rl"
 
     if (json->create_additions && RTEST(match_string = json->match_string)) {
           VALUE klass;
@@ -1513,7 +1683,7 @@ static VALUE convert_encoding(VALUE source)
     }
     FORCE_UTF8(source);
   } else {
-    source = rb_str_conv_enc(source, NULL, rb_utf8_encoding());
+    source = rb_str_conv_enc(source, rb_enc_get(source), rb_utf8_encoding());
   }
 #endif
     return source;
@@ -1653,66 +1823,15 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1657 "ext/json/ext/parser/parser.c"
-static const char _JSON_actions[] = {
-	0, 1, 0
-};
+#line 1827 "parser.c"
+enum {JSON_start = 1};
+enum {JSON_first_final = 10};
+enum {JSON_error = 0};
 
-static const char _JSON_key_offsets[] = {
-	0, 0, 16, 18, 19, 21, 22, 24, 
-	25, 27, 28
-};
-
-static const char _JSON_trans_keys[] = {
-	13, 32, 34, 45, 47, 73, 78, 91, 
-	102, 110, 116, 123, 9, 10, 48, 57, 
-	42, 47, 42, 42, 47, 10, 42, 47, 
-	42, 42, 47, 10, 13, 32, 47, 9, 
-	10, 0
-};
-
-static const char _JSON_single_lengths[] = {
-	0, 12, 2, 1, 2, 1, 2, 1, 
-	2, 1, 3
-};
-
-static const char _JSON_range_lengths[] = {
-	0, 2, 0, 0, 0, 0, 0, 0, 
-	0, 0, 1
-};
-
-static const char _JSON_index_offsets[] = {
-	0, 0, 15, 18, 20, 23, 25, 28, 
-	30, 33, 35
-};
-
-static const char _JSON_indicies[] = {
-	0, 0, 2, 2, 3, 2, 2, 2, 
-	2, 2, 2, 2, 0, 2, 1, 4, 
-	5, 1, 6, 4, 6, 7, 4, 7, 
-	5, 8, 9, 1, 10, 8, 10, 0, 
-	8, 0, 9, 7, 7, 11, 7, 1, 
-	0
-};
-
-static const char _JSON_trans_targs[] = {
-	1, 0, 10, 6, 3, 5, 4, 10, 
-	7, 9, 8, 2
-};
-
-static const char _JSON_trans_actions[] = {
-	0, 0, 1, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0
-};
-
-static const int JSON_start = 1;
-static const int JSON_first_final = 10;
-static const int JSON_error = 0;
-
-static const int JSON_en_main = 1;
+enum {JSON_en_main = 1};
 
 
-#line 735 "ext/json/ext/parser/parser.rl"
+#line 735 "parser.rl"
 
 
 /*
@@ -1728,111 +1847,150 @@ static VALUE cParser_parse(VALUE self)
   VALUE result = Qnil;
   GET_PARSER;
 
-  
-#line 1733 "ext/json/ext/parser/parser.c"
+
+#line 1852 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 751 "ext/json/ext/parser/parser.rl"
+#line 751 "parser.rl"
   p = json->source;
   pe = p + json->len;
-  
-#line 1742 "ext/json/ext/parser/parser.c"
-	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
 
+#line 1861 "parser.c"
+	{
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _JSON_trans_keys + _JSON_key_offsets[cs];
-	_trans = _JSON_index_offsets[cs];
-
-	_klen = _JSON_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (unsigned int)(_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _JSON_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += (unsigned int)((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _JSON_indicies[_trans];
-	cs = _JSON_trans_targs[_trans];
-
-	if ( _JSON_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _JSON_actions + _JSON_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
-#line 727 "ext/json/ext/parser/parser.rl"
+st1:
+	if ( ++p == pe )
+		goto _test_eof1;
+case 1:
+	switch( (*p) ) {
+		case 13: goto st1;
+		case 32: goto st1;
+		case 34: goto tr2;
+		case 45: goto tr2;
+		case 47: goto st6;
+		case 73: goto tr2;
+		case 78: goto tr2;
+		case 91: goto tr2;
+		case 102: goto tr2;
+		case 110: goto tr2;
+		case 116: goto tr2;
+		case 123: goto tr2;
+	}
+	if ( (*p) > 10 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto tr2;
+	} else if ( (*p) >= 9 )
+		goto st1;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+tr2:
+#line 727 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result, 0);
-        if (np == NULL) { p--; {p++; goto _out; } } else {p = (( np))-1;}
+        if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
     }
-	break;
-#line 1823 "ext/json/ext/parser/parser.c"
-		}
+	goto st10;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+#line 1905 "parser.c"
+	switch( (*p) ) {
+		case 13: goto st10;
+		case 32: goto st10;
+		case 47: goto st2;
 	}
+	if ( 9 <= (*p) && (*p) <= 10 )
+		goto st10;
+	goto st0;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 42: goto st3;
+		case 47: goto st5;
+	}
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	if ( (*p) == 42 )
+		goto st4;
+	goto st3;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	switch( (*p) ) {
+		case 42: goto st4;
+		case 47: goto st10;
+	}
+	goto st3;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	if ( (*p) == 10 )
+		goto st10;
+	goto st5;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	switch( (*p) ) {
+		case 42: goto st7;
+		case 47: goto st9;
+	}
+	goto st0;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	if ( (*p) == 42 )
+		goto st8;
+	goto st7;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	switch( (*p) ) {
+		case 42: goto st8;
+		case 47: goto st1;
+	}
+	goto st7;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+	if ( (*p) == 10 )
+		goto st1;
+	goto st9;
+	}
+	_test_eof1: cs = 1; goto _test_eof;
+	_test_eof10: cs = 10; goto _test_eof;
+	_test_eof2: cs = 2; goto _test_eof;
+	_test_eof3: cs = 3; goto _test_eof;
+	_test_eof4: cs = 4; goto _test_eof;
+	_test_eof5: cs = 5; goto _test_eof;
+	_test_eof6: cs = 6; goto _test_eof;
+	_test_eof7: cs = 7; goto _test_eof;
+	_test_eof8: cs = 8; goto _test_eof;
+	_test_eof9: cs = 9; goto _test_eof;
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-#line 754 "ext/json/ext/parser/parser.rl"
+#line 754 "parser.rl"
 
   if (cs >= JSON_first_final && p == pe) {
     return result;

@@ -4,13 +4,15 @@ language: ruby
 
 # Specify which ruby versions you wish to run your tests on, each version will be used
 rvm:
+  - 1.9.2
+  - 1.9.3
   - 2.0.0
   - 2.1
   - 2.2
   - 2.3.3
-  - 2.4.0-preview3
-  - ruby-head
+  - 2.4.0
   - jruby
+  - ruby-head
 matrix:
   allow_failures:
     - rvm: ruby-head

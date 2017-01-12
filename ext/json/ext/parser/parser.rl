@@ -578,7 +578,7 @@ static VALUE convert_encoding(VALUE source)
     }
     FORCE_UTF8(source);
   } else {
-    source = rb_str_conv_enc(source, NULL, rb_utf8_encoding());
+    source = rb_str_conv_enc(source, rb_enc_get(source), rb_utf8_encoding());
   }
 #endif
     return source;
