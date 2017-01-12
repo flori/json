@@ -88,14 +88,13 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
-      '--title' <<  'JSON implemention for ruby' << '--main' << 'README.md'
+      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.md'
     s.test_files.concat Dir['./tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
     s.homepage = "http://flori.github.com/#{PKG_NAME}"
     s.license = 'Ruby'
-    #s.required_ruby_version = '~>2.0'
   end
 
   desc 'Creates a json_pure.gemspec file'
@@ -133,7 +132,6 @@ if defined?(Gem) and defined?(Gem::PackageTask)
     s.email = "flori@ping.de"
     s.homepage = "http://flori.github.com/#{PKG_NAME}"
     s.license = 'Ruby'
-    #s.required_ruby_version = '~>2.0'
   end
 
   desc 'Creates a json.gemspec file'
