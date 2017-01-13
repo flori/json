@@ -1,4 +1,7 @@
+2017-01-13 (1.8.6)
+  * Be compatible with ancient ruby 1.8 (maybe?)
 2015-09-11 (1.8.5)
+  * Be compatible with ruby 2.4.0
   * There were still some mentions of dual GPL licensing in the source, but JSON
     has just the Ruby license that itself includes an explicit dual-licensing
     clause that allows covered software to be distributed under the terms of

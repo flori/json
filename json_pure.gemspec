@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: json_pure 1.8.5 ruby lib
+# stub: json_pure 1.8.6 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "json_pure".freeze
-  s.version = "1.8.5"
+  s.version = "1.8.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Florian Frank".freeze]
-  s.date = "2017-01-12"
+  s.date = "2017-01-13"
   s.description = "This is a JSON implementation in pure Ruby.".freeze
   s.email = "flori@ping.de".freeze
   s.extra_rdoc_files = ["README.md".freeze]

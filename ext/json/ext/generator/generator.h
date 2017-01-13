@@ -21,6 +21,10 @@
 #define rb_obj_instance_variables(object) rb_funcall(object, rb_intern("instance_variables"), 0)
 #endif
 
+#ifndef RB_TYPE_P
+#define RB_TYPE_P(obj, type) (rb_type(obj) == type)
+#endif
+
 #define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
 
 /* unicode definitions */
