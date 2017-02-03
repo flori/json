@@ -774,14 +774,15 @@ static void generate_json_array(FBuffer *buffer, VALUE Vstate, JSON_Generator_St
     char *delim = FBUFFER_PTR(state->array_delim);
     long delim_len = FBUFFER_LEN(state->array_delim);
     long depth = ++state->depth;
+    int len = RARRAY_LEN(obj);
     int i, j;
     if (max_nesting != 0 && depth > max_nesting) {
         fbuffer_free(buffer);
         rb_raise(eNestingError, "nesting of %ld is too deep", --state->depth);
     }
     fbuffer_append_char(buffer, '[');
-    if (array_nl) fbuffer_append(buffer, array_nl, array_nl_len);
-    for(i = 0; i < RARRAY_LEN(obj); i++) {
+    if (array_nl && len > 0) fbuffer_append(buffer, array_nl, array_nl_len);
+    for(i = 0; i < len; i++) {
         if (i > 0) fbuffer_append(buffer, delim, delim_len);
         if (indent) {
             for (j = 0; j < depth; j++) {
@@ -791,7 +792,7 @@ static void generate_json_array(FBuffer *buffer, VALUE Vstate, JSON_Generator_St
         generate_json(buffer, Vstate, state, rb_ary_entry(obj, i));
     }
     state->depth = --depth;
-    if (array_nl) {
+    if (array_nl && len > 0) {
         fbuffer_append(buffer, array_nl, array_nl_len);
         if (indent) {
             for (j = 0; j < depth; j++) {

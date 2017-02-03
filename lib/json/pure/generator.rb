@@ -335,7 +335,7 @@ module JSON
 
           def json_transform(state)
             delim = ','
-            delim << state.array_nl
+            delim << state.array_nl unless empty?
             result = '['
             result << state.array_nl
             depth = state.depth += 1
@@ -352,8 +352,10 @@ module JSON
               first = false
             }
             depth = state.depth -= 1
-            result << state.array_nl
-            result << state.indent * depth if indent
+            unless empty?
+              result << state.array_nl
+              result << state.indent * depth if indent
+            end
             result << ']'
           end
         end
