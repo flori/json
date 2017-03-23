@@ -1,5 +1,10 @@
 # Changes
 
+## 2017-03-23 (2.0.4)
+ * Raise exception for incomplete unicode surrogates/character escape
+   sequences. This problem was reported by Daniel Gollahon (dgollahon).
+ * Fix arbitrary heap exposure problem. This problem was reported by Ahmad
+   Sherif (ahmadsherif).
 
 ## 2017-01-12 (2.0.3)
  * Set `required_ruby_version` to 1.9
