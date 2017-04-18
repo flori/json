@@ -354,8 +354,7 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
         fbuffer_append_char(json->fbuffer, '\0');
         if (NIL_P(json->decimal_class)) {
           *result = rb_float_new(rb_cstr_to_dbl(FBUFFER_PTR(json->fbuffer), 1));
-        }
-        else {
+        } else {
           VALUE text;
           text = rb_str_new2(FBUFFER_PTR(json->fbuffer));
           *result = rb_funcall(json->decimal_class, i_new, 1, text);
@@ -858,6 +857,7 @@ void Init_parser(void)
     i_aset = rb_intern("[]=");
     i_aref = rb_intern("[]");
     i_leftshift = rb_intern("<<");
+    i_new = rb_intern("new");
 }
 
 /*
