@@ -11,7 +11,7 @@ spec = Gem::Specification.new do |s|
   s.homepage = "http://json-jruby.rubyforge.org/"
   s.platform = 'java'
   s.rubyforge_project = "json-jruby"
-  s.licenses = ["Ruby"]
+  s.license = 'Ruby'.freeze
 
   s.files = Dir["{docs,lib,tests}/**/*"]
 
