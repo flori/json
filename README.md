@@ -179,14 +179,14 @@ should return a JSON object (a hash converted to JSON with `#to_json`) like
 this (don't forget the `*a` for all the arguments):
 
 ```ruby
- class Range
-   def to_json(*a)
-     {
-       'json_class'   => self.class.name, # = 'Range'
-       'data'         => [ first, last, exclude_end? ]
-     }.to_json(*a)
-   end
- end
+class Range
+  def to_json(*a)
+    {
+      'json_class'   => self.class.name, # = 'Range'
+      'data'         => [ first, last, exclude_end? ]
+    }.to_json(*a)
+  end
+end
 ```
 
 The hash key `json_class` is the class, that will be asked to deserialise the
@@ -200,20 +200,20 @@ called with the JSON object converted to a Ruby hash. So a range can
 be deserialised by implementing `Range.json_create` like this:
 
 ```ruby
- class Range
-   def self.json_create(o)
-     new(*o['data'])
-   end
- end
+class Range
+  def self.json_create(o)
+    new(*o['data'])
+  end
+end
 ```
 
 Now it possible to serialise/deserialise ranges as well:
 
 ```ruby
- json = JSON.generate [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
- # => "[1,2,{\"a\":3.141},false,true,null,{\"json_class\":\"Range\",\"data\":[4,10,false]}]"
- JSON.parse json
- # => [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
+json = JSON.generate [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
+# => "[1,2,{\"a\":3.141},false,true,null,{\"json_class\":\"Range\",\"data\":[4,10,false]}]"
+JSON.parse json
+# => [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
 ```
 
 `JSON.generate` always creates the shortest possible string representation of a
