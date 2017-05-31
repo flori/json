@@ -214,6 +214,10 @@ json = JSON.generate [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
 # => "[1,2,{\"a\":3.141},false,true,null,{\"json_class\":\"Range\",\"data\":[4,10,false]}]"
 JSON.parse json
 # => [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
+json = JSON.generate [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
+# => "[1,2,{\"a\":3.141},false,true,null,{\"json_class\":\"Range\",\"data\":[4,10,false]}]"
+JSON.parse json, :create_additions => true
+# => [1, 2, {"a"=>3.141}, false, true, nil, 4..10]
 ```
 
 `JSON.generate` always creates the shortest possible string representation of a
