@@ -462,6 +462,12 @@ EOT
     )
   end
 
+  def test_parsing_ascii8bit_string
+    ascii8bit_json = '{ "foo": "bar" }'.force_encoding(Encoding::ASCII_8BIT)
+    JSON(ascii8bit_json)
+    assert_equal Encoding::ASCII_8BIT, ascii8bit_json.encoding
+  end
+
   private
 
   def assert_equal_float(expected, actual, delta = 1e-2)
