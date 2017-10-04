@@ -15,5 +15,6 @@ rvm:
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - rvm: 1.9.3
 script: "bundle exec rake"
 sudo: false
