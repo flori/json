@@ -150,6 +150,18 @@ require 'json/add/rails'
 Both of the additions attempt to require `'json'` (like above) first, if it has
 not been required yet.
 
+## Serializing exceptions
+
+The JSON module doesn't extend `Exception` by default. If you convert an `Exception`
+object to JSON, it will by default only include the exception message.
+
+To include the full details, you must either load the load the `json/add/core` mentioned
+above, or specifically load the exception addition:
+
+```ruby
+require 'json/add/exception'
+```
+
 ## More Examples
 
 To create a JSON document from a ruby data structure, you can call
