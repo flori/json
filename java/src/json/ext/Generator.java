@@ -7,12 +7,11 @@ package json.ext;
 
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
-import org.jruby.RubyBignum;
 import org.jruby.RubyBoolean;
 import org.jruby.RubyClass;
-import org.jruby.RubyFixnum;
 import org.jruby.RubyFloat;
 import org.jruby.RubyHash;
+import org.jruby.RubyInteger;
 import org.jruby.RubyNumeric;
 import org.jruby.RubyString;
 import org.jruby.runtime.ThreadContext;
@@ -67,14 +66,14 @@ public final class Generator {
             Handler<? super T> getHandlerFor(Ruby runtime, T object) {
         RubyClass metaClass = object.getMetaClass();
         if (metaClass == runtime.getString()) return (Handler)STRING_HANDLER;
-        if (metaClass == runtime.getFixnum()) return (Handler)FIXNUM_HANDLER;
+        if (metaClass == runtime.getFixnum()) return (Handler)INTEGER_HANDLER;
         if (metaClass == runtime.getHash())   return (Handler)HASH_HANDLER;
         if (metaClass == runtime.getArray())  return (Handler)ARRAY_HANDLER;
         if (object.isNil())                   return (Handler)NIL_HANDLER;
         if (object == runtime.getTrue())      return (Handler)TRUE_HANDLER;
         if (object == runtime.getFalse())     return (Handler)FALSE_HANDLER;
         if (metaClass == runtime.getFloat())  return (Handler)FLOAT_HANDLER;
-        if (metaClass == runtime.getBignum()) return (Handler)BIGNUM_HANDLER;
+        if (metaClass == runtime.getBignum()) return (Handler)INTEGER_HANDLER;
         return GENERIC_HANDLER;
     }
 
@@ -208,22 +207,10 @@ public final class Generator {
 
 
     /* Handlers */
-
-    static final Handler<RubyBignum> BIGNUM_HANDLER =
-        new Handler<RubyBignum>() {
+    static final Handler<RubyInteger> INTEGER_HANDLER =
+        new Handler<RubyInteger>() {
             @Override
-            void generate(Session session, RubyBignum object, ByteList buffer) {
-                // JRUBY-4751: RubyBignum.to_s() returns generic object
-                // representation (fixed in 1.5, but we maintain backwards
-                // compatibility; call to_s(IRubyObject[]) then
-                buffer.append(((RubyString)object.to_s(IRubyObject.NULL_ARRAY)).getByteList());
-            }
-        };
-
-    static final Handler<RubyFixnum> FIXNUM_HANDLER =
-        new Handler<RubyFixnum>() {
-            @Override
-            void generate(Session session, RubyFixnum object, ByteList buffer) {
+            void generate(Session session, RubyInteger object, ByteList buffer) {
                 buffer.append(object.to_s().getByteList());
             }
         };
