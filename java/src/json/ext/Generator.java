@@ -65,15 +65,14 @@ public final class Generator {
     private static <T extends IRubyObject>
             Handler<? super T> getHandlerFor(Ruby runtime, T object) {
         RubyClass metaClass = object.getMetaClass();
-        if (metaClass == runtime.getString()) return (Handler)STRING_HANDLER;
-        if (metaClass == runtime.getFixnum()) return (Handler)INTEGER_HANDLER;
-        if (metaClass == runtime.getHash())   return (Handler)HASH_HANDLER;
-        if (metaClass == runtime.getArray())  return (Handler)ARRAY_HANDLER;
-        if (object.isNil())                   return (Handler)NIL_HANDLER;
-        if (object == runtime.getTrue())      return (Handler)TRUE_HANDLER;
-        if (object == runtime.getFalse())     return (Handler)FALSE_HANDLER;
-        if (metaClass == runtime.getFloat())  return (Handler)FLOAT_HANDLER;
-        if (metaClass == runtime.getBignum()) return (Handler)INTEGER_HANDLER;
+        if (metaClass == runtime.getString())  return (Handler)STRING_HANDLER;
+        if (metaClass == runtime.getInteger()) return (Handler)INTEGER_HANDLER;
+        if (metaClass == runtime.getHash())    return (Handler)HASH_HANDLER;
+        if (metaClass == runtime.getArray())   return (Handler)ARRAY_HANDLER;
+        if (object.isNil())                    return (Handler)NIL_HANDLER;
+        if (object == runtime.getTrue())       return (Handler)TRUE_HANDLER;
+        if (object == runtime.getFalse())      return (Handler)FALSE_HANDLER;
+        if (metaClass == runtime.getFloat())   return (Handler)FLOAT_HANDLER;
         return GENERIC_HANDLER;
     }
 
