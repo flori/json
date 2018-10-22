@@ -1,5 +1,6 @@
-# JSON implementation for Ruby ![Travis Widget]
-[Travis Widget]: http://travis-ci.org/flori/json.svg?branch=master
+# JSON implementation for Ruby
+
+[![Travis Widget](http://travis-ci.org/flori/json.svg?branch=master)](https://travis-ci.org/flori/json)
 
 ## Description
 
