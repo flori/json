@@ -11,10 +11,10 @@ rvm:
   - 2.3
   - 2.4
   - 2.5
-  - jruby
   - ruby-head
 matrix:
   allow_failures:
+    - rvm: jruby
     - rvm: ruby-head
     - rvm: 1.9.3
 script: "bundle exec rake"
