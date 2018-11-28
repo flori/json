@@ -176,7 +176,7 @@ task :check_env do
 end
 
 desc "Testing library (pure ruby)"
-task :test_pure => [ :clean, :check_env, :do_test_pure ]
+task :test_pure => [ :check_env, :do_test_pure ]
 
 UndocumentedTestTask.new do |t|
   t.name = 'do_test_pure'
