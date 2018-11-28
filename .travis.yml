@@ -13,14 +13,14 @@ rvm:
   - 2.6
   - 2.7.0-preview3
   - ruby-head
-  - jruby
-  - jruby-9.2.7.0
+  - jruby-9.1 # Ruby 2.3
+  - jruby-9.2 # Ruby 2.5
   - truffleruby
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: jruby
-    - rvm: jruby-9.2.7.0
+    - rvm: jruby-9.1
+    - rvm: jruby-9.2
     - rvm: truffleruby
 script: "bundle exec rake"
 sudo: false
