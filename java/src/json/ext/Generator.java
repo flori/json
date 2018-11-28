@@ -7,6 +7,7 @@ package json.ext;
 
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
+import org.jruby.RubyBasicObject;
 import org.jruby.RubyBignum;
 import org.jruby.RubyBoolean;
 import org.jruby.RubyClass;
@@ -15,6 +16,7 @@ import org.jruby.RubyFloat;
 import org.jruby.RubyHash;
 import org.jruby.RubyNumeric;
 import org.jruby.RubyString;
+import org.jruby.runtime.ClassIndex;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.ByteList;
@@ -57,6 +59,19 @@ public final class Generator {
         return handler.generateNew(session, object);
     }
 
+    // NOTE: drop this once Ruby 1.9.3 support is gone!
+    private static final int FIXNUM = 1;
+    private static final int BIGNUM = 2;
+    private static final int ARRAY = 3;
+    private static final int STRING = 4;
+    private static final int NIL = 5;
+    private static final int TRUE = 6;
+    private static final int FALSE = 7;
+    private static final int HASH = 10;
+    private static final int FLOAT = 11;
+    // hard-coded due JRuby 1.7 compatibility
+    // https://github.com/jruby/jruby/blob/1.7.27/core/src/main/java/org/jruby/runtime/ClassIndex.java
+
     /**
      * Returns the best serialization handler for the given object.
      */
@@ -65,16 +80,24 @@ public final class Generator {
     @SuppressWarnings("unchecked")
     private static <T extends IRubyObject>
             Handler<? super T> getHandlerFor(Ruby runtime, T object) {
-        RubyClass metaClass = object.getMetaClass();
-        if (metaClass == runtime.getString()) return (Handler)STRING_HANDLER;
-        if (metaClass == runtime.getFixnum()) return (Handler)FIXNUM_HANDLER;
-        if (metaClass == runtime.getHash())   return (Handler)HASH_HANDLER;
-        if (metaClass == runtime.getArray())  return (Handler)ARRAY_HANDLER;
-        if (object.isNil())                   return (Handler)NIL_HANDLER;
-        if (object == runtime.getTrue())      return (Handler)TRUE_HANDLER;
-        if (object == runtime.getFalse())     return (Handler)FALSE_HANDLER;
-        if (metaClass == runtime.getFloat())  return (Handler)FLOAT_HANDLER;
-        if (metaClass == runtime.getBignum()) return (Handler)BIGNUM_HANDLER;
+        switch (((RubyBasicObject) object).getNativeTypeIndex()) {
+            // can not use getNativeClassIndex due 1.7 compatibility
+            case NIL    : return (Handler) NIL_HANDLER;
+            case TRUE   : return (Handler) TRUE_HANDLER;
+            case FALSE  : return (Handler) FALSE_HANDLER;
+            case FLOAT  : return (Handler) FLOAT_HANDLER;
+            case FIXNUM : return (Handler) FIXNUM_HANDLER;
+            case BIGNUM : return (Handler) BIGNUM_HANDLER;
+            case STRING :
+                if (((RubyBasicObject) object).getMetaClass() != runtime.getString()) break;
+                return (Handler) STRING_HANDLER;
+            case ARRAY  :
+                if (((RubyBasicObject) object).getMetaClass() != runtime.getArray()) break;
+                return (Handler) ARRAY_HANDLER;
+            case HASH   :
+                if (((RubyBasicObject) object).getMetaClass() != runtime.getHash()) break;
+                return (Handler) HASH_HANDLER;
+        }
         return GENERIC_HANDLER;
     }
 
