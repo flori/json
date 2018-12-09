@@ -207,7 +207,7 @@ JSON representation later. In this case it's `Range`, but any namespace of
 the form `A::B` or `::A::B` will do. All other keys are arbitrary and can be
 used to store the necessary data to configure the object to be deserialised.
 
-If a the key `json_class` is found in a JSON object, the JSON parser checks
+If the key `json_class` is found in a JSON object, the JSON parser checks
 if the given class responds to the `json_create` class method. If so, it is
 called with the JSON object converted to a Ruby hash. So a range can
 be deserialised by implementing `Range.json_create` like this:
