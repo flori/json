@@ -554,7 +554,9 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
     if (json->symbolize_names && json->parsing_name) {
       *result = rb_str_intern(*result);
     } else {
-      rb_str_resize(*result, RSTRING_LEN(*result));
+          if (RB_TYPE_P(*result, T_STRING)) {
+              rb_str_resize(*result, RSTRING_LEN(*result));
+          }
     }
     if (cs >= JSON_string_first_final) {
         return p + 1;
@@ -824,6 +826,7 @@ static VALUE cParser_source(VALUE self)
 
 void Init_parser(void)
 {
+#undef rb_intern
     rb_require("json/common");
     mJSON = rb_define_module("JSON");
     mExt = rb_define_module_under(mJSON, "Ext");
