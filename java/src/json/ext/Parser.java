@@ -55,7 +55,7 @@ public class Parser extends RubyObject {
     private RubyClass objectClass;
     private RubyClass arrayClass;
     private RubyClass decimalClass;
-    private RubyHash matchString;
+    private RubyHash match_string;
 
     private static final int DEFAULT_MAX_NESTING = 100;
 
@@ -165,7 +165,7 @@ public class Parser extends RubyObject {
         this.objectClass     = opts.getClass("object_class", runtime.getHash());
         this.arrayClass      = opts.getClass("array_class", runtime.getArray());
         this.decimalClass    = opts.getClass("decimal_class", null);
-        this.matchString    = opts.getHash("match_string");
+        this.match_string    = opts.getHash("match_string");
 
         if(symbolizeNames && createAdditions) {
           throw runtime.newArgumentError(
@@ -1437,7 +1437,7 @@ case 5:
 // line 608 "Parser.rl"
 
             if (parser.createAdditions) {
-                RubyHash matchString = parser.matchString;
+                RubyHash matchString = parser.match_string;
                 if (matchString != null) {
                     final IRubyObject[] memoArray = { result, null };
                     try {
