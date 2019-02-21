@@ -342,14 +342,15 @@ static char *JSON_parse_integer(JSON_Parser *json, char *p, char *pe, VALUE *res
 
 static int is_bigdecimal_class(VALUE obj)
 {
-     if (cBigDecimal == Qundef) {
-         if (rb_const_defined(rb_cObject, i_BigDecimal)) {
-             cBigDecimal = rb_const_get_at(rb_cObject, i_BigDecimal);
-         } else {
-             return 0;
-         }
-     }
-     return obj == cBigDecimal;
+  if (cBigDecimal == Qundef) {
+    if (rb_const_defined(rb_cObject, i_BigDecimal)) {
+      cBigDecimal = rb_const_get_at(rb_cObject, i_BigDecimal);
+    }
+    else {
+      return 0;
+    }
+  }
+  return obj == cBigDecimal;
 }
 
 static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *result)
@@ -878,6 +879,7 @@ void Init_parser(void)
     i_aref = rb_intern("[]");
     i_leftshift = rb_intern("<<");
     i_new = rb_intern("new");
+    i_BigDecimal = rb_intern("BigDecimal");
 }
 
 /*
