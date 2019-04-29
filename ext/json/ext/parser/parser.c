@@ -1658,7 +1658,7 @@ case 7:
 
     if (json->symbolize_names && json->parsing_name) {
       *result = rb_str_intern(*result);
-    } else {
+    } else if (RB_TYPE_P(*result, T_STRING)) {
       rb_str_resize(*result, RSTRING_LEN(*result));
     }
     if (cs >= JSON_string_first_final) {
