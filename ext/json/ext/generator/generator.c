@@ -1313,7 +1313,7 @@ static VALUE cState_allow_nan_p(VALUE self)
 /*
  * call-seq: ascii_only?
  *
- * Returns true, if NaN, Infinity, and -Infinity should be generated, otherwise
+ * Returns true, if only ASCII characters should be generated. Otherwise
  * returns false.
  */
 static VALUE cState_ascii_only_p(VALUE self)
@@ -1381,6 +1381,7 @@ static VALUE cState_buffer_initial_length_set(VALUE self, VALUE buffer_initial_l
  */
 void Init_generator(void)
 {
+#undef rb_intern
     rb_require("json/common");
 
     mJSON = rb_define_module("JSON");

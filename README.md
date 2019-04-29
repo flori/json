@@ -1,5 +1,6 @@
-# JSON implementation for Ruby ![Travis Widget]
-[Travis Widget]: http://travis-ci.org/flori/json.svg?branch=master
+# JSON implementation for Ruby
+
+[![Travis Widget](http://travis-ci.org/flori/json.svg?branch=master)](https://travis-ci.org/flori/json)
 
 ## Description
 
@@ -155,7 +156,7 @@ not been required yet.
 The JSON module doesn't extend `Exception` by default. If you convert an `Exception`
 object to JSON, it will by default only include the exception message.
 
-To include the full details, you must either load the load the `json/add/core` mentioned
+To include the full details, you must either load the `json/add/core` mentioned
 above, or specifically load the exception addition:
 
 ```ruby
@@ -206,7 +207,7 @@ JSON representation later. In this case it's `Range`, but any namespace of
 the form `A::B` or `::A::B` will do. All other keys are arbitrary and can be
 used to store the necessary data to configure the object to be deserialised.
 
-If a the key `json_class` is found in a JSON object, the JSON parser checks
+If the key `json_class` is found in a JSON object, the JSON parser checks
 if the given class responds to the `json_create` class method. If so, it is
 called with the JSON object converted to a Ruby hash. So a range can
 be deserialised by implementing `Range.json_create` like this:
@@ -405,4 +406,4 @@ The latest version of this library can be downloaded at
 
 Online Documentation should be located at
 
-* http://json.rubyforge.org
+* https://www.rubydoc.info/gems/json

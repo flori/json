@@ -1,5 +1,8 @@
 # Changes
 
+## 2019-02-21 (2.2.0)
+ * Adds support for 2.6 BigDecimal and ruby standard library Set datetype.
+
 ## 2017-04-18 (2.1.0)
  * Allow passing of `decimal_class` option to specify a class as which to parse
    JSON float numbers.

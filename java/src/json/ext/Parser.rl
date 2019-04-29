@@ -607,7 +607,7 @@ public class Parser extends RubyObject {
             %% write exec;
 
             if (parser.createAdditions) {
-                RubyHash matchString = parser.matchString;
+                RubyHash matchString = parser.match_string;
                 if (matchString != null) {
                     final IRubyObject[] memoArray = { result, null };
                     try {

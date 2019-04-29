@@ -23,8 +23,13 @@ class UndocumentedTestTask < Rake::TestTask
   def desc(*) end
 end
 
-MAKE   = ENV['MAKE']   || %w[gmake make].find { |c| system(c, '-v') }
-BUNDLE = ENV['BUNDLE'] || %w[bundle].find { |c| system(c, '-v') }
+which = lambda { |c|
+  w = `which #{c}`
+  break w.chomp unless w.empty?
+}
+
+MAKE   = ENV['MAKE']   || %w[gmake make].find(&which)
+BUNDLE = ENV['BUNDLE'] || %w[bundle].find(&which)
 PKG_NAME          = 'json'
 PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
@@ -47,8 +52,8 @@ JAVA_CLASSES        = []
 JRUBY_PARSER_JAR    = File.expand_path("lib/json/ext/parser.jar")
 JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
 
-RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find { |c| system(c, '-v') }
-RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find { |c| system(c, '-v') }
+RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find(&which)
+RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find(&which)
 
 desc "Installing library (pure)"
 task :install_pure => :version do
@@ -238,7 +243,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
       classpath = (Dir['java/lib/*.jar'] << 'java/src' << JRUBY_JAR) * ':'
       obj = src.sub(/\.java\Z/, '.class')
       file obj => src do
-        sh 'javac', '-classpath', classpath, '-source', '1.5', '-target', '1.5', src
+        sh 'javac', '-classpath', classpath, '-source', '1.6', '-target', '1.6', src
       end
       JAVA_CLASSES << obj
     end
