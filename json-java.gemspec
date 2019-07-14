@@ -10,7 +10,6 @@ spec = Gem::Specification.new do |s|
   s.email = "dev+ruby@mernen.com"
   s.homepage = "http://flori.github.com/json"
   s.platform = 'java'
-  s.rubyforge_project = "json-jruby"
   s.licenses = ["Ruby"]
 
   s.files = Dir["{docs,lib,tests}/**/*"]
