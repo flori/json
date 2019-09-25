@@ -152,7 +152,7 @@ module JSON
   # * *object_class*: Defaults to Hash
   # * *array_class*: Defaults to Array
   def parse(source, opts = {})
-    Parser.new(source, opts).parse
+    Parser.new(source, **(opts||{})).parse
   end
 
   # Parse the JSON document _source_ into a Ruby data structure and return it.
@@ -174,8 +174,8 @@ module JSON
     opts = {
       :max_nesting  => false,
       :allow_nan    => true
-    }.update(opts)
-    Parser.new(source, opts).parse
+    }.merge(opts)
+    Parser.new(source, **(opts||{})).parse
   end
 
   # Generate a JSON document from the Ruby data structure _obj_ and return
