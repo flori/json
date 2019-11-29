@@ -27,9 +27,9 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :add_runtime_dependency then
     s.add_development_dependency(%q<rake>.freeze, [">= 0"])
-    s.add_development_dependency(%q<test-unit>.freeze, ["~> 3.0"])
+    s.add_development_dependency(%q<test-unit>.freeze, ["~> 2.0"])
   else
     s.add_dependency(%q<rake>.freeze, [">= 0"])
-    s.add_dependency(%q<test-unit>.freeze, ["~> 3.0"])
+    s.add_dependency(%q<test-unit>.freeze, ["~> 2.0"])
   end
 end
