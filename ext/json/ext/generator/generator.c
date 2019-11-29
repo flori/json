@@ -15,7 +15,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 #endif
              mFloat, mString, mString_Extend,
              mTrueClass, mFalseClass, mNilClass, eGeneratorError,
-             eNestingError, CRegexp_MULTILINE, CJSON_SAFE_STATE_PROTOTYPE,
+             eNestingError,
              i_SAFE_STATE_PROTOTYPE;
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
@@ -696,7 +696,7 @@ static VALUE cState_aref(VALUE self, VALUE name)
     if (RTEST(rb_funcall(self, i_respond_to_p, 1, name))) {
         return rb_funcall(self, i_send, 1, name);
     } else {
-        return rb_ivar_get(self, rb_intern_str(rb_str_concat(rb_str_new2("@"), name)));
+        return rb_attr_get(self, rb_intern_str(rb_str_concat(rb_str_new2("@"), name)));
     }
 }
 
@@ -846,11 +846,20 @@ static void generate_json_array(FBuffer *buffer, VALUE Vstate, JSON_Generator_St
     fbuffer_append_char(buffer, ']');
 }
 
+#ifdef HAVE_RUBY_ENCODING_H
+static int enc_utf8_compatible_p(rb_encoding *enc)
+{
+    if (enc == rb_usascii_encoding()) return 1;
+    if (enc == rb_utf8_encoding()) return 1;
+    return 0;
+}
+#endif
+
 static void generate_json_string(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
 {
     fbuffer_append_char(buffer, '"');
 #ifdef HAVE_RUBY_ENCODING_H
-    if (!rb_enc_str_asciicompat_p(obj)) {
+    if (!enc_utf8_compatible_p(rb_enc_get(obj))) {
         obj = rb_str_encode(obj, CEncoding_UTF_8, 0, Qnil);
     }
 #endif
@@ -1073,10 +1082,8 @@ static VALUE cState_from_state_s(VALUE self, VALUE opts)
     } else if (rb_obj_is_kind_of(opts, rb_cHash)) {
         return rb_funcall(self, i_new, 1, opts);
     } else {
-        if (NIL_P(CJSON_SAFE_STATE_PROTOTYPE)) {
-            CJSON_SAFE_STATE_PROTOTYPE = rb_const_get(mJSON, i_SAFE_STATE_PROTOTYPE);
-        }
-        return rb_funcall(CJSON_SAFE_STATE_PROTOTYPE, i_dup, 0);
+        VALUE prototype = rb_const_get(mJSON, i_SAFE_STATE_PROTOTYPE);
+        return rb_funcall(prototype, i_dup, 0);
     }
 }
 
@@ -1392,6 +1399,8 @@ void Init_generator(void)
 
     eGeneratorError = rb_path2class("JSON::GeneratorError");
     eNestingError = rb_path2class("JSON::NestingError");
+    rb_gc_register_mark_object(eGeneratorError);
+    rb_gc_register_mark_object(eNestingError);
 
     cState = rb_define_class_under(mGenerator, "State", rb_cObject);
     rb_define_alloc_func(cState, cState_s_allocate);
@@ -1457,7 +1466,6 @@ void Init_generator(void)
     mNilClass = rb_define_module_under(mGeneratorMethods, "NilClass");
     rb_define_method(mNilClass, "to_json", mNilClass_to_json, -1);
 
-    CRegexp_MULTILINE = rb_const_get(rb_cRegexp, rb_intern("MULTILINE"));
     i_to_s = rb_intern("to_s");
     i_to_json = rb_intern("to_json");
     i_new = rb_intern("new");
@@ -1488,5 +1496,4 @@ void Init_generator(void)
     i_encode = rb_intern("encode");
 #endif
     i_SAFE_STATE_PROTOTYPE = rb_intern("SAFE_STATE_PROTOTYPE");
-    CJSON_SAFE_STATE_PROTOTYPE = Qnil;
 }
