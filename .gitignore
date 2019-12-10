@@ -15,3 +15,4 @@ Gemfile.lock
 */**/Makefile
 */**/*.o
 .byebug_history
+*.log
