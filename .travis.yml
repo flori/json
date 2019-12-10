@@ -14,9 +14,11 @@ rvm:
   - 2.7.0-preview3
   - ruby-head
   - jruby
+  - jruby-9.2.7.0
 matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby
+    - rvm: jruby-9.2.7.0
 script: "bundle exec rake"
 sudo: false
