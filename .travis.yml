@@ -4,7 +4,6 @@ language: ruby
 
 # Specify which ruby versions you wish to run your tests on, each version will be used
 rvm:
-  - 1.9.3
   - 2.0.0
   - 2.1
   - 2.2
@@ -12,12 +11,11 @@ rvm:
   - 2.4
   - 2.5
   - 2.6
-  - 2.7.0-preview2
+  - 2.7.0-preview3
   - ruby-head
   - jruby
 matrix:
   allow_failures:
-    - rvm: 1.9.3
     - rvm: ruby-head
     - rvm: jruby
 script: "bundle exec rake"
