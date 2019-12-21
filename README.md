@@ -390,6 +390,19 @@ Here are the median comparisons for completeness' sake:
             secs/call
 ```
 
+## Development
+### Release
+
+```
+rbenv shell 2.6.5
+rake build
+gem push pkg/json-2.3.0.gem
+
+rbenv shell jruby-9.2.9.0
+rake build
+gem push pkg/json-2.3.0-java.gem
+```
+
 ## Author
 
 Florian Frank <mailto:flori@ping.de>
