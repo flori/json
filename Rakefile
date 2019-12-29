@@ -115,47 +115,8 @@ if defined?(Gem) and defined?(Gem::PackageTask)
       pkg.package_files = PKG_FILES
   end
 
-  spec_ext = Gem::Specification.new do |s|
-    s.name = 'json'
-    s.version = PKG_VERSION
-    s.summary = PKG_TITLE
-    s.description = "This is a JSON implementation as a Ruby extension in C."
-
-    s.files = PKG_FILES
-
-    s.extensions = FileList['ext/**/extconf.rb']
-
-    s.require_path = 'lib'
-    s.add_development_dependency 'rake'
-    s.add_development_dependency 'test-unit', '~> 2.0'
-
-    s.extra_rdoc_files << 'README.md'
-    s.rdoc_options <<
-      '--title' <<  'JSON implemention for Ruby' << '--main' << 'README.md'
-    s.test_files.concat Dir['./tests/test_*.rb']
-
-    s.author = "Florian Frank"
-    s.email = "flori@ping.de"
-    s.homepage = "http://flori.github.com/#{PKG_NAME}"
-    s.license = 'Ruby'
-    s.required_ruby_version = '>= 1.9'
-  end
-
-  desc 'Creates a json.gemspec file'
-  task :gemspec_ext => :version do
-    File.open('json.gemspec', 'w') do |gemspec|
-      gemspec.write spec_ext.to_ruby
-    end
-  end
-
-  Gem::PackageTask.new(spec_ext) do |pkg|
-    pkg.need_tar      = true
-    pkg.package_files = PKG_FILES
-  end
-
-
   desc 'Create all gemspec files'
-  task :gemspec => [ :gemspec_pure, :gemspec_ext ]
+  task :gemspec => [ :gemspec_pure ]
 end
 
 desc m = "Writing version information for #{PKG_VERSION}"
