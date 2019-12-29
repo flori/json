@@ -391,7 +391,10 @@ Here are the median comparisons for completeness' sake:
 ```
 
 ## Development
+
 ### Release
+
+Update the json.gemspec and json-java.gemspec.
 
 ```
 rbenv shell 2.6.5
