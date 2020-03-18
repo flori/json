@@ -27,9 +27,21 @@ which = lambda { |c|
   w = `which #{c}`
   break w.chomp unless w.empty?
 }
+where = lambda { |c|
+  w = `where.exe #{c}`
+  break w.chomp unless w.empty?
+}
 
-MAKE   = ENV['MAKE']   || %w[gmake make].find(&which)
-BUNDLE = ENV['BUNDLE'] || %w[bundle].find(&which)
+if RUBY_PLATFORM !~ /mingw|mswin/
+  MAKE   = ENV['MAKE']   || %w[gmake make].find(&which)
+  BUNDLE = ENV['BUNDLE'] || %w[bundle].find(&which)
+else
+  MAKE   = ENV['MAKE']   ||
+    (RUBY_PLATFORM.include?('mingw') ? %w[make.exe] : %w[nmake.exe])
+      .find(&where)
+  BUNDLE = ENV['BUNDLE'] || 'bundle'
+end
+
 PKG_NAME          = 'json'
 PKG_TITLE         = 'JSON Implementation for Ruby'
 PKG_VERSION       = File.read('VERSION').chomp
@@ -52,8 +64,13 @@ JAVA_CLASSES        = []
 JRUBY_PARSER_JAR    = File.expand_path("lib/json/ext/parser.jar")
 JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
 
-RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find(&which)
-RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find(&which)
+if RUBY_PLATFORM !~ /mingw|mswin/
+  RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find(&which)
+  RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find(&which)
+else
+  RAGEL_CODEGEN     = %w[ragel.exe].find(&where)
+  RAGEL_DOTGEN      = %w[ragel.exe].find(&where)
+end
 
 desc "Installing library (pure)"
 task :install_pure => :version do
@@ -154,8 +171,8 @@ end
 
 desc "Testing library (pure ruby and extension)"
 task :test do
-  sh "env JSON=pure #{BUNDLE} exec rake test_pure" or exit 1
-  sh "env JSON=ext #{BUNDLE} exec rake test_ext"  or exit 1
+  sh({'JSON' => 'pure'}, "#{BUNDLE} exec rake test_pure") or exit 1
+  sh({'JSON' => 'ext'},  "#{BUNDLE} exec rake test_ext")  or exit 1
 end
 
 namespace :gems do
@@ -182,7 +199,7 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
 
   file JAVA_PARSER_SRC => JAVA_RAGEL_PATH do
     cd JAVA_DIR do
-      if RAGEL_CODEGEN == 'ragel'
+      if RAGEL_CODEGEN.include? 'ragel'
         sh "ragel Parser.rl -J -o Parser.java"
       else
         sh "ragel -x Parser.rl | #{RAGEL_CODEGEN} -J"
@@ -322,7 +339,7 @@ else
 
   file EXT_PARSER_SRC => RAGEL_PATH do
     cd EXT_PARSER_DIR do
-      if RAGEL_CODEGEN == 'ragel'
+      if RAGEL_CODEGEN.include? 'ragel'
         sh "ragel parser.rl -G2 -o parser.c"
       else
         sh "ragel -x parser.rl | #{RAGEL_CODEGEN} -G2"
