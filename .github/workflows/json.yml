@@ -1,0 +1,66 @@
+name: Json
+
+on: [push, pull_request]
+
+jobs:
+  pass:
+    name: >-
+      pass ${{ matrix.os }} ${{ matrix.ruby }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu, macos, windows ]
+        ruby: [ head, 2.7, 2.6, 2.5, 2.4, 2.3, 2.2, truffleruby ]
+        include:
+          - { os: windows, ruby: mingw }
+          - { os: windows, ruby: mswin }
+        exclude:
+          - { os: windows, ruby: head }
+          - { os: windows, ruby: truffleruby }
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: MSP-Greg/setup-ruby-pkgs@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          apt-get: ragel
+          brew: ragel
+          mingw: _upgrade_ ragel
+
+      - name: Install dependencies
+        run:  bundle install
+
+      - name: Compile
+        run:  rake compile
+
+      - name: Test
+        run:  rake test
+
+  fail:
+    name: >-
+      fail ${{ matrix.os }} ${{ matrix.ruby }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu, macos ]
+        ruby: [ jruby-head, jruby ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: MSP-Greg/setup-ruby-pkgs@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          apt-get: ragel
+          brew: ragel
+
+      - name: Install dependencies
+        run:  bundle install
+
+      - name: Compile
+        run:  rake compile
+
+      - name: Test
+        continue-on-error: true
+        run:  rake test
