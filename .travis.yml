@@ -15,10 +15,12 @@ rvm:
   - ruby-head
   - jruby
   - jruby-9.2.7.0
+  - truffleruby
 matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby
     - rvm: jruby-9.2.7.0
+    - rvm: truffleruby
 script: "bundle exec rake"
 sudo: false
