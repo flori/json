@@ -118,7 +118,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
       pkg.package_files = PKG_FILES
   end
 
-  desc 'Create all gemspec files'
+  desc 'Alias for gemspec_pure'
   task :gemspec => [ :gemspec_pure ]
 end
 
