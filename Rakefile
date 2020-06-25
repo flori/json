@@ -89,7 +89,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
 
     s.require_path = 'lib'
     s.add_development_dependency 'rake'
-    s.add_development_dependency 'test-unit', '~> 2.0'
+    s.add_development_dependency 'test-unit', '>= 2.0', '< 4.0'
 
     s.extra_rdoc_files << 'README.md'
     s.rdoc_options <<
@@ -106,7 +106,10 @@ if defined?(Gem) and defined?(Gem::PackageTask)
   desc 'Creates a json_pure.gemspec file'
   task :gemspec_pure => :version do
     File.open('json_pure.gemspec', 'w') do |gemspec|
-      gemspec.write spec_pure.to_ruby
+      src = spec_pure.to_ruby
+      src.gsub!(/# stub:.*/, "# This gemspec is generated automatically using `rake gemspec`.\n" \
+                             "# Do not modify directly.")
+      gemspec.write src
     end
   end
 
@@ -115,7 +118,7 @@ if defined?(Gem) and defined?(Gem::PackageTask)
       pkg.package_files = PKG_FILES
   end
 
-  desc 'Create all gemspec files'
+  desc 'Alias for gemspec_pure'
   task :gemspec => [ :gemspec_pure ]
 end
 

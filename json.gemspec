@@ -136,5 +136,5 @@ Gem::Specification.new do |s|
   s.test_files = ["tests/test_helper.rb"]
 
   s.add_development_dependency("rake", [">= 0"])
-  s.add_development_dependency("test-unit", ["~> 2.0"])
+  s.add_development_dependency("test-unit", [">= 2.0", "< 4.0"])
 end
