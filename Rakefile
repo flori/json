@@ -142,7 +142,8 @@ task :check_env do
 end
 
 desc "Testing library (pure ruby)"
-task :test_pure => [ :clean, :check_env, :do_test_pure ]
+task :test_pure => [ :set_env_pure, :check_env, :do_test_pure ]
+task(:set_env_pure) { ENV['JSON'] = 'pure' }
 
 UndocumentedTestTask.new do |t|
   t.name = 'do_test_pure'
@@ -153,10 +154,7 @@ UndocumentedTestTask.new do |t|
 end
 
 desc "Testing library (pure ruby and extension)"
-task :test do
-  sh "env JSON=pure #{BUNDLE} exec rake test_pure" or exit 1
-  sh "env JSON=ext #{BUNDLE} exec rake test_ext"  or exit 1
-end
+task :test => [ :test_pure, :test_ext ]
 
 namespace :gems do
   desc 'Install all development gems'
@@ -223,7 +221,8 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   end
 
   desc "Testing library (jruby)"
-  task :test_ext => [ :check_env, :create_jar, :do_test_ext ]
+  task :test_ext => [ :set_env_ext, :create_jar, :check_env, :do_test_ext ]
+  task(:set_env_ext) { ENV['JSON'] = 'ext' }
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
