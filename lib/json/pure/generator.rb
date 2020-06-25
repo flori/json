@@ -405,7 +405,7 @@ module JSON
             end
           end
 
-          # Module that holds the extinding methods if, the String module is
+          # Module that holds the extending methods if, the String module is
           # included.
           module Extend
             # Raw Strings are JSON Objects (the raw bytes are stored in an

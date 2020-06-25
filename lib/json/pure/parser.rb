@@ -66,7 +66,7 @@ module JSON
       #   also the default. It's not possible to use this option in
       #   conjunction with the *create_additions* option.
       # * *create_additions*: If set to true, the Parser creates
-      #   additions when if a matching class and create_id was found. This
+      #   additions when a matching class and create_id are found. This
       #   option defaults to false.
       # * *object_class*: Defaults to Hash
       # * *array_class*: Defaults to Array
