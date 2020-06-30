@@ -49,7 +49,7 @@ module JSON
         )+
       )mx
 
-        UNPARSED = Object.new.freeze
+      UNPARSED = Object.new.freeze
 
       # Creates a new JSON::Pure::Parser instance for the string _source_.
       #
