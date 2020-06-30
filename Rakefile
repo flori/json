@@ -78,50 +78,6 @@ task :install_ext => [ :compile, :install_pure, :install_ext_really ]
 desc "Installing library (extension)"
 task :install => :install_ext
 
-if defined?(Gem) and defined?(Gem::PackageTask)
-  spec_pure = Gem::Specification.new do |s|
-    s.name = 'json_pure'
-    s.version = PKG_VERSION
-    s.summary = PKG_TITLE
-    s.description = "This is a JSON implementation in pure Ruby."
-
-    s.files = PKG_FILES
-
-    s.require_path = 'lib'
-    s.add_development_dependency 'rake'
-    s.add_development_dependency 'test-unit', '>= 2.0', '< 4.0'
-
-    s.extra_rdoc_files << 'README.md'
-    s.rdoc_options <<
-      '--title' <<  'JSON implemention for ruby' << '--main' << 'README.md'
-    s.test_files.concat Dir['./tests/test_*.rb']
-
-    s.author = "Florian Frank"
-    s.email = "flori@ping.de"
-    s.homepage = "http://flori.github.com/#{PKG_NAME}"
-    s.license = 'Ruby'
-    s.required_ruby_version = '>= 2.0'
-  end
-
-  desc 'Creates a json_pure.gemspec file'
-  task :gemspec_pure => :version do
-    File.open('json_pure.gemspec', 'w') do |gemspec|
-      src = spec_pure.to_ruby
-      src.gsub!(/# stub:.*/, "# This gemspec is generated automatically using `rake gemspec`.\n" \
-                             "# Do not modify directly.")
-      gemspec.write src
-    end
-  end
-
-  Gem::PackageTask.new(spec_pure) do |pkg|
-      pkg.need_tar = true
-      pkg.package_files = PKG_FILES
-  end
-
-  desc 'Alias for gemspec_pure'
-  task :gemspec => [ :gemspec_pure ]
-end
-
 desc m = "Writing version information for #{PKG_VERSION}"
 task :version do
   puts m
@@ -375,4 +331,4 @@ else
 end
 
 desc "Compile in the the source directory"
-task :default => [ :clean, :gemspec, :test ]
+task :default => [ :clean, :test ]
