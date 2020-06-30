@@ -1,6 +1,4 @@
 # -*- encoding: utf-8 -*-
-# This gemspec is generated automatically using `rake gemspec`.
-# Do not modify directly.
 
 Gem::Specification.new do |s|
   s.name = "json_pure".freeze
