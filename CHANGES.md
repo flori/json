@@ -1,5 +1,13 @@
 # Changes
 
+## 2019-12-11 (2.3.0)
+ * Fix default of `create_additions` to always be false [CVE-2020-10663]
+ * Fix passing args all #to_json in json/add/*.
+ * Fix encoding issues
+ * Fix issues of keyword vs positional parameter
+ * Fix JSON::Parser against bigdecimal updates
+ * Bug fixes to JRuby port
+
 ## 2019-02-21 (2.2.0)
  * Adds support for 2.6 BigDecimal and ruby standard library Set datetype.
 
