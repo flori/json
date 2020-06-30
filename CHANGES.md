@@ -1,7 +1,10 @@
 # Changes
 
 ## 2019-12-11 (2.3.0)
- * Fix default of `create_additions` to always be false [CVE-2020-10663]
+ * Fix default of `create_additions` to always be `false` for `JSON(user_input)`
+   and `JSON.parse(user_input, nil)`.
+   Note that `JSON.load` remains with default `true` and is meant for internal
+   serialization of trusted data. [CVE-2020-10663]
  * Fix passing args all #to_json in json/add/*.
  * Fix encoding issues
  * Fix issues of keyword vs positional parameter
