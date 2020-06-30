@@ -1,5 +1,27 @@
 # Changes
 
+## 2020-06-30 (2.3.1)
+
+* Spelling and grammar fixes for comments. Pull request #191 by Josh
+  Kline.
+* Enhance generic JSON and #generate docs. Pull request #347 by Victor
+  Shepelev.
+* Add :nodoc: for GeneratorMethods. Pull request #349 by Victor Shepelev.
+* Baseline changes to help (JRuby) development. Pull request #371 by Karol
+  Bucek.
+* Add metadata for rubygems.org. Pull request #379 by Alexandre ZANNI.
+* Remove invalid JSON.generate description from JSON module rdoc. Pull
+  request #384 by Jeremy Evans.
+* Test with TruffleRuby in CI. Pull request #402 by Benoit Daloze.
+* Rdoc enhancements. Pull request #413 by Burdette Lamar.
+* Fixtures/ are not being tested... Pull request #416 by Marc-André
+  Lafortune.
+* Use frozen string for hash key. Pull request #420 by Marc-André
+  Lafortune.
+* Added :call-seq: to RDoc for some methods. Pull request #422 by Burdette
+  Lamar.
+* Small typo fix. Pull request #423 by Marc-André Lafortune.
+
 ## 2019-12-11 (2.3.0)
  * Fix default of `create_additions` to always be `false` for `JSON(user_input)`
    and `JSON.parse(user_input, nil)`.
