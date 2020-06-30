@@ -331,4 +331,4 @@ else
 end
 
 desc "Compile in the the source directory"
-task :default => [ :clean, :gemspec, :test ]
+task :default => [ :clean, :test ]
