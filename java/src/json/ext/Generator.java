@@ -10,13 +10,10 @@ import org.jruby.RubyArray;
 import org.jruby.RubyBasicObject;
 import org.jruby.RubyBignum;
 import org.jruby.RubyBoolean;
-import org.jruby.RubyClass;
 import org.jruby.RubyFixnum;
 import org.jruby.RubyFloat;
 import org.jruby.RubyHash;
-import org.jruby.RubyNumeric;
 import org.jruby.RubyString;
-import org.jruby.runtime.ClassIndex;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.ByteList;
@@ -32,8 +29,7 @@ public final class Generator {
     static <T extends IRubyObject> RubyString
             generateJson(ThreadContext context, T object,
                          Handler<? super T> handler, IRubyObject[] args) {
-        Session session = new Session(context, args.length > 0 ? args[0]
-                                                               : null);
+        Session session = new Session(context, args.length > 0 ? args[0] : null);
         return session.infect(handler.generateNew(session, object));
     }
 
@@ -43,7 +39,7 @@ public final class Generator {
      */
     static <T extends IRubyObject> RubyString
             generateJson(ThreadContext context, T object, IRubyObject[] args) {
-        Handler<? super T> handler = getHandlerFor(context.getRuntime(), object);
+        Handler<? super T> handler = getHandlerFor(context.runtime, object);
         return generateJson(context, object, handler, args);
     }
 
@@ -55,22 +51,9 @@ public final class Generator {
             generateJson(ThreadContext context, T object,
                          GeneratorState config) {
         Session session = new Session(context, config);
-        Handler<? super T> handler = getHandlerFor(context.getRuntime(), object);
+        Handler<? super T> handler = getHandlerFor(context.runtime, object);
         return handler.generateNew(session, object);
     }
-
-    // NOTE: drop this once Ruby 1.9.3 support is gone!
-    private static final int FIXNUM = 1;
-    private static final int BIGNUM = 2;
-    private static final int ARRAY = 3;
-    private static final int STRING = 4;
-    private static final int NIL = 5;
-    private static final int TRUE = 6;
-    private static final int FALSE = 7;
-    private static final int HASH = 10;
-    private static final int FLOAT = 11;
-    // hard-coded due JRuby 1.7 compatibility
-    // https://github.com/jruby/jruby/blob/1.7.27/core/src/main/java/org/jruby/runtime/ClassIndex.java
 
     /**
      * Returns the best serialization handler for the given object.
@@ -78,10 +61,8 @@ public final class Generator {
     // Java's generics can't handle this satisfactorily, so I'll just leave
     // the best I could get and ignore the warnings
     @SuppressWarnings("unchecked")
-    private static <T extends IRubyObject>
-            Handler<? super T> getHandlerFor(Ruby runtime, T object) {
-        switch (((RubyBasicObject) object).getNativeTypeIndex()) {
-            // can not use getNativeClassIndex due 1.7 compatibility
+    private static <T extends IRubyObject> Handler<? super T> getHandlerFor(Ruby runtime, T object) {
+        switch (((RubyBasicObject) object).getNativeClassIndex()) {
             case NIL    : return (Handler) NIL_HANDLER;
             case TRUE   : return (Handler) TRUE_HANDLER;
             case FALSE  : return (Handler) FALSE_HANDLER;
