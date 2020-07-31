@@ -83,6 +83,12 @@ public class GeneratorState extends RubyObject {
     private boolean quirksMode = DEFAULT_QUIRKS_MODE;
     static final boolean DEFAULT_QUIRKS_MODE = false;
     /**
+     * If set to <code>true</code> the forward slash will be escaped in
+     * json output.
+     */
+    private boolean escapeSlash = DEFAULT_ESCAPE_SLASH;
+    static final boolean DEFAULT_ESCAPE_SLASH = false;
+    /**
      * The initial buffer length of this state. (This isn't really used on all
      * non-C implementations.)
      */
@@ -171,6 +177,9 @@ public class GeneratorState extends RubyObject {
      * <code>-Infinity</code> should be generated, otherwise an exception is
      * thrown if these values are encountered.
      * This options defaults to <code>false</code>.
+     * <dt><code>:escape_slash</code>
+     * <dd>set to <code>true</code> if the forward slashes should be escaped
+     * in the json output (default: <code>false</code>)
      */
     @JRubyMethod(optional=1, visibility=Visibility.PRIVATE)
     public IRubyObject initialize(ThreadContext context, IRubyObject[] args) {
@@ -194,6 +203,7 @@ public class GeneratorState extends RubyObject {
         this.allowNaN = orig.allowNaN;
         this.asciiOnly = orig.asciiOnly;
         this.quirksMode = orig.quirksMode;
+        this.escapeSlash = orig.escapeSlash;
         this.bufferInitialLength = orig.bufferInitialLength;
         this.depth = orig.depth;
         return this;
@@ -346,6 +356,24 @@ public class GeneratorState extends RubyObject {
         return max_nesting;
     }
 
+    /**
+     * Returns true if forward slashes are escaped in the json output.
+     */
+    public boolean escapeSlash() {
+        return escapeSlash;
+    }
+
+    @JRubyMethod(name="escape_slash")
+    public RubyBoolean escape_slash_get(ThreadContext context) {
+        return context.getRuntime().newBoolean(escapeSlash);
+    }
+
+    @JRubyMethod(name="escape_slash=")
+    public IRubyObject escape_slash_set(IRubyObject escape_slash) {
+        escapeSlash = escape_slash.isTrue();
+        return escape_slash.getRuntime().newBoolean(escapeSlash);
+    }
+
     public boolean allowNaN() {
         return allowNaN;
     }
@@ -430,6 +458,7 @@ public class GeneratorState extends RubyObject {
         maxNesting = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
+        escapeSlash = opts.getBool("escape_slash", DEFAULT_ESCAPE_SLASH);
         bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
 
         depth = opts.getInt("depth", 0);
@@ -457,6 +486,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("allow_nan"), allow_nan_p(context));
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
+        result.op_aset(context, runtime.newSymbol("escape_slash"), escape_slash_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));
         for (String name: getInstanceVariableNameList()) {
