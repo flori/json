@@ -590,10 +590,9 @@ module JSON
   }
 
   # :call-seq:
-  #   JSON.dump(obj, io = nil, limit = nil)     
+  #   JSON.dump(obj, io = nil, limit = nil)
   #
-  # Constructs a \JSON \String from +obj+ by calling
-  #   JSON.generate(obj, JSON.dump_default_options.merge(:max_nesting => limit))
+  # Dumps +obj+ as a \JSON string, i.e. calls generate on the object and returns the result.
   #
   # The default options can be changed via method JSON.dump_default_options.
   #
