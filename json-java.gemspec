@@ -9,11 +9,10 @@ spec = Gem::Specification.new do |s|
   s.licenses = ["Ruby"]
   s.author = "Daniel Luz"
   s.email = "dev+ruby@mernen.com"
-  s.licenses = ["Ruby"]
 
   s.platform = 'java'
 
-  s.files = Dir["{docs,lib,tests}/**/*"]
+  s.files = Dir["{docs,lib,tests}/**/*", "LICENSE"]
 
   s.homepage = "http://flori.github.com/json"
   s.metadata = {
