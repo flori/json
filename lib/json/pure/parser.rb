@@ -242,8 +242,10 @@ module JSON
           @max_nesting.nonzero? && @current_nesting > @max_nesting
         result = @array_class.new
         delim = false
-        until eos?
+        loop do
           case
+          when eos?
+            raise ParserError, "unexpected end of string while parsing array"
           when !UNPARSED.equal?(value = parse_value)
             delim = false
             result << value
@@ -274,8 +276,10 @@ module JSON
           @max_nesting.nonzero? && @current_nesting > @max_nesting
         result = @object_class.new
         delim = false
-        until eos?
+        loop do
           case
+          when eos?
+            raise ParserError, "unexpected end of string while parsing object"
           when !UNPARSED.equal?(string = parse_string)
             skip(IGNORE)
             unless scan(PAIR_DELIMITER)
