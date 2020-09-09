@@ -50,6 +50,7 @@ public class Parser extends RubyObject {
     private int maxNesting;
     private boolean allowNaN;
     private boolean symbolizeNames;
+    private boolean freeze;
     private RubyClass objectClass;
     private RubyClass arrayClass;
     private RubyClass decimalClass;
@@ -158,6 +159,7 @@ public class Parser extends RubyObject {
         this.maxNesting      = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
         this.allowNaN        = opts.getBool("allow_nan", false);
         this.symbolizeNames  = opts.getBool("symbolize_names", false);
+        this.freeze          = opts.getBool("freeze", false);
         this.createId        = opts.getString("create_id", getCreateId(context));
         this.createAdditions = opts.getBool("create_additions", false);
         this.objectClass     = opts.getClass("object_class", runtime.getHash());
@@ -452,6 +454,9 @@ public class Parser extends RubyObject {
             %% write exec;
 
             if (cs >= JSON_value_first_final && result != null) {
+                if (parser.freeze) {
+                  result.setFrozen(true);
+                }
                 res.update(result, p);
             } else {
                 res.update(null, p);
@@ -633,9 +638,16 @@ public class Parser extends RubyObject {
 
             if (cs >= JSON_string_first_final && result != null) {
                 if (result instanceof RubyString) {
-                  ((RubyString)result).force_encoding(context, info.utf8.get());
+                  RubyString string = (RubyString)result;
+                  string.force_encoding(context, info.utf8.get());
+                  if (parser.freeze) {
+                     string.setFrozen(true);
+                     string = getRuntime().freezeAndDedupString(string);
+                  }
+                  res.update(string, p + 1);
+                } else {
+                  res.update(result, p + 1);
                 }
-                res.update(result, p + 1);
             } else {
                 res.update(null, p + 1);
             }
