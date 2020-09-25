@@ -165,5 +165,5 @@ class JSONCommonInterfaceTest < Test::Unit::TestCase
       file.close
       yield file.path
     end
-    end
+  end
 end
