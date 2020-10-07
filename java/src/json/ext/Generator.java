@@ -334,13 +334,13 @@ public final class Generator {
 
                 buffer.append((byte)'{');
                 buffer.append(objectNl);
-                object.visitAll(new RubyHash.Visitor() {
-                    private boolean firstPair = true;
 
+                final boolean[] firstPair = new boolean[]{true};
+                object.visitAll(new RubyHash.Visitor() {
                     @Override
                     public void visit(IRubyObject key, IRubyObject value) {
-                        if (firstPair) {
-                            firstPair = false;
+                        if (firstPair[0]) {
+                            firstPair[0] = false;
                         } else {
                             buffer.append((byte)',');
                             buffer.append(objectNl);
@@ -360,7 +360,7 @@ public final class Generator {
                     }
                 });
                 state.decreaseDepth();
-                if (objectNl.length() != 0) {
+                if (!firstPair[0] && objectNl.length() != 0) {
                     buffer.append(objectNl);
                     buffer.append(Utils.repeat(state.getIndent(), state.getDepth()));
                 }
