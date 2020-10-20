@@ -61,6 +61,8 @@ module JSON
       # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
       #   defiance of RFC 7159 to be parsed by the Parser. This option defaults
       #   to false.
+      # * *freeze*: If set to true, all parsed objects will be frozen. Parsed
+      #   string will be deduplicated if possible.
       # * *symbolize_names*: If set to true, returns symbols for the names
       #   (keys) in a JSON object. Otherwise strings are returned, which is
       #   also the default. It's not possible to use this option in
@@ -86,6 +88,7 @@ module JSON
         end
         @allow_nan = !!opts[:allow_nan]
         @symbolize_names = !!opts[:symbolize_names]
+        @freeze = !!opts[:freeze]
         if opts.key?(:create_additions)
           @create_additions = !!opts[:create_additions]
         else
@@ -120,6 +123,7 @@ module JSON
           obj = parse_value
           UNPARSED.equal?(obj) and raise ParserError,
             "source is not valid JSON!"
+          obj.freeze if @freeze
         end
         while !eos? && skip(IGNORE) do end
         eos? or raise ParserError, "source is not valid JSON!"
@@ -161,6 +165,7 @@ module JSON
         EMPTY_8BIT_STRING.force_encoding Encoding::ASCII_8BIT
       end
 
+      STR_UMINUS = ''.respond_to?(:-@)
       def parse_string
         if scan(STRING)
           return '' if self[1].empty?
@@ -180,6 +185,15 @@ module JSON
           if string.respond_to?(:force_encoding)
             string.force_encoding(::Encoding::UTF_8)
           end
+
+          if @freeze
+            if STR_UMINUS
+              string = -string
+            else
+              string.freeze
+            end
+          end
+
           if @create_additions and @match_string
             for (regexp, klass) in @match_string
               klass.json_creatable? or next
