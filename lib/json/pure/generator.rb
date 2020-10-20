@@ -332,8 +332,10 @@ module JSON
               first = false
             }
             depth = state.depth -= 1
-            result << state.object_nl
-            result << state.indent * depth if indent
+            unless first
+              result << state.object_nl
+              result << state.indent * depth if indent
+            end
             result << '}'
             result
           end
