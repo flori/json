@@ -451,7 +451,7 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
         if (*pe == '\\') {
             unescape = (char *) "?";
             unescape_len = 1;
-            if (pe > p) rb_str_buf_cat(result, p, pe - p);
+            if (pe > p) rb_str_cat(result, p, pe - p);
             switch (*++pe) {
                 case 'n':
                     unescape = (char *) "\n";
@@ -509,13 +509,13 @@ static VALUE json_string_unescape(VALUE result, char *string, char *stringEnd)
                     p = pe;
                     continue;
             }
-            rb_str_buf_cat(result, unescape, unescape_len);
+            rb_str_cat(result, unescape, unescape_len);
             p = ++pe;
         } else {
             pe++;
         }
     }
-    rb_str_buf_cat(result, p, pe - p);
+    rb_str_cat(result, p, pe - p);
     return result;
 }
 
@@ -558,7 +558,7 @@ static char *JSON_parse_string(JSON_Parser *json, char *p, char *pe, VALUE *resu
     int cs = EVIL;
     VALUE match_string;
 
-    *result = rb_str_buf_new(0);
+    *result = rb_str_new(0, 0);
     %% write init;
     json->memo = p;
     %% write exec;
