@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
 
   s.extensions = ["ext/json/ext/generator/extconf.rb", "ext/json/ext/parser/extconf.rb", "ext/json/extconf.rb"]
   s.extra_rdoc_files = ["README.md"]
-  s.rdoc_options = ["--title", "JSON implemention for Ruby", "--main", "README.md"]
+  s.rdoc_options = ["--title", "JSON implementation for Ruby", "--main", "README.md"]
   s.files = [
     ".gitignore",
     ".travis.yml",
