@@ -1,5 +1,15 @@
 # Changes
 
+## 2020-12-15 (2.4.0)
+
+* Implement a freeze: parser option #447
+* Fix an issue with generate_pretty and empty objects in the Ruby and Java implementations #449
+* Fix JSON.load_file doc #448
+* Fix pure parser with unclosed arrays / objects #425
+* bundle the LICENSE file in the gem #444
+* Add an option to escape forward slash character #405
+* RDoc for JSON #439 #446 #442 #434 #433 #430
+
 ## 2020-06-30 (2.3.1)
 
 * Spelling and grammar fixes for comments. Pull request #191 by Josh
