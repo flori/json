@@ -44,6 +44,14 @@ Gem::Specification.new do |s|
     "lib/json/version.rb".freeze,
   ]
   s.homepage = "http://flori.github.com/json".freeze
+  s.metadata = {
+    'bug_tracker_uri'   => 'https://github.com/flori/json/issues',
+    'changelog_uri'     => 'https://github.com/flori/json/blob/master/CHANGES.md',
+    'documentation_uri' => 'http://flori.github.io/json/doc/index.html',
+    'homepage_uri'      => 'http://flori.github.io/json/',
+    'source_code_uri'   => 'https://github.com/flori/json',
+    'wiki_uri'          => 'https://github.com/flori/json/wiki'
+  }
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.0".freeze)
   s.test_files = ["./tests/test_helper.rb".freeze]
