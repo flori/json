@@ -54,7 +54,7 @@ Gem::Specification.new do |s|
     "lib/json/pure/generator.rb",
     "lib/json/pure/parser.rb",
     "lib/json/version.rb",
-  ]
+  ] + Dir["tests/**/*"]
   s.homepage = "http://flori.github.com/json"
   s.metadata = {
     'bug_tracker_uri'   => 'https://github.com/flori/json/issues',
