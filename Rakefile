@@ -4,12 +4,7 @@ rescue LoadError
 end
 
 require 'rbconfig'
-include\
-  begin
-    RbConfig
-  rescue NameError
-    Config
-  end
+include RbConfig
 
 require 'rake/clean'
 CLOBBER.include 'doc', 'Gemfile.lock'
@@ -30,10 +25,8 @@ which = lambda { |c|
 
 MAKE   = ENV['MAKE']   || %w[gmake make].find(&which)
 BUNDLE = ENV['BUNDLE'] || %w[bundle].find(&which)
-PKG_NAME          = 'json'
-PKG_TITLE         = 'JSON Implementation for Ruby'
+
 PKG_VERSION       = File.read('VERSION').chomp
-PKG_FILES         = FileList[`git ls-files`.split(/\n/)]
 
 EXT_ROOT_DIR      = 'ext/json/ext'
 EXT_PARSER_DIR    = "#{EXT_ROOT_DIR}/parser"
@@ -324,8 +317,17 @@ else
   desc "Generate diagrams of ragel parser"
   task :ragel_dot => [ :ragel_dot_png, :ragel_dot_ps ]
 
+  desc "Create the gem packages"
+  task :package do
+    sh "gem build json.gemspec"
+    sh "gem build json_pure.gemspec"
+    mkdir_p 'pkg'
+    mv "json-#{PKG_VERSION}.gem", 'pkg'
+    mv "json_pure-#{PKG_VERSION}.gem", 'pkg'
+  end
+
   desc "Build all gems and archives for a new release of json and json_pure."
-  task :build => [ :clean, :gemspec, :package ]
+  task :build => [ :clean, :version, :package ]
 
   task :release => :build
 end
