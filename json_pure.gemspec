@@ -49,15 +49,6 @@ Gem::Specification.new do |s|
   s.summary = "JSON Implementation for Ruby".freeze
   s.test_files = ["./tests/test_helper.rb".freeze]
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 4
-  end
-
-  if s.respond_to? :add_runtime_dependency then
-    s.add_development_dependency(%q<rake>.freeze, [">= 0"])
-    s.add_development_dependency(%q<test-unit>.freeze, [">= 2.0", "< 4.0"])
-  else
-    s.add_dependency(%q<rake>.freeze, [">= 0"])
-    s.add_dependency(%q<test-unit>.freeze, [">= 2.0", "< 4.0"])
-  end
+  s.add_development_dependency(%q<rake>.freeze, [">= 0"])
+  s.add_development_dependency(%q<test-unit>.freeze, [">= 2.0", "< 4.0"])
 end
