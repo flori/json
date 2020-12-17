@@ -56,6 +56,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = Gem::Requirement.new(">= 2.0".freeze)
   s.test_files = ["./tests/test_helper.rb".freeze]
 
-  s.add_development_dependency(%q<rake>.freeze, [">= 0"])
-  s.add_development_dependency(%q<test-unit>.freeze, [">= 2.0", "< 4.0"])
+  s.add_development_dependency "rake"
+  s.add_development_dependency "test-unit"
 end
