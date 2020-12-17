@@ -1,5 +1,9 @@
 # Changes
 
+## 2020-12-17 (2.4.1)
+
+* Restore version.rb with 2.4.1
+
 ## 2020-12-15 (2.4.0)
 
 * Implement a freeze: parser option #447
