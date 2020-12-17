@@ -4,12 +4,14 @@ Gem::Specification.new do |s|
   s.name = "json_pure".freeze
   s.version = File.read("VERSION").chomp
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
-  s.require_paths = ["lib".freeze]
-  s.authors = ["Florian Frank".freeze]
+  s.summary = "JSON Implementation for Ruby".freeze
   s.description = "This is a JSON implementation in pure Ruby.".freeze
+  s.licenses = ["Ruby".freeze]
+  s.authors = ["Florian Frank".freeze]
   s.email = "flori@ping.de".freeze
+
   s.extra_rdoc_files = ["README.md".freeze]
+  s.rdoc_options = ["--title".freeze, "JSON implemention for ruby".freeze, "--main".freeze, "README.md".freeze]
   s.files = [
     "CHANGES.md".freeze,
     "Gemfile".freeze,
@@ -42,11 +44,8 @@ Gem::Specification.new do |s|
     "lib/json/version.rb".freeze,
   ]
   s.homepage = "http://flori.github.com/json".freeze
-  s.licenses = ["Ruby".freeze]
-  s.rdoc_options = ["--title".freeze, "JSON implemention for ruby".freeze, "--main".freeze, "README.md".freeze]
+
   s.required_ruby_version = Gem::Requirement.new(">= 2.0".freeze)
-  s.rubygems_version = "3.1.2".freeze
-  s.summary = "JSON Implementation for Ruby".freeze
   s.test_files = ["./tests/test_helper.rb".freeze]
 
   s.add_development_dependency(%q<rake>.freeze, [">= 0"])
