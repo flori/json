@@ -1,5 +1,9 @@
 # Changes
 
+## 2020-12-22 (2.5.1)
+
+* Restore the compatibility for constants of JSON class.
+
 ## 2020-12-22 (2.5.0)
 
 * Ready to Ractor-safe at Ruby 3.0.
