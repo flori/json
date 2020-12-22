@@ -99,7 +99,8 @@ task(:set_env_pure) { ENV['JSON'] = 'pure' }
 
 UndocumentedTestTask.new do |t|
   t.name = 'do_test_pure'
-  t.libs << 'lib' << 'tests'
+  t.libs << 'lib' << 'tests' << 'tests/lib'
+  t.ruby_opts << "-rhelper"
   t.test_files = FileList['tests/*_test.rb']
   t.verbose = true
   t.options = '-v'
@@ -252,7 +253,8 @@ else
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
-    t.libs << 'ext' << 'lib' << 'tests'
+    t.libs << 'lib' << 'tests' << "tests/lib"
+    t.ruby_opts << '-rhelper'
     t.test_files = FileList['tests/*_test.rb']
     t.verbose = true
     t.options = '-v'
