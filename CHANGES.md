@@ -1,5 +1,9 @@
 # Changes
 
+## 2020-12-22 (2.5.0)
+
+* Ready to Ractor-safe at Ruby 3.0.
+
 ## 2020-12-17 (2.4.1)
 
 * Restore version.rb with 2.4.1
