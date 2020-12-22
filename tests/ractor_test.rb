@@ -5,6 +5,7 @@ require 'test_helper'
 
 class JSONInRactorTest < Test::Unit::TestCase
   def setup
+    skip if RUBY_PLATFORM =~ /java/
     skip unless defined? Ractor
   end
 
