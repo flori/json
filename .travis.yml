@@ -4,13 +4,11 @@ language: ruby
 
 # Specify which ruby versions you wish to run your tests on, each version will be used
 rvm:
-  - 2.1
-  - 2.2
   - 2.3
   - 2.4
   - 2.5
   - 2.6
-  - 2.7.0-preview3
+  - 2.7
   - ruby-head
   - jruby-9.1 # Ruby 2.3
   - jruby-9.2 # Ruby 2.5
