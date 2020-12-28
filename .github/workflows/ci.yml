@@ -43,6 +43,9 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
 
+      - run: brew install ragel
+        if: ${{ startsWith(matrix.os, 'macos') }}
+
       - run: bundle install
 
       - run: rake compile
