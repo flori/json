@@ -18,7 +18,7 @@ jobs:
         - macos-10.15
         - windows-latest
         ruby:
-        - 3.0
+        - '3.0'
         - 2.7
         - 2.6
         - 2.5
@@ -32,7 +32,7 @@ jobs:
         - { os: ubuntu-latest  , ruby: jruby-9.2 } # Ruby 2.5
         - { os: ubuntu-latest  , ruby: truffleruby }
         exclude:
-        - { os: windows-latest , ruby: 3.0 }
+        - { os: windows-latest , ruby: '3.0' }
         - { os: windows-latest , ruby: debug }
 
     steps:
