@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
     'wiki_uri'          => 'https://github.com/flori/json/wiki'
   }
 
-  s.required_ruby_version = Gem::Requirement.new(">= 2.0".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 2.3".freeze)
   s.test_files = ["./tests/test_helper.rb".freeze]
 
   s.add_development_dependency "rake"
