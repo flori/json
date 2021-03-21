@@ -1,3 +1,5 @@
+2021-03-26 (1.8.7)
+  * Explicitly convert hash to keyword arguments to suppress deprecated message
 2017-01-13 (1.8.6)
   * Be compatible with ancient ruby 1.8 (maybe?)
 2015-09-11 (1.8.5)
