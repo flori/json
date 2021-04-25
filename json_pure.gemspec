@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email = "flori@ping.de".freeze
 
   s.extra_rdoc_files = ["README.md".freeze]
-  s.rdoc_options = ["--title".freeze, "JSON implemention for ruby".freeze, "--main".freeze, "README.md".freeze]
+  s.rdoc_options = ["--title".freeze, "JSON implementation for ruby".freeze, "--main".freeze, "README.md".freeze]
   s.files = [
     "CHANGES.md".freeze,
     "Gemfile".freeze,

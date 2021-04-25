@@ -267,7 +267,7 @@ the `pp` library's `pp` methods.
 
 The script `tools/server.rb` contains a small example if you want to test, how
 receiving a JSON object from a webrick server in your browser with the
-javasript prototype library http://www.prototypejs.org works.
+JavaScript prototype library http://www.prototypejs.org works.
 
 ## Speed Comparisons
 
@@ -294,7 +294,7 @@ extension:
 ```
 
 In the table above 1 is `JSON::Ext::Parser`, 2 is `YAML.load` with YAML
-compatbile JSON document, 3 is is `JSON::Pure::Parser`, and 4 is
+compatible JSON document, 3 is is `JSON::Pure::Parser`, and 4 is
 `ActiveSupport::JSON.decode`. The ActiveSupport JSON-decoder converts the
 input first to YAML and then uses the YAML-parser, the conversion seems to
 slow it down so much that it is only as fast as the `JSON::Pure::Parser`!

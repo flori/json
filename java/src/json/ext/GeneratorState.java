@@ -508,7 +508,7 @@ public class GeneratorState extends RubyObject {
     /**
      * Checks if the current depth is allowed as per this state's options.
      * @param context
-     * @param depth The corrent depth
+     * @param depth The current depth
      */
     private void checkMaxNesting() {
         if (maxNesting != 0 && depth > maxNesting) {
