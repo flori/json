@@ -39,6 +39,7 @@ typedef struct JSON_ParserStruct {
     VALUE create_id;
     int max_nesting;
     int allow_nan;
+    int allow_trailing_comma;
     int parsing_name;
     int symbolize_names;
     int freeze;
