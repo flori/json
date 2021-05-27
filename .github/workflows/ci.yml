@@ -24,7 +24,6 @@ jobs:
         - 2.5
         - 2.4
         - 2.3
-        - debug
         include:
         - { os: windows-latest , ruby: mingw }
         - { os: windows-latest , ruby: mswin }
@@ -33,7 +32,6 @@ jobs:
         - { os: ubuntu-latest  , ruby: truffleruby }
         exclude:
         - { os: windows-latest , ruby: '3.0' }
-        - { os: windows-latest , ruby: debug }
 
     steps:
       - uses: actions/checkout@v2
