@@ -1,6 +1,6 @@
 # JSON implementation for Ruby
 
-[![Travis Widget](http://travis-ci.org/flori/json.svg?branch=master)](https://travis-ci.org/flori/json)
+[![CI](https://github.com/flori/json/actions/workflows/ci.yml/badge.svg)](https://github.com/flori/json/actions/workflows/ci.yml)
 
 ## Description
 
