@@ -12,7 +12,7 @@ spec = Gem::Specification.new do |s|
 
   s.platform = 'java'
 
-  s.files = Dir["{docs,lib,tests}/**/*", "LICENSE"]
+  s.files = Dir["lib/**/*", "LICENSE"]
 
   s.homepage = "http://flori.github.com/json"
   s.metadata = {
@@ -25,7 +25,6 @@ spec = Gem::Specification.new do |s|
   }
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.3")
-  s.test_files = ["tests/test_helper.rb"]
 
   s.add_development_dependency "rake"
   s.add_development_dependency "test-unit"
