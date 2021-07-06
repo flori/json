@@ -12,3 +12,6 @@ when 'ext', nil
 when 'pure'
   gemspec :name => 'json_pure'
 end
+
+gem "rake"
+gem "test-unit"

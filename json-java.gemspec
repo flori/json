@@ -25,9 +25,6 @@ spec = Gem::Specification.new do |s|
   }
 
   s.required_ruby_version = Gem::Requirement.new(">= 2.3")
-
-  s.add_development_dependency "rake"
-  s.add_development_dependency "test-unit"
 end
 
 if $0 == __FILE__
