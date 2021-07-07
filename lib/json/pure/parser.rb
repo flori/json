@@ -61,6 +61,9 @@ module JSON
       # * *allow_nan*: If set to true, allow NaN, Infinity and -Infinity in
       #   defiance of RFC 7159 to be parsed by the Parser. This option defaults
       #   to false.
+      # * *allow_trailing_comma*: If set to true, allow arrays and objects with a
+      #   trailing comma in defiance of RFC 7159 to be parsed by the Parser.
+      #   This option defaults to false.
       # * *freeze*: If set to true, all parsed objects will be frozen. Parsed
       #   string will be deduplicated if possible.
       # * *symbolize_names*: If set to true, returns symbols for the names
@@ -87,6 +90,7 @@ module JSON
           @max_nesting = 0
         end
         @allow_nan = !!opts[:allow_nan]
+        @allow_trailing_comma = !!opts[:allow_trailing_comma]
         @symbolize_names = !!opts[:symbolize_names]
         @freeze = !!opts[:freeze]
         if opts.key?(:create_additions)
@@ -272,7 +276,7 @@ module JSON
               raise ParserError, "expected ',' or ']' in array at '#{peek(20)}'!"
             end
           when scan(ARRAY_CLOSE)
-            if delim
+            if delim && !@allow_trailing_comma
               raise ParserError, "expected next element in array at '#{peek(20)}'!"
             end
             break
@@ -315,7 +319,7 @@ module JSON
               raise ParserError, "expected value in object at '#{peek(20)}'!"
             end
           when scan(OBJECT_CLOSE)
-            if delim
+            if delim && !@allow_trailing_comma
               raise ParserError, "expected next name, value pair in object at '#{peek(20)}'!"
             end
             if @create_additions and klassname = result[@create_id]
