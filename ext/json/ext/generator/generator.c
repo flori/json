@@ -8,7 +8,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 #else
              mFixnum, mBignum,
 #endif
-             mFloat, mString, mString_Extend,
+             mFloat, mTime, mString, mString_Extend,
              mTrueClass, mFalseClass, mNilClass, eGeneratorError,
              eNestingError;
 
@@ -469,6 +469,16 @@ static VALUE mBignum_to_json(int argc, VALUE *argv, VALUE self)
 static VALUE mFloat_to_json(int argc, VALUE *argv, VALUE self)
 {
     GENERATE_JSON(float);
+}
+
+/*
+ * call-seq: to_json(*)
+ *
+ * Returns a JSON string representation for this Time object.
+ */
+static VALUE mTime_to_json(int argc, VALUE *argv, VALUE self)
+{
+    GENERATE_JSON(time);
 }
 
 /*
@@ -1006,6 +1016,14 @@ static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_St
     fbuffer_append_str(buffer, tmp);
 }
 
+static void generate_json_time(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
+{
+    VALUE tmp = rb_funcall(obj, i_to_s, 0);
+    fbuffer_append_char(buffer, '"');
+    fbuffer_append_str(buffer, tmp);
+    fbuffer_append_char(buffer, '"');
+}
+
 static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
 {
     VALUE tmp;
@@ -1028,6 +1046,8 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
         generate_json_bignum(buffer, Vstate, state, obj);
     } else if (klass == rb_cFloat) {
         generate_json_float(buffer, Vstate, state, obj);
+    } else if (klass == rb_cTime) {
+        generate_json_time(buffer, Vstate, state, obj);
     } else if (rb_respond_to(obj, i_to_json)) {
         tmp = rb_funcall(obj, i_to_json, 1, Vstate);
         Check_Type(tmp, T_STRING);
@@ -1566,6 +1586,8 @@ void Init_generator(void)
 #endif
     mFloat = rb_define_module_under(mGeneratorMethods, "Float");
     rb_define_method(mFloat, "to_json", mFloat_to_json, -1);
+    mTime = rb_define_module_under(mGeneratorMethods, "Time");
+    rb_define_method(mTime, "to_json", mTime_to_json, -1);
     mString = rb_define_module_under(mGeneratorMethods, "String");
     rb_define_singleton_method(mString, "included", mString_included_s, 1);
     rb_define_method(mString, "to_json", mString_to_json, -1);
