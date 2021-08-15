@@ -56,6 +56,8 @@ static char *fstrndup(const char *ptr, unsigned long len);
 /* ruby api and some helpers */
 
 typedef struct JSON_Generator_StateStruct {
+    char *value_space;
+    long value_space_len;
     char *indent;
     long indent_len;
     char *space;

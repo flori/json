@@ -96,6 +96,10 @@ EOT
 <i>}
 }
 EOT
+
+    state = State.new(:value_space => " ", :space => " ")
+    json = generate({1=>{2=>3,4=>[5,6]}}, state)
+    assert_equal('{"1": {"2": 3, "4": [5, 6]}}', json)
   end
 
   def test_fast_generate
@@ -155,6 +159,7 @@ EOT
       :object_nl             => "\n",
       :space                 => " ",
       :space_before          => "",
+      :value_space           => ""
     }.sort_by { |n,| n.to_s }, state.to_h.sort_by { |n,| n.to_s })
   end
 
@@ -172,6 +177,7 @@ EOT
       :object_nl             => "",
       :space                 => "",
       :space_before          => "",
+      :value_space           => ""
     }.sort_by { |n,| n.to_s }, state.to_h.sort_by { |n,| n.to_s })
   end
 
@@ -189,6 +195,7 @@ EOT
       :object_nl             => "",
       :space                 => "",
       :space_before          => "",
+      :value_space           => ""
     }.sort_by { |n,| n.to_s }, state.to_h.sort_by { |n,| n.to_s })
   end
 

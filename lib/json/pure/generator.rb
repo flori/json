@@ -111,6 +111,7 @@ module JSON
         # _opts_ can have the following keys:
         #
         # * *indent*: a string used to indent levels (default: ''),
+        # * *value_space: a string that is put after, a , delimiter(default: ''),
         # * *space*: a string that is put after, a : or , delimiter (default: ''),
         # * *space_before*: a string that is put before a : pair delimiter (default: ''),
         # * *object_nl*: a string that is put at the end of a JSON object (default: ''),
@@ -132,8 +133,13 @@ module JSON
           @ascii_only            = false
           @escape_slash          = false
           @buffer_initial_length = 1024
+          @value_space           = ''
           configure opts
         end
+
+        # This string is used to insert a space after value-separator between the values in a JSON
+        # string.
+        attr_accessor :value_space
 
         # This string is used to indent levels in the JSON text.
         attr_accessor :indent
@@ -220,6 +226,7 @@ module JSON
           @indent                = opts[:indent] if opts.key?(:indent)
           @space                 = opts[:space] if opts.key?(:space)
           @space_before          = opts[:space_before] if opts.key?(:space_before)
+          @value_space           = opts[:value_space] if opts.key?(:value_space)
           @object_nl             = opts[:object_nl] if opts.key?(:object_nl)
           @array_nl              = opts[:array_nl] if opts.key?(:array_nl)
           @allow_nan             = !!opts[:allow_nan] if opts.key?(:allow_nan)
@@ -311,6 +318,7 @@ module JSON
 
           def json_transform(state)
             delim = ','
+            delim << state.value_space
             delim << state.object_nl
             result = '{'
             result << state.object_nl
@@ -356,6 +364,7 @@ module JSON
 
           def json_transform(state)
             delim = ','
+            delim << state.value_space
             delim << state.array_nl
             result = '['
             result << state.array_nl

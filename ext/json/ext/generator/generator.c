@@ -12,7 +12,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
              mTrueClass, mFalseClass, mNilClass, eGeneratorError,
              eNestingError;
 
-static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
+static ID i_to_s, i_to_json, i_new, i_value_space, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
           i_pack, i_unpack, i_create_id, i_extend, i_key_p,
           i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
@@ -588,6 +588,7 @@ static VALUE mObject_to_json(int argc, VALUE *argv, VALUE self)
 static void State_free(void *ptr)
 {
     JSON_Generator_State *state = ptr;
+    if (state->value_space) ruby_xfree(state->value_space);
     if (state->indent) ruby_xfree(state->indent);
     if (state->space) ruby_xfree(state->space);
     if (state->space_before) ruby_xfree(state->space_before);
@@ -603,6 +604,7 @@ static size_t State_memsize(const void *ptr)
 {
     const JSON_Generator_State *state = ptr;
     size_t size = sizeof(*state);
+    if (state->value_space) size += state->value_space_len + 1;
     if (state->indent) size += state->indent_len + 1;
     if (state->space) size += state->space_len + 1;
     if (state->space_before) size += state->space_before_len + 1;
@@ -650,6 +652,14 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     tmp = rb_check_convert_type(opts, T_HASH, "Hash", "to_hash");
     if (NIL_P(tmp)) tmp = rb_convert_type(opts, T_HASH, "Hash", "to_h");
     opts = tmp;
+    tmp = rb_hash_aref(opts, ID2SYM(i_value_space));
+    if (RTEST(tmp)) {
+      unsigned long len;
+      Check_Type(tmp, T_STRING);
+      len = RSTRING_LEN(tmp);
+      state->value_space = fstrndup(RSTRING_PTR(tmp), len + 1);
+      state->value_space_len = len;
+    }
     tmp = rb_hash_aref(opts, ID2SYM(i_indent));
     if (RTEST(tmp)) {
         unsigned long len;
@@ -754,6 +764,7 @@ static VALUE cState_to_h(VALUE self)
     VALUE result = rb_hash_new();
     GET_STATE(self);
     set_state_ivars(result, self);
+    rb_hash_aset(result, ID2SYM(i_value_space), rb_str_new(state->value_space, state->value_space_len));
     rb_hash_aset(result, ID2SYM(i_indent), rb_str_new(state->indent, state->indent_len));
     rb_hash_aset(result, ID2SYM(i_space), rb_str_new(state->space, state->space_len));
     rb_hash_aset(result, ID2SYM(i_space_before), rb_str_new(state->space_before, state->space_before_len));
@@ -819,6 +830,8 @@ json_object_i(VALUE key, VALUE val, VALUE _arg)
 
     char *object_nl = state->object_nl;
     long object_nl_len = state->object_nl_len;
+    char *value_space = state->value_space;
+    long value_space_len = state->value_space_len;
     char *indent = state->indent;
     long indent_len = state->indent_len;
     char *delim = FBUFFER_PTR(state->object_delim);
@@ -1051,6 +1064,7 @@ static FBuffer *cState_prepare_buffer(VALUE self)
         state->object_delim = fbuffer_alloc(16);
     }
     fbuffer_append_char(state->object_delim, ',');
+    if (state->value_space) fbuffer_append(state->object_delim, state->value_space, state->value_space_len);
     if (state->object_delim2) {
         fbuffer_clear(state->object_delim2);
     } else {
@@ -1066,6 +1080,7 @@ static FBuffer *cState_prepare_buffer(VALUE self)
         state->array_delim = fbuffer_alloc(16);
     }
     fbuffer_append_char(state->array_delim, ',');
+    if (state->value_space) fbuffer_append(state->array_delim, state->value_space, state->value_space_len);
     if (state->array_nl) fbuffer_append(state->array_delim, state->array_nl, state->array_nl_len);
     return buffer;
 }
@@ -1101,6 +1116,7 @@ static VALUE cState_generate(VALUE self, VALUE obj)
  * _opts_ can have the following keys:
  *
  * * *indent*: a string used to indent levels (default: ''),
+ * * *value_space*: a string that is put after, a , delimiter(default: ''),
  * * *space*: a string that is put after, a : or , delimiter (default: ''),
  * * *space_before*: a string that is put before a : pair delimiter (default: ''),
  * * *object_nl*: a string that is put at the end of a JSON object (default: ''),
@@ -1140,6 +1156,7 @@ static VALUE cState_init_copy(VALUE obj, VALUE orig)
     if (!objState) rb_raise(rb_eArgError, "unallocated JSON::State");
 
     MEMCPY(objState, origState, JSON_Generator_State, 1);
+    objState->value_space = fstrndup(origState->value_space, origState->value_space_len);
     objState->indent = fstrndup(origState->indent, origState->indent_len);
     objState->space = fstrndup(origState->space, origState->space_len);
     objState->space_before = fstrndup(origState->space_before, origState->space_before_len);
@@ -1238,6 +1255,44 @@ static VALUE cState_space_set(VALUE self, VALUE space)
     } else {
         if (state->space) ruby_xfree(state->space);
         state->space = fstrndup(RSTRING_PTR(space), len);
+        state->space_len = len;
+    }
+    return Qnil;
+}
+
+/*
+ * call-seq: value_space()
+ *
+ * Returns the string that is used to insert a space after value-separator between the values in a JSON
+ * string.
+ */
+static VALUE cState_value_space(VALUE self)
+{
+    GET_STATE(self);
+    return state->value_space ? rb_str_new(state->value_space, state->value_space_len) : rb_str_new2("");
+}
+
+/*
+ * call-seq: value_space=(value_space)
+ *
+ * Sets _value_space_ to the string that is used to insert a space after value-separator between the values in a JSON
+ * string.
+ */
+static VALUE cState_value_space_set(VALUE self, VALUE value_space)
+{
+    unsigned long len;
+    GET_STATE(self);
+    Check_Type(value_space, T_STRING);
+    len = RSTRING_LEN(value_space);
+    if (len == 0) {
+        if (state->value_space) {
+            ruby_xfree(state->value_space);
+            state->value_space = NULL;
+            state->value_space_len = 0;
+        }
+    } else {
+        if (state->value_space) ruby_xfree(state->value_space);
+        state->value_space = fstrndup(RSTRING_PTR(value_space), len);
         state->space_len = len;
     }
     return Qnil;
@@ -1522,6 +1577,8 @@ void Init_generator(void)
     rb_define_method(cState, "indent=", cState_indent_set, 1);
     rb_define_method(cState, "space", cState_space, 0);
     rb_define_method(cState, "space=", cState_space_set, 1);
+    rb_define_method(cState, "value_space", cState_value_space, 0);
+    rb_define_method(cState, "value_space=", cState_value_space_set, 1);
     rb_define_method(cState, "space_before", cState_space_before, 0);
     rb_define_method(cState, "space_before=", cState_space_before_set, 1);
     rb_define_method(cState, "object_nl", cState_object_nl, 0);
@@ -1583,6 +1640,7 @@ void Init_generator(void)
     i_to_s = rb_intern("to_s");
     i_to_json = rb_intern("to_json");
     i_new = rb_intern("new");
+    i_value_space = rb_intern("value_space");
     i_indent = rb_intern("indent");
     i_space = rb_intern("space");
     i_space_before = rb_intern("space_before");
