@@ -1,5 +1,12 @@
 # Changes
 
+### 2021-10-14 (2.6.0)
+
+* Use `rb_enc_interned_str` if available to reduce allocations in `freeze: true` mode. #451.
+* Bump required_ruby_version to 2.3.
+* Fix compatibility with `GC.compact`.
+* Fix some compilation warnings. #469
+
 ## 2020-12-22 (2.5.1)
 
 * Restore the compatibility for constants of JSON class.
