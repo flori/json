@@ -20,7 +20,14 @@
 #define rb_obj_instance_variables(object) rb_funcall(object, rb_intern("instance_variables"), 0)
 #endif
 
-#define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
+static VALUE generator_hash_has_key(VALUE hash, VALUE key)
+{
+    if (Qundef == rb_hash_lookup2(hash, key, Qundef)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+#define option_given_p(opts, key) RTEST(generator_hash_has_key(opts, key))
 
 /* unicode definitions */
 
