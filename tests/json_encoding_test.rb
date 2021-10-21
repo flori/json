@@ -8,6 +8,7 @@ class JSONEncodingTest < Test::Unit::TestCase
   def setup
     @utf_8      = '"© ≠ €!"'
     @ascii_8bit = @utf_8.dup.force_encoding('ascii-8bit')
+    @mixed      = '"© \u2260 €!"'
     @parsed     = "© ≠ €!"
     @generated  = '"\u00a9 \u2260 \u20ac!"'
     if String.method_defined?(:encode)
@@ -29,6 +30,7 @@ class JSONEncodingTest < Test::Unit::TestCase
   def test_parse
     assert_equal @parsed, JSON.parse(@ascii_8bit)
     assert_equal @parsed, JSON.parse(@utf_8)
+    assert_equal @parsed, JSON.parse(@mixed)
     assert_equal @parsed, JSON.parse(@utf_16be)
     assert_equal @parsed, JSON.parse(@utf_16le)
     assert_equal @parsed, JSON.parse(@utf_32be)
