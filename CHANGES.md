@@ -1,5 +1,9 @@
 # Changes
 
+### 2021-10-24 (2.6.1)
+
+* Restore version.rb with 2.6.1
+
 ### 2021-10-14 (2.6.0)
 
 * Use `rb_enc_interned_str` if available to reduce allocations in `freeze: true` mode. #451.
