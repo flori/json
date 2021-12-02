@@ -14,5 +14,7 @@ Gemfile.lock
 .DS_Store
 */**/Makefile
 */**/*.o
+*/**/*.class
+*/**/*.jar
 .byebug_history
 *.log
