@@ -15,4 +15,4 @@ end
 
 gem "rake"
 gem "test-unit"
-gem "all_images"
+gem "all_images", "~> 0"
