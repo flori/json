@@ -15,3 +15,4 @@ end
 
 gem "rake"
 gem "test-unit"
+gem "all_images"
