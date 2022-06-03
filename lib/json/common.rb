@@ -16,7 +16,7 @@ module JSON
     #   ruby = [0, 1, nil]
     #   JSON[ruby] # => '[0,1,null]'
     def [](object, opts = {})
-      if object.respond_to? :to_str
+      if object.respond_to?(:to_str) && object.to_str.is_a?(String)
         JSON.parse(object.to_str, opts)
       else
         JSON.generate(object, opts)
@@ -683,7 +683,7 @@ module ::Kernel
   # The _opts_ argument is passed through to generate/parse respectively. See
   # generate and parse for their documentation.
   def JSON(object, *args)
-    if object.respond_to? :to_str
+    if object.respond_to?(:to_str) && object.to_str.is_a?(String)
       JSON.parse(object.to_str, args.first)
     else
       JSON.generate(object, args.first)
