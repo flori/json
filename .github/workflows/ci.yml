@@ -24,6 +24,7 @@ jobs:
         - 2.5
         - 2.4
         - 2.3
+        - 2.2
         include:
         - { os: ubuntu-latest  , ruby: jruby-9.1 } # Ruby 2.3
         - { os: ubuntu-latest  , ruby: jruby-9.2 } # Ruby 2.5
