@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
     "lib/json/add/date.rb",
     "lib/json/add/date_time.rb",
     "lib/json/add/exception.rb",
+    "lib/json/add/ipaddr.rb",
     "lib/json/add/ostruct.rb",
     "lib/json/add/range.rb",
     "lib/json/add/rational.rb",

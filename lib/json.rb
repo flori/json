@@ -400,6 +400,7 @@ require 'json/common'
 # - Date: <tt>require 'json/add/date'</tt>
 # - DateTime: <tt>require 'json/add/date_time'</tt>
 # - Exception: <tt>require 'json/add/exception'</tt>
+# - IPAddr: <tt>require 'json/add/ipaddr'</tt>
 # - OpenStruct: <tt>require 'json/add/ostruct'</tt>
 # - Range: <tt>require 'json/add/range'</tt>
 # - Rational: <tt>require 'json/add/rational'</tt>
@@ -450,6 +451,13 @@ require 'json/common'
 #   json = JSON.generate(ruby0) # {"json_class":"RuntimeError","m":"Another message","b":null}
 #   ruby1 = JSON.parse(json, create_additions: true) # Another message
 #   ruby1.class # RuntimeError
+#
+# \IPAddr:
+#   require 'json/add/ipaddr'
+#   ruby0 = IPAddr.new('127.0.0.1') # #<IPAddr: IPv4:127.0.0.1/255.255.255.255>
+#   json = JSON.generate(ruby0) # {"json_class":"IPAddr","a":127.0.0.1,"p":32}
+#   ruby1 = JSON.parse(json, create_additions: true) # #<IPAddr: IPv4:127.0.0.1/255.255.255.255>
+#   ruby1.class # IPAddr
 #
 # \OpenStruct:
 #   require 'json/add/ostruct'
