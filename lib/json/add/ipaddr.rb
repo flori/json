@@ -19,6 +19,8 @@ class IPAddr
   def as_json(*)
     if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.5.0")
       prefix = prefixlen
+    else
+      prefix = self.prefix
     end
 
     {
