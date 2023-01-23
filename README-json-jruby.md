@@ -23,7 +23,7 @@ Its path must be set on the `jruby.dir` property of
 `nbproject/project.properties` (defaults to `../jruby`).
 
 Additionally, you'll need [Ant](http://ant.apache.org/), and
-[Ragel](http://www.cs.queensu.ca/~thurston/ragel/) 6.4 or greater.
+[Ragel](http://www.colm.net/open-source/ragel/) 6.4 or greater.
 
 Then, from the folder where the sources are located, type:
 
