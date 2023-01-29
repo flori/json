@@ -17,7 +17,9 @@
 # define MAYBE_UNUSED(x) x
 #endif
 
-#define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
+extern VALUE rb_hash_has_key(VALUE hash, VALUE key);
+
+#define hash_option_given_p(opts, key) (RTEST(rb_hash_has_key(opts, key)))
 
 /* unicode */
 
