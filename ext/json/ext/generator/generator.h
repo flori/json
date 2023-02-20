@@ -73,6 +73,7 @@ typedef struct JSON_Generator_StateStruct {
     char allow_nan;
     char ascii_only;
     char escape_slash;
+    char strict;
     long depth;
     long buffer_initial_length;
 } JSON_Generator_State;
@@ -152,7 +153,9 @@ static VALUE cState_ascii_only_p(VALUE self);
 static VALUE cState_depth(VALUE self);
 static VALUE cState_depth_set(VALUE self, VALUE depth);
 static VALUE cState_escape_slash(VALUE self);
-static VALUE cState_escape_slash_set(VALUE self, VALUE depth);
+static VALUE cState_escape_slash_set(VALUE self, VALUE escape_slash);
+static VALUE cState_strict(VALUE self);
+static VALUE cState_strict_set(VALUE self, VALUE strict);
 static FBuffer *cState_prepare_buffer(VALUE self);
 #ifndef ZALLOC
 #define ZALLOC(type) ((type *)ruby_zalloc(sizeof(type)))

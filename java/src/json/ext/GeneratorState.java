@@ -88,6 +88,13 @@ public class GeneratorState extends RubyObject {
      */
     private boolean escapeSlash = DEFAULT_ESCAPE_SLASH;
     static final boolean DEFAULT_ESCAPE_SLASH = false;
+
+    /**
+     * If set to <code>true</code> types unsupported by the JSON format will
+     * raise a <code>JSON::GeneratorError</code>.
+     */
+    private boolean strict = DEFAULT_STRICT;
+    static final boolean DEFAULT_STRICT = false;
     /**
      * The initial buffer length of this state. (This isn't really used on all
      * non-C implementations.)
@@ -204,6 +211,7 @@ public class GeneratorState extends RubyObject {
         this.asciiOnly = orig.asciiOnly;
         this.quirksMode = orig.quirksMode;
         this.escapeSlash = orig.escapeSlash;
+        this.strict = orig.strict;
         this.bufferInitialLength = orig.bufferInitialLength;
         this.depth = orig.depth;
         return this;
@@ -374,6 +382,24 @@ public class GeneratorState extends RubyObject {
         return escape_slash.getRuntime().newBoolean(escapeSlash);
     }
 
+    /**
+     * Returns true if strict mode is enabled.
+     */
+    public boolean strict() {
+        return strict;
+    }
+
+    @JRubyMethod(name="strict")
+    public RubyBoolean strict_get(ThreadContext context) {
+        return context.getRuntime().newBoolean(strict);
+    }
+
+    @JRubyMethod(name="strict=")
+    public IRubyObject strict_set(IRubyObject isStrict) {
+        strict = isStrict.isTrue();
+        return isStrict.getRuntime().newBoolean(strict);
+    }
+
     public boolean allowNaN() {
         return allowNaN;
     }
@@ -459,6 +485,7 @@ public class GeneratorState extends RubyObject {
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
         escapeSlash = opts.getBool("escape_slash", DEFAULT_ESCAPE_SLASH);
+        strict = opts.getBool("strict", DEFAULT_STRICT);
         bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
 
         depth = opts.getInt("depth", 0);
@@ -487,6 +514,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
         result.op_aset(context, runtime.newSymbol("escape_slash"), escape_slash_get(context));
+        result.op_aset(context, runtime.newSymbol("strict"), strict_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));
         for (String name: getInstanceVariableNameList()) {

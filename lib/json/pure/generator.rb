@@ -131,6 +131,7 @@ module JSON
           @allow_nan             = false
           @ascii_only            = false
           @escape_slash          = false
+          @strict                = false
           @buffer_initial_length = 1024
           configure opts
         end
@@ -159,6 +160,10 @@ module JSON
         # If this attribute is set to true, forward slashes will be escaped in
         # all json strings.
         attr_accessor :escape_slash
+
+        # If this attribute is set to true, attempting to serialize types not
+        # supported by the JSON spec will raise a JSON::GeneratorError
+        attr_accessor :strict
 
         # :stopdoc:
         attr_reader :buffer_initial_length
@@ -204,6 +209,11 @@ module JSON
           @escape_slash
         end
 
+        # Returns true, if forward slashes are escaped. Otherwise returns false.
+        def strict?
+          @strict
+        end
+
         # Configure this State instance with the Hash _opts_, and return
         # itself.
         def configure(opts)
@@ -227,6 +237,7 @@ module JSON
           @depth                 = opts[:depth] || 0
           @buffer_initial_length ||= opts[:buffer_initial_length]
           @escape_slash          = !!opts[:escape_slash] if opts.key?(:escape_slash)
+          @strict                = !!opts[:strict] if opts.key?(:strict)
 
           if !opts.key?(:max_nesting) # defaults to 100
             @max_nesting = 100
@@ -287,7 +298,13 @@ module JSON
           # Converts this object to a string (calling #to_s), converts
           # it to a JSON string, and returns the result. This is a fallback, if no
           # special method #to_json was defined for some object.
-          def to_json(*) to_s.to_json end
+          def to_json(generator_state)
+            if generator_state.strict?
+              raise GeneratorError, "#{self.class} not allowed in JSON"
+            else
+              to_s.to_json
+            end
+          end
         end
 
         module Hash
@@ -324,7 +341,9 @@ module JSON
               result << state.space_before
               result << ':'
               result << state.space
-              if value.respond_to?(:to_json)
+              if state.strict?
+                raise GeneratorError, "#{value.class} not allowed in JSON"
+              elsif value.respond_to?(:to_json)
                 result << value.to_json(state)
               else
                 result << %{"#{String(value)}"}
@@ -365,7 +384,9 @@ module JSON
             each { |value|
               result << delim unless first
               result << state.indent * depth if indent
-              if value.respond_to?(:to_json)
+              if state.strict?
+                raise GeneratorError, "#{value.class} not allowed in JSON"
+              elsif value.respond_to?(:to_json)
                 result << value.to_json(state)
               else
                 result << %{"#{String(value)}"}

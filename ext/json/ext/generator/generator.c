@@ -16,7 +16,7 @@ static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
           i_pack, i_unpack, i_create_id, i_extend, i_key_p,
           i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
-          i_buffer_initial_length, i_dup, i_escape_slash;
+          i_buffer_initial_length, i_dup, i_escape_slash, i_strict;
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -728,6 +728,8 @@ static VALUE cState_configure(VALUE self, VALUE opts)
     state->ascii_only = RTEST(tmp);
     tmp = rb_hash_aref(opts, ID2SYM(i_escape_slash));
     state->escape_slash = RTEST(tmp);
+    tmp = rb_hash_aref(opts, ID2SYM(i_strict));
+    state->strict = RTEST(tmp);
     return self;
 }
 
@@ -763,6 +765,7 @@ static VALUE cState_to_h(VALUE self)
     rb_hash_aset(result, ID2SYM(i_ascii_only), state->ascii_only ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_max_nesting), LONG2FIX(state->max_nesting));
     rb_hash_aset(result, ID2SYM(i_escape_slash), state->escape_slash ? Qtrue : Qfalse);
+    rb_hash_aset(result, ID2SYM(i_strict), state->strict ? Qtrue : Qfalse);
     rb_hash_aset(result, ID2SYM(i_depth), LONG2FIX(state->depth));
     rb_hash_aset(result, ID2SYM(i_buffer_initial_length), LONG2FIX(state->buffer_initial_length));
     return result;
@@ -1028,6 +1031,8 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
         generate_json_bignum(buffer, Vstate, state, obj);
     } else if (klass == rb_cFloat) {
         generate_json_float(buffer, Vstate, state, obj);
+    } else if (state->strict) {
+        rb_raise(eGeneratorError, "%"PRIsVALUE" not allowed in JSON", RB_OBJ_STRING(CLASS_OF(obj)));
     } else if (rb_respond_to(obj, i_to_json)) {
         tmp = rb_funcall(obj, i_to_json, 1, Vstate);
         Check_Type(tmp, T_STRING);
@@ -1402,7 +1407,7 @@ static VALUE cState_escape_slash(VALUE self)
 }
 
 /*
- * call-seq: escape_slash=(depth)
+ * call-seq: escape_slash=(enable)
  *
  * This sets whether or not the forward slashes will be escaped in
  * the json output.
@@ -1411,6 +1416,37 @@ static VALUE cState_escape_slash_set(VALUE self, VALUE enable)
 {
     GET_STATE(self);
     state->escape_slash = RTEST(enable);
+    return Qnil;
+}
+
+/*
+ * call-seq: strict
+ *
+ * If this boolean is false, types unsupported by the JSON format will
+ * be serialized as strings.
+ * If this boolean is true, types unsupported by the JSON format will
+ * raise a JSON::GeneratorError.
+ */
+static VALUE cState_strict(VALUE self)
+{
+    GET_STATE(self);
+    return state->strict ? Qtrue : Qfalse;
+}
+
+/*
+ * call-seq: strict=(enable)
+ *
+ * This sets whether or not to serialize types unsupported by the
+ * JSON format as strings.
+ * If this boolean is false, types unsupported by the JSON format will
+ * be serialized as strings.
+ * If this boolean is true, types unsupported by the JSON format will
+ * raise a JSON::GeneratorError.
+ */
+static VALUE cState_strict_set(VALUE self, VALUE enable)
+{
+    GET_STATE(self);
+    state->strict = RTEST(enable);
     return Qnil;
 }
 
@@ -1533,6 +1569,9 @@ void Init_generator(void)
     rb_define_method(cState, "escape_slash", cState_escape_slash, 0);
     rb_define_method(cState, "escape_slash?", cState_escape_slash, 0);
     rb_define_method(cState, "escape_slash=", cState_escape_slash_set, 1);
+    rb_define_method(cState, "strict", cState_strict, 0);
+    rb_define_method(cState, "strict?", cState_strict, 0);
+    rb_define_method(cState, "strict=", cState_strict_set, 1);
     rb_define_method(cState, "check_circular?", cState_check_circular_p, 0);
     rb_define_method(cState, "allow_nan?", cState_allow_nan_p, 0);
     rb_define_method(cState, "ascii_only?", cState_ascii_only_p, 0);
@@ -1590,6 +1629,7 @@ void Init_generator(void)
     i_array_nl = rb_intern("array_nl");
     i_max_nesting = rb_intern("max_nesting");
     i_escape_slash = rb_intern("escape_slash");
+    i_strict = rb_intern("strict");
     i_allow_nan = rb_intern("allow_nan");
     i_ascii_only = rb_intern("ascii_only");
     i_depth = rb_intern("depth");
