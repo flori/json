@@ -31,6 +31,8 @@ jobs:
         exclude:
         - { os: windows-latest, ruby: truffleruby }
         - { os: windows-latest, ruby: truffleruby-head }
+        - { os: windows-latest, ruby: jruby }
+        - { os: windows-latest, ruby: jruby-head }
 
     steps:
       - uses: actions/checkout@v2
