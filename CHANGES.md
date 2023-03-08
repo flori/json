@@ -105,6 +105,19 @@
     I changed these mentions to be consistent with the Ruby license setting in
     the gemspec files which were already correct now.
 
+## 2017-01-13 (1.8.6)
+  * Be compatible with ancient ruby 1.8 (maybe?)
+
+## 2015-09-11 (1.8.5)
+  * Be compatible with ruby 2.4.0
+  * There were still some mentions of dual GPL licensing in the source, but JSON
+    has just the Ruby license that itself includes an explicit dual-licensing
+    clause that allows covered software to be distributed under the terms of
+    the Simplified BSD License instead for all ruby versions >= 1.9.3. This is
+    however a GPL compatible license according to the Free Software Foundation.
+    I changed these mentions to be consistent with the Ruby license setting in
+    the gemspec files which were already correct now.
+
 ## 2015-06-01 (1.8.3)
   * Fix potential memory leak, thx to nobu.
 
