@@ -27,6 +27,7 @@ jobs:
         include:
         - { os: ubuntu-latest  , ruby: jruby-9.1 } # Ruby 2.3
         - { os: ubuntu-latest  , ruby: jruby-9.2 } # Ruby 2.5
+        - { os: ubuntu-latest  , ruby: jruby-9.3 } # Ruby 2.7
         exclude:
         - { os: windows-latest, ruby: truffleruby }
         - { os: windows-latest, ruby: truffleruby-head }
