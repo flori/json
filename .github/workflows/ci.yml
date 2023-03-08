@@ -3,6 +3,7 @@ name: CI
 on:
 - push
 - pull_request
+- workflow_dispatch
 
 jobs:
   ruby-versions:
@@ -35,18 +36,16 @@ jobs:
         - { os: windows-latest, ruby: jruby-head }
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby-pkgs@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-
-      - run: sudo apt install ragel
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
-
-      - run: brew install ragel
-        if: ${{ startsWith(matrix.os, 'macos') }}
+          apt-get: ragel
+          brew: ragel
+          # only needed for Ruby 2.3
+          mingw: ragel
 
       - run: bundle install
 
