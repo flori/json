@@ -292,7 +292,7 @@ public final class Generator {
                         buffer.append(delim);
                     }
                     buffer.append(shift);
-                    Handler<IRubyObject> handler = getHandlerFor(runtime, element);
+                    Handler<IRubyObject> handler = (Handler<IRubyObject>) getHandlerFor(runtime, element);
                     handler.generate(session, element, buffer);
                 }
 
@@ -354,7 +354,7 @@ public final class Generator {
                         buffer.append((byte)':');
                         buffer.append(space);
 
-                        Handler<IRubyObject> valueHandler = getHandlerFor(runtime, value);
+                        Handler<IRubyObject> valueHandler = (Handler<IRubyObject>) getHandlerFor(runtime, value);
                         valueHandler.generate(session, value, buffer);
                         session.infectBy(value);
                     }
@@ -362,8 +362,8 @@ public final class Generator {
                 state.decreaseDepth();
                 if (!firstPair[0] && objectNl.length() != 0) {
                     buffer.append(objectNl);
-                    buffer.append(Utils.repeat(state.getIndent(), state.getDepth()));
                 }
+                buffer.append(Utils.repeat(state.getIndent(), state.getDepth()));
                 buffer.append((byte)'}');
             }
         };
