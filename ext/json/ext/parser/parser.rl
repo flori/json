@@ -356,31 +356,31 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
         VALUE mod = Qnil;
         ID method_id = 0;
         if (json->decimal_class != Qnil) {
-        if (rb_respond_to(json->decimal_class, i_try_convert)) {
-            mod = json->decimal_class;
-            method_id = i_try_convert;
-        } else if (rb_respond_to(json->decimal_class, i_new)) {
-            mod = json->decimal_class;
-            method_id = i_new;
-        } else if (RB_TYPE_P(json->decimal_class, T_CLASS)) {
-            VALUE name = rb_class_name(json->decimal_class);
-            const char *name_cstr = RSTRING_PTR(name);
-            const char *last_colon = strrchr(name_cstr, ':');
-            if (last_colon) {
-                const char *mod_path_end = last_colon - 1;
-                VALUE mod_path = rb_str_substr(name, 0, mod_path_end - name_cstr);
-                mod = rb_path_to_class(mod_path);
+            if (rb_respond_to(json->decimal_class, i_try_convert)) {
+                mod = json->decimal_class;
+                method_id = i_try_convert;
+            } else if (rb_respond_to(json->decimal_class, i_new)) {
+                mod = json->decimal_class;
+                method_id = i_new;
+            } else if (RB_TYPE_P(json->decimal_class, T_CLASS)) {
+                VALUE name = rb_class_name(json->decimal_class);
+                const char *name_cstr = RSTRING_PTR(name);
+                const char *last_colon = strrchr(name_cstr, ':');
+                if (last_colon) {
+                    const char *mod_path_end = last_colon - 1;
+                    VALUE mod_path = rb_str_substr(name, 0, mod_path_end - name_cstr);
+                    mod = rb_path_to_class(mod_path);
 
-                const char *method_name_beg = last_colon + 1;
-                long before_len = method_name_beg - name_cstr;
-                long len = RSTRING_LEN(name) - before_len;
-                VALUE method_name = rb_str_substr(name, before_len, len);
-                method_id = SYM2ID(rb_str_intern(method_name));
-            } else {
-                mod = rb_mKernel;
-                method_id = SYM2ID(rb_str_intern(name));
+                    const char *method_name_beg = last_colon + 1;
+                    long before_len = method_name_beg - name_cstr;
+                    long len = RSTRING_LEN(name) - before_len;
+                    VALUE method_name = rb_str_substr(name, before_len, len);
+                    method_id = SYM2ID(rb_str_intern(method_name));
+                } else {
+                    mod = rb_mKernel;
+                    method_id = SYM2ID(rb_str_intern(name));
+                }
             }
-        }
         }
 
         long len = p - json->memo;
@@ -729,14 +729,16 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     rb_scan_args(argc, argv, "11", &source, &opts);
 #endif
 #ifndef HAVE_RB_SCAN_ARGS_OPTIONAL_HASH
-        opts = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
-        if (NIL_P(opts)) {
-            rb_raise(rb_eArgError, "opts needs to be like a hash");
+        if (!NIL_P(opts)) {
+            opts = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
+            if (NIL_P(opts)) {
+                rb_raise(rb_eArgError, "opts needs to be like a hash");
+            }
         }
 #endif
         if (RTEST(opts) && RHASH_SIZE(opts) > 0) {
             VALUE tmp = ID2SYM(i_max_nesting);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE max_nesting = rb_hash_aref(opts, tmp);
                 if (RTEST(max_nesting)) {
                     Check_Type(max_nesting, T_FIXNUM);
@@ -748,25 +750,25 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 json->max_nesting = 100;
             }
             tmp = ID2SYM(i_allow_nan);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->allow_nan = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->allow_nan = 0;
             }
             tmp = ID2SYM(i_symbolize_names);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->symbolize_names = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->symbolize_names = 0;
             }
             tmp = ID2SYM(i_freeze);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->freeze = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->freeze = 0;
             }
             tmp = ID2SYM(i_create_additions);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->create_additions = RTEST(rb_hash_aref(opts, tmp));
             } else {
                 json->create_additions = 0;
@@ -777,31 +779,31 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 " used in conjunction");
             }
             tmp = ID2SYM(i_create_id);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->create_id = rb_hash_aref(opts, tmp);
             } else {
                 json->create_id = rb_funcall(mJSON, i_create_id, 0);
             }
             tmp = ID2SYM(i_object_class);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->object_class = rb_hash_aref(opts, tmp);
             } else {
                 json->object_class = Qnil;
             }
             tmp = ID2SYM(i_array_class);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->array_class = rb_hash_aref(opts, tmp);
             } else {
                 json->array_class = Qnil;
             }
             tmp = ID2SYM(i_decimal_class);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->decimal_class = rb_hash_aref(opts, tmp);
             } else {
                 json->decimal_class = Qnil;
             }
             tmp = ID2SYM(i_match_string);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE match_string = rb_hash_aref(opts, tmp);
                 json->match_string = RTEST(match_string) ? match_string : Qnil;
             } else {

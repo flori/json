@@ -1834,14 +1834,16 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
     rb_scan_args(argc, argv, "11", &source, &opts);
 #endif
 #ifndef HAVE_RB_SCAN_ARGS_OPTIONAL_HASH
-    opts = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
-    if (NIL_P(opts)) {
-        rb_raise(rb_eArgError, "opts needs to be like a hash");
-    }
+        if (!NIL_P(opts)) {
+            opts = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
+            if (NIL_P(opts)) {
+                rb_raise(rb_eArgError, "opts needs to be like a hash");
+            }
+        }
 #endif
         if (RTEST(opts) && RHASH_SIZE(opts) > 0) {
             VALUE tmp = ID2SYM(i_max_nesting);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE max_nesting = rb_hash_aref(opts, tmp);
                 if (RTEST(max_nesting)) {
                     Check_Type(max_nesting, T_FIXNUM);
@@ -1853,60 +1855,60 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
                 json->max_nesting = 100;
             }
             tmp = ID2SYM(i_allow_nan);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->allow_nan = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->allow_nan = 0;
             }
             tmp = ID2SYM(i_symbolize_names);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->symbolize_names = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->symbolize_names = 0;
             }
             tmp = ID2SYM(i_freeze);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->freeze = RTEST(rb_hash_aref(opts, tmp)) ? 1 : 0;
             } else {
                 json->freeze = 0;
             }
             tmp = ID2SYM(i_create_additions);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->create_additions = RTEST(rb_hash_aref(opts, tmp));
             } else {
                 json->create_additions = 0;
             }
             if (json->symbolize_names && json->create_additions) {
-            rb_raise(rb_eArgError,
+              rb_raise(rb_eArgError,
                 "options :symbolize_names and :create_additions cannot be "
                 " used in conjunction");
             }
             tmp = ID2SYM(i_create_id);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->create_id = rb_hash_aref(opts, tmp);
             } else {
                 json->create_id = rb_funcall(mJSON, i_create_id, 0);
             }
             tmp = ID2SYM(i_object_class);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->object_class = rb_hash_aref(opts, tmp);
             } else {
                 json->object_class = Qnil;
             }
             tmp = ID2SYM(i_array_class);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->array_class = rb_hash_aref(opts, tmp);
             } else {
                 json->array_class = Qnil;
             }
             tmp = ID2SYM(i_decimal_class);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 json->decimal_class = rb_hash_aref(opts, tmp);
             } else {
                 json->decimal_class = Qnil;
             }
             tmp = ID2SYM(i_match_string);
-            if (hash_option_given_p(opts, tmp)) {
+            if (option_given_p(opts, tmp)) {
                 VALUE match_string = rb_hash_aref(opts, tmp);
                 json->match_string = RTEST(match_string) ? match_string : Qnil;
             } else {
@@ -1931,7 +1933,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1935 "parser.c"
+#line 1937 "parser.c"
 enum {JSON_start = 1};
 enum {JSON_first_final = 10};
 enum {JSON_error = 0};
@@ -1939,7 +1941,7 @@ enum {JSON_error = 0};
 enum {JSON_en_main = 1};
 
 
-#line 843 "parser.rl"
+#line 845 "parser.rl"
 
 
 /*
@@ -1957,16 +1959,16 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
-#line 1961 "parser.c"
+#line 1963 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 860 "parser.rl"
+#line 862 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
-#line 1970 "parser.c"
+#line 1972 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -2000,7 +2002,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 835 "parser.rl"
+#line 837 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result, 0);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -2010,7 +2012,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 2014 "parser.c"
+#line 2016 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -2099,7 +2101,7 @@ case 9:
 	_out: {}
 	}
 
-#line 863 "parser.rl"
+#line 865 "parser.rl"
 
   if (cs >= JSON_first_final && p == pe) {
     return result;

@@ -17,9 +17,14 @@
 # define MAYBE_UNUSED(x) x
 #endif
 
-extern VALUE rb_hash_has_key(VALUE hash, VALUE key);
-
-#define hash_option_given_p(opts, key) (RTEST(rb_hash_has_key(opts, key)))
+static VALUE hash_has_key(VALUE hash, VALUE key)
+{
+    if (Qundef == rb_hash_lookup2(hash, key, Qundef)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+#define option_given_p(opts, key) (RTEST(hash_has_key(opts, key)))
 
 /* unicode */
 
