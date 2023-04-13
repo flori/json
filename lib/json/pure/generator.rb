@@ -37,25 +37,34 @@ module JSON
     '\\'  =>  '\\\\',
   } # :nodoc:
 
-  ESCAPE_SLASH_MAP = MAP.merge(
+  ESCAPE_PATTERN = /[\/"\\\x0-\x1f]/n # :nodoc:
+
+  SCRIPT_SAFE_MAP = MAP.merge(
     '/'  =>  '\\/',
+    "\u2028".b => '\u2028',
+    "\u2029".b => '\u2029',
   )
+
+  SCRIPT_SAFE_ESCAPE_PATTERN = Regexp.union(ESCAPE_PATTERN, "\u2028".b, "\u2029".b)
 
   # Convert a UTF8 encoded Ruby string _string_ to a JSON string, encoded with
   # UTF16 big endian characters as \u????, and return it.
-  def utf8_to_json(string, escape_slash = false) # :nodoc:
+  def utf8_to_json(string, script_safe = false) # :nodoc:
     string = string.dup
     string.force_encoding(::Encoding::ASCII_8BIT)
-    map = escape_slash ? ESCAPE_SLASH_MAP : MAP
-    string.gsub!(/[\/"\\\x0-\x1f]/) { map[$&] || $& }
+    if script_safe
+      string.gsub!(SCRIPT_SAFE_ESCAPE_PATTERN) { SCRIPT_SAFE_MAP[$&] || $& }
+    else
+      string.gsub!(ESCAPE_PATTERN) { MAP[$&] || $& }
+    end
     string.force_encoding(::Encoding::UTF_8)
     string
   end
 
-  def utf8_to_json_ascii(string, escape_slash = false) # :nodoc:
+  def utf8_to_json_ascii(string, script_safe = false) # :nodoc:
     string = string.dup
     string.force_encoding(::Encoding::ASCII_8BIT)
-    map = escape_slash ? ESCAPE_SLASH_MAP : MAP
+    map = script_safe ? SCRIPT_SAFE_MAP : MAP
     string.gsub!(/[\/"\\\x0-\x1f]/n) { map[$&] || $& }
     string.gsub!(/(
       (?:
@@ -115,7 +124,8 @@ module JSON
         # * *space_before*: a string that is put before a : pair delimiter (default: ''),
         # * *object_nl*: a string that is put at the end of a JSON object (default: ''),
         # * *array_nl*: a string that is put at the end of a JSON array (default: ''),
-        # * *escape_slash*: true if forward slash (/) should be escaped (default: false)
+        # * *script_safe*: true if U+2028, U+2029 and forward slash (/) should be escaped
+        #   as to make the JSON object safe to interpolate in a script tag (default: false).
         # * *check_circular*: is deprecated now, use the :max_nesting option instead,
         # * *max_nesting*: sets the maximum level of data structure nesting in
         #   the generated JSON, max_nesting = 0 if no maximum should be checked.
@@ -130,7 +140,7 @@ module JSON
           @array_nl              = ''
           @allow_nan             = false
           @ascii_only            = false
-          @escape_slash          = false
+          @script_safe          = false
           @buffer_initial_length = 1024
           configure opts
         end
@@ -158,7 +168,7 @@ module JSON
 
         # If this attribute is set to true, forward slashes will be escaped in
         # all json strings.
-        attr_accessor :escape_slash
+        attr_accessor :script_safe
 
         # :stopdoc:
         attr_reader :buffer_initial_length
@@ -200,8 +210,8 @@ module JSON
         end
 
         # Returns true, if forward slashes are escaped. Otherwise returns false.
-        def escape_slash?
-          @escape_slash
+        def script_safe?
+          @script_safe
         end
 
         # Configure this State instance with the Hash _opts_, and return
@@ -226,7 +236,14 @@ module JSON
           @ascii_only            = opts[:ascii_only] if opts.key?(:ascii_only)
           @depth                 = opts[:depth] || 0
           @buffer_initial_length ||= opts[:buffer_initial_length]
-          @escape_slash          = !!opts[:escape_slash] if opts.key?(:escape_slash)
+
+          @script_safe = if opts.key?(:script_safe)
+            !!opts[:script_safe]
+          elsif opts.key?(:escape_slash)
+            !!opts[:escape_slash]
+          else
+            false
+          end
 
           if !opts.key?(:max_nesting) # defaults to 100
             @max_nesting = 100
@@ -419,9 +436,9 @@ module JSON
               string = encode(::Encoding::UTF_8)
             end
             if state.ascii_only?
-              '"' << JSON.utf8_to_json_ascii(string, state.escape_slash) << '"'
+              '"' << JSON.utf8_to_json_ascii(string, state.script_safe) << '"'
             else
-              '"' << JSON.utf8_to_json(string, state.escape_slash) << '"'
+              '"' << JSON.utf8_to_json(string, state.script_safe) << '"'
             end
           end
 

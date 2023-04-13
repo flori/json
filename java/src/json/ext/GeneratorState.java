@@ -86,8 +86,8 @@ public class GeneratorState extends RubyObject {
      * If set to <code>true</code> the forward slash will be escaped in
      * json output.
      */
-    private boolean escapeSlash = DEFAULT_ESCAPE_SLASH;
-    static final boolean DEFAULT_ESCAPE_SLASH = false;
+    private boolean scriptSafe = DEFAULT_SCRIPT_SAFE;
+    static final boolean DEFAULT_SCRIPT_SAFE = false;
     /**
      * The initial buffer length of this state. (This isn't really used on all
      * non-C implementations.)
@@ -177,9 +177,9 @@ public class GeneratorState extends RubyObject {
      * <code>-Infinity</code> should be generated, otherwise an exception is
      * thrown if these values are encountered.
      * This options defaults to <code>false</code>.
-     * <dt><code>:escape_slash</code>
-     * <dd>set to <code>true</code> if the forward slashes should be escaped
-     * in the json output (default: <code>false</code>)
+     * <dt><code>:script_safe</code>
+     * <dd>set to <code>true</code> if U+2028, U+2029 and forward slashes should be escaped
+     * in the json output to make it safe to include in a JavaScript tag (default: <code>false</code>)
      */
     @JRubyMethod(optional=1, visibility=Visibility.PRIVATE)
     public IRubyObject initialize(ThreadContext context, IRubyObject[] args) {
@@ -203,7 +203,7 @@ public class GeneratorState extends RubyObject {
         this.allowNaN = orig.allowNaN;
         this.asciiOnly = orig.asciiOnly;
         this.quirksMode = orig.quirksMode;
-        this.escapeSlash = orig.escapeSlash;
+        this.scriptSafe = orig.scriptSafe;
         this.bufferInitialLength = orig.bufferInitialLength;
         this.depth = orig.depth;
         return this;
@@ -359,19 +359,24 @@ public class GeneratorState extends RubyObject {
     /**
      * Returns true if forward slashes are escaped in the json output.
      */
-    public boolean escapeSlash() {
-        return escapeSlash;
+    public boolean scriptSafe() {
+        return scriptSafe;
     }
 
-    @JRubyMethod(name="escape_slash")
-    public RubyBoolean escape_slash_get(ThreadContext context) {
-        return context.getRuntime().newBoolean(escapeSlash);
+    @JRubyMethod(name="script_safe", alias="escape_slash")
+    public RubyBoolean script_safe_get(ThreadContext context) {
+        return context.getRuntime().newBoolean(scriptSafe);
     }
 
-    @JRubyMethod(name="escape_slash=")
-    public IRubyObject escape_slash_set(IRubyObject escape_slash) {
-        escapeSlash = escape_slash.isTrue();
-        return escape_slash.getRuntime().newBoolean(escapeSlash);
+    @JRubyMethod(name="script_safe=", alias="escape_slash=")
+    public IRubyObject script_safe_set(IRubyObject script_safe) {
+        scriptSafe = script_safe.isTrue();
+        return script_safe.getRuntime().newBoolean(scriptSafe);
+    }
+
+    @JRubyMethod(name="script_safe?", alias="escape_slash?")
+    public RubyBoolean script_safe_p(ThreadContext context) {
+        return context.getRuntime().newBoolean(scriptSafe);
     }
 
     public boolean allowNaN() {
@@ -458,7 +463,10 @@ public class GeneratorState extends RubyObject {
         maxNesting = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
         allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
         asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
-        escapeSlash = opts.getBool("escape_slash", DEFAULT_ESCAPE_SLASH);
+        scriptSafe = opts.getBool("script_safe", DEFAULT_SCRIPT_SAFE);
+        if (!scriptSafe) {
+            scriptSafe = opts.getBool("escape_slash", DEFAULT_SCRIPT_SAFE);
+        }
         bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
 
         depth = opts.getInt("depth", 0);
@@ -486,7 +494,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("allow_nan"), allow_nan_p(context));
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
-        result.op_aset(context, runtime.newSymbol("escape_slash"), escape_slash_get(context));
+        result.op_aset(context, runtime.newSymbol("script_safe"), script_safe_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));
         for (String name: getInstanceVariableNameList()) {

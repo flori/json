@@ -1,5 +1,7 @@
 # Changes
 
+* `escape_slash` option was renamed as `script_safe` and now also escape U+2028 and U+2029. `escape_slash` is now an alias of `script_safe`.
+
 ### 2021-10-24 (2.6.1)
 
 * Restore version.rb with 2.6.1

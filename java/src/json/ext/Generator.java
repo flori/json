@@ -139,7 +139,7 @@ public final class Generator {
 
         public StringEncoder getStringEncoder() {
             if (stringEncoder == null) {
-                stringEncoder = new StringEncoder(context, getState().asciiOnly(), getState().escapeSlash());
+                stringEncoder = new StringEncoder(context, getState().asciiOnly(), getState().scriptSafe());
             }
             return stringEncoder;
         }
