@@ -355,29 +355,31 @@ static char *JSON_parse_float(JSON_Parser *json, char *p, char *pe, VALUE *resul
     if (cs >= JSON_float_first_final) {
         VALUE mod = Qnil;
         ID method_id = 0;
-        if (rb_respond_to(json->decimal_class, i_try_convert)) {
-            mod = json->decimal_class;
-            method_id = i_try_convert;
-        } else if (rb_respond_to(json->decimal_class, i_new)) {
-            mod = json->decimal_class;
-            method_id = i_new;
-        } else if (RB_TYPE_P(json->decimal_class, T_CLASS)) {
-            VALUE name = rb_class_name(json->decimal_class);
-            const char *name_cstr = RSTRING_PTR(name);
-            const char *last_colon = strrchr(name_cstr, ':');
-            if (last_colon) {
-                const char *mod_path_end = last_colon - 1;
-                VALUE mod_path = rb_str_substr(name, 0, mod_path_end - name_cstr);
-                mod = rb_path_to_class(mod_path);
+        if (json->decimal_class != Qnil) {
+            if (rb_respond_to(json->decimal_class, i_try_convert)) {
+                mod = json->decimal_class;
+                method_id = i_try_convert;
+            } else if (rb_respond_to(json->decimal_class, i_new)) {
+                mod = json->decimal_class;
+                method_id = i_new;
+            } else if (RB_TYPE_P(json->decimal_class, T_CLASS)) {
+                VALUE name = rb_class_name(json->decimal_class);
+                const char *name_cstr = RSTRING_PTR(name);
+                const char *last_colon = strrchr(name_cstr, ':');
+                if (last_colon) {
+                    const char *mod_path_end = last_colon - 1;
+                    VALUE mod_path = rb_str_substr(name, 0, mod_path_end - name_cstr);
+                    mod = rb_path_to_class(mod_path);
 
-                const char *method_name_beg = last_colon + 1;
-                long before_len = method_name_beg - name_cstr;
-                long len = RSTRING_LEN(name) - before_len;
-                VALUE method_name = rb_str_substr(name, before_len, len);
-                method_id = SYM2ID(rb_str_intern(method_name));
-            } else {
-                mod = rb_mKernel;
-                method_id = SYM2ID(rb_str_intern(name));
+                    const char *method_name_beg = last_colon + 1;
+                    long before_len = method_name_beg - name_cstr;
+                    long len = RSTRING_LEN(name) - before_len;
+                    VALUE method_name = rb_str_substr(name, before_len, len);
+                    method_id = SYM2ID(rb_str_intern(method_name));
+                } else {
+                    mod = rb_mKernel;
+                    method_id = SYM2ID(rb_str_intern(name));
+                }
             }
         }
 
@@ -726,13 +728,15 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 #else
     rb_scan_args(argc, argv, "11", &source, &opts);
 #endif
-    if (!NIL_P(opts)) {
 #ifndef HAVE_RB_SCAN_ARGS_OPTIONAL_HASH
-        opts = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
-        if (NIL_P(opts)) {
-            rb_raise(rb_eArgError, "opts needs to be like a hash");
-        } else {
+        if (!NIL_P(opts)) {
+            opts = rb_convert_type(opts, T_HASH, "Hash", "to_hash");
+            if (NIL_P(opts)) {
+                rb_raise(rb_eArgError, "opts needs to be like a hash");
+            }
+        }
 #endif
+        if (RTEST(opts) && RHASH_SIZE(opts) > 0) {
             VALUE tmp = ID2SYM(i_max_nesting);
             if (option_given_p(opts, tmp)) {
                 VALUE max_nesting = rb_hash_aref(opts, tmp);
@@ -805,17 +809,15 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
             } else {
                 json->match_string = Qnil;
             }
-#ifndef HAVE_RB_SCAN_ARGS_OPTIONAL_HASH
-        }
-#endif
     } else {
         json->max_nesting = 100;
         json->allow_nan = 0;
         json->create_additions = 0;
-        json->create_id = rb_funcall(mJSON, i_create_id, 0);
+        json->create_id = 0;
         json->object_class = Qnil;
         json->array_class = Qnil;
         json->decimal_class = Qnil;
+        json->match_string = Qnil;
     }
     source = convert_encoding(StringValue(source));
     StringValue(source);
