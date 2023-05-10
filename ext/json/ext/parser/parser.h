@@ -17,7 +17,14 @@
 # define MAYBE_UNUSED(x) x
 #endif
 
-#define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
+static VALUE parser_hash_has_key(VALUE hash, VALUE key)
+{
+    if (Qundef == rb_hash_lookup2(hash, key, Qundef)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+#define option_given_p(opts, key) RTEST(parser_hash_has_key(opts, key))
 
 /* unicode */
 

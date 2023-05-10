@@ -14,7 +14,7 @@ static VALUE mJSON, mExt, mGenerator, cState, mGeneratorMethods, mObject,
 
 static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_object_nl, i_array_nl, i_max_nesting, i_allow_nan, i_ascii_only,
-          i_pack, i_unpack, i_create_id, i_extend, i_key_p,
+          i_pack, i_unpack, i_create_id, i_extend,
           i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
           i_buffer_initial_length, i_dup, i_escape_slash;
 
@@ -1599,7 +1599,6 @@ void Init_generator(void)
     i_unpack = rb_intern("unpack");
     i_create_id = rb_intern("create_id");
     i_extend = rb_intern("extend");
-    i_key_p = rb_intern("key?");
     i_aref = rb_intern("[]");
     i_send = rb_intern("__send__");
     i_respond_to_p = rb_intern("respond_to?");
