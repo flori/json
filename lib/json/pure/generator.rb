@@ -1,4 +1,5 @@
 #frozen_string_literal: false
+require "bigdecimal"
 module JSON
   MAP = {
     "\x0" => '\u0000',
@@ -404,6 +405,16 @@ module JSON
             else
               to_s
             end
+          end
+        end
+
+        module BigDecimal
+          # Returns a JSON string representation for this BigDecimal as a JSON number.
+          def to_json(state = nil, *)
+            if (infinite? || nan?) && !State.from_state(state).allow_nan?
+              raise GeneratorError, "#{self} not allowed in JSON"
+            end
+            to_s("F").force_encoding(Encoding::ASCII)
           end
         end
 
