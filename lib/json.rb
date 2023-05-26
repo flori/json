@@ -187,6 +187,19 @@ require 'json/common'
 #
 # ---
 #
+# Option +decimal_class+ (\Class) specifies which class to use when parsing
+# decimal numbers. This class must accept a single string argument in its
+# constructor. Defaults to Float. BigDecimal will preserve arbitrary precision.
+#
+# With the default, \Float:
+#   source = '3.141592653589793238462643383279'
+#   ruby = JSON.parse(source) # => 3.141592653589793
+# With \BigDecimal:
+#   ruby = JSON.parse(source, {decimal_class: BigDecimal})
+#   ruby # => 0.3141592653589793238462643383279e1
+#
+# ---
+#
 # Option +create_additions+ (boolean) specifies whether to use \JSON additions in parsing.
 # See {\JSON Additions}[#module-JSON-label-JSON+Additions].
 #

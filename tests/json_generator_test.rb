@@ -85,6 +85,14 @@ EOT
     assert_equal '666', pretty_generate(666)
   end
 
+  def test_generate_bigdecimal
+    bd_s = '3.141592653589793238462643383279'
+    bd = BigDecimal(bd_s)
+    assert_equal(bd_s, generate(bd))
+    assert_equal(bd_s, pretty_generate(bd))
+    assert_equal(bd, parse(generate(bd), decimal_class: BigDecimal))
+  end
+
   def test_generate_custom
     state = State.new(:space_before => " ", :space => "   ", :indent => "<i>", :object_nl => "\n", :array_nl => "<a_nl>")
     json = generate({1=>{2=>3,4=>[5,6]}}, state)

@@ -131,6 +131,7 @@ static void generate_json_integer(FBuffer *buffer, VALUE Vstate, JSON_Generator_
 static void generate_json_fixnum(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj);
 static void generate_json_bignum(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj);
 static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj);
+static void generate_json_bigdecimal(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj);
 static VALUE cState_partial_generate(VALUE self, VALUE obj);
 static VALUE cState_generate(VALUE self, VALUE obj);
 static VALUE cState_initialize(int argc, VALUE *argv, VALUE self);
