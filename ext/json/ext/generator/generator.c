@@ -1006,6 +1006,20 @@ static void generate_json_float(FBuffer *buffer, VALUE Vstate, JSON_Generator_St
     fbuffer_append_str(buffer, tmp);
 }
 
+static void generate_json_bigdecimal(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
+{
+    char allow_nan = state->allow_nan;
+    VALUE tmp = rb_funcall(obj, i_to_s, 1, rb_str_new_cstr("F"));
+    if (!allow_nan) {
+        if (rb_funcall(obj, rb_intern("infinite?"), 0) == Qtrue || rb_funcall(obj, rb_intern("nan?"), 0) == Qtrue) {
+            fbuffer_free(buffer);
+            rb_raise(eGeneratorError, "%u: %"PRIsVALUE" not allowed in JSON", __LINE__, RB_OBJ_STRING(tmp));
+        }
+    }
+    rb_funcall(tmp, rb_intern("force_encoding"), 1, rb_str_new_cstr("ASCII"));
+    fbuffer_append_str(buffer, tmp);
+}
+
 static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *state, VALUE obj)
 {
     VALUE tmp;
@@ -1028,6 +1042,8 @@ static void generate_json(FBuffer *buffer, VALUE Vstate, JSON_Generator_State *s
         generate_json_bignum(buffer, Vstate, state, obj);
     } else if (klass == rb_cFloat) {
         generate_json_float(buffer, Vstate, state, obj);
+    } else if (rb_str_equal(rb_class_name(klass), rb_str_new_cstr("BigDecimal"))) {
+        generate_json_bigdecimal(buffer, Vstate, state, obj);
     } else if (rb_respond_to(obj, i_to_json)) {
         tmp = rb_funcall(obj, i_to_json, 1, Vstate);
         Check_Type(tmp, T_STRING);
