@@ -2812,6 +2812,9 @@ static VALUE convert_encoding(VALUE source)
 *   defaults to false.
 * * *object_class*: Defaults to Hash
 * * *array_class*: Defaults to Array
+# * *decimal_class*: Specifies which class to use instead of the default
+#   (Float) when parsing decimal numbers. This class must accept a single
+#   string argument in its constructor.
 */
 static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 {
