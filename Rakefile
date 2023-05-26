@@ -94,7 +94,7 @@ task :check_env do
 end
 
 desc "Testing library (pure ruby)"
-task :test_pure => [ :set_env_pure, :check_env, :do_test_pure ]
+task :test_pure => [ :set_env_pure, :check_env, :do_test_pure, :do_test_additions_pure ]
 task(:set_env_pure) { ENV['JSON'] = 'pure' }
 
 UndocumentedTestTask.new do |t|
@@ -102,6 +102,15 @@ UndocumentedTestTask.new do |t|
   t.libs << 'lib' << 'tests' << 'tests/lib'
   t.ruby_opts << "-rhelper"
   t.test_files = FileList['tests/*_test.rb']
+  t.verbose = true
+  t.options = '-v'
+end
+
+UndocumentedTestTask.new do |t|
+  t.name = 'do_test_additions_pure'
+  t.libs << 'lib' << 'tests' << 'tests/lib'
+  t.ruby_opts << "-rhelper"
+  t.test_files = FileList['tests/additions/*_test.rb']
   t.verbose = true
   t.options = '-v'
 end
@@ -174,13 +183,21 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   end
 
   desc "Testing library (jruby)"
-  task :test_ext => [ :set_env_ext, :create_jar, :check_env, :do_test_ext ]
+  task :test_ext => [ :set_env_ext, :create_jar, :check_env, :do_test_ext, :do_test_additions_ext ]
   task(:set_env_ext) { ENV['JSON'] = 'ext' }
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
     t.libs << 'lib' << 'tests'
     t.test_files = FileList['tests/*_test.rb']
+    t.verbose = true
+    t.options = '-v'
+  end
+
+  UndocumentedTestTask.new do |t|
+    t.name = 'do_test_additions_ext'
+    t.libs << 'lib' << 'tests'
+    t.test_files = FileList['tests/additions/*_test.rb']
     t.verbose = true
     t.options = '-v'
   end
@@ -249,13 +266,22 @@ else
   end
 
   desc "Testing library (extension)"
-  task :test_ext => [ :check_env, :compile, :do_test_ext ]
+  task :test_ext => [ :check_env, :compile, :do_test_ext, :do_test_additions_ext ]
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
     t.libs << 'lib' << 'tests' << "tests/lib"
     t.ruby_opts << '-rhelper'
     t.test_files = FileList['tests/*_test.rb']
+    t.verbose = true
+    t.options = '-v'
+  end
+
+  UndocumentedTestTask.new do |t|
+    t.name = 'do_test_additions_ext'
+    t.libs << 'lib' << 'tests' << "tests/lib"
+    t.ruby_opts << '-rhelper'
+    t.test_files = FileList['tests/additions/*_test.rb']
     t.verbose = true
     t.options = '-v'
   end
