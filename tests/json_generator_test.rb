@@ -408,6 +408,7 @@ EOT
       assert included
     ensure
       if Module.private_method_defined?(:included_orig)
+        Module.remove_method(:included)
         Module.alias_method(:included, :included_orig)
         Module.remove_method(:included_orig)
       end
