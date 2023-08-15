@@ -22,12 +22,16 @@ import org.jruby.anno.JRubyMethod;
 import org.jruby.exceptions.JumpException;
 import org.jruby.exceptions.RaiseException;
 import org.jruby.runtime.Block;
+import org.jruby.runtime.Helpers;
 import org.jruby.runtime.ObjectAllocator;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.ByteList;
 import org.jruby.util.ConvertBytes;
+
+import java.io.IOException;
+
 import static org.jruby.util.ConvertDouble.DoubleConverter;
 
 /**
@@ -1401,9 +1405,13 @@ case 1:
 // line 579 "Parser.rl"
 	{
                 int offset = byteList.begin();
-                ByteList decoded = decoder.decode(byteList, memo + 1 - offset,
-                                                  p - offset);
-                result = getRuntime().newString(decoded);
+                try {
+                    ByteList decoded = decoder.decode(byteList, memo + 1 - offset,
+                            p - offset);
+                    result = getRuntime().newString(decoded);
+                } catch (IOException ioe) {
+                    throw Helpers.newIOErrorFromException(getRuntime(), ioe);
+                }
                 if (result == null) {
                     p--;
                     { p += 1; _goto_targ = 5; if (true)  continue _goto;}
