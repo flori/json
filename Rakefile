@@ -336,12 +336,5 @@ else
   task :release => :build
 end
 
-task :sync_tool do
-  require 'fileutils'
-  FileUtils.cp "../../ruby/ruby/tool/lib/test/unit/core_assertions.rb", "./tests/lib"
-  FileUtils.cp "../../ruby//ruby/tool/lib/envutil.rb", "./tests/lib"
-  FileUtils.cp "../../ruby//ruby/tool/lib/find_executable.rb", "./tests/lib"
-end
-
 desc "Compile in the the source directory"
 task :default => [ :clean, :test ]
