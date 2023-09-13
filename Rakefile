@@ -249,7 +249,8 @@ else
   end
 
   desc "Testing library (extension)"
-  task :test_ext => [ :check_env, :compile, :do_test_ext ]
+  task :test_ext => [ :set_env_ext, :check_env, :compile, :do_test_ext ]
+  task(:set_env_ext) { ENV['JSON'] = 'ext' }
 
   UndocumentedTestTask.new do |t|
     t.name = 'do_test_ext'
