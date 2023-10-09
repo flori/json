@@ -567,7 +567,7 @@ public class Parser extends RubyObject {
             Ruby runtime = getRuntime();
             ByteList num = absSubSequence(p, new_p);
             IRubyObject numString = runtime.newString(num.toString());
-            return parser.decimalClass.callMethod(context, "new", numString);
+            return runtime.getKernel().callMethod(context, "BigDecimal", numString);
         }
 
         %%{
