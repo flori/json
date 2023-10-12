@@ -9,17 +9,23 @@ import org.jruby.Ruby;
 import org.jruby.RubyBoolean;
 import org.jruby.RubyClass;
 import org.jruby.RubyHash;
+import org.jruby.RubyIO;
 import org.jruby.RubyInteger;
 import org.jruby.RubyNumeric;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
 import org.jruby.anno.JRubyMethod;
+import org.jruby.java.addons.IOJavaAddons;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.ObjectAllocator;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.ByteList;
+import org.jruby.util.IOOutputStream;
+import org.jruby.util.TypeConverter;
+
+import java.io.OutputStream;
 
 /**
  * The <code>JSON::Ext::Generator::State</code> class.
@@ -220,6 +226,18 @@ public class GeneratorState extends RubyObject {
         RuntimeInfo info = RuntimeInfo.forRuntime(context.getRuntime());
         result.force_encoding(context, info.utf8.get());
         return result;
+    }
+
+    @JRubyMethod
+    public IRubyObject generate(ThreadContext context, IRubyObject obj, IRubyObject output) {
+        OutputStream outStream;
+        if (output instanceof RubyIO) {
+            outStream = ((RubyIO) output).getOutStream();
+        } else {
+            outStream = new IOOutputStream(output);
+        }
+        Generator.generateJson(context, obj, this, outStream);
+        return output;
     }
 
     private static boolean matchClosingBrace(ByteList bl, int pos, int len,

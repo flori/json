@@ -1,4 +1,4 @@
-#frozen_string_literal: false
+#frozen_string_literal: true
 module JSON
   MAP = {
     "\x0" => '\u0000',
@@ -256,10 +256,10 @@ module JSON
         # returns the result. If no valid JSON document can be
         # created this method raises a
         # GeneratorError exception.
-        def generate(obj)
-          result = obj.to_json(self)
-          JSON.valid_utf8?(result) or raise GeneratorError,
-            "source sequence #{result.inspect} is illegal/malformed utf-8"
+        def generate(obj, result: nil)
+          result = obj.to_json(self, result:)
+          # JSON.valid_utf8?(result) or raise GeneratorError,
+          #   "source sequence #{result.inspect} is illegal/malformed utf-8"
           result
         end
 
@@ -287,7 +287,9 @@ module JSON
           # Converts this object to a string (calling #to_s), converts
           # it to a JSON string, and returns the result. This is a fallback, if no
           # special method #to_json was defined for some object.
-          def to_json(*) to_s.to_json end
+          def to_json(*, result: nil)
+            to_s.to_json(result:)
+          end
         end
 
         module Hash
@@ -296,10 +298,10 @@ module JSON
           # _state_ is a JSON::State object, that can also be used to configure the
           # produced JSON string output further.
           # _depth_ is used to find out nesting depth, to indent accordingly.
-          def to_json(state = nil, *)
+          def to_json(state = nil, *, result: nil)
             state = State.from_state(state)
             state.check_max_nesting
-            json_transform(state)
+            json_transform(state, result)
           end
 
           private
@@ -309,10 +311,10 @@ module JSON
             state.indent * state.depth
           end
 
-          def json_transform(state)
-            delim = ','
+          def json_transform(state, result)
+            delim = ','.dup
             delim << state.object_nl
-            result = '{'
+            result ? result << '{' : result = '{'.dup
             result << state.object_nl
             depth = state.depth += 1
             first = true
@@ -320,12 +322,12 @@ module JSON
             each { |key,value|
               result << delim unless first
               result << state.indent * depth if indent
-              result << key.to_s.to_json(state)
+              key.to_s.to_json(state, result:)
               result << state.space_before
               result << ':'
               result << state.space
               if value.respond_to?(:to_json)
-                result << value.to_json(state)
+                value.to_json(state, result:)
               else
                 result << %{"#{String(value)}"}
               end
@@ -346,18 +348,18 @@ module JSON
           # this Array instance.
           # _state_ is a JSON::State object, that can also be used to configure the
           # produced JSON string output further.
-          def to_json(state = nil, *)
+          def to_json(state = nil, *, result: nil)
             state = State.from_state(state)
             state.check_max_nesting
-            json_transform(state)
+            json_transform(state, result)
           end
 
           private
 
-          def json_transform(state)
-            delim = ','
+          def json_transform(state, result)
+            delim = ','.dup
             delim << state.array_nl
-            result = '['
+            result ? result << '[' : result = '['.dup
             result << state.array_nl
             depth = state.depth += 1
             first = true
@@ -366,7 +368,7 @@ module JSON
               result << delim unless first
               result << state.indent * depth if indent
               if value.respond_to?(:to_json)
-                result << value.to_json(state)
+                value.to_json(state, result:)
               else
                 result << %{"#{String(value)}"}
               end
@@ -381,29 +383,35 @@ module JSON
 
         module Integer
           # Returns a JSON string representation for this Integer number.
-          def to_json(*) to_s end
+          def to_json(*, result: nil)
+            str = to_s
+            result ? result << str : result = str
+            result
+          end
         end
 
         module Float
           # Returns a JSON string representation for this Float number.
-          def to_json(state = nil, *)
+          def to_json(state = nil, *, result: nil)
             state = State.from_state(state)
-            case
-            when infinite?
-              if state.allow_nan?
-                to_s
-              else
-                raise GeneratorError, "#{self} not allowed in JSON"
-              end
-            when nan?
-              if state.allow_nan?
-                to_s
-              else
-                raise GeneratorError, "#{self} not allowed in JSON"
-              end
-            else
-              to_s
-            end
+            str = case
+                  when infinite?
+                    if state.allow_nan?
+                      to_s
+                    else
+                      raise GeneratorError, "#{self} not allowed in JSON"
+                    end
+                  when nan?
+                    if state.allow_nan?
+                      to_s
+                    else
+                      raise GeneratorError, "#{self} not allowed in JSON"
+                    end
+                  else
+                    to_s
+                  end
+            result ? result << str : result = str
+            result
           end
         end
 
@@ -411,18 +419,20 @@ module JSON
           # This string should be encoded with UTF-8 A call to this method
           # returns a JSON string encoded with UTF16 big endian characters as
           # \u????.
-          def to_json(state = nil, *args)
+          def to_json(state = nil, *args, result: nil)
             state = State.from_state(state)
             if encoding == ::Encoding::UTF_8
               string = self
             else
               string = encode(::Encoding::UTF_8)
             end
-            if state.ascii_only?
-              '"' << JSON.utf8_to_json_ascii(string, state.escape_slash) << '"'
-            else
-              '"' << JSON.utf8_to_json(string, state.escape_slash) << '"'
-            end
+            string = if state.ascii_only?
+                       "\"#{JSON.utf8_to_json_ascii(string, state.escape_slash)}\""
+                     else
+                       "\"#{JSON.utf8_to_json(string, state.escape_slash)}\""
+                     end
+            result ? result << string : result = string
+            result
           end
 
           # Module that holds the extending methods if, the String module is
@@ -461,17 +471,26 @@ module JSON
 
         module TrueClass
           # Returns a JSON string for true: 'true'.
-          def to_json(*) 'true' end
+          def to_json(*, result: nil)
+            result ? result << 'true' : result = 'true'
+            result
+          end
         end
 
         module FalseClass
           # Returns a JSON string for false: 'false'.
-          def to_json(*) 'false' end
+          def to_json(*, result: nil)
+            result ? result << 'false' : result = 'false'
+            result
+          end
         end
 
         module NilClass
           # Returns a JSON string for nil: 'null'.
-          def to_json(*) 'null' end
+          def to_json(*, result: nil)
+            result ? result << 'null' : result = nil
+            result
+          end
         end
       end
     end

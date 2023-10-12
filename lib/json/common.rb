@@ -293,13 +293,13 @@ module JSON
   #   # Raises JSON::NestingError (nesting of 100 is too deep):
   #   JSON.generate(a)
   #
-  def generate(obj, opts = nil)
+  def generate(obj, opts = nil, result: nil)
     if State === opts
       state = opts
     else
       state = State.new(opts)
     end
-    state.generate(obj)
+    state.generate(obj, result)
   end
 
   # :stopdoc:
@@ -611,20 +611,14 @@ module JSON
   def dump(obj, anIO = nil, limit = nil)
     if anIO and limit.nil?
       anIO = anIO.to_io if anIO.respond_to?(:to_io)
-      unless anIO.respond_to?(:write)
+      unless anIO.respond_to?(:<<)
         limit = anIO
         anIO = nil
       end
     end
     opts = JSON.dump_default_options
     opts = opts.merge(:max_nesting => limit) if limit
-    result = generate(obj, opts)
-    if anIO
-      anIO.write result
-      anIO
-    else
-      result
-    end
+    generate(obj, opts, result: anIO)
   rescue JSON::NestingError
     raise ArgumentError, "exceed depth limit"
   end
