@@ -12,8 +12,6 @@ import org.jruby.RubyEncoding;
 import org.jruby.RubyFloat;
 import org.jruby.RubyHash;
 import org.jruby.RubyInteger;
-import org.jruby.RubyModule;
-import org.jruby.RubyNumeric;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
 import org.jruby.anno.JRubyMethod;
@@ -26,6 +24,10 @@ import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.ByteList;
 import org.jruby.util.ConvertBytes;
+import org.jruby.util.ConvertDouble;
+
+import java.util.function.BiFunction;
+
 import static org.jruby.util.ConvertDouble.DoubleConverter;
 
 /**
@@ -54,6 +56,7 @@ public class Parser extends RubyObject {
     private RubyClass objectClass;
     private RubyClass arrayClass;
     private RubyClass decimalClass;
+    BiFunction<ThreadContext, ByteList, IRubyObject> decimalFactory;
     private RubyHash match_string;
 
     private static final int DEFAULT_MAX_NESTING = 100;
@@ -167,6 +170,14 @@ public class Parser extends RubyObject {
         this.decimalClass    = opts.getClass("decimal_class", null);
         this.match_string    = opts.getHash("match_string");
 
+        if (decimalClass == null) {
+            this.decimalFactory = this::createFloat;
+        } else if (decimalClass == runtime.getClass("BigDecimal")) {
+            this.decimalFactory = this::createBigDecimal;
+        } else {
+            this.decimalFactory = this::createCustomDecimal;
+        }
+
         if(symbolizeNames && createAdditions) {
           throw runtime.newArgumentError(
             "options :symbolize_names and :create_additions cannot be " +
@@ -262,6 +273,19 @@ public class Parser extends RubyObject {
     private RubyString getCreateId(ThreadContext context) {
         IRubyObject v = info.jsonModule.get().callMethod(context, "create_id");
         return v.isTrue() ? v.convertToString() : null;
+    }
+
+    private RubyFloat createFloat(final ThreadContext context, final ByteList num) {
+        return RubyFloat.newFloat(context.runtime, ConvertDouble.byteListToDouble19(num, true));
+    }
+
+    private IRubyObject createBigDecimal(final ThreadContext context, final ByteList num) {
+        final Ruby runtime = context.runtime;
+        return runtime.getKernel().callMethod(context, "BigDecimal", runtime.newString(num));
+    }
+
+    private IRubyObject createCustomDecimal(final ThreadContext context, final ByteList num) {
+        return decimalClass.newInstance(context, context.runtime.newString(num), Block.NULL_BLOCK);
     }
 
     /**
@@ -536,11 +560,10 @@ public class Parser extends RubyObject {
                 res.update(null, p);
                 return;
             }
-            IRubyObject number = parser.decimalClass == null ?
-                createFloat(p, new_p) : createCustomDecimal(p, new_p);
+            final ByteList num = absSubSequence(p, new_p);
+            IRubyObject number = parser.decimalFactory.apply(context, num);
 
             res.update(number, new_p + 1);
-            return;
         }
 
         int parseFloatInternal(int p, int pe) {
@@ -555,19 +578,6 @@ public class Parser extends RubyObject {
             }
 
             return p;
-        }
-
-        RubyFloat createFloat(int p, int new_p) {
-            Ruby runtime = getRuntime();
-            ByteList num = absSubSequence(p, new_p);
-            return RubyFloat.newFloat(runtime, dc.parse(num, true, runtime.is1_9()));
-        }
-
-        IRubyObject createCustomDecimal(int p, int new_p) {
-            Ruby runtime = getRuntime();
-            ByteList num = absSubSequence(p, new_p);
-            IRubyObject numString = runtime.newString(num.toString());
-            return parser.decimalClass.callMethod(context, "new", numString);
         }
 
         %%{
