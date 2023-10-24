@@ -15,4 +15,5 @@ end
 
 gem "rake"
 gem "test-unit"
+gem "test-unit-ruby-core"
 gem "all_images", "~> 0"
