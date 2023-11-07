@@ -45,8 +45,14 @@ JAVA_CLASSES        = []
 JRUBY_PARSER_JAR    = File.expand_path("lib/json/ext/parser.jar")
 JRUBY_GENERATOR_JAR = File.expand_path("lib/json/ext/generator.jar")
 
-RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find(&which)
-RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find(&which)
+if RUBY_PLATFORM =~ /mingw|mswin/
+  # cleans up Windows CI output
+  RAGEL_CODEGEN     = %w[ragel].find(&which)
+  RAGEL_DOTGEN      = %w[ragel].find(&which)
+else
+  RAGEL_CODEGEN     = %w[rlcodegen rlgen-cd ragel].find(&which)
+  RAGEL_DOTGEN      = %w[rlgen-dot rlgen-cd ragel].find(&which)
+end
 
 desc "Installing library (pure)"
 task :install_pure => :version do
