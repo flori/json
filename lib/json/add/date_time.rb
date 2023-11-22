@@ -4,7 +4,7 @@ unless defined?(::JSON::JSON_LOADED) and ::JSON::JSON_LOADED
 end
 require 'date'
 
-class DateTimeTime
+class DateTime
 
   # See #as_json.
   def self.json_create(object)
