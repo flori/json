@@ -6,14 +6,6 @@ end
 
 class Symbol
 
-  # See #as_json.
-  def as_json(*)
-    {
-      JSON.create_id => self.class.name,
-      's'            => to_s,
-    }
-  end
-
   # Methods <tt>Symbol#as_json</tt> and +Symbol.json_create+ may be used
   # to serialize and deserialize a \Symbol object;
   # see Marshal[https://docs.ruby-lang.org/en/master/Marshal.html].
@@ -29,8 +21,11 @@ class Symbol
   #
   #   Symbol.json_create(x) # => :foo
   #
-  def to_json(*a)
-    as_json.to_json(*a)
+  def as_json(*)
+    {
+      JSON.create_id => self.class.name,
+      's'            => to_s,
+    }
   end
 
   # Returns a JSON string representing +self+:
@@ -42,6 +37,11 @@ class Symbol
   #
   #   # {"json_class":"Symbol","s":"foo"}
   #
+  def to_json(*a)
+    as_json.to_json(*a)
+  end
+
+  # See #as_json.
   def self.json_create(o)
     o['s'].to_sym
   end

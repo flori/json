@@ -24,7 +24,7 @@ class Complex
   # \Method +JSON.create+ deserializes such a hash, returning a \Complex object:
   #
   #   Complex.json_create(x) # => (2+0i)
-  #   Complex.json_create(y)   # => (2.0+4i)
+  #   Complex.json_create(y) # => (2.0+4i)
   #
   def as_json(*)
     {

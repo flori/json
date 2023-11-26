@@ -22,7 +22,7 @@ class BigDecimal
   # returning a 2-element hash representing +self+:
   #
   #   require 'json/add/bigdecimal'
-  #   x = BigDecimal(2).as_json           # => {"json_class"=>"BigDecimal", "b"=>"27:0.2e1"}
+  #   x = BigDecimal(2).as_json             # => {"json_class"=>"BigDecimal", "b"=>"27:0.2e1"}
   #   y = BigDecimal(2.0, 4).as_json        # => {"json_class"=>"BigDecimal", "b"=>"36:0.2e1"}
   #   z = BigDecimal(Complex(2, 0)).as_json # => {"json_class"=>"BigDecimal", "b"=>"27:0.2e1"}
   #
