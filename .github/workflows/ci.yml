@@ -9,6 +9,7 @@ jobs:
   ruby-versions:
     uses: ruby/actions/.github/workflows/ruby_versions.yml@master
     with:
+      engine: cruby-jruby
       min_version: 2.3
 
   host:
@@ -30,9 +31,9 @@ jobs:
         - { os: ubuntu-latest  , ruby: jruby-9.1 } # Ruby 2.3
         - { os: ubuntu-latest  , ruby: jruby-9.2 } # Ruby 2.5
         - { os: ubuntu-latest  , ruby: jruby-9.3 } # Ruby 2.7
+        - { os: macos-latest   , ruby: truffleruby }
+        - { os: ubuntu-latest  , ruby: truffleruby }
         exclude:
-        - { os: windows-latest, ruby: truffleruby }
-        - { os: windows-latest, ruby: truffleruby-head }
         - { os: windows-latest, ruby: jruby }
         - { os: windows-latest, ruby: jruby-head }
 
