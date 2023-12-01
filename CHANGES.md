@@ -1,6 +1,6 @@
 # Changes
 
-### 2022-12-01 (2.7.0)
+### 2023-12-01 (2.7.0)
 
 * Add a strict option to Generator #519
 * `escape_slash` option was renamed as `script_safe` and now also escape U+2028 and U+2029. `escape_slash` is now an alias of `script_safe` #525
