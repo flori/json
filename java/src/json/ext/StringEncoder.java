@@ -15,7 +15,7 @@ import org.jruby.util.ByteList;
  * and throws a GeneratorError if any problem is found.
  */
 final class StringEncoder extends ByteListTranscoder {
-    private final boolean asciiOnly, escapeSlash;
+    private final boolean asciiOnly, scriptSafe;
 
     // Escaped characters will reuse this array, to avoid new allocations
     // or appending them byte-by-byte
@@ -37,10 +37,10 @@ final class StringEncoder extends ByteListTranscoder {
             new byte[] {'0', '1', '2', '3', '4', '5', '6', '7',
                         '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-    StringEncoder(ThreadContext context, boolean asciiOnly, boolean escapeSlash) {
+    StringEncoder(ThreadContext context, boolean asciiOnly, boolean scriptSafe) {
         super(context);
         this.asciiOnly = asciiOnly;
-        this.escapeSlash = escapeSlash;
+        this.scriptSafe = scriptSafe;
     }
 
     void encode(ByteList src, ByteList out) {
@@ -75,8 +75,15 @@ final class StringEncoder extends ByteListTranscoder {
             escapeChar('b');
             break;
         case '/':
-            if(escapeSlash) {
+            if(scriptSafe) {
                 escapeChar((char)c);
+                break;
+            }
+        case 0x2028:
+        case 0x2029:
+            if (scriptSafe) {
+                quoteStop(charStart);
+                escapeUtf8Char(c);
                 break;
             }
         default:
