@@ -89,6 +89,12 @@ public class GeneratorState extends RubyObject {
     private boolean scriptSafe = DEFAULT_SCRIPT_SAFE;
     static final boolean DEFAULT_SCRIPT_SAFE = false;
     /**
+     * If set to <code>true</code> types unsupported by the JSON format will
+     * raise a <code>JSON::GeneratorError</code>.
+     */
+    private boolean strict = DEFAULT_STRICT;
+    static final boolean DEFAULT_STRICT = false;
+    /**
      * The initial buffer length of this state. (This isn't really used on all
      * non-C implementations.)
      */
@@ -204,6 +210,7 @@ public class GeneratorState extends RubyObject {
         this.asciiOnly = orig.asciiOnly;
         this.quirksMode = orig.quirksMode;
         this.scriptSafe = orig.scriptSafe;
+        this.strict = orig.strict;
         this.bufferInitialLength = orig.bufferInitialLength;
         this.depth = orig.depth;
         return this;
@@ -379,6 +386,24 @@ public class GeneratorState extends RubyObject {
         return context.getRuntime().newBoolean(scriptSafe);
     }
 
+    /**
+     * Returns true if strict mode is enabled.
+     */
+    public boolean strict() {
+        return strict;
+    }
+
+    @JRubyMethod(name="strict")
+    public RubyBoolean strict_get(ThreadContext context) {
+        return context.getRuntime().newBoolean(strict);
+    }
+
+    @JRubyMethod(name="strict=")
+    public IRubyObject strict_set(IRubyObject isStrict) {
+        strict = isStrict.isTrue();
+        return isStrict.getRuntime().newBoolean(strict);
+    }
+
     public boolean allowNaN() {
         return allowNaN;
     }
@@ -467,6 +492,7 @@ public class GeneratorState extends RubyObject {
         if (!scriptSafe) {
             scriptSafe = opts.getBool("escape_slash", DEFAULT_SCRIPT_SAFE);
         }
+        strict = opts.getBool("strict", DEFAULT_STRICT);
         bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
 
         depth = opts.getInt("depth", 0);
@@ -495,6 +521,7 @@ public class GeneratorState extends RubyObject {
         result.op_aset(context, runtime.newSymbol("ascii_only"), ascii_only_p(context));
         result.op_aset(context, runtime.newSymbol("max_nesting"), max_nesting_get(context));
         result.op_aset(context, runtime.newSymbol("script_safe"), script_safe_get(context));
+        result.op_aset(context, runtime.newSymbol("strict"), strict_get(context));
         result.op_aset(context, runtime.newSymbol("depth"), depth_get(context));
         result.op_aset(context, runtime.newSymbol("buffer_initial_length"), buffer_initial_length_get(context));
         for (String name: getInstanceVariableNameList()) {

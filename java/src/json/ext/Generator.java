@@ -428,7 +428,11 @@ public final class Generator {
         new Handler<IRubyObject>() {
             @Override
             RubyString generateNew(Session session, IRubyObject object) {
-                if (object.respondsTo("to_json")) {
+                if (session.getState().strict()) {
+                    throw Utils.newException(session.getContext(),
+                            Utils.M_GENERATOR_ERROR,
+                            object + " not allowed in JSON");
+                } else if (object.respondsTo("to_json")) {
                     IRubyObject result = object.callMethod(session.getContext(), "to_json",
                               new IRubyObject[] {session.getState()});
                     if (result instanceof RubyString) return (RubyString)result;
