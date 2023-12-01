@@ -1,6 +1,30 @@
 # Changes
 
-* `escape_slash` option was renamed as `script_safe` and now also escape U+2028 and U+2029. `escape_slash` is now an alias of `script_safe`.
+### 2023-12-01 (2.7.0)
+
+* Add a strict option to Generator #519
+* `escape_slash` option was renamed as `script_safe` and now also escape U+2028 and U+2029. `escape_slash` is now an alias of `script_safe` #525
+* Remove unnecessary initialization of create_id in JSON.parse() #454
+* Improvements to Hash#to_json in pure implementation generator #203
+* Use ruby_xfree to free buffers #518
+* Fix "unexpected token" offset for Infinity #507
+* Avoid using deprecated BigDecimal.new on JRuby #546
+* Removed code for Ruby 1.8 #540
+* Rename JSON::ParseError to JSON:ParserError #530
+* Call super in included hook #486
+* JRuby requires a minimum of Java 8 #516
+* Always indent even if empty #517
+
+### 2022-11-30 (2.6.3)
+
+* bugfix json/pure mixing escaped with literal unicode raises Encoding::CompatibilityError #483
+* Stop including the parser source __LINE__ in exceptions #470
+
+### 2022-11-17 (2.6.2)
+
+* Remove unknown keyword arg from DateTime.parse #488
+* Ignore java artifacts by @hsbt #489
+* Fix parser bug for empty string allocation #496
 
 ### 2021-10-24 (2.6.1)
 
