@@ -54,6 +54,6 @@ class Time
   #   {"json_class":"Time","s":1700931678,"n":980650786}
   #
   def to_json(*args)
-     as_json.to_json(*args)
+    as_json.to_json(*args)
   end
 end
