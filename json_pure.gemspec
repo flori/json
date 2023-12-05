@@ -1,5 +1,3 @@
-# -*- encoding: utf-8 -*-
-
 Gem::Specification.new do |s|
   s.name = "json_pure".freeze
   s.version = File.read("VERSION").chomp

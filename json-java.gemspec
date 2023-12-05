@@ -1,5 +1,3 @@
-# -*- encoding: utf-8 -*-
-
 spec = Gem::Specification.new do |s|
   s.name = "json"
   s.version = File.read("VERSION").chomp
