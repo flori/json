@@ -26,7 +26,7 @@ which = lambda { |c|
 MAKE   = ENV['MAKE']   || %w[gmake make].find(&which)
 BUNDLE = ENV['BUNDLE'] || %w[bundle].find(&which)
 
-PKG_VERSION       = version = File.foreach(File.join(__dir__, "lib/json/version.rb")) do |line|
+PKG_VERSION       = File.foreach(File.join(__dir__, "lib/json/version.rb")) do |line|
   /^\s*VERSION\s*=\s*'(.*)'/ =~ line and break $1
 end rescue nil
 
