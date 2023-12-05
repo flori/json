@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
     "CHANGES.md".freeze,
     "LICENSE".freeze,
     "README.md".freeze,
-    "VERSION".freeze,
     "json_pure.gemspec".freeze,
     "lib/json.rb".freeze,
     "lib/json/add/bigdecimal.rb".freeze,
