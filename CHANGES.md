@@ -1,5 +1,12 @@
 # Changes
 
+### 2023-12-05 (2.7.1)
+
+* JSON.dump: handle unenclosed hashes regression #554
+* Overload kwargs in JSON.dump #556
+* [DOC] RDoc for additions #557
+* Fix JSON.dump overload combination #558
+
 ### 2023-12-01 (2.7.0)
 
 * Add a strict option to Generator #519
