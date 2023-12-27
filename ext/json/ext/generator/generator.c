@@ -224,6 +224,18 @@ static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string, char scrip
     RB_GC_GUARD(string);
 }
 
+static const char escapeTable[256] = {
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* '"' and '/' */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0, /* '\\' */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+};
+
+
 /* Converts string to a JSON string in FBuffer buffer, where only the
  * characters required by the JSON standard are JSON escaped. The remaining
  * characters (should be UTF8) are just passed through and appended to the
@@ -231,13 +243,20 @@ static void convert_UTF8_to_JSON_ASCII(FBuffer *buffer, VALUE string, char scrip
 static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string, char script_safe)
 {
     const char *ptr = RSTRING_PTR(string), *p;
-    unsigned long len = RSTRING_LEN(string), start = 0, end = 0;
+    unsigned long len = RSTRING_LEN(string), need_escape = 0, start = 0, end = 0;
     const char *escape = NULL;
     int escape_len;
     unsigned char c;
     char buf[6] = { '\\', 'u' };
-    int ascii_only = rb_enc_str_asciionly_p(string);
 
+    for (p = ptr; (unsigned long)(p - ptr) < len;) {
+        need_escape |= escapeTable[(int)*p++];
+    }
+    if (!need_escape) {
+        // fast path
+        fbuffer_append(buffer, ptr, len);
+        return;
+    }
     for (start = 0, end = 0; end < len;) {
         p = ptr + end;
         c = (unsigned char) *p;
@@ -288,7 +307,7 @@ static void convert_UTF8_to_JSON(FBuffer *buffer, VALUE string, char script_safe
                 default:
                     {
                         unsigned short clen = 1;
-                        if (!ascii_only) {
+                        if (c >= 0x80) {
                             clen += trailingBytesForUTF8[c];
                             if (end + clen > len) {
                                 rb_raise(rb_path2class("JSON::GeneratorError"),
