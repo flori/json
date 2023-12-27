@@ -18,6 +18,10 @@ static ID i_to_s, i_to_json, i_new, i_indent, i_space, i_space_before,
           i_aref, i_send, i_respond_to_p, i_match, i_keys, i_depth,
           i_buffer_initial_length, i_dup, i_script_safe, i_escape_slash, i_strict;
 
+#ifndef RB_UNLIKELY
+#define RB_UNLIKELY(cond) (cond)
+#endif
+
 /*
  * Copyright 2001-2004 Unicode, Inc.
  *
