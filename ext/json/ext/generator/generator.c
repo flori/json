@@ -610,7 +610,6 @@ static void State_free(void *ptr)
     if (state->space_before) ruby_xfree(state->space_before);
     if (state->object_nl) ruby_xfree(state->object_nl);
     if (state->array_nl) ruby_xfree(state->array_nl);
-    if (state->object_delim2) fbuffer_free(state->object_delim2);
     ruby_xfree(state);
 }
 
@@ -623,7 +622,6 @@ static size_t State_memsize(const void *ptr)
     if (state->space_before) size += state->space_before_len + 1;
     if (state->object_nl) size += state->object_nl_len + 1;
     if (state->array_nl) size += state->array_nl_len + 1;
-    if (state->object_delim2) size += FBUFFER_CAPA(state->object_delim2);
     return size;
 }
 
@@ -841,8 +839,6 @@ json_object_i(VALUE key, VALUE val, VALUE _arg)
     long object_nl_len = state->object_nl_len;
     char *indent = state->indent;
     long indent_len = state->indent_len;
-    char *delim2 = FBUFFER_PTR(state->object_delim2);
-    long delim2_len = FBUFFER_LEN(state->object_delim2);
     long depth = state->depth;
     int j;
     VALUE klass, key_to_s;
@@ -867,7 +863,9 @@ json_object_i(VALUE key, VALUE val, VALUE _arg)
     }
     Check_Type(key_to_s, T_STRING);
     generate_json(buffer, Vstate, state, key_to_s);
-    fbuffer_append(buffer, delim2, delim2_len);
+    if (RB_UNLIKELY(state->space_before)) fbuffer_append(buffer, state->space_before, state->space_before_len);
+    fbuffer_append_char(buffer, ':');
+    if (RB_UNLIKELY(state->space)) fbuffer_append(buffer, state->space, state->space_len);
     generate_json(buffer, Vstate, state, val);
 
     arg->iter++;
@@ -1066,15 +1064,6 @@ static FBuffer *cState_prepare_buffer(VALUE self)
     GET_STATE(self);
     buffer = fbuffer_alloc(state->buffer_initial_length);
 
-    if (state->object_delim2) {
-        fbuffer_clear(state->object_delim2);
-    } else {
-        state->object_delim2 = fbuffer_alloc(16);
-    }
-    if (state->space_before) fbuffer_append(state->object_delim2, state->space_before, state->space_before_len);
-    fbuffer_append_char(state->object_delim2, ':');
-    if (state->space) fbuffer_append(state->object_delim2, state->space, state->space_len);
-
     return buffer;
 }
 
@@ -1153,7 +1142,6 @@ static VALUE cState_init_copy(VALUE obj, VALUE orig)
     objState->space_before = fstrndup(origState->space_before, origState->space_before_len);
     objState->object_nl = fstrndup(origState->object_nl, origState->object_nl_len);
     objState->array_nl = fstrndup(origState->array_nl, origState->array_nl_len);
-    if (origState->object_delim2) objState->object_delim2 = fbuffer_dup(origState->object_delim2);
     return obj;
 }
 
