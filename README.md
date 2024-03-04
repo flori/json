@@ -140,15 +140,6 @@ JSON JSON(1..10) # => 1..10
 To find out how to add JSON support to other or your own classes, read the
 section "More Examples" below.
 
-To get the best compatibility to rails' JSON implementation, you can
-
-```ruby
-require 'json/add/rails'
-```
-
-Both of the additions attempt to require `'json'` (like above) first, if it has
-not been required yet.
-
 ## Serializing exceptions
 
 The JSON module doesn't extend `Exception` by default. If you convert an `Exception`
