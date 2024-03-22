@@ -23,6 +23,8 @@ jobs:
         - ubuntu-20.04
         - ubuntu-22.04
         - macos-12
+        - macos-13
+        - macos-14
         - windows-latest
         ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
         include:
