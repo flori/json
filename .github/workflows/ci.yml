@@ -32,6 +32,7 @@ jobs:
         - { os: ubuntu-latest  , ruby: jruby-9.1 } # Ruby 2.3
         - { os: ubuntu-latest  , ruby: jruby-9.2 } # Ruby 2.5
         - { os: ubuntu-latest  , ruby: jruby-9.3 } # Ruby 2.7
+        - { os: ubuntu-latest  , ruby: jruby-9.4 } # Ruby 3.1
         # - { os: macos-latest   , ruby: truffleruby }
         # - { os: ubuntu-latest  , ruby: truffleruby }
         exclude:
