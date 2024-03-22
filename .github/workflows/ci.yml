@@ -22,8 +22,9 @@ jobs:
         os:
         - ubuntu-20.04
         - ubuntu-22.04
-        - macos-11
         - macos-12
+        - macos-13
+        - macos-14
         - windows-latest
         ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
         include:
@@ -31,9 +32,13 @@ jobs:
         - { os: ubuntu-latest  , ruby: jruby-9.1 } # Ruby 2.3
         - { os: ubuntu-latest  , ruby: jruby-9.2 } # Ruby 2.5
         - { os: ubuntu-latest  , ruby: jruby-9.3 } # Ruby 2.7
-        - { os: macos-latest   , ruby: truffleruby }
-        - { os: ubuntu-latest  , ruby: truffleruby }
+        - { os: ubuntu-latest  , ruby: jruby-9.4 } # Ruby 3.1
+        # - { os: macos-latest   , ruby: truffleruby }
+        # - { os: ubuntu-latest  , ruby: truffleruby }
         exclude:
+        - { os: macos-14, ruby: 2.3 }
+        - { os: macos-14, ruby: 2.4 }
+        - { os: macos-14, ruby: 2.5 }
         - { os: windows-latest, ruby: jruby }
         - { os: windows-latest, ruby: jruby-head }
 
