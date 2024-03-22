@@ -19,18 +19,6 @@
 
 #define option_given_p(opts, key) RTEST(rb_funcall(opts, i_key_p, 1, key))
 
-/* unicode */
-
-typedef unsigned long UTF32;  /* at least 32 bits */
-typedef unsigned short UTF16; /* at least 16 bits */
-typedef unsigned char UTF8;   /* typically 8 bits */
-
-#define UNI_REPLACEMENT_CHAR (UTF32)0x0000FFFD
-#define UNI_SUR_HIGH_START  (UTF32)0xD800
-#define UNI_SUR_HIGH_END    (UTF32)0xDBFF
-#define UNI_SUR_LOW_START   (UTF32)0xDC00
-#define UNI_SUR_LOW_END     (UTF32)0xDFFF
-
 typedef struct JSON_ParserStruct {
     VALUE Vsource;
     char *source;
@@ -60,8 +48,8 @@ typedef struct JSON_ParserStruct {
 #define MinusInfinity "-Infinity"
 #define EVIL 0x666
 
-static UTF32 unescape_unicode(const unsigned char *p);
-static int convert_UTF32_to_UTF8(char *buf, UTF32 ch);
+static uint32_t unescape_unicode(const unsigned char *p);
+static int convert_UTF32_to_UTF8(char *buf, uint32_t ch);
 static char *JSON_parse_object(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting);
 static char *JSON_parse_value(JSON_Parser *json, char *p, char *pe, VALUE *result, int current_nesting);
 static char *JSON_parse_integer(JSON_Parser *json, char *p, char *pe, VALUE *result);
