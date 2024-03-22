@@ -36,6 +36,9 @@ jobs:
         # - { os: macos-latest   , ruby: truffleruby }
         # - { os: ubuntu-latest  , ruby: truffleruby }
         exclude:
+        - { os: macos-14, ruby: 2.3 }
+        - { os: macos-14, ruby: 2.4 }
+        - { os: macos-14, ruby: 2.5 }
         - { os: windows-latest, ruby: jruby }
         - { os: windows-latest, ruby: jruby-head }
 
