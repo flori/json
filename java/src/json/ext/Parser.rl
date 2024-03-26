@@ -276,7 +276,7 @@ public class Parser extends RubyObject {
     }
 
     private RubyFloat createFloat(final ThreadContext context, final ByteList num) {
-        return RubyFloat.newFloat(context.runtime, ConvertDouble.byteListToDouble19(num, true));
+        return RubyFloat.newFloat(context.runtime, new DoubleConverter().parse(num, true, true));
     }
 
     private IRubyObject createBigDecimal(final ThreadContext context, final ByteList num) {
@@ -532,9 +532,7 @@ public class Parser extends RubyObject {
         }
 
         RubyInteger bytesToInum(Ruby runtime, ByteList num) {
-            return runtime.is1_9() ?
-                    ConvertBytes.byteListToInum19(runtime, num, 10, true) :
-                    ConvertBytes.byteListToInum(runtime, num, 10, true);
+            return ConvertBytes.byteListToInum(runtime, num, 10, true);
         }
 
         %%{
@@ -757,9 +755,7 @@ public class Parser extends RubyObject {
                 } else {
                     RubyString name = (RubyString)res.result;
                     if (parser.symbolizeNames) {
-                        lastName = context.getRuntime().is1_9()
-                                       ? name.intern19()
-                                       : name.intern();
+                        lastName = name.intern();
                     } else {
                         lastName = name;
                     }
