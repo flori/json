@@ -1,5 +1,14 @@
 # Changes
 
+### 2024-04-04 (2.7.2)
+
+* Use rb_sym2str instead of SYM2ID #561
+* Fix memory leak when exception is raised during JSON generation #574
+* Remove references to "19" methods in JRuby #576
+* Make OpenStruct support as optional by @hsbt in #565
+* Autoload JSON::GenericObject to avoid require ostruct warning in Ruby 3.4 #577
+* Warn to install ostruct if json couldn't load it by @hsbt #578
+
 ### 2023-12-05 (2.7.1)
 
 * JSON.dump: handle unenclosed hashes regression #554
