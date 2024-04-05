@@ -1,0 +1,41 @@
+root = true
+
+[*]
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+tab_width = 8
+trim_trailing_whitespace = true
+
+# Build system
+
+[{Gemfile,Rakefile,*.gemspec}]
+indent_size = 2
+
+[depend]
+indent_style = tab
+
+[*.sh]
+indent_size = 2
+
+# Product Code
+
+[*.rb]
+indent_size = 2
+
+[*.rl]
+indent_size = 4
+
+[*.java]
+indent_size = 4
+
+[*.{c,h}]
+indent_size = 4
+
+# Data
+
+[*.yml]
+indent_size = 2
+
+[*.json]
+indent_size = 4
