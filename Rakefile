@@ -19,7 +19,7 @@ class UndocumentedTestTask < Rake::TestTask
 end
 
 which = lambda { |c|
-  w = `which #{c}`
+  w = `which #{c} 2>/dev/null`
   break w.chomp unless w.empty?
 }
 
