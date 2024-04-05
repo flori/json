@@ -260,124 +260,86 @@ JavaScript prototype library http://www.prototypejs.org works.
 
 ## Speed Comparisons
 
-I have created some benchmark results (see the benchmarks/data-p4-3Ghz
-subdir of the package) for the JSON-parser to estimate the speed up in the C
+I have created some benchmark results (see the `benchmarks/` subdir of
+the package) for the JSON-parser to estimate the speed up in the C
 extension:
 
-```
- Comparing times (call_time_mean):
-  1 ParserBenchmarkExt#parser   900 repeats:
-        553.922304770 (  real) ->   21.500x
-          0.001805307
-  2 ParserBenchmarkYAML#parser  1000 repeats:
-        224.513358139 (  real) ->    8.714x
-          0.004454078
-  3 ParserBenchmarkPure#parser  1000 repeats:
-         26.755020642 (  real) ->    1.038x
-          0.037376163
-  4 ParserBenchmarkRails#parser 1000 repeats:
-         25.763381731 (  real) ->    1.000x
-          0.038814780
-            calls/sec (  time) ->    speed  covers
-            secs/call
-```
+<!-- Run `make -C benchmarks update-README.md` to update this. -->
 
-In the table above 1 is `JSON::Ext::Parser`, 2 is `YAML.load` with YAML
-compatible JSON document, 3 is is `JSON::Pure::Parser`, and 4 is
-`ActiveSupport::JSON.decode`. The ActiveSupport JSON-decoder converts the
-input first to YAML and then uses the YAML-parser, the conversion seems to
-slow it down so much that it is only as fast as the `JSON::Pure::Parser`!
+<!-- BEGIN benchmarks/summary.md -->
+    Ruby: ruby 3.2.5 (2024-07-26 revision 31d0f1a2e7) [x86_64-linux]
+    CPU : 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
 
-If you look at the benchmark data you can see that this is mostly caused by
-the frequent high outliers - the median of the Rails-parser runs is still
-overall smaller than the median of the `JSON::Pure::Parser` runs:
+### `generator_benchmark.rb`
 
-```
- Comparing times (call_time_median):
-  1 ParserBenchmarkExt#parser   900 repeats:
-        800.592479481 (  real) ->   26.936x
-          0.001249075
-  2 ParserBenchmarkYAML#parser  1000 repeats:
-        271.002390644 (  real) ->    9.118x
-          0.003690004
-  3 ParserBenchmarkRails#parser 1000 repeats:
-         30.227910865 (  real) ->    1.017x
-          0.033082008
-  4 ParserBenchmarkPure#parser  1000 repeats:
-         29.722384421 (  real) ->    1.000x
-          0.033644676
-            calls/sec (  time) ->    speed  covers
-            secs/call
-```
+  | Package                                               | Function            | mean µs/call | median µs/call | stddev % |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | `json/ext` v2.7.2-22-gf2b4586                         | `generator_ascii`   |        33.34 |          32.90 |    23.34 |
+  |                                                       | `generator_fast`    |        33.82 |          33.38 |    26.88 |
+  |                                                       | `generator_pretty`  |        39.99 |          39.34 |    24.25 |
+  |                                                       | `generator_safe`    |        31.46 |          31.23 |    23.01 |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | `json_pure` v2.7.2-22-gf2b4586                        | `generator_ascii`   |      3028.81 |        3010.04 |     5.01 |
+  |                                                       | `generator_fast`    |       847.85 |         840.90 |     7.86 |
+  |                                                       | `generator_pretty`  |       964.20 |         964.40 |     5.95 |
+  |                                                       | `generator_safe`    |       837.80 |         828.15 |     7.04 |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | [Rails 7.2.1](https://rubyonrails.org)                | `generator`         |       202.86 |         197.89 |    10.14 |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | [YAJL 1.4.3](https://github.com/brianmario/yajl-ruby) | `generator`         |        44.50 |          44.11 |     8.98 |
+  |                                                       | `generator_gem_api` |        32.11 |          30.99 |    24.76 |
 
-I have benchmarked the `JSON-Generator` as well. This generated a few more
-values, because there are different modes that also influence the achieved
-speed:
+### `generator2_benchmark.rb`
 
-```
- Comparing times (call_time_mean):
-  1 GeneratorBenchmarkExt#generator_fast    1000 repeats:
-        547.354332608 (  real) ->   15.090x
-          0.001826970
-  2 GeneratorBenchmarkExt#generator_safe    1000 repeats:
-        443.968212317 (  real) ->   12.240x
-          0.002252414
-  3 GeneratorBenchmarkExt#generator_pretty  900 repeats:
-        375.104545883 (  real) ->   10.341x
-          0.002665923
-  4 GeneratorBenchmarkPure#generator_fast   1000 repeats:
-         49.978706968 (  real) ->    1.378x
-          0.020008521
-  5 GeneratorBenchmarkRails#generator       1000 repeats:
-         38.531868759 (  real) ->    1.062x
-          0.025952543
-  6 GeneratorBenchmarkPure#generator_safe   1000 repeats:
-         36.927649925 (  real) ->    1.018x 7 (>=3859)
-          0.027079979
-  7 GeneratorBenchmarkPure#generator_pretty 1000 repeats:
-         36.272134441 (  real) ->    1.000x 6 (>=3859)
-          0.027569373
-            calls/sec (  time) ->    speed  covers
-            secs/call
-```
+  | Package                                               | Function            | mean µs/call | median µs/call | stddev % |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | `json/ext` v2.7.2-22-gf2b4586                         | `generator_ascii`   |       119.77 |         118.97 |     5.19 |
+  |                                                       | `generator_fast`    |        85.06 |          84.64 |    10.78 |
+  |                                                       | `generator_pretty`  |       104.65 |         102.76 |     7.27 |
+  |                                                       | `generator_safe`    |        82.49 |          81.78 |     9.27 |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | `json_pure` v2.7.2-22-gf2b4586                        | `generator_ascii`   |      2888.41 |        2871.99 |     4.15 |
+  |                                                       | `generator_fast`    |      2119.49 |        2105.47 |     5.29 |
+  |                                                       | `generator_pretty`  |      2329.46 |        2349.02 |     7.65 |
+  |                                                       | `generator_safe`    |      2116.17 |        2109.05 |     5.41 |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | [Rails 7.2.1](https://rubyonrails.org)                | `generator`         |       308.34 |         300.17 |    12.18 |
+  |:------------------------------------------------------|:--------------------|-------------:|---------------:|---------:|
+  | [YAJL 1.4.3](https://github.com/brianmario/yajl-ruby) | `generator`         |        96.29 |          91.31 |    24.39 |
+  |                                                       | `generator_gem_api` |        79.76 |          79.16 |    13.27 |
 
-In the table above 1-3 are `JSON::Ext::Generator` methods. 4, 6, and 7 are
-`JSON::Pure::Generator` methods and 5 is the Rails JSON generator. It is now a
-bit faster than the `generator_safe` and `generator_pretty` methods of the pure
-variant but slower than the others.
+### `parser_benchmark.rb`
 
-To achieve the fastest JSON document output, you can use the `fast_generate`
-method. Beware, that this will disable the checking for circular Ruby data
-structures, which may cause JSON to go into an infinite loop.
+  | Package                                               | Function          | mean µs/call | median µs/call | stddev % |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | `json/ext` v2.7.2-22-gf2b4586                         | `parser`          |        66.34 |          52.21 |   187.08 |
+  |                                                       | `parser_symbolic` |        71.60 |          57.22 |   175.52 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | `json_pure` v2.7.2-22-gf2b4586                        | `parser`          |      1985.88 |        1889.23 |    26.56 |
+  |                                                       | `parser_symbolic` |      1981.22 |        1886.84 |    25.17 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | [Rails 7.2.1](https://rubyonrails.org)                | `parser`          |        79.64 |          53.05 |   221.89 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | YAML (Ruby 3.2.5 builtin)                             | `parser`          |      1884.27 |        1799.94 |    22.09 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | [YAJL 1.4.3](https://github.com/brianmario/yajl-ruby) | `parser`          |       128.69 |         100.61 |   149.81 |
 
-Here are the median comparisons for completeness' sake:
+### `parser2_benchmark.rb`
 
-```
- Comparing times (call_time_median):
-  1 GeneratorBenchmarkExt#generator_fast    1000 repeats:
-        708.258020939 (  real) ->   16.547x
-          0.001411915
-  2 GeneratorBenchmarkExt#generator_safe    1000 repeats:
-        569.105020353 (  real) ->   13.296x
-          0.001757145
-  3 GeneratorBenchmarkExt#generator_pretty  900 repeats:
-        482.825371244 (  real) ->   11.280x
-          0.002071142
-  4 GeneratorBenchmarkPure#generator_fast   1000 repeats:
-         62.717626652 (  real) ->    1.465x
-          0.015944481
-  5 GeneratorBenchmarkRails#generator       1000 repeats:
-         43.965681162 (  real) ->    1.027x
-          0.022745013
-  6 GeneratorBenchmarkPure#generator_safe   1000 repeats:
-         43.929073409 (  real) ->    1.026x 7 (>=3859)
-          0.022763968
-  7 GeneratorBenchmarkPure#generator_pretty 1000 repeats:
-         42.802514491 (  real) ->    1.000x 6 (>=3859)
-          0.023363113
-            calls/sec (  time) ->    speed  covers
-            secs/call
-```
+  | Package                                               | Function          | mean µs/call | median µs/call | stddev % |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | `json/ext` v2.7.2-22-gf2b4586                         | `parser`          |       257.77 |         234.84 |    85.98 |
+  |                                                       | `parser_symbolic` |       263.42 |         227.57 |    86.88 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | `json_pure` v2.7.2-22-gf2b4586                        | `parser`          |      3881.14 |        3539.20 |    25.45 |
+  |                                                       | `parser_symbolic` |      3895.00 |        3552.68 |    25.72 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | [Rails 7.2.1](https://rubyonrails.org)                | `parser`          |        78.52 |          54.84 |   219.40 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | YAML (Ruby 3.2.5 builtin)                             | `parser`          |      2968.70 |        2879.86 |    15.72 |
+  |:------------------------------------------------------|:------------------|-------------:|---------------:|---------:|
+  | [YAJL 1.4.3](https://github.com/brianmario/yajl-ruby) | `parser`          |       387.56 |         352.74 |    63.50 |
+<!-- END benchmarks/summary.md -->
 
 ## Development
 
