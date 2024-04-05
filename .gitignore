@@ -12,9 +12,10 @@ Gemfile.lock
 .rbx
 .AppleDouble
 .DS_Store
-*/**/Makefile
-*/**/*.o
-*/**/*.class
-*/**/*.jar
+Makefile
+*.o
+*.so
+*.class
+*.jar
 .byebug_history
 *.log
