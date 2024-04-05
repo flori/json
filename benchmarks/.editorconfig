@@ -1,0 +1,5 @@
+[Makefile]
+indent_style = tab
+
+[ohai.{json,ruby}]
+indent_size = 2

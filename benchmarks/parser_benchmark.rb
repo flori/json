@@ -2,8 +2,8 @@
 # CODING: UTF-8
 
 require 'rbconfig'
-RUBY_PATH=File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name'])
-RAKE_PATH=File.join(Config::CONFIG['bindir'], 'rake')
+RUBY_PATH=File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
+RAKE_PATH=File.join(RbConfig::CONFIG['bindir'], 'rake')
 require 'bullshit'
 case ARGV.first
 when 'ext'
