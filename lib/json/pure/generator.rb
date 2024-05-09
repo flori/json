@@ -239,6 +239,8 @@ module JSON
           opts.each do |key, value|
             instance_variable_set "@#{key}", value
           end
+
+          # NOTE: If adding new instance variables here, check whether #generate should check them for #generate_json
           @indent                = opts[:indent] if opts.key?(:indent)
           @space                 = opts[:space] if opts.key?(:space)
           @space_before          = opts[:space_before] if opts.key?(:space_before)
@@ -288,10 +290,68 @@ module JSON
         # created this method raises a
         # GeneratorError exception.
         def generate(obj)
-          result = obj.to_json(self)
+          if @indent.empty? and @space.empty? and @space_before.empty? and @object_nl.empty? and @array_nl.empty? and
+              !@ascii_only and !@script_safe and @max_nesting == 0 and !@strict
+            result = generate_json(obj, '')
+          else
+            result = obj.to_json(self)
+          end
           JSON.valid_utf8?(result) or raise GeneratorError,
             "source sequence #{result.inspect} is illegal/malformed utf-8"
           result
+        end
+
+        # Handles @allow_nan, @buffer_initial_length, other ivars must be the default value (see above)
+        private def generate_json(obj, buf)
+          case obj
+          when Hash
+            buf << '{'.freeze
+            first = true
+            obj.each_pair do |k,v|
+              buf << ','.freeze unless first
+              fast_serialize_string(k.to_s, buf)
+              buf << ':'.freeze
+              generate_json(v, buf)
+              first = false
+            end
+            buf << '}'.freeze
+          when Array
+            buf << '['.freeze
+            first = true
+            obj.each do |e|
+              buf << ','.freeze unless first
+              generate_json(e, buf)
+              first = false
+            end
+            buf << ']'.freeze
+          when String
+            fast_serialize_string(obj, buf)
+          when Integer
+            buf << obj.to_s
+          else
+            # Note: Float is handled this way since Float#to_s is slow anyway
+            buf << obj.to_json(self)
+          end
+        end
+
+        # Assumes !@ascii_only, !@script_safe
+        if Regexp.method_defined?(:match?)
+          private def fast_serialize_string(string, buf) # :nodoc:
+            buf << '"'.freeze
+            string = string.encode(::Encoding::UTF_8) unless string.encoding == ::Encoding::UTF_8
+
+            if /["\\\x0-\x1f]/n.match?(string)
+              buf << string.gsub(/["\\\x0-\x1f]/n, MAP)
+            else
+              buf << string
+            end
+            buf << '"'.freeze
+          end
+        else
+          # Ruby 2.3 compatibility
+          private def fast_serialize_string(string, buf) # :nodoc:
+            buf << string.to_json(self)
+          end
         end
 
         # Return the value returned by method +name+.
