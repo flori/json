@@ -238,7 +238,11 @@ if defined?(RUBY_ENGINE) and RUBY_ENGINE == 'jruby'
   task :release => :build
 else
   desc "Compiling extension"
-  task :compile => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
+  if RUBY_ENGINE == 'truffleruby'
+    task :compile => [ EXT_PARSER_DL ]
+  else
+    task :compile => [ EXT_PARSER_DL, EXT_GENERATOR_DL ]
+  end
 
   file EXT_PARSER_DL => EXT_PARSER_SRC do
     cd EXT_PARSER_DIR do
