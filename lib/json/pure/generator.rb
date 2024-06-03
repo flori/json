@@ -219,7 +219,9 @@ module JSON
           @script_safe
         end
 
-        # Returns true, if forward slashes are escaped. Otherwise returns false.
+        # Returns true, if strict mode is enabled. Otherwise returns false.
+        # Strict mode only allow serializing JSON native types: Hash, Array,
+        # String, Integer, Float, true, false and nil.
         def strict?
           @strict
         end
@@ -354,7 +356,7 @@ module JSON
               result << delim unless first
               result << state.indent * depth if indent
               result = "#{result}#{key.to_s.to_json(state)}#{state.space_before}:#{state.space}"
-              if state.strict?
+              if state.strict? && !(false == value || true == value || nil == value || String === value || Array === value || Hash === value || Integer === value || Float === value)
                 raise GeneratorError, "#{value.class} not allowed in JSON"
               elsif value.respond_to?(:to_json)
                 result << value.to_json(state)
@@ -397,7 +399,7 @@ module JSON
             each { |value|
               result << delim unless first
               result << state.indent * depth if indent
-              if state.strict?
+              if state.strict? && !(false == value || true == value || nil == value || String === value || Array === value || Hash === value || Integer === value || Float === value)
                 raise GeneratorError, "#{value.class} not allowed in JSON"
               elsif value.respond_to?(:to_json)
                 result << value.to_json(state)
