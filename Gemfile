@@ -16,4 +16,4 @@ end
 gem "rake"
 gem "test-unit"
 gem "test-unit-ruby-core"
-gem "all_images", "~> 0"
+gem "all_images", "~> 0" unless RUBY_PLATFORM =~ /java/
