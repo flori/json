@@ -17,3 +17,4 @@ gem "rake"
 gem "test-unit"
 gem "test-unit-ruby-core"
 gem "all_images", "~> 0" unless RUBY_PLATFORM =~ /java/
+gem "benchmark-ips"
