@@ -69,6 +69,10 @@ EOT
     assert_equal '{}', dump({}, strict: true)
   end
 
+  def test_dump_duplicate_key_hash
+    assert_equal "{\"a\":5,\"c\":{\"b\":6}}", dump({ 'a' => 1,  a: 5, c: { 'b' => 2, b: 6 } })
+  end
+
   def test_generate_pretty
     json = pretty_generate({})
     assert_equal(<<'EOT'.chomp, json)
