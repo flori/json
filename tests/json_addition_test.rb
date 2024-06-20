@@ -7,6 +7,7 @@ require 'json/add/bigdecimal'
 require 'json/add/ostruct'
 require 'json/add/set'
 require 'date'
+require 'ipaddr'
 
 class JSONAdditionTest < Test::Unit::TestCase
   include JSON
@@ -195,5 +196,11 @@ class JSONAdditionTest < Test::Unit::TestCase
   def test_set
     s = Set.new([:a, :b, :c, :a])
     assert_equal s, JSON.parse(JSON(s), :create_additions => true)
+  end
+
+  def test_ipaddr
+    assert_equal IPAddr.new('127.0.0.1'), parse(JSON(IPAddr.new('127.0.0.1')), :create_additions => true)
+    assert_equal IPAddr.new('192.0.2.0/24'), parse(JSON(IPAddr.new('192.0.2.0/24')), :create_additions => true)
+    assert_equal IPAddr.new('2001:db8::/48'), parse(JSON(IPAddr.new('2001:db8::/48')), :create_additions => true)
   end
 end

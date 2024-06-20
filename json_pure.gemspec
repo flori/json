@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "lib/json/add/date.rb".freeze,
     "lib/json/add/date_time.rb".freeze,
     "lib/json/add/exception.rb".freeze,
+    "lib/json/add/ipaddr.rb".freeze,
     "lib/json/add/ostruct.rb".freeze,
     "lib/json/add/range.rb".freeze,
     "lib/json/add/rational.rb".freeze,
