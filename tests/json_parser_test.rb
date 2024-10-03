@@ -26,6 +26,12 @@ class JSONParserTest < Test::Unit::TestCase
     assert_equal Encoding::UTF_16, source.encoding
   end if defined?(Encoding::UTF_16)
 
+  def test_argument_encoding_for_binary
+    source = "{}".encode("ASCII-8BIT")
+    JSON::Parser.new(source)
+    assert_equal Encoding::ASCII_8BIT, source.encoding
+  end if defined?(Encoding::ASCII_8BIT)
+
   def test_error_message_encoding
     # https://github.com/flori/json/actions/runs/6478148162/job/17589572890
     pend if RUBY_ENGINE == 'truffleruby'

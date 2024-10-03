@@ -1757,9 +1757,7 @@ static VALUE convert_encoding(VALUE source)
 {
   rb_encoding *enc = rb_enc_get(source);
   if (enc == rb_ascii8bit_encoding()) {
-    if (OBJ_FROZEN(source)) {
-      source = rb_str_dup(source);
-    }
+    source = rb_str_dup(source);
     FORCE_UTF8(source);
   } else {
     source = rb_str_conv_enc(source, rb_enc_get(source), rb_utf8_encoding());
@@ -1892,7 +1890,7 @@ static VALUE cParser_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
-#line 1920 "parser.c"
+#line 1918 "parser.c"
 enum {JSON_start = 1};
 enum {JSON_first_final = 10};
 enum {JSON_error = 0};
@@ -1900,7 +1898,7 @@ enum {JSON_error = 0};
 enum {JSON_en_main = 1};
 
 
-#line 828 "parser.rl"
+#line 826 "parser.rl"
 
 
 /*
@@ -1918,16 +1916,16 @@ static VALUE cParser_parse(VALUE self)
   GET_PARSER;
 
 
-#line 1946 "parser.c"
+#line 1944 "parser.c"
 	{
 	cs = JSON_start;
 	}
 
-#line 845 "parser.rl"
+#line 843 "parser.rl"
   p = json->source;
   pe = p + json->len;
 
-#line 1955 "parser.c"
+#line 1953 "parser.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -1961,7 +1959,7 @@ st0:
 cs = 0;
 	goto _out;
 tr2:
-#line 820 "parser.rl"
+#line 818 "parser.rl"
 	{
         char *np = JSON_parse_value(json, p, pe, &result, 0);
         if (np == NULL) { p--; {p++; cs = 10; goto _out;} } else {p = (( np))-1;}
@@ -1971,7 +1969,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-#line 1999 "parser.c"
+#line 1997 "parser.c"
 	switch( (*p) ) {
 		case 13: goto st10;
 		case 32: goto st10;
@@ -2060,7 +2058,7 @@ case 9:
 	_out: {}
 	}
 
-#line 848 "parser.rl"
+#line 846 "parser.rl"
 
   if (cs >= JSON_first_final && p == pe) {
     return result;
