@@ -1,6 +1,6 @@
 # JSON implementation for Ruby
 
-[![CI](https://github.com/flori/json/actions/workflows/ci.yml/badge.svg)](https://github.com/flori/json/actions/workflows/ci.yml)
+[![CI](https://github.com/ruby/json/actions/workflows/ci.yml/badge.svg)](https://github.com/ruby/json/actions/workflows/ci.yml)
 
 ## Description
 
