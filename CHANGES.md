@@ -177,7 +177,7 @@
   * Remove Rubinius exception since transcoding should be working now.
 
 ## 2013-05-13 (1.8.0)
-  * Fix https://github.com/flori/json/issues/162 reported by Marc-Andre
+  * Fix https://github.com/ruby/json/issues/162 reported by Marc-Andre
     Lafortune <github_rocks@marc-andre.ca>. Thanks!
   * Applied patches by Yui NARUSE <naruse@airemix.jp> to suppress warning with
     -Wchar-subscripts and better validate UTF-8 strings.
@@ -197,7 +197,7 @@
         JSON::GenericObject.json_creatable = true
     as well.
   * Remove useless assert in fbuffer implementation.
-  * Apply patch attached to https://github.com/flori/json/issues#issue/155
+  * Apply patch attached to https://github.com/ruby/json/issues#issue/155
     provided by John Shahid <jvshahid@gmail.com>, Thx!
   * Add license information to rubygems spec data, reported by Jordi Massaguer Pla <jmassaguerpla@suse.de>.
   * Improve documentation, thx to Zachary Scott <zachary@zacharyscott.net>.
@@ -211,7 +211,7 @@
   * Fix compilation of extension on older rubies.
 
 ## 2012-07-26 (1.7.4)
-  * Fix compilation problem on AIX, see https://github.com/flori/json/issues/142
+  * Fix compilation problem on AIX, see https://github.com/ruby/json/issues/142
 
 ## 2012-05-12 (1.7.3)
   * Work around Rubinius encoding issues using iconv for conversion instead.
@@ -233,9 +233,9 @@
   * Propagate src encoding to values made from it (fixes 1.9 mode converting
     everything to ascii-8bit; harmless for 1.8 mode too) (Thomas E. Enebo
     <tom.enebo@gmail.com>), should fix
-    https://github.com/flori/json/issues#issue/119.
-  * Fix https://github.com/flori/json/issues#issue/124 Thx to Jason Hutchens.
-  * Fix https://github.com/flori/json/issues#issue/117
+    https://github.com/ruby/json/issues#issue/119.
+  * Fix https://github.com/ruby/json/issues#issue/124 Thx to Jason Hutchens.
+  * Fix https://github.com/ruby/json/issues#issue/117
 
 ## 2012-01-15 (1.6.5)
   * Vit Ondruch <v.ondruch@tiscali.cz> reported a bug that shows up when using
@@ -262,7 +262,7 @@
     patch go to Josh Partlow (jpartlow@github).
   * Improve parsing speed for JSON numbers (integers and floats) in a similar way to
     what Evan Phoenix <evan@phx.io> suggested in:
-    https://github.com/flori/json/pull/103
+    https://github.com/ruby/json/pull/103
 
 ## 2011-09-18 (1.6.1)
   * Using -target 1.5 to force Java bits to compile with 1.5.
@@ -275,7 +275,7 @@
   * Fix memory leak when used from multiple JRuby. (Patch by
     jfirebaugh@github).
   * Apply patch by Eric Wong <nocode@yhbt.net> that fixes garbage collection problem
-    reported in https://github.com/flori/json/issues/46.
+    reported in https://github.com/ruby/json/issues/46.
   * Add :quirks_mode option to parser and generator.
   * Add support for Rational and Complex number additions via json/add/complex
     and json/add/rational requires.
@@ -294,7 +294,7 @@
 
 ## 2011-01-24 (1.5.1)
   * Made rake-compiler build a fat binary gem. This should fix issue
-    https://github.com/flori/json/issues#issue/54.
+    https://github.com/ruby/json/issues#issue/54.
 
 ## 2011-01-22 (1.5.0)
   * Included Java source codes for the Jruby extension made by Daniel Luz
@@ -304,7 +304,7 @@
     reported by Riley Goodside.
 
 ## 2010-08-09 (1.4.6)
-  * Fixed oversight reported in http://github.com/flori/json/issues/closed#issue/23,
+  * Fixed oversight reported in http://github.com/ruby/json/issues/closed#issue/23,
     always create a new object from the state prototype.
   * Made pure and ext api more similar again.
 
@@ -314,12 +314,12 @@
     argument.
   * Some fixes in the state objects and additional tests.
 ## 2010-08-06 (1.4.4)
-  * Fixes build problem for rubinius under OS X, http://github.com/flori/json/issues/closed#issue/25
-  * Fixes crashes described in http://github.com/flori/json/issues/closed#issue/21 and
-    http://github.com/flori/json/issues/closed#issue/23
+  * Fixes build problem for rubinius under OS X, http://github.com/ruby/json/issues/closed#issue/25
+  * Fixes crashes described in http://github.com/ruby/json/issues/closed#issue/21 and
+    http://github.com/ruby/json/issues/closed#issue/23
 ## 2010-05-05 (1.4.3)
   * Fixed some test assertions, from Ruby r27587 and r27590, patch by nobu.
-  * Fixed issue http://github.com/flori/json/issues/#issue/20 reported by
+  * Fixed issue http://github.com/ruby/json/issues/#issue/20 reported by
     electronicwhisper@github. Thx!
 
 ## 2010-04-26 (1.4.2)
