@@ -18,7 +18,7 @@ gem "test-unit"
 gem "test-unit-ruby-core"
 gem "all_images", "~> 0" unless RUBY_PLATFORM =~ /java/
 
-group :benchmark do
+if ENV['BENCHMARK']
   gem "benchmark-ips"
   unless RUBY_PLATFORM =~ /java/
     gem "oj"
