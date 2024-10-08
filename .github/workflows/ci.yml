@@ -53,8 +53,8 @@ jobs:
           mingw: ragel
 
       - run: |
-        bundle config --without benchmark
-        bundle install
+          bundle config --without benchmark
+          bundle install
 
       - run: rake compile
 
