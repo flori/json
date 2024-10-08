@@ -52,7 +52,9 @@ jobs:
           # only needed for Ruby 2.3
           mingw: ragel
 
-      - run: bundle install
+      - run: |
+        bundle config --without benchmark
+        bundle install
 
       - run: rake compile
 
