@@ -450,6 +450,9 @@ module JSON
           def to_json(state = nil, *args)
             state = State.from_state(state)
             if encoding == ::Encoding::UTF_8
+              unless valid_encoding?
+                raise GeneratorError, "source sequence is illegal/malformed utf-8"
+              end
               string = self
             else
               string = encode(::Encoding::UTF_8)
