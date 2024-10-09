@@ -624,7 +624,8 @@ module JSON
     opts = JSON.dump_default_options
     opts = opts.merge(:max_nesting => limit) if limit
     opts = merge_dump_options(opts, **kwargs) if kwargs
-    result = generate(obj, opts)
+    sanitized_obj = make_json_compatible(obj)
+    result = generate(sanitized_obj, opts)
     if anIO
       anIO.write result
       anIO
@@ -645,8 +646,24 @@ module JSON
     opts
   end
 
+  def make_json_compatible(obj)
+    case obj
+    when Hash
+      result = {}
+      obj.each do |k, v|
+        k = k.to_s unless String === k
+        result[k] = make_json_compatible(v)
+      end
+      result
+    when Array
+      obj.map { |v| make_json_compatible(v) }
+    else
+      obj
+    end
+  end
+
   class << self
-    private :merge_dump_options
+    private :merge_dump_options, :make_json_compatible
   end
 end
 
