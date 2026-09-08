@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Restore the `limit` positional argument of `JSON.dump`.
+
 ### 2026-09-07 (3.0.0)
 
 * Add `JSON::ParserError#json_path` to locate parse errors in the document as a JSONPath-style string (e.g. `$.foo[0].bar`). For duplicate key errors it points at the duplicated key itself.
