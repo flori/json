@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Fix `JSON.load_file` and `JSON.load_file!` to load on Ruby 2.7.0 through 2.7.2, which cannot parse a leading parameter before `...`.
+
 ### 2026-09-08 (3.0.1)
 
 * Restore the `limit` positional argument of `JSON.dump`.
