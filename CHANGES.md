@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 2026-09-08 (3.0.1)
+
 * Restore the `limit` positional argument of `JSON.dump`.
 
 ### 2026-09-07 (3.0.0)
