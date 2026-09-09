@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 2026-09-09 (3.0.2)
+
 * Fix `JSON.load_file` and `JSON.load_file!` to load on Ruby 2.7.0 through 2.7.2, which cannot parse a leading parameter before `...`.
 
 ### 2026-09-08 (3.0.1)
