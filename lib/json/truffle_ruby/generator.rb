@@ -302,10 +302,13 @@ module JSON
         end
         alias merge configure
 
+        # Defaults are the current values so that #configure only writes what it was given.
         private def _configure(
-          indent: '', space: '', space_before: '', object_nl: '', array_nl: '', allow_nan: false,
-          as_json: false, ascii_only: false, sort_keys: false, depth: 0, buffer_initial_length: 1024,
-          allow_duplicate_key: false, script_safe: false, strict: false, max_nesting: 100
+          indent: @indent, space: @space, space_before: @space_before, object_nl: @object_nl,
+          array_nl: @array_nl, allow_nan: @allow_nan, as_json: @as_json, ascii_only: @ascii_only,
+          sort_keys: @sort_keys, depth: @depth, buffer_initial_length: @buffer_initial_length,
+          allow_duplicate_key: @allow_duplicate_key, script_safe: @script_safe, strict: @strict,
+          max_nesting: @max_nesting
         )
           if depth.negative?
             raise ArgumentError, "depth must be >= 0 (got #{depth})"
