@@ -2,8 +2,19 @@
 
 ### Unreleased
 
+### 2026-09-09 (3.0.2)
+
+* Fix `JSON.load_file` and `JSON.load_file!` to load on Ruby 2.7.0 through 2.7.2, which cannot parse a leading parameter before `...`.
+
+### 2026-09-08 (3.0.1)
+
+* Restore the `limit` positional argument of `JSON.dump`.
+
+### 2026-09-07 (3.0.0)
+
 * Add `JSON::ParserError#json_path` to locate parse errors in the document as a JSONPath-style string (e.g. `$.foo[0].bar`). For duplicate key errors it points at the duplicated key itself.
 * JRuby: parser errors now include the position (`line`, `column` and the message suffix) as well as `json_path`, matching the C extension.
+* Fix the parser to also reject lone trailing UTF-16 surrogates (`\uDCxx` with no leading partner), symmetric to the leading-surrogate case. The Java parser already rejected these; this closes the CRuby/JRuby parity gap.
 
 ### 2026-08-11 (3.0.0.rc1)
 
