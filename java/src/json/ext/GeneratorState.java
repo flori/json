@@ -545,41 +545,39 @@ public class GeneratorState extends RubyObject {
         checkFrozen();
         OptionsReader opts = new OptionsReader(context, vOpts);
 
-        ByteList indent = opts.getString("indent");
-        if (indent != null) this.indent = indent;
+        this.indent = stringConfig(opts, "indent", this.indent);
+        this.space = stringConfig(opts, "space", this.space);
+        this.spaceBefore = stringConfig(opts, "space_before", this.spaceBefore);
+        this.arrayNl = stringConfig(opts, "array_nl", this.arrayNl);
+        this.objectNl = stringConfig(opts, "object_nl", this.objectNl);
 
-        ByteList space = opts.getString("space");
-        if (space != null) this.space = space;
+        if (opts.hasKey("as_json")) this.asJSON = opts.getProc("as_json");
 
-        ByteList spaceBefore = opts.getString("space_before");
-        if (spaceBefore != null) this.spaceBefore = spaceBefore;
+        maxNesting = opts.getInt("max_nesting", maxNesting);
+        allowNaN   = opts.getBool("allow_nan",  allowNaN);
+        asciiOnly  = opts.getBool("ascii_only", asciiOnly);
+        scriptSafe = opts.getBool("script_safe", scriptSafe);
+        strict = opts.getBool("strict", strict);
+        bufferInitialLength = opts.getInt("buffer_initial_length", bufferInitialLength);
 
-        ByteList arrayNl = opts.getString("array_nl");
-        if (arrayNl != null) this.arrayNl = arrayNl;
-
-        this.asJSON = opts.getProc("as_json");
-
-        ByteList objectNl = opts.getString("object_nl");
-        if (objectNl != null) this.objectNl = objectNl;
-
-        maxNesting = opts.getInt("max_nesting", DEFAULT_MAX_NESTING);
-        allowNaN   = opts.getBool("allow_nan",  DEFAULT_ALLOW_NAN);
-        asciiOnly  = opts.getBool("ascii_only", DEFAULT_ASCII_ONLY);
-        scriptSafe = opts.getBool("script_safe", DEFAULT_SCRIPT_SAFE);
-        strict = opts.getBool("strict", DEFAULT_STRICT);
-        bufferInitialLength = opts.getInt("buffer_initial_length", DEFAULT_BUFFER_INITIAL_LENGTH);
-
-        depth = opts.getInt("depth", 0);
+        depth = opts.getInt("depth", depth);
         if (depth < 0) {
             throw context.runtime.newArgumentError("depth must be >= 0 (got: " + depth + ")");
         }
-        this.allowDuplicateKey = opts.getBool("allow_duplicate_key", false);
+        this.allowDuplicateKey = opts.getBool("allow_duplicate_key", allowDuplicateKey);
 
-        sortKeys = normalizeSortKeys(context, opts.get("sort_keys"));
+        if (opts.hasKey("sort_keys")) sortKeys = normalizeSortKeys(context, opts.get("sort_keys"));
 
         opts.ensureEmpty();
 
         return this;
+    }
+
+    // A falsy value writes the empty string, as string_config() does in the C extension.
+    private static ByteList stringConfig(OptionsReader opts, String key, ByteList current) {
+        if (!opts.hasKey(key)) return current;
+        ByteList value = opts.getString(key);
+        return value == null ? ByteList.EMPTY_BYTELIST : value;
     }
 
     /**
